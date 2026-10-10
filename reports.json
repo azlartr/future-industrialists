@@ -4,15 +4,15 @@
       "id": "auto-riyadh-1791673883729",
       "region": "riyadh",
       "header": {
-        "weekTitle": "الأسبوع الثاني الفترة من 4اكتوبر الاحد الى 8 اكتوبر الخميس",
-        "dateRange": "الأسبوع الثاني الفترة من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
+        "weekTitle": "الأسبوع الثاني",
+        "dateRange": "من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
       },
       "stats": {
         "ambassadorCategory": 96,
         "tvInterviews": 0,
-        "tweets": 923,
-        "videos": 197,
-        "posts": 528,
+        "tweets": 35,
+        "videos": 1,
+        "posts": 2,
         "discovererCategory": 175,
         "creativeCategory": 197,
         "totalBeneficiaries": 923,
@@ -22,14 +22,187 @@
       "visits": [
         {
           "id": "auto-visit-1",
-          "schoolName": "عدد المشاركين التاريخ المصنع ملاحظات",
-          "factory": "مورق",
+          "schoolName": "مدارس المنهل الاهلية ( بنين )",
+          "participants": 45,
           "date": "2026/10/4",
-          "participants": 0,
-          "gender": "unspecified",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
+          "factory": "صناعة البلاستيك",
+          "gender": "boys",
+          "images": []
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "مدارس الرواد الاهلية ( بنات )",
+          "participants": 49,
+          "date": "2026/10/4",
+          "factory": "فش فاش",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "مدارس المنهل الاهلية (بنات )",
+          "participants": 45,
+          "date": "2026/10/4",
+          "factory": "محمد سعد الدين",
+          "factoryOriginal": "محمد علي سعد الدين",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-4",
+          "schoolName": "مدارس الأبناء و مدارس النبلاء ( بنين )",
+          "participants": 48,
+          "date": "2026/10/5",
+          "factory": "مركز القدرات",
+          "gender": "boys",
+          "images": []
+        },
+        {
+          "id": "auto-visit-5",
+          "schoolName": "مدارس الملك فيصل العالمية ( بنات )",
+          "participants": 46,
+          "date": "2026/10/5",
+          "factory": "ديمة",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-6",
+          "schoolName": "مدارس تعليم ثنائي اللغة ( بنات )",
+          "participants": 45,
+          "date": "2026/10/5",
+          "factory": "مورق",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-7",
+          "schoolName": "مدارس الثانوية السابعة والستون بعد المئة ( بنات )",
+          "participants": 47,
+          "date": "2026/10/5",
+          "factory": "الربيع",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-8",
+          "schoolName": "مدارس دلتا الاهلية ( بنين )",
+          "participants": 42,
+          "date": "2026/10/5",
+          "factory": "كوكا كولا",
+          "gender": "boys",
+          "images": []
+        },
+        {
+          "id": "auto-visit-9",
+          "schoolName": "مدارس ثانوية الرواد الاهلية ( بنين )",
+          "participants": 43,
+          "date": "2026/10/5",
+          "factory": "يونيتشارم",
+          "gender": "boys",
+          "images": []
+        },
+        {
+          "id": "auto-visit-10",
+          "schoolName": "مدارس الوسط الاهلية و ثانوية جكيمة بنت غيلان ( بنات )",
+          "participants": 47,
+          "date": "2026/10/6",
+          "factory": "مركز القدرات",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-11",
+          "schoolName": "مداري دار الصفوة الاهلية ( بنين )",
+          "participants": 46,
+          "date": "2026/10/6",
+          "factory": "مورق",
+          "gender": "boys",
+          "images": []
+        },
+        {
+          "id": "auto-visit-12",
+          "schoolName": "مدارس الصدارة الاهلية ( بنين )",
+          "participants": 47,
+          "date": "2026/10/6",
+          "factory": "الربيع",
+          "gender": "boys",
+          "images": []
+        },
+        {
+          "id": "auto-visit-13",
+          "schoolName": "مدارس الجادية عشر بعد المئة و الرابعة والثلاثون عبد المئة ( بنات )",
+          "participants": 50,
+          "date": "2026/10/6",
+          "factory": "دار الأنظمة",
+          "factoryOriginal": "دار الانظمة",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-14",
+          "schoolName": "مدارس نكون و ثانوية السابعة عشر بعد المئة ( بنات )",
+          "participants": 48,
+          "date": "2026/10/6",
+          "factory": "فش فاش",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-15",
+          "schoolName": "مدارس الموهوبين ( بنات )",
+          "participants": 45,
+          "date": "2026/10/6",
+          "factory": "الدواء - بروسيد",
+          "factoryOriginal": "الدواء – بروسيد",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-16",
+          "schoolName": "مدارس أضواء الهداية ( بنات )",
+          "participants": 46,
+          "date": "2026/10/7",
+          "factory": "المتحدة للكرتون",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-17",
+          "schoolName": "مدارس موسوعة العلوم و التربية النموذجية ( بنات )",
+          "participants": 47,
+          "date": "2026/10/7",
+          "factory": "ديمة",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-18",
+          "schoolName": "مدرس ثانوية العشرون بعد المئة ( بنات )",
+          "participants": 46,
+          "date": "2026/10/7",
+          "factory": "الجميح",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-19",
+          "schoolName": "مدارس الأفاق العالمية ( بنات )",
+          "participants": 44,
+          "date": "2026/10/7",
+          "factory": "يونيتشارم",
+          "gender": "girls",
+          "images": []
+        },
+        {
+          "id": "auto-visit-20",
+          "schoolName": "مدارس المتقدمة فرع القادسية ( بنين )",
+          "participants": 47,
+          "date": "2026/10/7",
+          "factory": "دار الأنظمة",
+          "factoryOriginal": "دار الانظمة",
+          "gender": "boys",
+          "images": []
         }
       ],
       "presentation": {
@@ -91,7 +264,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-10T23:12:17.442Z"
+      "updatedAt": "2026-10-10T23:15:42.824Z"
     },
     {
       "id": "auto-makkah-1791588858646",
