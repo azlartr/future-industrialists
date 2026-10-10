@@ -5,7 +5,18 @@ const key=()=>sessionStorage.getItem(KEY)||'';
 async function request(url,resource){
  const headers=resource?{'X-Goog-Drive-Resource-Keys':resource}:{};
  const response=await fetch(url,{headers});
- if(!response.ok)throw Error(response.status===403?'تعذر الوصول إلى Drive. فعّل Google Drive API للمفتاح واسمح بعنوان الموقع، وشارك المجلد مع أي شخص لديه الرابط.':response.status===404?'مجلد Drive غير موجود أو غير مشترك للعامة.':'تعذر قراءة Drive ('+response.status+').');
+ if(!response.ok){
+  const body=await response.json().catch(()=>({})),error=body.error||{};
+  const reasons=[...(error.errors||[]).map(item=>item.reason),...(error.details||[]).map(item=>item.reason)].filter(Boolean).join(' ');
+  const activeKey=key();let detail=String(error.message||'');if(activeKey)detail=detail.split(activeKey).join('[محجوب]');detail=detail.replace(/AIza[A-Za-z0-9_-]+/g,'[محجوب]').replace(/https?:[/][/][^ ]+/g,'[رابط]').slice(0,350);
+  const context=reasons+' '+detail;
+  if(/API_KEY_INVALID|keyInvalid|API key not valid|invalid api key/i.test(context))throw Error('مفتاح Google Drive غير صالح. انسخ API key من صفحة Credentials؛ معرّف OAuth Client ID ليس مفتاح API.');
+  if(/API_KEY_HTTP_REFERRER_BLOCKED|referer|referrer/i.test(context))throw Error('المفتاح لا يسمح بعنوان الموقع. أضف https://azlartr.github.io/* إلى Websites في إعدادات المفتاح.');
+  if(/SERVICE_DISABLED|accessNotConfigured|has not been used|disabled/i.test(context))throw Error('Google Drive API غير مفعّل في مشروع المفتاح. فعّله من Google Cloud ثم أعد المحاولة.');
+  if(/API_KEY_SERVICE_BLOCKED/i.test(context))throw Error('قيود المفتاح تمنع Google Drive API. أضف الخدمة إلى APIs المسموحة.');
+  const message=response.status===403?'تعذر الوصول إلى Drive. راجع صلاحيات المجلد وقيود المفتاح.':response.status===404?'مجلد Drive غير موجود أو غير مشترك للعامة.':'تعذر قراءة Drive ('+response.status+').';
+  throw Error(message+(detail?' سبب Google: '+detail:''));
+ }
  return response;
 }
 function api(path){const url=new URL('https://www.googleapis.com/drive/v3/'+path);url.searchParams.set('key',key());return url;}
