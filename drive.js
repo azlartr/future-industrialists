@@ -5,7 +5,7 @@ const SAVED_KEY='fi-future-industrialists-drive';
 const key=()=>{let value='';try{value=localStorage.getItem(SAVED_KEY)||''}catch{}if(value)return value;try{value=sessionStorage.getItem(KEY)||'';if(value){try{localStorage.setItem(SAVED_KEY,value)}catch{}}}catch{}return value};
 async function request(url,resource){
  const headers=resource?{'X-Goog-Drive-Resource-Keys':resource}:{};
- const response=await fetch(url,{headers});
+ let response;try{response=await fetch(url,{headers})}catch{throw Error('تعذر الاتصال بـ Google Drive من المتصفح. لم يصل رد من الخدمة؛ قد يكون الاتصال محجوبًا أو فشل طلب التحميل. الصور الحالية لم تتغير.');}
  if(!response.ok){
   const body=await response.json().catch(()=>({})),error=body.error||{};
   const reasons=[...(error.errors||[]).map(item=>item.reason),...(error.details||[]).map(item=>item.reason)].filter(Boolean).join(' ');
@@ -50,15 +50,16 @@ async function list(link){
 }
 async function rematch(data){
  if(!window.FI_GITHUB.connected())throw Error('اربط GitHub أولًا لحفظ صور Drive في المستودع.');
- const files=await list(data.driveUrl),original=data.visits||[],visits=original.map(v=>({...v,images:[]}));
+ let files;try{files=await list(data.driveUrl)}catch(error){throw Error('قراءة مجلد الصور: '+error.message)}const original=data.visits||[],visits=original.map(v=>({...v,images:[]}));
  const matched=window.FI_MATCH(visits,files);
  if(!matched.matchedImages)throw Error('لم تطابق أسماء الصور أسماء الزيارات. الصور الحالية لم تتغير.');
  const selected=new Set(visits.flatMap(v=>v.images)),urls=new Map();
  for(const file of files.filter(f=>selected.has(f.url))){
   const url=api('files/'+file.id);url.searchParams.set('alt','media');
-  const blob=await (await request(url,file.resourceKey?file.id+'/'+file.resourceKey:'')).blob();
-  const response=await fetch('/api/assets',{method:'POST',body:blob});const saved=await response.json();
-  if(!response.ok||!saved.url)throw Error(saved.error||'تعذر حفظ صورة Drive على GitHub. الصور الحالية لم تتغير.');
+  let blob;try{blob=await (await request(url,file.resourceKey?file.id+'/'+file.resourceKey:'')).blob()}catch(error){throw Error('تحميل الصورة «'+file.name+'»: '+error.message)}
+  if(!['image/jpeg','image/png','image/webp','image/avif'].includes(blob.type.split(';')[0]))throw Error('تحميل الصورة «'+file.name+'» أعاد محتوى غير صالح كصورة. الصور الحالية لم تتغير.');
+  let response,saved;try{response=await fetch('/api/assets',{method:'POST',body:blob});saved=await response.json()}catch{throw Error('حفظ الصورة «'+file.name+'» على GitHub: تعذر الاتصال أو قراءة الرد. الصور الحالية لم تتغير.');}
+  if(!response.ok||!saved.url)throw Error('حفظ الصورة «'+file.name+'» على GitHub: '+(saved.error||'تعذر الحفظ. الصور الحالية لم تتغير.'));
   urls.set(file.url,saved.url);
  }
  visits.forEach((visit,index)=>{visit.images=visit.images.length?visit.images.map(url=>urls.get(url)):[...(original[index].images||[])];visit.imagePositions={...(original[index].imagePositions||{})};});
