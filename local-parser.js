@@ -83,6 +83,7 @@ const schoolWords = /^(?:مدرسة|مدرسه|مدارس|الثانوية|ثا�
 const factoryWords = /(?:مصنع|شركة|الشركه|factory|company)/i;
 
 function schoolFromLine(line) {
+  if(/اسم\s*المدرسة/.test(line)&&/عدد\s*المشاركين|التاريخ|ملاحظات/.test(line))return '';
   const value = line.match(schoolPattern)?.[1];
   if (value) return cleanValue(value.split(/\s+[-–—|]\s+|\|/)[0]);
   if (schoolWords.test(line)) return cleanValue(line.replace(/^زيارة\s*\d*\s*[:.)-]?\s*/i, ""));
@@ -154,9 +155,9 @@ function parseHeader(lines, regionName) {
   const headerLines = (firstVisit < 0 ? lines : lines.slice(0, firstVisit)).filter(Boolean);
   const weekLine = headerLines.find((line) => /(?:الأسبوع|الاسبوع|week)/i.test(line));
   const dateLine = headerLines.find((line) => /(?:الفترة|الفتره|من\s+.+(?:إلى|الى|حتى)|period)/i.test(line)) || headerLines.find((line) => dateFromText(line));
-  const weekTitle = cleanValue(weekLine || "تقرير أسبوعي") || "تقرير أسبوعي";
+  const weekTitle = cleanValue((weekLine || "تقرير أسبوعي").split(/(?:الفترة|الفتره|period)/i)[0]) || "تقرير أسبوعي";
   const dateRange = cleanValue(dateLine || "")
-    .replace(/^(?:الفترة|الفتره|period)\s*[:：\-]?\s*/i, "");
+    .replace(/^.*?(?:الفترة|الفتره|period)\s*[:：\-]?\s*/i, "");
   return { weekTitle, dateRange, region: regionName };
 }
 
@@ -196,6 +197,38 @@ function parseOneBlock(block, index) {
     gender: inferGender(school),
     images: [],
   };
+}
+
+function parseTableVisits(text, regionName) {
+  const lines=String(text||'').replace(/\r/g,'').split('\n');
+  const headerIndex=lines.findIndex(line=>/اسم\s*المدرسة/.test(line)&&/المشاركين|المشاركون/.test(line)&&/التاريخ/.test(line));
+  if(headerIndex<0)return null;
+  const rows=[];let current=null;
+  for(const line of lines.slice(headerIndex+1)){
+    const value=arabicDigits(line).trim();
+    if(/^(?:هاكثون|هاكاثون|جائزة|اجمالي|إجمالي|فئة\s|عدد\s)/.test(value))break;
+    if(/^\d{1,3}\s+[^\d\s]/.test(value)){
+      current={number:Number(value.match(/^\d+/)[0]),lines:[value]};rows.push(current);
+    }else if(current&&value&&!/^0+$/.test(value))current.lines.push(value);
+  }
+  if(!rows.length)return null;
+  const visits=[],warnings=[];
+  for(const row of rows){
+    const value=row.lines.join('\t').replace(/^\d+\s+/,'');
+    const dateMatch=datePattern.exec(value);
+    if(!dateMatch){warnings.push('الصف '+row.number+' يحتاج تاريخًا واضحًا.');continue;}
+    const prefix=value.slice(0,dateMatch.index),countMatch=prefix.match(/(?:\s|\|)+(\d{1,5})\s*$/);
+    if(!countMatch){warnings.push('الصف '+row.number+' يحتاج عدد المشاركين.');continue;}
+    const schoolName=cleanValue(prefix.slice(0,countMatch.index).replace(/^\|\s*|\s*\|$/g,''));
+    const tail=value.slice(dateMatch.index+dateMatch[0].length).replace(/^[\s|]+/,'');
+    const factoryOriginal=cleanValue(tail.split(/\t+|\|+/)[0]||'');
+    if(!schoolName||!factoryOriginal){warnings.push('الصف '+row.number+' يحتاج اسم المدرسة والمصنع.');continue;}
+    const factory=canonicalFactoryName(factoryOriginal);
+    visits.push({id:'auto-visit-'+row.number,schoolName,participants:Number(countMatch[1]),date:dateMatch[0].replace(/\s/g,''),factory,...(factory!==factoryOriginal?{factoryOriginal}:{}),gender:inferGender(schoolName),images:[]});
+  }
+  if(warnings.length)throw Error('لم يتم تطبيق الجدول لأن بعض الصفوف ناقصة: '+warnings.join(' '));
+  if(!visits.length)throw Error('لم أتمكن من قراءة صفوف الجدول. تأكد من وجود اسم المدرسة، عدد المشاركين، التاريخ والمصنع.');
+  return {header:parseHeader(reportLines(lines.slice(0,headerIndex).join('\n')),regionName),stats:parseStats(text),visits,warnings};
 }
 
 function parseStructuredVisits(text, regionName) {
@@ -273,8 +306,10 @@ function parseStats(text) {
   for (const [key, pattern] of Object.entries(labels)) {
     const index = lines.findIndex((item) => pattern.test(item));
     if (index < 0) continue;
-    const inline = numberFrom(lines[index]);
-    if (inline) {
+    const matchedLabel=pattern.exec(lines[index]);
+    const inlineMatch=arabicDigits(lines[index].slice(matchedLabel.index+matchedLabel[0].length)).match(/\d{1,5}/);
+    const inline=inlineMatch?Number(inlineMatch[0]):0;
+    if (inlineMatch) {
       stats[key] = inline;
       continue;
     }
@@ -316,6 +351,8 @@ function parseJsonReport(text, regionName) {
 function parseReport(text, regionName) {
   const jsonReport = parseJsonReport(text, regionName);
   if (jsonReport) return jsonReport;
+  const tableReport = parseTableVisits(text, regionName);
+  if(tableReport)return tableReport;
   const structuredReport = parseStructuredVisits(text, regionName);
   if (structuredReport) return structuredReport;
   const lines = reportLines(text);
