@@ -510,3 +510,14 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 .web-report-partners.partners-editable .partner-logo{margin-bottom:65px}
 .direct-partner-control>span{gap:2px}.direct-partner-control button{width:20px;font-size:17px}.direct-partner-control input{width:30px;font-size:12px}
 }
+
+/* Keep school qualifiers readable when long Arabic names wrap. */
+.visit-title-block h3>.school-name{min-width:0;flex:1;white-space:normal;word-break:normal;overflow-wrap:break-word;text-wrap:pretty}
+.school-qualifier{unicode-bidi:isolate}.school-qualifier-short{display:inline-block;white-space:nowrap}
+.categories>.stats-row{margin-bottom:24px}.categories>.categories-heading{margin-bottom:18px}
+
+/* One white surface behind all regional partner logos. */
+.web-report-partners{background:#fff!important;color:#17234c!important;border:0!important;box-shadow:none!important}
+.web-report-partners .partner-label{color:#17234c!important;opacity:1}
+.web-report-partners .partner-logo{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+.web-report-partners .direct-partner-control{color:#17234c!important}
