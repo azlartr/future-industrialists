@@ -140,8 +140,15 @@
           "participants": 42,
           "gender": "girls",
           "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
-          "images": [],
-          "imagePositions": {}
+          "images": [
+            "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp"
+          ],
+          "imagePositions": {
+            "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp": {
+              "x": 50,
+              "y": 50
+            }
+          }
         },
         {
           "id": "auto-visit-9",
@@ -177,7 +184,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-10T21:57:05.446Z",
+        "updatedAt": "2026-10-10T21:59:48.140Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -458,7 +465,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-10T21:57:05.447Z"
+      "updatedAt": "2026-10-10T21:59:48.142Z"
     }
   ],
   "deletedReports": [
