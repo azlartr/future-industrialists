@@ -334,4 +334,181 @@ function parseReport(text, regionName) {
 }
 
 
+function tokens(value) {
+  const normalized = normalize(value);
+  const parts = normalized.split(/\s+/).filter((token) => token.length > 1 && !/^(?:jpg|jpeg|png|webp|gif|avif|image|img|photo|photos|picture|pictures|صوره|صورة|صور|زيارة|زياره|visit|copy|نسخه)$/i.test(token));
+  const compact = normalized.replace(/\s+/g, "");
+  return [...new Set([...parts, ...(compact.length > 2 ? [compact] : [])])];
+}
+
+function normalizationWarnings(visits) {
+  const groups = new Map();
+  for (const visit of visits || []) {
+    const raw = cleanValue(visit.factoryOriginal || visit.factory);
+    const canonical = canonicalFactoryName(raw);
+    if (!raw || !canonical) continue;
+    const values = groups.get(canonical) || new Set();
+    values.add(raw);
+    groups.set(canonical, values);
+  }
+  const notes = [];
+  for (const [canonical, values] of groups) {
+    const variants = [...values];
+    if (variants.length > 1 || variants.some((value) => normalize(value) !== normalize(canonical))) {
+      notes.push(`معلومة: تم توحيد أسماء المصنع (${variants.join("، ")}) ← ${canonical}`);
+    }
+  }
+  const rawNames = [...new Set((visits || []).map((visit) => cleanValue(visit.factoryOriginal || visit.factory)).filter(Boolean))];
+  const compact = (value) => normalize(value).replace(/\s+/g, "");
+  for (let index = 0; index < rawNames.length; index += 1) {
+    for (let next = index + 1; next < rawNames.length; next += 1) {
+      const left = compact(rawNames[index]);
+      const right = compact(rawNames[next]);
+      if (left.length < 4 || right.length < 4 || canonicalFactoryName(rawNames[index]) === canonicalFactoryName(rawNames[next])) continue;
+      if (left.includes(right) || right.includes(left)) {
+        notes.push(`راجع احتمال اختلاف اسم المصنع: "${rawNames[index]}" و"${rawNames[next]}"`);
+      }
+    }
+  }
+  return notes;
+}
+
+function matchDriveImages(visits, files) {
+  let matchedImages = 0;
+  const stop = new Set(["مدرسه", "مدارس", "الثانويه", "ثانويه", "بنين", "بنات", "طلاب", "طالبات", "صوره", "صورة", "صور", "زياره", "زيارة", "مصنع", "مصانع", "image", "img", "photo", "photos", "picture", "copy", "نسخه"]);
+  const distinctive = value => normalize(value).split(" ").filter(word => word.length > 1 && !stop.has(word) && !/^\d+$/.test(word));
+  // Drive filenames are not always copied from the report exactly. In
+  // particular, the folder may say "مدرسة" while the report says "مدارس",
+  // or the filename may contain an extra suffix such as (1). Compare the
+  // meaningful school words and a compact form as well as the exact tokens.
+  const compactDistinctive = value => distinctive(value).join("");
+  const editDistance = (left, right) => {
+    const a = String(left || ""), b = String(right || "");
+    if (a === b) return 0;
+    if (Math.abs(a.length - b.length) > 2) return 3;
+    let previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+    for (let row = 1; row <= a.length; row += 1) {
+      const current = [row];
+      let rowBest = row;
+      for (let column = 1; column <= b.length; column += 1) {
+        current[column] = Math.min(current[column - 1] + 1, previous[column] + 1, previous[column - 1] + (a[row - 1] === b[column - 1] ? 0 : 1));
+        rowBest = Math.min(rowBest, current[column]);
+      }
+      if (rowBest > 2) return 3;
+      previous = current;
+    }
+    return previous[b.length];
+  };
+  const nearWord = (word, candidate) => {
+    const min = Math.min(word.length, candidate.length);
+    if (min < 5) return false;
+    const limit = min >= 7 ? 2 : 1;
+    if (editDistance(word, candidate) <= limit) return true;
+    // Common Arabic typing slips swap two neighboring letters, such as
+    // "العلمية" and "العملية". Treat that as one near-match only when the
+    // rest of the school name also matches.
+    if (word.length === candidate.length) {
+      for (let index = 0; index < word.length - 1; index += 1) {
+        if (word[index] === candidate[index + 1] && word[index + 1] === candidate[index]) {
+          const swapped = word.slice(0, index) + word[index + 1] + word[index] + word.slice(index + 2);
+          if (swapped === candidate) return true;
+        }
+      }
+    }
+    return false;
+  };
+  const schoolMatchScore = (schoolName, filename, filenameWords) => {
+    const schoolWords = distinctive(schoolName);
+    if (!schoolWords.length) return 0;
+    const exact = schoolWords.filter(word => filenameWords.has(word)).length;
+    const fileWords = [...filenameWords];
+    const fuzzy = schoolWords.filter(word => !filenameWords.has(word) && fileWords.some(candidate => nearWord(word, candidate))).length;
+    const compactSchool = schoolWords.join("");
+    const compactFile = compactDistinctive(filename);
+    if (schoolWords.length === 1 && exact === 1) return 155;
+    if (exact === schoolWords.length) return 170 + schoolWords.length * 5;
+    if (schoolWords.length > 1 && exact >= 1 && exact + fuzzy === schoolWords.length) return 138 + exact * 6;
+    if (compactSchool.length >= 5 && (compactFile.includes(compactSchool) || compactSchool.includes(compactFile))) return 145;
+    if (exact >= 2 && exact / schoolWords.length >= 0.67) return 105 + exact * 5;
+    return 0;
+  };
+  const factoryMatchScore = (factoryName, filenameWords) => {
+    let best = 0;
+    for (const alias of factoryAliasForms(factoryName)) {
+      const significant = distinctive(alias);
+      if (!significant.length) continue;
+      const exact = significant.filter(word => filenameWords.has(word)).length;
+      if (exact === significant.length) best = Math.max(best, 32 + significant.length * 3);
+      else if (exact >= 2 && exact / significant.length >= 0.67) best = Math.max(best, 18 + exact * 2);
+    }
+    return best;
+  };
+  const normalizedDate = value => {
+    const date = dateFromText(value), parts = date.split(/[/-]/);
+    if (parts.length !== 3) return "";
+    const [year, month, day] = parts[0].length === 4 ? parts : parts.slice().reverse();
+    return [Number(year), Number(month), Number(day)].join("-");
+  };
+  const unique = [...new Map(files.map(file => [file.id, file])).values()];
+  const generic = [];
+  const pending = [];
+  for (const file of unique.sort((a,b) => a.name.localeCompare(b.name, "ar", { numeric: true }))) {
+    const filename = normalize(file.name.replace(/\.[^.]+$/, "")), words = new Set(distinctive(filename));
+    const gender = inferGender(filename), fileDate = normalizedDate(file.name);
+    const ranked = visits.map((visit, index) => {
+      const schoolWords = distinctive(visit.schoolName), visitDate = normalizedDate(visit.date);
+      if (gender !== "unspecified" && visit.gender !== "unspecified" && gender !== visit.gender) return { index, score: 0 };
+      if (fileDate && visitDate && fileDate !== visitDate) return { index, score: 0 };
+      const schoolScore = schoolMatchScore(visit.schoolName, filename, words);
+      const factoryScore = factoryMatchScore(visit.factory, words);
+      // Common words such as "مدارس" or "بنين" alone are never a match.
+      return { index, schoolScore, score: schoolScore + factoryScore + ((schoolScore || factoryScore) && fileDate ? 10 : 0) };
+    }).filter(candidate => candidate.score > 0).sort((a,b) => b.score - a.score);
+    if (!ranked.length) {
+      // Camera defaults such as IMG_0001.jpg carry no useful name. Keep them
+      // for the deterministic fallback below instead of silently discarding them.
+      if (!words.size) generic.push({ file, fileDate });
+      continue;
+    }
+    // If two visits have the same weak factory-only score, do not guess. An
+    // exact/near-exact school match is safe even when another visit shares the
+    // same factory name, which is common in weekly reports.
+    if (ranked[1]?.score === ranked[0].score && ranked[0].schoolScore === 0) {
+      pending.push({ file, fileDate });
+      continue;
+    }
+    const visit = visits[ranked[0].index];
+    if (visit.images.length >= 4) {
+      pending.push({ file, fileDate });
+      continue;
+    }
+    visit.images.push(file.url);
+    matchedImages++;
+  }
+  let genericMatched = 0;
+  for (const item of [...generic, ...pending]) {
+    const candidates = visits.map((visit, index) => ({ visit, index })).filter(({ visit }) => visit.images.length < 4 && (!item.fileDate || !normalizedDate(visit.date) || normalizedDate(visit.date) === item.fileDate));
+    const fileText = normalize(item.file.name.replace(/\.[^.]+$/, ""));
+    const fileWords = new Set(distinctive(fileText));
+    const ranked = candidates.map(({ visit, index }) => ({ visit, index, score: schoolMatchScore(visit.schoolName, fileText, fileWords) + factoryMatchScore(visit.factory, fileWords) })).sort((a,b) => b.score - a.score);
+    const target = ranked[0]?.score > 0 && (ranked.length === 1 || ranked[1].score < ranked[0].score) ? ranked[0].visit : candidates[0]?.visit;
+    if (!target) continue;
+    target.images.push(item.file.url);
+    matchedImages++;
+    if (!fileWords.size) genericMatched++;
+  }
+  const unmatchedSchools = visits.filter(visit => !visit.images.length).map(visit => visit.schoolName).filter(Boolean);
+  const warnings = [];
+  if (genericMatched) warnings.push(`تم توزيع ${genericMatched} صورة باسم عام (مثل IMG_0001) حسب ترتيب الزيارات؛ سمِّ المجلد أو الصورة باسم المدرسة لرفع دقة المطابقة.`);
+  if (unmatchedSchools.length) warnings.push(`لم تُطابق صور للزيارة: ${unmatchedSchools.slice(0, 6).join("، ")}. تأكد أن اسم المدرسة أو مجلدها ظاهر في اسم الملف.`);
+  return {
+    matchedImages,
+    unmatchedImages: Math.max(0, unique.length - matchedImages),
+    warnings,
+  };
+}
+
+
+
+window.FI_MATCH=matchDriveImages;
 return parseReport;})();
