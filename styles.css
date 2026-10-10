@@ -521,3 +521,10 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 .web-report-partners .partner-label{color:#17234c!important;opacity:1}
 .web-report-partners .partner-logo{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
 .web-report-partners .direct-partner-control{color:#17234c!important}
+
+/* Direct logo upload shared by every region's visit cards. */
+.visit-factory{position:relative}
+.inline-factory-upload{position:absolute;bottom:5px;left:5px;right:5px;display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 3px;background:#fff;color:#24377c;border:1px solid #dbe1f3;border-radius:7px;font-size:11px;cursor:pointer;z-index:2}
+.inline-factory-upload input{display:none}
+.inline-factory-upload svg{width:14px;height:14px}
+@media print{.inline-factory-upload{display:none!important}}
