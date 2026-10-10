@@ -612,6 +612,99 @@
           }
         ]
       }
+    },
+    {
+      "id": "auto-riyadh-1791673883729",
+      "region": "riyadh",
+      "header": {
+        "weekTitle": "التقرير الأسبوعي",
+        "dateRange": "الأسبوع الثاني الفترة من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
+      },
+      "stats": {
+        "ambassadorCategory": 96,
+        "tvInterviews": 0,
+        "tweets": 923,
+        "videos": 197,
+        "posts": 528,
+        "discovererCategory": 175,
+        "creativeCategory": 197,
+        "totalBeneficiaries": 923,
+        "totalRegistered": 528,
+        "artistCategory": 60
+      },
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "عدد المشاركين التاريخ المصنع ملاحظات",
+          "factory": "مورق",
+          "date": "2026/10/4",
+          "participants": 0,
+          "gender": "unspecified",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        }
+      ],
+      "presentation": {
+        "updatedAt": "2026-10-10T23:11:23.731Z",
+        "theme": {
+          "boys": "#2b3592",
+          "girls": "#897dc0",
+          "bg1": "#101936",
+          "bg2": "#2b3592",
+          "bg3": "#71509d",
+          "radius": 22,
+          "photoHeight": 180,
+          "gap": 26,
+          "logoSize": 168,
+          "partnerLogoScale": 95,
+          "webPartnerBoxSize": 115,
+          "fontScale": 100,
+          "columns": 1,
+          "photoLayout": "row",
+          "motion": true,
+          "network": true,
+          "networkOpacity": 85,
+          "speed": 20,
+          "showFactories": true,
+          "showCategories": true
+        },
+        "print": {
+          "perPage": 4,
+          "headerVisible": true,
+          "headerDateVisible": true,
+          "headerStyle": "color",
+          "headerAlign": "right",
+          "headerScale": 120,
+          "headerTitle": "",
+          "footerVisible": true,
+          "footerPartnersVisible": true,
+          "footerAlign": "right",
+          "footerPartnerSize": 125,
+          "footerLabel": "",
+          "footerText": "",
+          "showPageNumbers": false,
+          "coverHeaderVisible": true,
+          "coverPartnersVisible": false,
+          "coverFooterText": "",
+          "coverBackground": "",
+          "pageBackground": "",
+          "coverTextTop": 87,
+          "_partnerVisibilityConfigured": true,
+          "_reportLayoutVersion": 2
+        },
+        "partners": [],
+        "partnersConfigured": true,
+        "factories": {
+          "riyadh:مورق": {
+            "name": "مورق",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          }
+        }
+      },
+      "updatedAt": "2026-10-10T23:11:23.732Z"
     }
   ],
   "deletedReports": [
