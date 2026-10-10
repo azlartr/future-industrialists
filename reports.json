@@ -38,6 +38,14 @@
             "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=17eOvqpZYppRjc3hzEcIHHIBFLpME0IwA": {
               "x": 50,
               "y": 0
+            },
+            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QabOaZ5xBDpNVO4boRC8iFeZSnlCUQks": {
+              "x": 50,
+              "y": 0
+            },
+            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QuFgKhhaINQZhRw7Y5PfXhJTWzpz-ZK4": {
+              "x": 50,
+              "y": 0
             }
           }
         },
@@ -147,7 +155,7 @@
           "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
           "images": [
             "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp",
-            null,
+            "",
             "https://azlartr.github.io/future-industrialists/assets/u/64060448731263bfd7501fe95ef44aff31a2939ca531684a8a2d14ebbbb8c2c7.webp"
           ],
           "imagePositions": {
@@ -195,7 +203,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-10T22:03:11.207Z",
+        "updatedAt": "2026-10-10T22:23:20.085Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -207,7 +215,7 @@
           "gap": 26,
           "logoSize": 168,
           "partnerLogoScale": 95,
-          "webPartnerBoxSize": 120,
+          "webPartnerBoxSize": 123,
           "fontScale": 100,
           "columns": 1,
           "photoLayout": "row",
@@ -476,7 +484,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-10T22:03:11.209Z"
+      "updatedAt": "2026-10-10T22:23:20.086Z"
     }
   ],
   "deletedReports": [
