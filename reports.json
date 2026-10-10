@@ -696,7 +696,7 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/68f0d7b5d95e9abe20a19711ef535308a09ef677c50ede1b00ff3b0904fd941f.webp"
           ],
           "imagePositions": {},
-          "factoryLogo": ""
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/26bbd0b4ebbc46b2535b61bec72d2424952dfa0a967dea12868fcea51a91c5d1.webp"
         },
         {
           "id": "auto-visit-5",
@@ -792,7 +792,7 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0eaa2a5b9723e14bc1c61fd43f2a1858ad6b8a0dbb2eee89cd797081bdac4b63.webp"
           ],
           "imagePositions": {},
-          "factoryLogo": ""
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/26bbd0b4ebbc46b2535b61bec72d2424952dfa0a967dea12868fcea51a91c5d1.webp"
         },
         {
           "id": "auto-visit-11",
@@ -874,7 +874,7 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d4a39d52517443676ec0666c896cfb1cb1159e9dd9d5220e1c2381ded1db8fd7.webp"
           ],
           "imagePositions": {},
-          "factoryLogo": ""
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/20fff7e2df98807caeb98de19d37e354b4ad1c923ab1b2b7a7df26a935523742.webp"
         },
         {
           "id": "auto-visit-16",
@@ -959,7 +959,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-10T23:50:02.633Z",
+        "updatedAt": "2026-10-10T23:51:04.021Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1114,7 +1114,7 @@
           },
           "riyadh:مركز القدرات": {
             "name": "مركز القدرات",
-            "url": "",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/26bbd0b4ebbc46b2535b61bec72d2424952dfa0a967dea12868fcea51a91c5d1.webp",
             "logoHidden": false,
             "visible": true
           },
@@ -1155,8 +1155,8 @@
             "visible": true
           },
           "riyadh:الدواء بروسيد": {
-            "name": "الدواء - بروسيد",
-            "url": "",
+            "name": "الدواء بروسيد",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/20fff7e2df98807caeb98de19d37e354b4ad1c923ab1b2b7a7df26a935523742.webp",
             "logoHidden": false,
             "visible": true
           },
@@ -1198,7 +1198,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-10T23:50:02.635Z",
+      "updatedAt": "2026-10-10T23:51:04.024Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T23:41:16.859Z",
         "visits": [
