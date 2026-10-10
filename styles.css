@@ -501,3 +501,12 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 .direct-partner-control{position:absolute;top:100%;left:0;right:0;color:#fff;padding-top:6px;display:block}.direct-partner-control b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;margin-bottom:4px}.direct-partner-control button{width:24px;height:28px;font-size:18px}.direct-partner-control input{width:40px;height:28px}
 @media print{.web-partner-toolbar,.direct-partner-control{display:none!important}}
 #fi-github-bar{position:relative;z-index:30;padding:12px 20px;background:#fff;color:#17234c;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:3px solid #897dc0}#fi-github-bar small{flex:1 0 100%;font-size:12px}#fi-github-bar button,.fi-import-label,#fi-github-dialog button{padding:8px 12px;background:#2b3592;color:#fff;border:0;border-radius:6px;cursor:pointer;font:inherit}.fi-import-label input{display:none}#fi-github-dialog{max-width:480px;padding:25px;border:0;border-radius:16px;background:#fff;color:#17234c}#fi-github-dialog input{display:block;width:100%;padding:12px;margin:15px 0;border:1px solid #bbb;border-radius:6px}#fi-github-dialog::backdrop{background:#101936aa}@media print{#fi-github-bar,#fi-github-dialog{display:none!important}}
+
+/* Mobile partner strips share a compact three-column layout. */
+@media(max-width:600px){
+.web-report-partners{padding:12px!important}
+.web-report-partners .partner-logos{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px 8px!important;width:100%}
+.web-report-partners .partner-logo{width:100%!important;max-width:100%!important;min-width:0!important;height:64px!important;box-sizing:border-box;padding:3px!important}
+.web-report-partners.partners-editable .partner-logo{margin-bottom:65px}
+.direct-partner-control>span{gap:2px}.direct-partner-control button{width:20px;font-size:17px}.direct-partner-control input{width:30px;font-size:12px}
+}
