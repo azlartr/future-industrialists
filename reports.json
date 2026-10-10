@@ -1,272 +1,6 @@
 {
   "reports": [
     {
-      "id": "auto-riyadh-1791673883729",
-      "region": "riyadh",
-      "header": {
-        "weekTitle": "الأسبوع الثاني",
-        "dateRange": "من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
-      },
-      "stats": {
-        "ambassadorCategory": 96,
-        "tvInterviews": 0,
-        "tweets": 35,
-        "videos": 1,
-        "posts": 2,
-        "discovererCategory": 175,
-        "creativeCategory": 197,
-        "totalBeneficiaries": 923,
-        "totalRegistered": 528,
-        "artistCategory": 60
-      },
-      "visits": [
-        {
-          "id": "auto-visit-1",
-          "schoolName": "مدارس المنهل الاهلية ( بنين )",
-          "participants": 45,
-          "date": "2026/10/4",
-          "factory": "صناعة البلاستيك",
-          "gender": "boys",
-          "images": []
-        },
-        {
-          "id": "auto-visit-2",
-          "schoolName": "مدارس الرواد الاهلية ( بنات )",
-          "participants": 49,
-          "date": "2026/10/4",
-          "factory": "فش فاش",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-3",
-          "schoolName": "مدارس المنهل الاهلية (بنات )",
-          "participants": 45,
-          "date": "2026/10/4",
-          "factory": "محمد سعد الدين",
-          "factoryOriginal": "محمد علي سعد الدين",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-4",
-          "schoolName": "مدارس الأبناء و مدارس النبلاء ( بنين )",
-          "participants": 48,
-          "date": "2026/10/5",
-          "factory": "مركز القدرات",
-          "gender": "boys",
-          "images": []
-        },
-        {
-          "id": "auto-visit-5",
-          "schoolName": "مدارس الملك فيصل العالمية ( بنات )",
-          "participants": 46,
-          "date": "2026/10/5",
-          "factory": "ديمة",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-6",
-          "schoolName": "مدارس تعليم ثنائي اللغة ( بنات )",
-          "participants": 45,
-          "date": "2026/10/5",
-          "factory": "مورق",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-7",
-          "schoolName": "مدارس الثانوية السابعة والستون بعد المئة ( بنات )",
-          "participants": 47,
-          "date": "2026/10/5",
-          "factory": "الربيع",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-8",
-          "schoolName": "مدارس دلتا الاهلية ( بنين )",
-          "participants": 42,
-          "date": "2026/10/5",
-          "factory": "كوكا كولا",
-          "gender": "boys",
-          "images": []
-        },
-        {
-          "id": "auto-visit-9",
-          "schoolName": "مدارس ثانوية الرواد الاهلية ( بنين )",
-          "participants": 43,
-          "date": "2026/10/5",
-          "factory": "يونيتشارم",
-          "gender": "boys",
-          "images": []
-        },
-        {
-          "id": "auto-visit-10",
-          "schoolName": "مدارس الوسط الاهلية و ثانوية جكيمة بنت غيلان ( بنات )",
-          "participants": 47,
-          "date": "2026/10/6",
-          "factory": "مركز القدرات",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-11",
-          "schoolName": "مداري دار الصفوة الاهلية ( بنين )",
-          "participants": 46,
-          "date": "2026/10/6",
-          "factory": "مورق",
-          "gender": "boys",
-          "images": []
-        },
-        {
-          "id": "auto-visit-12",
-          "schoolName": "مدارس الصدارة الاهلية ( بنين )",
-          "participants": 47,
-          "date": "2026/10/6",
-          "factory": "الربيع",
-          "gender": "boys",
-          "images": []
-        },
-        {
-          "id": "auto-visit-13",
-          "schoolName": "مدارس الجادية عشر بعد المئة و الرابعة والثلاثون عبد المئة ( بنات )",
-          "participants": 50,
-          "date": "2026/10/6",
-          "factory": "دار الأنظمة",
-          "factoryOriginal": "دار الانظمة",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-14",
-          "schoolName": "مدارس نكون و ثانوية السابعة عشر بعد المئة ( بنات )",
-          "participants": 48,
-          "date": "2026/10/6",
-          "factory": "فش فاش",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-15",
-          "schoolName": "مدارس الموهوبين ( بنات )",
-          "participants": 45,
-          "date": "2026/10/6",
-          "factory": "الدواء - بروسيد",
-          "factoryOriginal": "الدواء – بروسيد",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-16",
-          "schoolName": "مدارس أضواء الهداية ( بنات )",
-          "participants": 46,
-          "date": "2026/10/7",
-          "factory": "المتحدة للكرتون",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-17",
-          "schoolName": "مدارس موسوعة العلوم و التربية النموذجية ( بنات )",
-          "participants": 47,
-          "date": "2026/10/7",
-          "factory": "ديمة",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-18",
-          "schoolName": "مدرس ثانوية العشرون بعد المئة ( بنات )",
-          "participants": 46,
-          "date": "2026/10/7",
-          "factory": "الجميح",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-19",
-          "schoolName": "مدارس الأفاق العالمية ( بنات )",
-          "participants": 44,
-          "date": "2026/10/7",
-          "factory": "يونيتشارم",
-          "gender": "girls",
-          "images": []
-        },
-        {
-          "id": "auto-visit-20",
-          "schoolName": "مدارس المتقدمة فرع القادسية ( بنين )",
-          "participants": 47,
-          "date": "2026/10/7",
-          "factory": "دار الأنظمة",
-          "factoryOriginal": "دار الانظمة",
-          "gender": "boys",
-          "images": []
-        }
-      ],
-      "presentation": {
-        "updatedAt": "2026-10-10T23:12:17.442Z",
-        "theme": {
-          "boys": "#2b3592",
-          "girls": "#897dc0",
-          "bg1": "#101936",
-          "bg2": "#2b3592",
-          "bg3": "#71509d",
-          "radius": 22,
-          "photoHeight": 180,
-          "gap": 26,
-          "logoSize": 168,
-          "partnerLogoScale": 95,
-          "webPartnerBoxSize": 115,
-          "fontScale": 100,
-          "columns": 1,
-          "photoLayout": "row",
-          "motion": true,
-          "network": true,
-          "networkOpacity": 85,
-          "speed": 20,
-          "showFactories": true,
-          "showCategories": true
-        },
-        "print": {
-          "perPage": 4,
-          "headerVisible": true,
-          "headerDateVisible": true,
-          "headerStyle": "color",
-          "headerAlign": "right",
-          "headerScale": 120,
-          "headerTitle": "",
-          "footerVisible": true,
-          "footerPartnersVisible": true,
-          "footerAlign": "right",
-          "footerPartnerSize": 125,
-          "footerLabel": "",
-          "footerText": "",
-          "showPageNumbers": false,
-          "coverHeaderVisible": true,
-          "coverPartnersVisible": false,
-          "coverFooterText": "",
-          "coverBackground": "",
-          "pageBackground": "",
-          "coverTextTop": 87,
-          "_partnerVisibilityConfigured": true,
-          "_reportLayoutVersion": 2
-        },
-        "partners": [],
-        "partnersConfigured": true,
-        "factories": {
-          "riyadh:مورق": {
-            "name": "مورق",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          }
-        }
-      },
-      "updatedAt": "2026-10-10T23:15:42.824Z"
-    },
-    {
       "id": "auto-makkah-1791588858646",
       "region": "makkah",
       "header": {
@@ -874,6 +608,589 @@
               "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1kLQcjZyaFOb4Gbrl-9ppyLEQqbf-uP3N",
               "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1DVoxXvsFpCpcGEO2M57JBb4vySWZ8DjD"
             ],
+            "imagePositions": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "auto-riyadh-1791673883729",
+      "region": "riyadh",
+      "header": {
+        "weekTitle": "الأسبوع الثاني",
+        "dateRange": "من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
+      },
+      "stats": {
+        "ambassadorCategory": 96,
+        "tvInterviews": 0,
+        "tweets": 35,
+        "videos": 1,
+        "posts": 2,
+        "discovererCategory": 175,
+        "creativeCategory": 197,
+        "totalBeneficiaries": 923,
+        "totalRegistered": 528,
+        "artistCategory": 60
+      },
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "مدارس المنهل الاهلية ( بنين )",
+          "participants": 45,
+          "date": "2026/10/4",
+          "factory": "صناعة البلاستيك",
+          "gender": "boys",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6d317f987609fdb8df2a90c411ad73d1b2db9c2a9aadf0dcbe01ca1539148b97.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e8cdb960d00c8f7ec6bc37880a2d9c5f6b2232f3c31245fd1bd5e4061aa3befa.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/22a7e16dd33aa26d516028a6525828e54f90f5ce91ca9a321e0f86d415b9488d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a4b56569ce0f092c519fe2decd8398b652aeb7822499f417fdccd3cbe6e5e69f.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "مدارس الرواد الاهلية ( بنات )",
+          "participants": 49,
+          "date": "2026/10/4",
+          "factory": "فش فاش",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/be5fe4b995c7436261476553fe285aeae5ee947091339aa3368ea03e662b2bdb.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ef6bab40b9946fbc7e857ee4d8bc99f8343b6b9928d506435c5a5eff00aee500.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6080c3d8b245751757c72d1a59886791b5189043b3e38fbaddcf3282cad86d2a.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/27a082c4bd31406dca3de0b6836152b5f46c085b66ffbb256e97bc86fd13c883.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "مدارس المنهل الاهلية (بنات )",
+          "participants": 45,
+          "date": "2026/10/4",
+          "factory": "محمد سعد الدين",
+          "factoryOriginal": "محمد علي سعد الدين",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/52a2c8ef42d93c33b9b69037eb4028ca6987dd0393c435173c5e20a2107929ab.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/557ca3a454b856aec8852040ab6e6e0490868520a6b2d3cc24ebde5396fce686.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/066128dc3f648a7ecc1e3412481446d688948e8e3b92d84d1b2f24a335fe6cbf.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2338011c7452d89a09d16dc5f35f94596c84425483c0afb96a6b9170b85f3f92.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-4",
+          "schoolName": "مدارس الأبناء و مدارس النبلاء ( بنين )",
+          "participants": 48,
+          "date": "2026/10/5",
+          "factory": "مركز القدرات",
+          "gender": "boys",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6dd77422a5ae303a3b3ba948795b3461db6f5f4011b4561ac0e2dc5ed8e1fac0.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/81644f32b9d4b39fa21a772ffc2e1be2f52dcca719cbb7bb8d79ff592b9de22f.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/28e0bd92a72d42f83858168fa913762a06688ff71e6a0b389ae972858c40410e.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/68f0d7b5d95e9abe20a19711ef535308a09ef677c50ede1b00ff3b0904fd941f.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-5",
+          "schoolName": "مدارس الملك فيصل العالمية ( بنات )",
+          "participants": 46,
+          "date": "2026/10/5",
+          "factory": "ديمة",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8e3fa7477d4ebad8bda5d8a22d1b439b36ae26dbbac676adbb3cf531ac6137c8.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8540c699d67390f6fbd91f834c86262ef0ef6b28c5613a01b58aca80fc2c4cba.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f5ba507f2613a8bc023add0327d46a417c0072a9c9616fe1c7a41e90f6505958.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1bab5d2fd8041ee1a7dea47e1daf96351acd404d4e40f2470080398c1a5f0208.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-6",
+          "schoolName": "مدارس تعليم ثنائي اللغة ( بنات )",
+          "participants": 45,
+          "date": "2026/10/5",
+          "factory": "مورق",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f3401c4f1d279ec466ffd87a29257a2d60dc6ec77220143ecbdbf5668398148d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/206a457d1357cbc395c1f9620d001ad80e8901bae33addaddce8ec92abae2e9a.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/354e057789dc0de6e2554ee0154d5320193b7b3ab95303268d93f392507150bc.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e7e5c16090220cf6bf986d03cb669b0198ef95d3ca4f3f23ea047abce8b5e440.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-7",
+          "schoolName": "مدارس الثانوية السابعة والستون بعد المئة ( بنات )",
+          "participants": 47,
+          "date": "2026/10/5",
+          "factory": "الربيع",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/80b3dbf9462cbf694ebfae601be9d19dfe6f9959a007eb95619145e2e073e524.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/48225d6156634a784006d16f11afa2212b74ac86899bb240c5fa7b64a8c4d62a.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ef6b28ed60e7f364e1b2255c177f603d74fba23884b00394f90c6b978e987b14.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/adc80f917c244c27b2e76cda5f9ac5d351a3701a0527c054d9dce04b42a698f6.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-8",
+          "schoolName": "مدارس دلتا الاهلية ( بنين )",
+          "participants": 42,
+          "date": "2026/10/5",
+          "factory": "كوكا كولا",
+          "gender": "boys",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/4d4a5aedb915ae679171ae52dac5ecab19e7697bf35b3d02b944b395cfbfb043.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e29b7bcc5ef888dc4dee708958ef1466098f1e22fbb9422e47cc956014cc4f94.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2bd3342c340cf3695a7cd040babe476022bffd7a377d60c820ae06253703eb72.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b289e022d5ac6e351e30dbef43d234b1a9b0e8dd90460e565a9809bd2849109e.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-9",
+          "schoolName": "مدارس ثانوية الرواد الاهلية ( بنين )",
+          "participants": 43,
+          "date": "2026/10/5",
+          "factory": "يونيتشارم",
+          "gender": "boys",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/16ea1740508d72ba120c921dc65322a879fd46903ca3d3ef7222ef51cc723ae1.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/27bedfb86aa66e0970fa3c4b14069a96b64064ee22ad4727b8844b58e68e20ba.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0f5c0e4dcb58e0053360ab39a4796faf9d0060bd601dcfbb93cd335f3d558449.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8872fe62f0514a97ae0afdbb8b30ea0edd8225a5a0fbabf61451621e67d1483f.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-10",
+          "schoolName": "مدارس الوسط الاهلية و ثانوية جكيمة بنت غيلان ( بنات )",
+          "participants": 47,
+          "date": "2026/10/6",
+          "factory": "مركز القدرات",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/dd13b0665b5bec02ac4daf8fd87f5ea84df3ed70050d6329dee026d44aa92ded.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0c8689693fa18c4921e7ea4420770ef64609feb43ef45076513a57be01761c82.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ab0c04645dcccf0f8a403197993c921c2379f255702706af2171e503c2b4949b.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0eaa2a5b9723e14bc1c61fd43f2a1858ad6b8a0dbb2eee89cd797081bdac4b63.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-11",
+          "schoolName": "مداري دار الصفوة الاهلية ( بنين )",
+          "participants": 46,
+          "date": "2026/10/6",
+          "factory": "مورق",
+          "gender": "boys",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/df862c9d29bdfaf2043b7e23b370133abd7c4344b24140f2da0213b3d033d5cf.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f46f6b8eab0f8c3db139893ad0f746da1f6fd4cdf4c163dcd48b8458657633ae.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8132bd8e56ee2e09cd4f6c15c51e0ed73239c2ca87c83120030aff29e879ab83.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9a45b2cfc1c9b403f618aae88acac82fef75dedbb3c418fa8f8d843c4b2c2f75.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-12",
+          "schoolName": "مدارس الصدارة الاهلية ( بنين )",
+          "participants": 47,
+          "date": "2026/10/6",
+          "factory": "الربيع",
+          "gender": "boys",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/32ca328be4f36ff633a5d41cb343ad70d5afcfb20b4d3fec33b5d2d223adf722.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ff9f69001be7d65bcf22a02b2debf395e0c72c92bac92e457b45d7e977dc4952.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3ce753a275b00e3cc52d84ae0077eba825c0270be24fecf541ff68caa67a98c7.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3d9f42beabc3824db720a73e8961e35526c2a52a797a23982035596de197f9fe.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-13",
+          "schoolName": "مدارس الجادية عشر بعد المئة و الرابعة والثلاثون عبد المئة ( بنات )",
+          "participants": 50,
+          "date": "2026/10/6",
+          "factory": "دار الأنظمة",
+          "factoryOriginal": "دار الانظمة",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e9c26456bd7149b0675eacfa7fa10ae7f5ecd112449a8253df6d403cbccb758d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/413cf5bde4c973631d75332ae1e2b8b069847bc88aea3186289ae32241e799e7.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/01c59deb51100d995656ce0acfbfda5ca04ff1ffe8182ecae3c240855cde90fb.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a20ef5140a3c6856160c7c173e7851c3cf15d0d3c2f246e39f248f160d66ff68.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-14",
+          "schoolName": "مدارس نكون و ثانوية السابعة عشر بعد المئة ( بنات )",
+          "participants": 48,
+          "date": "2026/10/6",
+          "factory": "فش فاش",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/be5fe4b995c7436261476553fe285aeae5ee947091339aa3368ea03e662b2bdb.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/29af731047f760ca9e648e7b3ea5419c1e85fee9a53aaae5b58e661b8e8022a0.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/fe42c152f54ba570638297fd6720737292244e79df7ac59b6252ab508a9b608a.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5b7d0aafa7aa134f944b65e579da87006dca3e73e70d60acac8521b5b4426147.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-15",
+          "schoolName": "مدارس الموهوبين ( بنات )",
+          "participants": 45,
+          "date": "2026/10/6",
+          "factory": "الدواء - بروسيد",
+          "factoryOriginal": "الدواء – بروسيد",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/72d03aae61bb4365ed6e8e10fd22d80be9f7a2493868ddd751ac073eeafafef7.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/41cc108558294a29dbf1ba89e330e5fbe653c2dd2cde854721478bf86be27cfa.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e82a8dafc37d0bed29b0780e442ff13523082596656bc6c2d8c3bdeaefbd4187.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d4a39d52517443676ec0666c896cfb1cb1159e9dd9d5220e1c2381ded1db8fd7.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-16",
+          "schoolName": "مدارس أضواء الهداية ( بنات )",
+          "participants": 46,
+          "date": "2026/10/7",
+          "factory": "المتحدة للكرتون",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ba7978c18b3b7caf7803995b2ee15a625e13427b941e45e3ddf1a8c8af5bf855.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9a827e40406167e15f9c6b7f9212e3993451667e8ce45fbf7a6137db0ee4e04b.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/671e9441aefd91092bd30ffc273974f6389cd188cacfc176e3775432f56ba86e.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7eb46caa80daabdfbe6529f52348726f4b18ca992141a79e5f7a7da9a88b59db.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-17",
+          "schoolName": "مدارس موسوعة العلوم و التربية النموذجية ( بنات )",
+          "participants": 47,
+          "date": "2026/10/7",
+          "factory": "ديمة",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a91ac62e6d19968989c54ba77f56708076a2208370bae206735b9a380b17a3b0.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5ebcc0d0a9a9f45c2c407fd5d39f195b5b34cc65ac5cca6a70aa8a8a923c5d86.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/872ae975a5bc8288d3cec2b9a5dbd0faae2fbe7af7f06f2e7b114fd11b7d9a55.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e1f0ad5295f136beb2ad6ef5cb4c63214f3e4859103389a438026e5c4ffc9c57.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-18",
+          "schoolName": "مدرس ثانوية العشرون بعد المئة ( بنات )",
+          "participants": 46,
+          "date": "2026/10/7",
+          "factory": "الجميح",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/577cc7932942264923753f81bb8ca103d3b7537918c9ce7abb90cb279c43f32f.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d576fbb4adad963f62d08d235851c041ec9f9e2f2aecc4ef44f8bdc7452d22b6.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d4395d98f46d3dffe0335ce3009458f337723e3dd0cb1e60c2771ea3e84a4b8c.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/71579acfe354d0e6464e4436d71ccb9071b53836cd99eaad2765ecbffb5a2cf7.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-19",
+          "schoolName": "مدارس الأفاق العالمية ( بنات )",
+          "participants": 44,
+          "date": "2026/10/7",
+          "factory": "يونيتشارم",
+          "gender": "girls",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d4f6d0deea55f22f0f77dbf6987b110ef4374e8f8dfca15f68f8cf4c27d82649.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3afdd6be33ba23f7aeb95f841e01ae19fb6d40c868767ec8a129be7e0b99d059.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/80066e5442ca2283c3410b39a98bd2174ccc5c360e3e299acadba91d465652ff.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e358a9b7ae7b5b0731d5c119dd749b567dd5549936694031193ab7b34830ba13.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        },
+        {
+          "id": "auto-visit-20",
+          "schoolName": "مدارس المتقدمة فرع القادسية ( بنين )",
+          "participants": 47,
+          "date": "2026/10/7",
+          "factory": "دار الأنظمة",
+          "factoryOriginal": "دار الانظمة",
+          "gender": "boys",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/649bef9f95fdebc118cf1bdfce544a4d7e65a23b491bac23a06962498dde3dee.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/45c6e2016a08b80ee82451bd540667a28bf57c620767fa5b4a8e2c33a4f296e8.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c00d338c4c6736ef14b8e4a91915ca85aa11350ecb78f74541df1f2e6a958d37.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/da0c67d4dc2772f09a64ef15049d26fceb9d6dc40ffd884398a230f6296552c9.webp"
+          ],
+          "imagePositions": {},
+          "factoryLogo": ""
+        }
+      ],
+      "presentation": {
+        "updatedAt": "2026-10-10T23:41:16.862Z",
+        "theme": {
+          "boys": "#2b3592",
+          "girls": "#897dc0",
+          "bg1": "#101936",
+          "bg2": "#2b3592",
+          "bg3": "#71509d",
+          "radius": 22,
+          "photoHeight": 180,
+          "gap": 26,
+          "logoSize": 168,
+          "partnerLogoScale": 95,
+          "webPartnerBoxSize": 115,
+          "fontScale": 100,
+          "columns": 1,
+          "photoLayout": "row",
+          "motion": true,
+          "network": true,
+          "networkOpacity": 85,
+          "speed": 20,
+          "showFactories": true,
+          "showCategories": true
+        },
+        "print": {
+          "perPage": 4,
+          "headerVisible": true,
+          "headerDateVisible": true,
+          "headerStyle": "color",
+          "headerAlign": "center",
+          "headerScale": 120,
+          "headerTitle": "",
+          "footerVisible": true,
+          "footerPartnersVisible": true,
+          "footerAlign": "right",
+          "footerPartnerSize": 125,
+          "footerLabel": "",
+          "footerText": "",
+          "showPageNumbers": false,
+          "coverHeaderVisible": true,
+          "coverPartnersVisible": false,
+          "coverFooterText": "",
+          "coverBackground": "",
+          "pageBackground": "",
+          "coverTextTop": 87,
+          "_partnerVisibilityConfigured": true,
+          "_reportLayoutVersion": 3
+        },
+        "partners": [],
+        "partnersConfigured": true,
+        "factories": {
+          "riyadh:صناعه البلاستيك": {
+            "name": "صناعة البلاستيك",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:فش فاش": {
+            "name": "فش فاش",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:محمد سعد الدين": {
+            "name": "محمد سعد الدين",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:مركز القدرات": {
+            "name": "مركز القدرات",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:ديمه": {
+            "name": "ديمة",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:مورق": {
+            "name": "مورق",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:الربيع": {
+            "name": "الربيع",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:كوكا كولا": {
+            "name": "كوكا كولا",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:يونيتشارم": {
+            "name": "يونيتشارم",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:دار الانظمه": {
+            "name": "دار الأنظمة",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:الدواء بروسيد": {
+            "name": "الدواء - بروسيد",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:المتحده للكرتون": {
+            "name": "المتحدة للكرتون",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:الجميح": {
+            "name": "الجميح",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          }
+        }
+      },
+      "updatedAt": "2026-10-10T23:41:16.865Z",
+      "rematchBackup": {
+        "updatedAt": "2026-10-10T23:41:16.859Z",
+        "visits": [
+          {
+            "id": "auto-visit-1",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-2",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-3",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-4",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-5",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-6",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-7",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-8",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-9",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-10",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-11",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-12",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-13",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-14",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-15",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-16",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-17",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-18",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-19",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-20",
+            "images": [],
             "imagePositions": {}
           }
         ]
