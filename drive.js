@@ -1,7 +1,8 @@
 (() => {
 'use strict';
 const KEY='fi-drive-session';
-const key=()=>sessionStorage.getItem(KEY)||'';
+const SAVED_KEY='fi-future-industrialists-drive';
+const key=()=>{let value='';try{value=localStorage.getItem(SAVED_KEY)||''}catch{}if(value)return value;try{value=sessionStorage.getItem(KEY)||'';if(value){try{localStorage.setItem(SAVED_KEY,value)}catch{}}}catch{}return value};
 async function request(url,resource){
  const headers=resource?{'X-Goog-Drive-Resource-Keys':resource}:{};
  const response=await fetch(url,{headers});
@@ -63,5 +64,5 @@ async function rematch(data){
  visits.forEach((visit,index)=>{visit.images=visit.images.length?visit.images.map(url=>urls.get(url)):[...(original[index].images||[])];visit.imagePositions={...(original[index].imagePositions||{})};});
  return {...matched,visits,source:'rules'};
 }
-window.FI_DRIVE={connected:()=>!!key(),setKey(value){if(value.trim())sessionStorage.setItem(KEY,value.trim());else sessionStorage.removeItem(KEY);},list,rematch};
+window.FI_DRIVE={connected:()=>!!key(),setKey(value){if(value.trim()){try{localStorage.setItem(SAVED_KEY,value.trim())}catch{throw Error('المتصفح يمنع حفظ مفتاح Drive. اسمح بتخزين بيانات الموقع.')}sessionStorage.setItem(KEY,value.trim())}else{sessionStorage.removeItem(KEY);localStorage.removeItem(SAVED_KEY)}},list,rematch};
 })();
