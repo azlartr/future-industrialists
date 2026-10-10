@@ -959,7 +959,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-10T23:46:58.246Z",
+        "updatedAt": "2026-10-10T23:50:02.633Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1017,55 +1017,55 @@
             "id": "region-partner-riyadh:المتحده للكرتون",
             "name": "المتحدة للكرتون",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/bbb3a7bc7c67f150baf650e1d2751ba1684ee3a93f2dcc3e987377fe6a1dee1b.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-riyadh:الربيع",
             "name": "الربيع",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/abd55f58baa58b45b8fa634de6e1a9b58f00d0cad35ed168a4b89f184c68505b.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-riyadh:فش فاش",
             "name": "فش فاش",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f9dc90b25b4f8e535ad289aeb420981a4833c51d4805987edaa989e5e3ac2e71.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-riyadh:جني فارم",
             "name": "جنى فارم",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/01be3952433907959e74a6cd0e6c262276f17bab80817734571738948ddd7530.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-riyadh:ديمه",
             "name": "ديمة",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec4c9bd46547a2afe97c2249255a974bca62d73782bfeb28bc6ae6e92fc97e2b.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-riyadh:محمد سعد الدين",
             "name": "سعد الدين",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d935edee904f0b4335e64726521c3c9aa7fc19a4dbf3c969d6bbe8796fb1ae8e.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-riyadh:صناعه البلاستيك",
             "name": "شركة صناعة البلاستيك العربية",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1c1f583b6e661e78526ce80a0b68dac4c5ec0f57d84bfb457a09aa5814f9c848.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-riyadh:كوكا كولا",
             "name": "كوكاكولا",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/4c825008199edabd9839f68695bbb05b254687ae2a3379c908037193153295f9.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-riyadh:مايلز",
             "name": "مايلز",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6d9ce5a0b0258e7330b6a098b72488228e92cd672c131bc2adf8a5a816adbc0a.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-riyadh:دينه الملك عبدالعزيز للعلوم والتقنيه",
@@ -1077,13 +1077,13 @@
             "id": "region-partner-riyadh:دار الانظمه",
             "name": "مصنع دار الأنظمة للوحات الكهربائية",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/946cce4a589aa74b0472955cffad791f109a98bc071bb0e08552e660c7b91078.webp",
-            "scale": 80
+            "scale": 65
           },
           {
             "id": "region-partner-riyadh:مورق",
             "name": "مورق",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1a0b003964c06f3ec5a74e3eb273e7f176bf5f8bab9938e1afa1e289208af898.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-riyadh:يونيتشارم",
@@ -1198,7 +1198,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-10T23:47:21.084Z",
+      "updatedAt": "2026-10-10T23:50:02.635Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T23:41:16.859Z",
         "visits": [
