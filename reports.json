@@ -922,7 +922,7 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/71579acfe354d0e6464e4436d71ccb9071b53836cd99eaad2765ecbffb5a2cf7.webp"
           ],
           "imagePositions": {},
-          "factoryLogo": ""
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ef4837da6e0c27c79ddf280cd7c86d4a33407e79dbd6cc6454705334c409108f.webp"
         },
         {
           "id": "auto-visit-19",
@@ -959,7 +959,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-10T23:53:46.109Z",
+        "updatedAt": "2026-10-10T23:54:56.415Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1168,7 +1168,7 @@
           },
           "riyadh:الجميح": {
             "name": "الجميح",
-            "url": "",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ef4837da6e0c27c79ddf280cd7c86d4a33407e79dbd6cc6454705334c409108f.webp",
             "logoHidden": false,
             "visible": true
           },
@@ -1198,7 +1198,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-10T23:53:46.111Z",
+      "updatedAt": "2026-10-10T23:54:56.418Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T23:41:16.859Z",
         "visits": [
