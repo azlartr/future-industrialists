@@ -959,7 +959,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:02:30.919Z",
+        "updatedAt": "2026-10-11T00:02:35.175Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -993,7 +993,7 @@
           "footerVisible": true,
           "footerPartnersVisible": true,
           "footerAlign": "right",
-          "footerPartnerSize": 100,
+          "footerPartnerSize": 93,
           "footerLabel": "شركاء النجاح",
           "footerText": "",
           "showPageNumbers": false,
@@ -1198,7 +1198,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:02:30.921Z",
+      "updatedAt": "2026-10-11T00:02:35.177Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T23:41:16.859Z",
         "visits": [
