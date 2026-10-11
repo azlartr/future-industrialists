@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:19:52.346Z",
+        "updatedAt": "2026-10-11T00:19:56.979Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1484,7 +1484,7 @@
             "id": "region-partner-qassim:اكليل الجبل بافري",
             "name": "إكليل الجبل — بافري",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/73eefd1faa58323ed95d6384c60530746b3c66e592b5e1c7ffc410a107978435.webp",
-            "scale": 100
+            "scale": 75
           },
           {
             "id": "region-partner-qassim:البان الخبراء",
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:19:53.797Z",
+      "updatedAt": "2026-10-11T00:19:56.980Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
