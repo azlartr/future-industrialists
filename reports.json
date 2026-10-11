@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:20:06.377Z",
+        "updatedAt": "2026-10-11T00:20:07.518Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1454,7 +1454,7 @@
             "id": "region-partner-qassim:ثمرات",
             "name": "ثمرات",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/847ab89bfae5a6812dbb789f55b1664c2802cbdd6630b270ee3092691c4b8b88.webp",
-            "scale": 95
+            "scale": 90
           },
           {
             "id": "region-partner-qassim:طريق الرياضه",
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:20:09.664Z",
+      "updatedAt": "2026-10-11T00:20:11.293Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
