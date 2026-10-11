@@ -528,3 +528,29 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 .inline-factory-upload input{display:none}
 .inline-factory-upload svg{width:14px;height:14px}
 @media print{.inline-factory-upload{display:none!important}}
+
+/* Dates are the primary period information across all report surfaces. */
+.report-banner .banner-title{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%}
+.report-banner .banner-title h2{font-size:22px;line-height:1.5;flex:0 0 auto}
+.report-dates{text-align:left;min-width:0}
+.report-days{display:block;font-size:13px;font-weight:400;line-height:1.5;opacity:.8;margin:0 0 5px}
+.report-banner .report-period{font-size:26px;font-weight:600;line-height:1.5;margin:0;color:#fff}
+.print-cover-main .cover-report-dates{margin:5mm 0 0;text-align:left}
+.print-cover-main .cover-report-dates .report-days{font-size:10pt;margin:0 0 1mm}
+.print-cover-main .cover-report-dates .report-period{font-size:22pt;line-height:1.4;font-weight:600;margin:0;color:#fff}
+.print-page.uploaded-cover .print-cover-main strong{font-size:16pt}
+.print-page.uploaded-cover .cover-report-dates{margin:2mm 0 0}
+.print-page.uploaded-cover .cover-report-dates .report-period{font-size:19pt;margin:0;line-height:1.35}
+.print-page .print-header .print-report-dates{justify-self:end;text-align:left;width:auto;max-width:100%;color:#263654}
+.print-page .print-header .print-report-dates .report-days{font-size:7pt;line-height:1.25;margin:0 0 .5mm}
+.print-page .print-header .print-report-dates .report-period{font-size:12pt;font-weight:600;line-height:1.3;margin:0}
+.print-page .print-header--white .print-report-dates{color:#fff}
+@media(max-width:600px){
+ .report-banner .banner-title{flex-wrap:wrap;gap:12px}
+ .report-banner .banner-title h2{font-size:19px}
+ .report-banner .report-dates{width:100%}
+ .report-banner .report-period{font-size:22px}
+ .report-banner .report-days{font-size:12px}
+}
+
+.print-cover-main>strong{font-size:18pt}
