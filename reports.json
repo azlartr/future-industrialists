@@ -959,7 +959,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:01:17.283Z",
+        "updatedAt": "2026-10-11T00:02:03.187Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -994,13 +994,13 @@
           "footerPartnersVisible": true,
           "footerAlign": "right",
           "footerPartnerSize": 125,
-          "footerLabel": "",
+          "footerLabel": "شركاء النجاح",
           "footerText": "",
           "showPageNumbers": false,
           "coverHeaderVisible": true,
           "coverPartnersVisible": false,
           "coverFooterText": "",
-          "coverBackground": "",
+          "coverBackground": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d7a1ba8eb5188d046c95703d52bae4caa8202a18969d1ab15baac75045b7f1dd.webp",
           "pageBackground": "",
           "coverTextTop": 87,
           "_partnerVisibilityConfigured": true,
@@ -1198,7 +1198,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:01:24.550Z",
+      "updatedAt": "2026-10-11T00:02:03.189Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T23:41:16.859Z",
         "visits": [
