@@ -959,7 +959,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:03:53.728Z",
+        "updatedAt": "2026-10-11T00:03:57.847Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1090,6 +1090,12 @@
             "name": "يونيتشارم",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/888fdbb7f91b23b7b016e3a697faab3aa1a5215c3555667e3c2575012d921e42.webp",
             "scale": 100
+          },
+          {
+            "id": "partner-1791677033850-89o2q",
+            "name": "الدواء بروسيد",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/20fff7e2df98807caeb98de19d37e354b4ad1c923ab1b2b7a7df26a935523742.webp",
+            "scale": 85
           }
         ],
         "partnersConfigured": true,
@@ -1198,7 +1204,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:03:53.731Z",
+      "updatedAt": "2026-10-11T00:03:57.850Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T23:41:16.859Z",
         "visits": [
