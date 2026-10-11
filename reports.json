@@ -1355,7 +1355,7 @@
           "date": "2026/10/4",
           "participants": 45,
           "gender": "girls",
-          "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
           "images": [
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/907a47bfbdac558885983112c01ead917eba2f9449a7578534cfa6728f1b13c9.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0ee41e8c96134ae88d539328a26c742845535bc445a1c1af796a52c3003a4329.webp",
@@ -1371,7 +1371,7 @@
           "date": "2026/10/5",
           "participants": 49,
           "gender": "girls",
-          "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
           "images": [
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2ab2c20e9ca2809f4720bcddff7b3a78bd8c9846777e8313f838e2a1debc5d0d.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ede0ab11b47095522c9a0d922fef519d09803e8890f70f309950c98b3fab37b1.webp",
@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:13:31.927Z",
+        "updatedAt": "2026-10-11T00:13:32.554Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1497,7 +1497,7 @@
         "factories": {
           "qassim:فخر النسيج": {
             "name": "فخر النسيج",
-            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
             "logoHidden": false,
             "visible": true
           },
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:13:31.927Z",
+      "updatedAt": "2026-10-11T00:13:34.201Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
