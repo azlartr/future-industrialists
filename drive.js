@@ -65,5 +65,21 @@ async function rematch(data){
  visits.forEach((visit,index)=>{visit.images=visit.images.length?visit.images.map(url=>urls.get(url)):[...(original[index].images||[])];visit.imagePositions={...(original[index].imagePositions||{})};});
  return {...matched,visits,source:'rules'};
 }
-window.FI_DRIVE={connected:()=>!!key(),setKey(value){if(value.trim()){try{localStorage.setItem(SAVED_KEY,value.trim())}catch{throw Error('المتصفح يمنع حفظ مفتاح Drive. اسمح بتخزين بيانات الموقع.')}sessionStorage.setItem(KEY,value.trim())}else{sessionStorage.removeItem(KEY);localStorage.removeItem(SAVED_KEY)}},list,rematch};
+
+async function importPartners(link){
+ if(!window.FI_GITHUB.connected())throw Error('اربط GitHub أولًا لحفظ شعارات الشركاء.');
+ const files=await list(link);if(files.length>250)throw Error('اختر مجلد الشعارات فقط؛ الحد الأقصى 250 شعارًا.');
+ const partners=[];
+ for(const file of files){
+  const url=api('files/'+file.id);url.searchParams.set('alt','media');
+  let blob;try{blob=await (await request(url,file.resourceKey?file.id+'/'+file.resourceKey:'')).blob()}catch(error){throw Error('تحميل شعار «'+file.name+'»: '+error.message)}
+  if(!['image/jpeg','image/png','image/webp','image/avif'].includes(blob.type.split(';')[0]))throw Error('الملف «'+file.name+'» لم يُحمّل كصورة. القائمة الحالية لم تتغير.');
+  const response=await fetch('/api/assets',{method:'POST',body:blob}),result=await response.json();
+  if(!response.ok||!result.url)throw Error(result.error||'تعذر حفظ الشعار. القائمة الحالية لم تتغير.');
+  partners.push({id:'drive-partner-'+file.id,name:file.name.split(' / ').at(-1).replace(/\.[^.]+$/,''),url:result.url,scale:100});
+ }
+ return partners;
+}
+
+window.FI_DRIVE={importPartners,connected:()=>!!key(),setKey(value){if(value.trim()){try{localStorage.setItem(SAVED_KEY,value.trim())}catch{throw Error('المتصفح يمنع حفظ مفتاح Drive. اسمح بتخزين بيانات الموقع.')}sessionStorage.setItem(KEY,value.trim())}else{sessionStorage.removeItem(KEY);localStorage.removeItem(SAVED_KEY)}},list,rematch};
 })();
