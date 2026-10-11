@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:13:37.695Z",
+        "updatedAt": "2026-10-11T00:13:42.719Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1508,8 +1508,8 @@
             "visible": true
           },
           "qassim:طريق الرياضه": {
-            "name": "طريق الرياضة",
-            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264857%2F1778169807219_6371.png?alt=media&token=29094ee4-f7c1-4cf1-8f64-2e9a46896279",
+            "name": "طريق الرياضه",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
             "logoHidden": false,
             "visible": true
           },
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:13:37.696Z",
+      "updatedAt": "2026-10-11T00:13:42.720Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
