@@ -1327,6 +1327,212 @@
           }
         ]
       }
+    },
+    {
+      "id": "auto-qassim-1791677351545",
+      "region": "qassim",
+      "header": {
+        "weekTitle": "التقرير الأسبوعي",
+        "dateRange": "من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
+      },
+      "stats": {
+        "ambassadorCategory": 2,
+        "tvInterviews": 0,
+        "tweets": 3,
+        "videos": 2,
+        "posts": 2,
+        "discovererCategory": 27,
+        "creativeCategory": 15,
+        "totalBeneficiaries": 139,
+        "totalRegistered": 96,
+        "artistCategory": 5
+      },
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "ثانوية السحابين رياض الخبراء ( بنات )",
+          "factory": "فخر النسيج",
+          "date": "2026/10/4",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "الثانوية السادسة بعنيزة ( بنات )",
+          "factory": "فخر النسيج",
+          "date": "2026/10/5",
+          "participants": 49,
+          "gender": "girls",
+          "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "ثانوية الامام الطحاوي ( بنين )",
+          "factory": "الصناعات الاقليمية",
+          "date": "2026/10/8",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264858%2F1778169802592_6724.png?alt=media&token=00766694-85eb-4760-87df-83ac32a819c7",
+          "images": [],
+          "imagePositions": {}
+        }
+      ],
+      "presentation": {
+        "updatedAt": "2026-10-11T00:09:11.548Z",
+        "theme": {
+          "boys": "#2b3592",
+          "girls": "#897dc0",
+          "bg1": "#101936",
+          "bg2": "#2b3592",
+          "bg3": "#71509d",
+          "radius": 22,
+          "photoHeight": 180,
+          "gap": 26,
+          "logoSize": 168,
+          "partnerLogoScale": 95,
+          "webPartnerBoxSize": 170,
+          "fontScale": 100,
+          "columns": 1,
+          "photoLayout": "row",
+          "motion": true,
+          "network": true,
+          "networkOpacity": 85,
+          "speed": 20,
+          "showFactories": true,
+          "showCategories": true
+        },
+        "print": {
+          "perPage": 4,
+          "headerVisible": true,
+          "headerDateVisible": true,
+          "headerStyle": "color",
+          "headerAlign": "center",
+          "headerScale": 120,
+          "headerTitle": "",
+          "footerVisible": true,
+          "footerPartnersVisible": true,
+          "footerAlign": "right",
+          "footerPartnerSize": 125,
+          "footerLabel": "",
+          "footerText": "",
+          "showPageNumbers": false,
+          "coverHeaderVisible": true,
+          "coverPartnersVisible": false,
+          "coverFooterText": "",
+          "coverBackground": "",
+          "pageBackground": "",
+          "coverTextTop": 87,
+          "_partnerVisibilityConfigured": true,
+          "_reportLayoutVersion": 3
+        },
+        "partners": [
+          {
+            "id": "region-partner-qassim:فخر النسيج",
+            "name": "فخر النسيج",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:ثمرات",
+            "name": "ثمرات",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1771150903684%2Fvisits%2F17711509282541%2F1771151201856_9002.png?alt=media&token=04541c6d-94c2-43f4-b4de-fbe3069418be",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:طريق الرياضه",
+            "name": "طريق الرياضة",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264857%2F1778169807219_6371.png?alt=media&token=29094ee4-f7c1-4cf1-8f64-2e9a46896279",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:الصناعات الاقليميه",
+            "name": "الصناعات الإقليمية",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264858%2F1778169802592_6724.png?alt=media&token=00766694-85eb-4760-87df-83ac32a819c7",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:الجاسر للبلاستيك",
+            "name": "الجاسر للبلاستيك",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1776341075721%2Fvisits%2F17763410943494%2F1776346979269_3956.jpg?alt=media&token=349dd2f8-3c42-456d-86f5-8ad40981e5e6",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:السعيد للغازات الصناعيه والطبيه",
+            "name": "السعيد للغازات الصناعية والطبية",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264851%2F1778169804480_2393.jpg?alt=media&token=158b6426-d4e2-4f9f-b731-41835458648f",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:اكليل الجبل بافري",
+            "name": "إكليل الجبل — بافري",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264853%2F1778169800680_8484.png?alt=media&token=c56106d4-bd90-4e02-8334-b4afdb9402a0",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:البان الخبراء",
+            "name": "ألبان الخبراء",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264850%2F1778169805485_8828.png?alt=media&token=f3f5a453-04b2-42f3-bf93-e15d3cf23e44",
+            "scale": 100
+          }
+        ],
+        "partnersConfigured": true,
+        "factories": {
+          "qassim:فخر النسيج": {
+            "name": "فخر النسيج",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:ثمرات": {
+            "name": "ثمرات",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1771150903684%2Fvisits%2F17711509282541%2F1771151201856_9002.png?alt=media&token=04541c6d-94c2-43f4-b4de-fbe3069418be",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:طريق الرياضه": {
+            "name": "طريق الرياضة",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264857%2F1778169807219_6371.png?alt=media&token=29094ee4-f7c1-4cf1-8f64-2e9a46896279",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:الصناعات الاقليميه": {
+            "name": "الصناعات الإقليمية",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264858%2F1778169802592_6724.png?alt=media&token=00766694-85eb-4760-87df-83ac32a819c7",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:الجاسر للبلاستيك": {
+            "name": "الجاسر للبلاستيك",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1776341075721%2Fvisits%2F17763410943494%2F1776346979269_3956.jpg?alt=media&token=349dd2f8-3c42-456d-86f5-8ad40981e5e6",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:السعيد للغازات الصناعيه والطبيه": {
+            "name": "السعيد للغازات الصناعية والطبية",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264851%2F1778169804480_2393.jpg?alt=media&token=158b6426-d4e2-4f9f-b731-41835458648f",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:اكليل الجبل بافري": {
+            "name": "إكليل الجبل — بافري",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264853%2F1778169800680_8484.png?alt=media&token=c56106d4-bd90-4e02-8334-b4afdb9402a0",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:البان الخبراء": {
+            "name": "ألبان الخبراء",
+            "url": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264850%2F1778169805485_8828.png?alt=media&token=f3f5a453-04b2-42f3-bf93-e15d3cf23e44",
+            "logoHidden": false,
+            "visible": true
+          }
+        }
+      },
+      "updatedAt": "2026-10-11T00:09:11.549Z"
     }
   ],
   "deletedReports": [
