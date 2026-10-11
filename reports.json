@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:14:34.672Z",
+        "updatedAt": "2026-10-11T00:19:51.707Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1429,7 +1429,7 @@
           "headerTitle": "",
           "footerVisible": true,
           "footerPartnersVisible": true,
-          "footerAlign": "right",
+          "footerAlign": "center",
           "footerPartnerSize": 125,
           "footerLabel": "",
           "footerText": "",
@@ -1501,6 +1501,12 @@
             "logoHidden": false,
             "visible": true
           },
+          "qassim:الصناعات الاقليميه": {
+            "name": "الصناعات الإقليمية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
+            "logoHidden": false,
+            "visible": true
+          },
           "qassim:ثمرات": {
             "name": "ثمرات",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/847ab89bfae5a6812dbb789f55b1664c2802cbdd6630b270ee3092691c4b8b88.webp",
@@ -1510,12 +1516,6 @@
           "qassim:طريق الرياضه": {
             "name": "طريق الرياضه",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:الصناعات الاقليميه": {
-            "name": "الصناعات الإقليمية",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
             "logoHidden": false,
             "visible": true
           },
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:14:34.672Z",
+      "updatedAt": "2026-10-11T00:19:51.709Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
