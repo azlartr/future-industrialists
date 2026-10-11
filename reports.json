@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:20:01.613Z",
+        "updatedAt": "2026-10-11T00:20:03.258Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1460,7 +1460,7 @@
             "id": "region-partner-qassim:طريق الرياضه",
             "name": "طريق الرياضة",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-qassim:الصناعات الاقليميه",
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:20:02.341Z",
+      "updatedAt": "2026-10-11T00:20:04.340Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
