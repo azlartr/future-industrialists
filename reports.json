@@ -1356,7 +1356,12 @@
           "participants": 45,
           "gender": "girls",
           "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/907a47bfbdac558885983112c01ead917eba2f9449a7578534cfa6728f1b13c9.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0ee41e8c96134ae88d539328a26c742845535bc445a1c1af796a52c3003a4329.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/241fca2ca7b2d3e795cee211dd9422e55fd755b4c5b6c48cc93f271fc1197948.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/63f4b16ba2d5a4d6a857aba60d86b2e96ee24e816111493bb6b9fb15715f31cc.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -1367,7 +1372,12 @@
           "participants": 49,
           "gender": "girls",
           "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264855%2F1778175826822_1753.png?alt=media&token=f91ab0d0-07e7-4eac-b25a-6e9c1495ab99",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2ab2c20e9ca2809f4720bcddff7b3a78bd8c9846777e8313f838e2a1debc5d0d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ede0ab11b47095522c9a0d922fef519d09803e8890f70f309950c98b3fab37b1.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/fb08e0c5fe48709325bc940583417c90c235a5d3bf26d9b29cfdb292c74770e8.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/43d8f67840bc72948d9ae2114b033a29a158cdce95822f961b11412624aa3a88.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -1378,12 +1388,15 @@
           "participants": 45,
           "gender": "boys",
           "factoryLogo": "https://firebasestorage.googleapis.com/v0/b/future-industrialists.firebasestorage.app/o/reporter%2Freports%2Fweek-1778169614430%2Fvisits%2F17781696264858%2F1778169802592_6724.png?alt=media&token=00766694-85eb-4760-87df-83ac32a819c7",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6998caf3f89703bc6846e53ecf303719b88511fd6e259b4d88ce36d4819c4917.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9f6415dedf599d2a47cd3eaae80e5a4f1c9d78cf4dc941663a07dacc0b16f31b.webp"
+          ],
           "imagePositions": {}
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:09:11.548Z",
+        "updatedAt": "2026-10-11T00:11:07.607Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1532,7 +1545,27 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:09:11.549Z"
+      "updatedAt": "2026-10-11T00:11:07.608Z",
+      "rematchBackup": {
+        "updatedAt": "2026-10-11T00:11:07.605Z",
+        "visits": [
+          {
+            "id": "auto-visit-1",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-2",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-3",
+            "images": [],
+            "imagePositions": {}
+          }
+        ]
+      }
     }
   ],
   "deletedReports": [
