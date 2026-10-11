@@ -1,619 +1,6 @@
 {
   "reports": [
     {
-      "id": "auto-makkah-1791588858646",
-      "region": "makkah",
-      "header": {
-        "weekTitle": "الأسبوع الأول الفترة من 4اكتوبر الاحد الى 8 اكتوبر الخميس",
-        "dateRange": "الأسبوع الأول الفترة من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
-      },
-      "stats": {
-        "ambassadorCategory": 15,
-        "tvInterviews": 0,
-        "tweets": 10,
-        "videos": 10,
-        "posts": 5,
-        "discovererCategory": 50,
-        "creativeCategory": 23,
-        "totalBeneficiaries": 457,
-        "totalRegistered": 96,
-        "artistCategory": 8
-      },
-      "visits": [
-        {
-          "id": "auto-visit-1",
-          "schoolName": "ثانوية رابغ الاولى ( بنات )",
-          "factory": "يورك",
-          "date": "2026/10/5",
-          "participants": 45,
-          "gender": "girls",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3084646a89b2a814820116d0668a7e292c74fe37e2d3632bedb482d10e8af89e.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7b025a88b3c014c2db499adc5c4b0977bac3465189c1ae42560b3657648f5bbe.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/03b0c90c6eb175ad9342a1a846a5318b4c556cad0cbf4ce608561ca4cdb454d7.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a8748ce4598572f1a0249ba5d012544fb1e3c3736098b3c9e266b721100097eb.jpg"
-          ],
-          "imagePositions": {
-            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=17eOvqpZYppRjc3hzEcIHHIBFLpME0IwA": {
-              "x": 50,
-              "y": 0
-            },
-            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QabOaZ5xBDpNVO4boRC8iFeZSnlCUQks": {
-              "x": 50,
-              "y": 0
-            },
-            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QuFgKhhaINQZhRw7Y5PfXhJTWzpz-ZK4": {
-              "x": 50,
-              "y": 0
-            }
-          }
-        },
-        {
-          "id": "auto-visit-2",
-          "schoolName": "مدارس العرب العالمية ( بنين )",
-          "factory": "فلو",
-          "date": "2026/10/5",
-          "participants": 49,
-          "gender": "boys",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/cb8ad5734886a88a2ea5728fb9b3b149f9c9d7aa3b2e03b751ba9d7742f676a1.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/26e36bf9cabb2e127901e18404b1a75c183ffb27f0c77a95f8d49cd4cb95f701.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/27ed61ca32bca722894f38765c9639b48fdee64c684f0807d5d7afd36dde1c7d.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b77e3178b220c2a2f82f64631450988257fa2bc001a8992de0372e66de19391a.jpg"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-3",
-          "schoolName": "الثانوية الواحد والثلاثون ( بنات )",
-          "factory": "اليمامة",
-          "date": "2026/10/5",
-          "participants": 45,
-          "gender": "girls",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/49f020fa3019fd9510b3fcc18fc9ab5c4b17697aa95e5fbcc24e6bf1a2921f8b.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f5b717bbc79d47dd04ec6b5026cba830bd9e803eb0b83079c2f43a6b4b212312.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2a83f4b777590a45a60bc63c451b25852fce9885e9baa466d9edb269292f2b10.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d924cd5a67b2c906f8b51ad876e1d9ea94077db8e1bbc0c26579a9c2a6a152e8.jpg"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-4",
-          "schoolName": "ثانوية جيل الجزيرة ( بنين )",
-          "factory": "الزاهد",
-          "date": "2026/10/5",
-          "participants": 48,
-          "gender": "boys",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ef84fa55568a4b0a097a5a632dbc7280cf1d40ea432fddf45cdd13f71695b2ad.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/dc020fe76e623d3705a473cc2996a0011065442496ea16c99fc0496dc8969638.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c3d498d02cb819a39906d7e74bd01341fac4d547876e73d127316172175c833a.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/06e7ff4f4094954962ef796b06d4035e176f596f12c045ed142da2c519cd224c.jpg"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-5",
-          "schoolName": "الثانوية الثامنة بعد المئة ( بنات)",
-          "factory": "يورك",
-          "date": "2026/10/6",
-          "participants": 46,
-          "gender": "girls",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e34f68a862b98b8a6e678f3e795a7db943985f3c8e9457c5cdd851b18add8ff5.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2965a44419fe6883eef93645fa9e2958216fc979066bdc1eeb5e94912e623da3.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/03e91e961894fe2c0a870aa98ee435b365d810c030ce440729b36e647052da88.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3f3d5cb6a7bc7e48499bbe22e617d0f6d1b560134d41017fc0f041bd9de6c315.jpg"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-6",
-          "schoolName": "ثانوية جيل الجزيرة ( بنين )",
-          "factory": "مبكو",
-          "date": "2026/10/6",
-          "participants": 45,
-          "gender": "boys",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7b2595390dd047ebfacf4cc7b023e8a7feabc0e917bc93a2f87e5e50c21d5373.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6f621e6827988d6be4feef588eff974170898d306e3f6ddb9356c7e1a509a4b4.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ac42c81aed5a9c04a2140707c2afaa4892f8d6746848ac2287c4f259926f99bd.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c9c1efcacc1a60b349fa229bbeaeb05a75bf06e8fdf39ef7512a39ca916b1ba6.jpg"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-7",
-          "schoolName": "ثانوية الحجاز الاهلية ( بنين )",
-          "factory": "تمر - ساجا للادوية",
-          "date": "2026/10/6",
-          "participants": 47,
-          "gender": "boys",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1d0da6d05037ffe8482b993db5c70416d7528f09191965d92755e35da458955f.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/86e147a5c603b83d28b2dd6a9c41d01b738f68d48ddd5fc1e4b79b6593cc4122.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3ed813f0aef344436ba5441391c635511114614dca83341c4b5946715c3771b3.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e5742c6554665c0bca1ca46e0c0b918c8b3e4acdc6f4438e484b2ecfa8dd0f03.jpg"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-8",
-          "schoolName": "ثانوية عالم الصغار ( بنات )",
-          "factory": "مبكو",
-          "date": "2026/10/7",
-          "participants": 42,
-          "gender": "girls",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/74155259033acdeb7e090a01f7903430653cd456ce2bcbe3d05452f95e936627.png",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/11dd3f68ea4e4f1ef6c92e0291cdd6e30d31bb18dd29e74b14fcb6d0fc20177d.png",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/05ff4f507de83df75a301564f41606afb43860009c1491753da9cdb09d82bdde.png",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3ce46ef18712e9505da760b9c7c100954c09dd40f61e074562734a0267e77809.png"
-          ],
-          "imagePositions": {
-            "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp": {
-              "x": 50,
-              "y": 50
-            },
-            "https://azlartr.github.io/future-industrialists/assets/u/64060448731263bfd7501fe95ef44aff31a2939ca531684a8a2d14ebbbb8c2c7.webp": {
-              "x": 50,
-              "y": 50
-            }
-          }
-        },
-        {
-          "id": "auto-visit-9",
-          "schoolName": "الثانوية السابعة والتسعون ( بنات )",
-          "factory": "تمر - ساجا للادوية",
-          "date": "2026/10/7",
-          "participants": 43,
-          "gender": "girls",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/06a6d33d6050e65f08d1811b1b86dfca42275aba60da9e206c86f2842b965b93.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d1c9b92018871512162bb7e57a0a261c9e2abb7d7318e346819298443c5309f5.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ee8a0543dd16cbe99b672b8535ac52e66e343af50d68663729f40f246b109062.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e46499199f7555d071f52dbafa0f2603e5fed471b1af7c032d36e74417d45483.jpg"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-10",
-          "schoolName": "ثانوية مدارس الحمراء المميزة العالمية ( بنات )",
-          "factory": "الزاهد",
-          "date": "2026/10/7",
-          "participants": 47,
-          "gender": "girls",
-          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c04ddc79f119ce37617b629e72e1600e6b6015d7ab6f92c009e48f869b57e23d.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0108727009e0c41400c2eedf3e8e9c3f224a2e938136647c5880b1244700732f.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/596cf84ef75e357ecb3135a91cc49e73261b00aa7bbb508279880301fb35a5ae.jpg",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/11a8f08582fc9f3f761007d5cd206c2d4f237e30f88abffe866082468613b8b4.jpg"
-          ],
-          "imagePositions": {}
-        }
-      ],
-      "presentation": {
-        "updatedAt": "2026-10-10T23:15:08.353Z",
-        "theme": {
-          "boys": "#2b3592",
-          "girls": "#897dc0",
-          "bg1": "#101936",
-          "bg2": "#2b3592",
-          "bg3": "#71509d",
-          "radius": 22,
-          "photoHeight": 180,
-          "gap": 26,
-          "logoSize": 168,
-          "partnerLogoScale": 95,
-          "webPartnerBoxSize": 115,
-          "fontScale": 100,
-          "columns": 1,
-          "photoLayout": "row",
-          "motion": true,
-          "network": true,
-          "networkOpacity": 85,
-          "speed": 20,
-          "showFactories": true,
-          "showCategories": true
-        },
-        "print": {
-          "perPage": 4,
-          "headerVisible": true,
-          "headerDateVisible": true,
-          "headerStyle": "color",
-          "headerAlign": "center",
-          "headerScale": 120,
-          "headerTitle": "",
-          "footerVisible": true,
-          "footerPartnersVisible": true,
-          "footerAlign": "right",
-          "footerPartnerSize": 125,
-          "footerLabel": "",
-          "footerText": "",
-          "showPageNumbers": false,
-          "coverHeaderVisible": true,
-          "coverPartnersVisible": false,
-          "coverFooterText": "",
-          "coverBackground": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/c5dd67d46428525732fd76f4ee243779df80438a9aef2483c833ca68aadaab87",
-          "pageBackground": "",
-          "coverTextTop": 87,
-          "_partnerVisibilityConfigured": true,
-          "_reportLayoutVersion": 2
-        },
-        "partners": [
-          {
-            "id": "region-partner-makkah:يورك",
-            "name": "يورك",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:مواد الاعمار",
-            "name": "مواد الإعمار",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:مبكو",
-            "name": "مبكو",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:تمر",
-            "name": "تمر",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:سدافكو",
-            "name": "سدافكو",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e878f1d928ae645279c1d65785ffbb1eea583b26d786cd5b11ca97774ba3bb16",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:اليمامه",
-            "name": "اليمامة",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:فلو",
-            "name": "فلو",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:تمر مولينكلي",
-            "name": "تمر — مولينكلي",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:الزاهد",
-            "name": "الزاهد",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:ubt",
-            "name": "UBT",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/fe39d4820d81aefa91b7539bc12c1902a849e231971c9e2155d3062d722da8fe",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:قايد",
-            "name": "قايد",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/c7463b2aafebda7804de2c2da126b50187c27a3e651df14da4d256523f52a21b",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-makkah:السليمان الخيريه",
-            "name": "السليمان الخيرية",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/1814d350c50f939e0c96da3f4916a369d4cf82c25483e3d915d817268a129384",
-            "scale": 100
-          }
-        ],
-        "partnersConfigured": true,
-        "factories": {
-          "makkah:يورك": {
-            "name": "يورك",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:فلو": {
-            "name": "فلو",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:اليمامه": {
-            "name": "اليمامة",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:الزاهد": {
-            "name": "الزاهد",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:مبكو": {
-            "name": "مبكو",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:تمر ساجا": {
-            "name": "تمر — ساجا",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:مواد الاعمار": {
-            "name": "مواد الإعمار",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:تمر": {
-            "name": "تمر",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:سدافكو": {
-            "name": "سدافكو",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e878f1d928ae645279c1d65785ffbb1eea583b26d786cd5b11ca97774ba3bb16",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:تمر مولينكلي": {
-            "name": "تمر — مولينكلي",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:مواد الاعمار الرخام والجرانيت": {
-            "name": "مواد الإعمار — الرخام والجرانيت",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:مواد الاعمار الالمنيوم": {
-            "name": "مواد الإعمار — الألمنيوم",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:مواد الاعمار الخشب": {
-            "name": "مواد الإعمار — الخشب",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:ubt": {
-            "name": "UBT",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/fe39d4820d81aefa91b7539bc12c1902a849e231971c9e2155d3062d722da8fe",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:قايد": {
-            "name": "قايد",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/c7463b2aafebda7804de2c2da126b50187c27a3e651df14da4d256523f52a21b",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:السليمان الخيريه": {
-            "name": "السليمان الخيرية",
-            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/1814d350c50f939e0c96da3f4916a369d4cf82c25483e3d915d817268a129384",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:فش فاش": {
-            "name": "فش فاش",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:محمد سعد الدين": {
-            "name": "محمد سعد الدين",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:يونيتشارم": {
-            "name": "يونيتشارم",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:مورق": {
-            "name": "مورق",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:كوكا كولا": {
-            "name": "كوكا كولا",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:ديمه": {
-            "name": "ديمة",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:مركز القدرات": {
-            "name": "مركز القدرات",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:الدواء بروسيد": {
-            "name": "الدواء - بروسيد",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:دار الانظمه": {
-            "name": "دار الأنظمة",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          },
-          "makkah:صناعه البلاستيك": {
-            "name": "صناعة البلاستيك",
-            "url": "",
-            "logoHidden": false,
-            "visible": true
-          }
-        }
-      },
-      "updatedAt": "2026-10-10T23:15:08.354Z",
-      "rematchBackup": {
-        "updatedAt": "2026-10-10T22:23:20.086Z",
-        "visits": [
-          {
-            "id": "auto-visit-1",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=17eOvqpZYppRjc3hzEcIHHIBFLpME0IwA",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1Uj2rT2EkgaYFihLxO-_24ufMjRvITXiU",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QabOaZ5xBDpNVO4boRC8iFeZSnlCUQks",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QuFgKhhaINQZhRw7Y5PfXhJTWzpz-ZK4"
-            ],
-            "imagePositions": {
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=17eOvqpZYppRjc3hzEcIHHIBFLpME0IwA": {
-                "x": 50,
-                "y": 0
-              },
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QabOaZ5xBDpNVO4boRC8iFeZSnlCUQks": {
-                "x": 50,
-                "y": 0
-              },
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QuFgKhhaINQZhRw7Y5PfXhJTWzpz-ZK4": {
-                "x": 50,
-                "y": 0
-              }
-            }
-          },
-          {
-            "id": "auto-visit-2",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1KHrKsmlVtnOWOjkGV9quzTGAGQfysGhY",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1bL7jWAwfnicISxzP39tVEeEAipYyvrXv",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1CpCWkB4ou1lYT17qXFIQ76s3IcPY9Vbk",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1_J3vFTmS8dG5RgQxQxVxGf5KyppUqxXI"
-            ],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-3",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1rltYkRYwxNjJpNDGRrNSACnTFvmKDQoc",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1lL5rrR_ajG7beNqalMP7sjpe4JhxVUip",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1cvwoL2rwWUS_CU378cS0Dg0rsP_zduVO",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1hmv_DljvuXn7FWGqk5GDPLmHRR5M-7m0"
-            ],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-4",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1yFytkOylmvVAgXubsvgBkp8s71j7YDIg",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1TL09MXK-1T0qmTlNkNLIT6ZcAnlyWAe1",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=14NfZts_P6kcR-YkAnMT71Hwv0mApQFJ7",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1PKCk2Qh3Owh2OpVgnNOTfMpKhbyceDQf"
-            ],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-5",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=15i062Lp1tXPP4J-e6W-E8vjc6LWrrEjN",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1FtufLAWE5LIDSnp7yBKj3Vn8USkkThFI",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1i3J29UMljzF8duTZGNUWnAA7HYMreOdK",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=162N0QyLusdHx9u2eLTXHKOzmLj1QGBn9"
-            ],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-6",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1mvMgTVx32J3etIIvjpN8pwOZKf6naKkq",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1ApWARarZxSiBVg3X2NiVnVjmw5NL8gGK",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1PfZuK8O4-GfBUH-1A1wMp6NLI3cPw4nI",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1hOfGS-YKQ7eY1OFnpFhDln_UIuk6du4g"
-            ],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-7",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=106a_wTH79LIArSuHcWwTL8uBn6zSGy47",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1_pTHCf4ECaf41Wfn4v6t_u7vv5EXSu-H",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1iBR_K-o9kgUCvLYgKE3SFCDKUCVWuv6v",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1hzdpvpj-Pn4LV_ZJT2eyhtuWNdcn52yl"
-            ],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-8",
-            "images": [
-              "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp",
-              "",
-              "https://azlartr.github.io/future-industrialists/assets/u/64060448731263bfd7501fe95ef44aff31a2939ca531684a8a2d14ebbbb8c2c7.webp"
-            ],
-            "imagePositions": {
-              "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp": {
-                "x": 50,
-                "y": 50
-              },
-              "https://azlartr.github.io/future-industrialists/assets/u/64060448731263bfd7501fe95ef44aff31a2939ca531684a8a2d14ebbbb8c2c7.webp": {
-                "x": 50,
-                "y": 50
-              }
-            }
-          },
-          {
-            "id": "auto-visit-9",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=11USBI5FhG617dOKncDog6pCp0lvNvnYv",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1z52Md_BmDnTvI_K5azHijAz2QN2Ie1Jq",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1qoPz4EnuWm0jNldIhlcYd3ovmZHz80nZ",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1C6lQxhyYYd4S04MQUShVNU7XxLaZXbHd"
-            ],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-10",
-            "images": [
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1oqbzdFm-X2jAnc-TODDtN2sT7CNCg1rq",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1PVBmrG2xMQZg582P03HIYce-c05lE7kr",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1kLQcjZyaFOb4Gbrl-9ppyLEQqbf-uP3N",
-              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1DVoxXvsFpCpcGEO2M57JBb4vySWZ8DjD"
-            ],
-            "imagePositions": {}
-          }
-        ]
-      }
-    },
-    {
       "id": "auto-riyadh-1791673883729",
       "region": "riyadh",
       "header": {
@@ -1306,6 +693,624 @@
           {
             "id": "auto-visit-20",
             "images": [],
+            "imagePositions": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "auto-makkah-1791588858646",
+      "region": "makkah",
+      "header": {
+        "weekTitle": "الأسبوع الأول الفترة من 4اكتوبر الاحد الى 8 اكتوبر الخميس",
+        "dateRange": "الأسبوع الأول الفترة من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
+      },
+      "stats": {
+        "ambassadorCategory": 15,
+        "tvInterviews": 0,
+        "tweets": 10,
+        "videos": 10,
+        "posts": 5,
+        "discovererCategory": 50,
+        "creativeCategory": 23,
+        "totalBeneficiaries": 457,
+        "totalRegistered": 96,
+        "artistCategory": 8
+      },
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "ثانوية رابغ الاولى ( بنات )",
+          "factory": "يورك",
+          "date": "2026/10/5",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3084646a89b2a814820116d0668a7e292c74fe37e2d3632bedb482d10e8af89e.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7b025a88b3c014c2db499adc5c4b0977bac3465189c1ae42560b3657648f5bbe.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/03b0c90c6eb175ad9342a1a846a5318b4c556cad0cbf4ce608561ca4cdb454d7.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a8748ce4598572f1a0249ba5d012544fb1e3c3736098b3c9e266b721100097eb.jpg"
+          ],
+          "imagePositions": {
+            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=17eOvqpZYppRjc3hzEcIHHIBFLpME0IwA": {
+              "x": 50,
+              "y": 0
+            },
+            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QabOaZ5xBDpNVO4boRC8iFeZSnlCUQks": {
+              "x": 50,
+              "y": 0
+            },
+            "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QuFgKhhaINQZhRw7Y5PfXhJTWzpz-ZK4": {
+              "x": 50,
+              "y": 0
+            }
+          }
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "مدارس العرب العالمية ( بنين )",
+          "factory": "فلو",
+          "date": "2026/10/5",
+          "participants": 49,
+          "gender": "boys",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/cb8ad5734886a88a2ea5728fb9b3b149f9c9d7aa3b2e03b751ba9d7742f676a1.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/26e36bf9cabb2e127901e18404b1a75c183ffb27f0c77a95f8d49cd4cb95f701.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/27ed61ca32bca722894f38765c9639b48fdee64c684f0807d5d7afd36dde1c7d.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b77e3178b220c2a2f82f64631450988257fa2bc001a8992de0372e66de19391a.jpg"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "الثانوية الواحد والثلاثون ( بنات )",
+          "factory": "اليمامة",
+          "date": "2026/10/5",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/49f020fa3019fd9510b3fcc18fc9ab5c4b17697aa95e5fbcc24e6bf1a2921f8b.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f5b717bbc79d47dd04ec6b5026cba830bd9e803eb0b83079c2f43a6b4b212312.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2a83f4b777590a45a60bc63c451b25852fce9885e9baa466d9edb269292f2b10.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d924cd5a67b2c906f8b51ad876e1d9ea94077db8e1bbc0c26579a9c2a6a152e8.jpg"
+          ],
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/49f020fa3019fd9510b3fcc18fc9ab5c4b17697aa95e5fbcc24e6bf1a2921f8b.jpg": {
+              "x": 78.69938342184113,
+              "y": 50
+            }
+          }
+        },
+        {
+          "id": "auto-visit-4",
+          "schoolName": "ثانوية جيل الجزيرة ( بنين )",
+          "factory": "الزاهد",
+          "date": "2026/10/5",
+          "participants": 48,
+          "gender": "boys",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ef84fa55568a4b0a097a5a632dbc7280cf1d40ea432fddf45cdd13f71695b2ad.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/dc020fe76e623d3705a473cc2996a0011065442496ea16c99fc0496dc8969638.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c3d498d02cb819a39906d7e74bd01341fac4d547876e73d127316172175c833a.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/06e7ff4f4094954962ef796b06d4035e176f596f12c045ed142da2c519cd224c.jpg"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-5",
+          "schoolName": "الثانوية الثامنة بعد المئة ( بنات)",
+          "factory": "يورك",
+          "date": "2026/10/6",
+          "participants": 46,
+          "gender": "girls",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e34f68a862b98b8a6e678f3e795a7db943985f3c8e9457c5cdd851b18add8ff5.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2965a44419fe6883eef93645fa9e2958216fc979066bdc1eeb5e94912e623da3.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/03e91e961894fe2c0a870aa98ee435b365d810c030ce440729b36e647052da88.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3f3d5cb6a7bc7e48499bbe22e617d0f6d1b560134d41017fc0f041bd9de6c315.jpg"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-6",
+          "schoolName": "ثانوية جيل الجزيرة ( بنين )",
+          "factory": "مبكو",
+          "date": "2026/10/6",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7b2595390dd047ebfacf4cc7b023e8a7feabc0e917bc93a2f87e5e50c21d5373.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6f621e6827988d6be4feef588eff974170898d306e3f6ddb9356c7e1a509a4b4.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ac42c81aed5a9c04a2140707c2afaa4892f8d6746848ac2287c4f259926f99bd.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c9c1efcacc1a60b349fa229bbeaeb05a75bf06e8fdf39ef7512a39ca916b1ba6.jpg"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-7",
+          "schoolName": "ثانوية الحجاز الاهلية ( بنين )",
+          "factory": "تمر - ساجا للادوية",
+          "date": "2026/10/6",
+          "participants": 47,
+          "gender": "boys",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1d0da6d05037ffe8482b993db5c70416d7528f09191965d92755e35da458955f.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/86e147a5c603b83d28b2dd6a9c41d01b738f68d48ddd5fc1e4b79b6593cc4122.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3ed813f0aef344436ba5441391c635511114614dca83341c4b5946715c3771b3.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e5742c6554665c0bca1ca46e0c0b918c8b3e4acdc6f4438e484b2ecfa8dd0f03.jpg"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-8",
+          "schoolName": "ثانوية عالم الصغار ( بنات )",
+          "factory": "مبكو",
+          "date": "2026/10/7",
+          "participants": 42,
+          "gender": "girls",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/74155259033acdeb7e090a01f7903430653cd456ce2bcbe3d05452f95e936627.png",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/11dd3f68ea4e4f1ef6c92e0291cdd6e30d31bb18dd29e74b14fcb6d0fc20177d.png",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/05ff4f507de83df75a301564f41606afb43860009c1491753da9cdb09d82bdde.png",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3ce46ef18712e9505da760b9c7c100954c09dd40f61e074562734a0267e77809.png"
+          ],
+          "imagePositions": {
+            "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp": {
+              "x": 50,
+              "y": 50
+            },
+            "https://azlartr.github.io/future-industrialists/assets/u/64060448731263bfd7501fe95ef44aff31a2939ca531684a8a2d14ebbbb8c2c7.webp": {
+              "x": 50,
+              "y": 50
+            }
+          }
+        },
+        {
+          "id": "auto-visit-9",
+          "schoolName": "الثانوية السابعة والتسعون ( بنات )",
+          "factory": "تمر - ساجا للادوية",
+          "date": "2026/10/7",
+          "participants": 43,
+          "gender": "girls",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/06a6d33d6050e65f08d1811b1b86dfca42275aba60da9e206c86f2842b965b93.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d1c9b92018871512162bb7e57a0a261c9e2abb7d7318e346819298443c5309f5.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ee8a0543dd16cbe99b672b8535ac52e66e343af50d68663729f40f246b109062.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e46499199f7555d071f52dbafa0f2603e5fed471b1af7c032d36e74417d45483.jpg"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-10",
+          "schoolName": "ثانوية مدارس الحمراء المميزة العالمية ( بنات )",
+          "factory": "الزاهد",
+          "date": "2026/10/7",
+          "participants": 47,
+          "gender": "girls",
+          "factoryLogo": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c04ddc79f119ce37617b629e72e1600e6b6015d7ab6f92c009e48f869b57e23d.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0108727009e0c41400c2eedf3e8e9c3f224a2e938136647c5880b1244700732f.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/596cf84ef75e357ecb3135a91cc49e73261b00aa7bbb508279880301fb35a5ae.jpg",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/11a8f08582fc9f3f761007d5cd206c2d4f237e30f88abffe866082468613b8b4.jpg"
+          ],
+          "imagePositions": {}
+        }
+      ],
+      "presentation": {
+        "updatedAt": "2026-10-11T00:06:26.676Z",
+        "theme": {
+          "boys": "#2b3592",
+          "girls": "#897dc0",
+          "bg1": "#101936",
+          "bg2": "#2b3592",
+          "bg3": "#71509d",
+          "radius": 22,
+          "photoHeight": 180,
+          "gap": 26,
+          "logoSize": 168,
+          "partnerLogoScale": 95,
+          "webPartnerBoxSize": 170,
+          "fontScale": 100,
+          "columns": 1,
+          "photoLayout": "row",
+          "motion": true,
+          "network": true,
+          "networkOpacity": 85,
+          "speed": 20,
+          "showFactories": true,
+          "showCategories": true
+        },
+        "print": {
+          "perPage": 4,
+          "headerVisible": true,
+          "headerDateVisible": true,
+          "headerStyle": "color",
+          "headerAlign": "center",
+          "headerScale": 120,
+          "headerTitle": "",
+          "footerVisible": true,
+          "footerPartnersVisible": true,
+          "footerAlign": "right",
+          "footerPartnerSize": 125,
+          "footerLabel": "",
+          "footerText": "",
+          "showPageNumbers": false,
+          "coverHeaderVisible": true,
+          "coverPartnersVisible": false,
+          "coverFooterText": "",
+          "coverBackground": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/c5dd67d46428525732fd76f4ee243779df80438a9aef2483c833ca68aadaab87",
+          "pageBackground": "",
+          "coverTextTop": 87,
+          "_partnerVisibilityConfigured": true,
+          "_reportLayoutVersion": 3
+        },
+        "partners": [
+          {
+            "id": "region-partner-makkah:يورك",
+            "name": "يورك",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:مواد الاعمار",
+            "name": "مواد الإعمار",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:مبكو",
+            "name": "مبكو",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:تمر",
+            "name": "تمر",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:سدافكو",
+            "name": "سدافكو",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e878f1d928ae645279c1d65785ffbb1eea583b26d786cd5b11ca97774ba3bb16",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:اليمامه",
+            "name": "اليمامة",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:فلو",
+            "name": "فلو",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:تمر مولينكلي",
+            "name": "تمر — مولينكلي",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:الزاهد",
+            "name": "الزاهد",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:ubt",
+            "name": "UBT",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/fe39d4820d81aefa91b7539bc12c1902a849e231971c9e2155d3062d722da8fe",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:قايد",
+            "name": "قايد",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/c7463b2aafebda7804de2c2da126b50187c27a3e651df14da4d256523f52a21b",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-makkah:السليمان الخيريه",
+            "name": "السليمان الخيرية",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/1814d350c50f939e0c96da3f4916a369d4cf82c25483e3d915d817268a129384",
+            "scale": 100
+          }
+        ],
+        "partnersConfigured": true,
+        "factories": {
+          "makkah:يورك": {
+            "name": "يورك",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:فلو": {
+            "name": "فلو",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:اليمامه": {
+            "name": "اليمامة",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:الزاهد": {
+            "name": "الزاهد",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مبكو": {
+            "name": "مبكو",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:تمر ساجا": {
+            "name": "تمر — ساجا",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار": {
+            "name": "مواد الإعمار",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:تمر": {
+            "name": "تمر",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:سدافكو": {
+            "name": "سدافكو",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/e878f1d928ae645279c1d65785ffbb1eea583b26d786cd5b11ca97774ba3bb16",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:تمر مولينكلي": {
+            "name": "تمر — مولينكلي",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار الرخام والجرانيت": {
+            "name": "مواد الإعمار — الرخام والجرانيت",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار الالمنيوم": {
+            "name": "مواد الإعمار — الألمنيوم",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار الخشب": {
+            "name": "مواد الإعمار — الخشب",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:ubt": {
+            "name": "UBT",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/fe39d4820d81aefa91b7539bc12c1902a849e231971c9e2155d3062d722da8fe",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:قايد": {
+            "name": "قايد",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/c7463b2aafebda7804de2c2da126b50187c27a3e651df14da4d256523f52a21b",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:السليمان الخيريه": {
+            "name": "السليمان الخيرية",
+            "url": "https://future-industrialists-report-review.azlar.chatgpt.site/api/assets/1814d350c50f939e0c96da3f4916a369d4cf82c25483e3d915d817268a129384",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:فش فاش": {
+            "name": "فش فاش",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:محمد سعد الدين": {
+            "name": "محمد سعد الدين",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:يونيتشارم": {
+            "name": "يونيتشارم",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مورق": {
+            "name": "مورق",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:كوكا كولا": {
+            "name": "كوكا كولا",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:ديمه": {
+            "name": "ديمة",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مركز القدرات": {
+            "name": "مركز القدرات",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:الدواء بروسيد": {
+            "name": "الدواء - بروسيد",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:دار الانظمه": {
+            "name": "دار الأنظمة",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:صناعه البلاستيك": {
+            "name": "صناعة البلاستيك",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          }
+        }
+      },
+      "updatedAt": "2026-10-11T00:06:26.677Z",
+      "rematchBackup": {
+        "updatedAt": "2026-10-10T22:23:20.086Z",
+        "visits": [
+          {
+            "id": "auto-visit-1",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=17eOvqpZYppRjc3hzEcIHHIBFLpME0IwA",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1Uj2rT2EkgaYFihLxO-_24ufMjRvITXiU",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QabOaZ5xBDpNVO4boRC8iFeZSnlCUQks",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QuFgKhhaINQZhRw7Y5PfXhJTWzpz-ZK4"
+            ],
+            "imagePositions": {
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=17eOvqpZYppRjc3hzEcIHHIBFLpME0IwA": {
+                "x": 50,
+                "y": 0
+              },
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QabOaZ5xBDpNVO4boRC8iFeZSnlCUQks": {
+                "x": 50,
+                "y": 0
+              },
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1QuFgKhhaINQZhRw7Y5PfXhJTWzpz-ZK4": {
+                "x": 50,
+                "y": 0
+              }
+            }
+          },
+          {
+            "id": "auto-visit-2",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1KHrKsmlVtnOWOjkGV9quzTGAGQfysGhY",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1bL7jWAwfnicISxzP39tVEeEAipYyvrXv",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1CpCWkB4ou1lYT17qXFIQ76s3IcPY9Vbk",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1_J3vFTmS8dG5RgQxQxVxGf5KyppUqxXI"
+            ],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-3",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1rltYkRYwxNjJpNDGRrNSACnTFvmKDQoc",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1lL5rrR_ajG7beNqalMP7sjpe4JhxVUip",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1cvwoL2rwWUS_CU378cS0Dg0rsP_zduVO",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1hmv_DljvuXn7FWGqk5GDPLmHRR5M-7m0"
+            ],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-4",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1yFytkOylmvVAgXubsvgBkp8s71j7YDIg",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1TL09MXK-1T0qmTlNkNLIT6ZcAnlyWAe1",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=14NfZts_P6kcR-YkAnMT71Hwv0mApQFJ7",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1PKCk2Qh3Owh2OpVgnNOTfMpKhbyceDQf"
+            ],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-5",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=15i062Lp1tXPP4J-e6W-E8vjc6LWrrEjN",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1FtufLAWE5LIDSnp7yBKj3Vn8USkkThFI",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1i3J29UMljzF8duTZGNUWnAA7HYMreOdK",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=162N0QyLusdHx9u2eLTXHKOzmLj1QGBn9"
+            ],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-6",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1mvMgTVx32J3etIIvjpN8pwOZKf6naKkq",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1ApWARarZxSiBVg3X2NiVnVjmw5NL8gGK",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1PfZuK8O4-GfBUH-1A1wMp6NLI3cPw4nI",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1hOfGS-YKQ7eY1OFnpFhDln_UIuk6du4g"
+            ],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-7",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=106a_wTH79LIArSuHcWwTL8uBn6zSGy47",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1_pTHCf4ECaf41Wfn4v6t_u7vv5EXSu-H",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1iBR_K-o9kgUCvLYgKE3SFCDKUCVWuv6v",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1hzdpvpj-Pn4LV_ZJT2eyhtuWNdcn52yl"
+            ],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-8",
+            "images": [
+              "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp",
+              "",
+              "https://azlartr.github.io/future-industrialists/assets/u/64060448731263bfd7501fe95ef44aff31a2939ca531684a8a2d14ebbbb8c2c7.webp"
+            ],
+            "imagePositions": {
+              "https://azlartr.github.io/future-industrialists/assets/u/a100866d70315e2bd4f91d8849fc361bc9219e5aa83137fd5a0ffeca67c21271.webp": {
+                "x": 50,
+                "y": 50
+              },
+              "https://azlartr.github.io/future-industrialists/assets/u/64060448731263bfd7501fe95ef44aff31a2939ca531684a8a2d14ebbbb8c2c7.webp": {
+                "x": 50,
+                "y": 50
+              }
+            }
+          },
+          {
+            "id": "auto-visit-9",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=11USBI5FhG617dOKncDog6pCp0lvNvnYv",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1z52Md_BmDnTvI_K5azHijAz2QN2Ie1Jq",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1qoPz4EnuWm0jNldIhlcYd3ovmZHz80nZ",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1C6lQxhyYYd4S04MQUShVNU7XxLaZXbHd"
+            ],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-10",
+            "images": [
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1oqbzdFm-X2jAnc-TODDtN2sT7CNCg1rq",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1PVBmrG2xMQZg582P03HIYce-c05lE7kr",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1kLQcjZyaFOb4Gbrl-9ppyLEQqbf-uP3N",
+              "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1DVoxXvsFpCpcGEO2M57JBb4vySWZ8DjD"
+            ],
             "imagePositions": {}
           }
         ]
