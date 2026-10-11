@@ -554,3 +554,13 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 }
 
 .print-cover-main>strong{font-size:18pt}
+
+/* Center complete and partial partner rows; reserve readable Arabic label space. */
+.print-page .print-footer,
+.print-page .print-footer>div{justify-content:center!important;align-items:center!important;text-align:center!important}
+.print-page.print-visits-page .print-footer{max-height:none!important;overflow:visible!important}
+.print-page .print-footer .partner-strip{width:100%;align-items:center!important;gap:1mm}
+.print-page .print-footer .partner-logos{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;gap:2mm 0!important;direction:rtl}
+.print-page .print-footer .partner-logo{flex:0 0 calc(100% / 6)!important;width:calc(100% / 6)!important;max-width:calc(100% / 6)!important}
+.print-page .print-footer .partner-label{display:block!important;width:100%;height:auto;min-height:0;flex:none;box-sizing:border-box;text-align:center!important;white-space:normal;overflow:visible!important;font-size:9pt;line-height:1.8;padding:1mm 0;margin:0!important;color:#61718c}
+.print-page .print-footer>span{position:absolute;inset-inline-start:0;margin:0}
