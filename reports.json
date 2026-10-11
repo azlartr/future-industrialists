@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:20:00.255Z",
+        "updatedAt": "2026-10-11T00:20:01.613Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1466,7 +1466,7 @@
             "id": "region-partner-qassim:الصناعات الاقليميه",
             "name": "الصناعات الإقليمية",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-qassim:الجاسر للبلاستيك",
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:20:00.639Z",
+      "updatedAt": "2026-10-11T00:20:02.341Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
