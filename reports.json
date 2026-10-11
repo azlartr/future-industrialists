@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:19:57.743Z",
+        "updatedAt": "2026-10-11T00:20:00.255Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1490,7 +1490,7 @@
             "id": "region-partner-qassim:البان الخبراء",
             "name": "ألبان الخبراء",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/aaed03849b57938eef29e0820d459e2f40a6c4bc0700e5fe548f3ac3a0ef572b.webp",
-            "scale": 100
+            "scale": 90
           }
         ],
         "partnersConfigured": true,
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:19:58.648Z",
+      "updatedAt": "2026-10-11T00:20:00.639Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
