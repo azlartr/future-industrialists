@@ -959,7 +959,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:03:57.847Z",
+        "updatedAt": "2026-10-11T00:03:59.707Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1095,7 +1095,7 @@
             "id": "partner-1791677033850-89o2q",
             "name": "الدواء بروسيد",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/20fff7e2df98807caeb98de19d37e354b4ad1c923ab1b2b7a7df26a935523742.webp",
-            "scale": 85
+            "scale": 90
           }
         ],
         "partnersConfigured": true,
@@ -1204,7 +1204,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:03:57.850Z",
+      "updatedAt": "2026-10-11T00:03:59.709Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T23:41:16.859Z",
         "visits": [
