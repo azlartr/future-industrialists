@@ -1396,7 +1396,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-11T00:20:03.258Z",
+        "updatedAt": "2026-10-11T00:20:04.444Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1472,7 +1472,7 @@
             "id": "region-partner-qassim:الجاسر للبلاستيك",
             "name": "الجاسر للبلاستيك",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-qassim:السعيد للغازات الصناعيه والطبيه",
@@ -1545,7 +1545,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-11T00:20:04.340Z",
+      "updatedAt": "2026-10-11T00:20:06.043Z",
       "rematchBackup": {
         "updatedAt": "2026-10-11T00:11:07.605Z",
         "visits": [
