@@ -564,3 +564,27 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 .print-page .print-footer .partner-logo{flex:0 0 calc(100% / 6)!important;width:calc(100% / 6)!important;max-width:calc(100% / 6)!important}
 .print-page .print-footer .partner-label{display:block!important;width:100%;height:auto;min-height:0;flex:none;box-sizing:border-box;text-align:center!important;white-space:normal;overflow:visible!important;font-size:9pt;line-height:1.8;padding:1mm 0;margin:0!important;color:#61718c}
 .print-page .print-footer>span{position:absolute;inset-inline-start:0;margin:0}
+
+/* Clear report metrics with dedicated icons and readable labels. */
+.stats-row{gap:14px}
+.stats-row .stat-box.metric-card{--metric-accent:#4254a4;display:flex;align-items:center;gap:16px;position:relative;min-height:126px;padding:22px 20px;background:#fff;border:1px solid #e2e6f2;border-radius:18px;box-shadow:0 8px 24px #0d173e12;color:#17234c;text-align:right;overflow:visible}
+.stats-row .metric-card--users{--metric-accent:#087d86}
+.stats-row .metric-card--beneficiaries{--metric-accent:#6850a3}
+.stats-row .metric-card--award{--metric-accent:#ac7625}
+.stats-row .metric-icon{display:flex;align-items:center;justify-content:center;flex:0 0 52px;width:52px;height:52px;border-radius:15px;color:var(--metric-accent);background:color-mix(in srgb,var(--metric-accent) 10%,white);border:1px solid color-mix(in srgb,var(--metric-accent) 18%,white)}
+.stats-row .metric-icon svg{display:block;width:27px;height:27px}
+.stats-row .metric-copy{min-width:0;flex:1}
+.stats-row .stat-box .stat-label{display:block;font-size:15px;line-height:1.7;font-weight:400;color:#435170;opacity:1;margin:0 0 5px;white-space:normal;overflow:visible}
+.stats-row .stat-box .stat-value{display:block;width:fit-content;font-size:36px;line-height:1.2;font-weight:600;letter-spacing:0;color:#17234c}
+.stats-row .stat-box .stat-note{font-size:12px;line-height:1.6;color:#56637c;margin-top:6px}
+@media(max-width:1000px){
+ .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ .stats-row{gap:10px}
+ .stats-row .stat-box.metric-card{padding:16px 12px;gap:10px;min-height:122px;border-radius:15px;align-items:flex-start}
+ .stats-row .metric-icon{width:36px;height:36px;flex-basis:36px;border-radius:11px;margin-top:4px}
+ .stats-row .metric-icon svg{width:21px;height:21px}
+ .stats-row .stat-box .stat-label{font-size:13px;line-height:1.65;margin-bottom:7px}
+ .stats-row .stat-box .stat-value{font-size:29px}
+}
