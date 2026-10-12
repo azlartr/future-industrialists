@@ -588,3 +588,19 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
  .stats-row .stat-box .stat-label{font-size:13px;line-height:1.65;margin-bottom:7px}
  .stats-row .stat-box .stat-value{font-size:29px}
 }
+
+/* Unboxed, aligned report metrics. */
+.stats-row .stat-box.metric-card{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;gap:10px;min-height:0;padding:18px 10px;background:transparent;border:0;border-radius:0;box-shadow:none;color:#fff}
+.stats-row .metric-icon{flex:0 0 auto;width:36px;height:36px;margin:0;border:0;border-radius:0;background:transparent;color:#e5e9ff}
+.stats-row .metric-icon svg{width:31px;height:31px}
+.stats-row .metric-copy{display:flex;flex-direction:column;align-items:center;min-width:0;width:100%}
+.stats-row .stat-box .stat-label{display:flex;align-items:center;justify-content:center;min-height:48px;font-size:15px;line-height:1.6;color:#fff;text-align:center;margin:0 0 8px;opacity:1}
+.stats-row .stat-box .stat-value{margin:0 auto;font-size:36px;line-height:1.25;color:#fff;text-align:center}
+.stats-row .stat-box .stat-note{color:#e0e6fa;text-align:center}
+@media(max-width:600px){
+ .stats-row .stat-box.metric-card{padding:15px 6px;gap:8px;min-height:0;align-items:center}
+ .stats-row .metric-icon{width:30px;height:30px;flex-basis:auto;margin:0}
+ .stats-row .metric-icon svg{width:28px;height:28px}
+ .stats-row .stat-box .stat-label{font-size:14px;min-height:46px;margin-bottom:7px}
+ .stats-row .stat-box .stat-value{font-size:31px}
+}
