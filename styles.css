@@ -604,3 +604,25 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
  .stats-row .stat-box .stat-label{font-size:14px;min-height:46px;margin-bottom:7px}
  .stats-row .stat-box .stat-value{font-size:31px}
 }
+
+/* A4 period block: one baseline for the week and dates, with small days above. */
+.print-page.uploaded-cover .print-cover-main{top:clamp(10%,var(--cover-text-top,87%),calc(100% - 28mm))!important;bottom:auto!important;left:16mm!important;right:16mm!important;transform:none!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,2.4fr);align-items:end;gap:6mm;direction:rtl;text-align:right!important}
+.print-page.uploaded-cover .print-cover-main>strong{font-size:14pt!important;line-height:1.5!important;text-align:right;overflow-wrap:break-word}
+.print-page.uploaded-cover .cover-report-dates{margin:0!important;text-align:left;direction:rtl;min-width:0}
+.print-page.uploaded-cover .cover-report-dates .report-days{font-size:8pt;line-height:1.5;margin:0 0 1mm}
+.print-page.uploaded-cover .cover-report-dates .report-period{font-size:16pt!important;line-height:1.5!important;margin:0!important;overflow-wrap:normal}
+.print-page .print-header{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)!important;align-items:end}
+.print-page .print-header>small{grid-column:1;grid-row:2;justify-self:stretch!important;text-align:right!important;line-height:1.6;font-size:9pt}
+.print-page .print-header .print-report-dates{grid-column:2;grid-row:2;justify-self:stretch!important;text-align:left;min-width:0}
+.print-page .print-header .print-report-dates .report-period{font-size:11pt;line-height:1.5}
+.print-page .print-header .print-report-dates .report-days{line-height:1.5}
+.pdf-export-stage{position:absolute;left:-10000px;top:0;width:794px;pointer-events:none;z-index:-10;zoom:1!important;transform:none!important}
+.pdf-export-stage .print-page{margin:0!important;box-shadow:none!important;zoom:1!important;transform:none!important}
+.pdf-export-stage .print-page *{animation:none!important;transition:none!important;text-shadow:none}
+@media print{
+ html,body,#app{width:210mm!important;min-width:0!important;height:auto!important;overflow:visible!important}
+ .print-shell,.print-pages{zoom:1!important;transform:none!important;max-height:none!important;height:auto!important;overflow:visible!important}
+ .print-page{min-height:0!important;height:296.8mm!important;min-width:210mm!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ .print-page .print-cover-inner{height:296.8mm!important;min-height:0!important}
+ .pdf-export-stage{display:none!important}
+}
