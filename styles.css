@@ -672,3 +672,5 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 html[data-photo-layout="row"] .visits .photos{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 html[data-photo-layout="mosaic"] .visits .photos{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 html[data-show-factories="off"] .web-report-partners,html[data-show-factories="off"] .web-partner-toolbar{display:none!important}
+
+html[data-show-categories="off"] .categories{display:none!important}
