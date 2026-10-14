@@ -626,3 +626,9 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
  .print-page .print-cover-inner{height:296.8mm!important;min-height:0!important}
  .pdf-export-stage{display:none!important}
 }
+
+/* Keep cover period information together, centered below the cover divider. */
+.print-page.uploaded-cover .print-cover-main{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:1.2mm!important;text-align:center!important}
+.print-page.uploaded-cover .print-cover-main>strong{width:100%;text-align:center!important;margin:0!important}
+.print-cover-main .cover-report-dates,.print-page.uploaded-cover .cover-report-dates{width:100%;text-align:center!important;margin:0!important}
+.print-cover-main .report-days,.print-cover-main .report-period{text-align:center!important}
