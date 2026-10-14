@@ -626,9 +626,21 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
  .print-page .print-cover-inner{height:296.8mm!important;min-height:0!important}
  .pdf-export-stage{display:none!important}
 }
-
 /* Keep cover period information together, centered below the cover divider. */
 .print-page.uploaded-cover .print-cover-main{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:1.2mm!important;text-align:center!important}
 .print-page.uploaded-cover .print-cover-main>strong{width:100%;text-align:center!important;margin:0!important}
 .print-cover-main .cover-report-dates,.print-page.uploaded-cover .cover-report-dates{width:100%;text-align:center!important;margin:0!important}
 .print-cover-main .report-days,.print-cover-main .report-period{text-align:center!important}
+
+/* Separate viewports apply the real responsive breakpoints inside previews. */
+.preview-device-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:8px}
+.preview-device-controls button{font:inherit;font-size:12px;border:1px solid #ffffff45;border-radius:7px;background:#ffffff0d;color:#fff;cursor:pointer;min-width:56px;padding:6px 12px}
+.preview-device-controls button.active{background:#fff;color:#263879;border-color:#fff}
+.preview-toolbar{flex-wrap:wrap;gap:10px}
+.device-preview{padding:16px 12px 24px;background:#e3e8f3;border-radius:12px;margin-top:12px;overflow:hidden}
+.device-preview-note{text-align:center;font-size:12px;color:#3f5177;margin:0 0 14px}
+.device-preview-stage{position:relative;margin:0 auto}
+.device-preview-frame{position:absolute;left:0;top:0;transform-origin:top left;box-sizing:content-box;border:8px solid #17213a;border-radius:32px;overflow:hidden;background:#101936;box-shadow:0 12px 32px #10193633}
+.device-preview-frame iframe{display:block;border:0;background:#101936}
+#pdf-download-result{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#pdf-download-result small{font-size:12px;color:#e4eaff}
+@media print{.preview-device-controls,.device-preview{display:none!important}}
