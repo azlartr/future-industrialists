@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-14T20:59:10.354Z",
+        "updatedAt": "2026-10-14T20:59:27.527Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1182,7 +1182,7 @@
           "bg3": "#71509d",
           "radius": 22,
           "photoHeight": 180,
-          "gap": 26,
+          "gap": 22,
           "logoSize": 168,
           "partnerLogoScale": 95,
           "webPartnerBoxSize": 170,
@@ -1454,7 +1454,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-14T20:59:10.356Z",
+      "updatedAt": "2026-10-14T20:59:27.529Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
