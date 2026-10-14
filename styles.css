@@ -668,3 +668,7 @@ html[data-view="home"] body{height:100dvh;overflow:hidden}html[data-view="home"]
 }
 
 .print-page.print-visits-page .visit-head{height:auto!important;min-height:23mm!important;flex:0 0 auto!important}
+
+html[data-photo-layout="row"] .visits .photos{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+html[data-photo-layout="mosaic"] .visits .photos{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+html[data-show-factories="off"] .web-report-partners,html[data-show-factories="off"] .web-partner-toolbar{display:none!important}
