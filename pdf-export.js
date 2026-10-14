@@ -4,7 +4,7 @@
 let busy=false;
 const WIDTH=794,HEIGHT=1123;
 async function imageData(url){
- const response=await fetch(url,{mode:'cors'});if(!response.ok)throw new Error('تعذر تحميل صورة أو شعار ('+response.status+').');
+ let response;try{response=await fetch(url,{mode:'cors'})}catch{throw new Error('تعذر جلب الصورة من '+new URL(url,location.href).hostname+' · '+new URL(url,location.href).pathname.split('/').pop().slice(0,16))}if(!response.ok)throw new Error('تعذر تحميل صورة أو شعار ('+response.status+').');
  const blob=await response.blob();if(!blob.type.startsWith('image/'))throw new Error('رابط صورة لا يعيد ملف صورة.');
  return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('تعذر قراءة صورة التقرير.'));reader.readAsDataURL(blob)});
 }
