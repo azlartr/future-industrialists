@@ -65,7 +65,7 @@ section,#trip{scroll-margin-top:136px}
 #gate{position:relative;min-height:100svh;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#fff 58%,#e6ebf8 84%,var(--wash) 100%);transition:opacity .6s,transform .6s}
 #gate.leaving{opacity:0;transform:scale(1.04)}
 #gate .bg-net{position:absolute;inset:0;width:100%;height:100%}
-.gate-inner{position:relative;display:grid;grid-template-rows:auto 1fr auto;gap:8px;min-height:100svh;padding-block:20px 22px}
+.gate-inner{position:relative;display:grid;grid-template-rows:auto 1fr auto;gap:8px;min-height:100svh;padding-block:20px 18px}
 .gate-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .gov{display:flex;align-items:center;flex-wrap:wrap}
 .gov .gl{display:flex;align-items:center;justify-content:center;height:70px;padding-inline:clamp(10px,1.6vw,20px);border-inline-start:1px solid rgba(42,53,144,.12)}
@@ -109,12 +109,12 @@ section,#trip{scroll-margin-top:136px}
 /* wide screens: logo and copy beside a large map instead of a narrow stack */
 @media (min-width:1000px) and (min-aspect-ratio:5/4){
   .gate-grid{grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);grid-template-areas:"badge map" "copy map";column-gap:clamp(28px,4vw,80px);row-gap:0;width:100%;max-width:1240px;margin-inline:auto;align-items:center}
-  .fi-badge{grid-area:badge;align-self:end;width:clamp(190px,15vw,250px);margin:0 0 6px}
+  .fi-badge{grid-area:badge;align-self:end;width:clamp(140px,min(15vw,25svh),240px);margin:0 0 4px}
   .gate-copy{grid-area:copy;align-self:start;margin:10px 0 0;max-width:380px}
-  .gate-copy h1{font-size:clamp(32px,3vw,44px)}
+  .gate-copy h1{font-size:clamp(28px,min(3vw,5.4svh),44px)}
   .gate-copy p{font-size:16px}
-  .region-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:20px}
-  .map-stage{grid-area:map;width:100%;max-width:min(880px,calc((100svh - 200px) * 1.15));min-width:min(100%,540px);margin:0 auto}
+  .region-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:clamp(10px,2svh,20px)}
+  .map-stage{grid-area:map;width:100%;max-width:min(880px,calc((100svh - 262px) * 1.15));min-width:min(100%,440px);margin:0 auto}
 }
 
 /* ---------- Logo roll (shared) ---------- */
@@ -475,6 +475,10 @@ section,#trip{scroll-margin-top:136px}
   .portrait{width:min(100%,330px)}
 }
 @media (max-width:640px){
+  .fi-badge{width:clamp(96px,14svh,150px);margin-top:2px}
+  .region-chips{margin-top:10px;gap:6px}
+  .region-btn{min-height:36px;font-size:14px}
+  .gate-copy{margin-bottom:10px}
   .tracks{grid-template-columns:1fr}
   .nodes .t,.nodes .d{display:none}
   .node .dot{width:48px;height:48px;font-size:17px}
