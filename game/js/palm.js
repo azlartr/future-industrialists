@@ -45,8 +45,8 @@ function mats() {
   const tt = trunkTex(); trunkMat = new THREE.MeshStandardMaterial({ map: tt, bumpMap: tt, bumpScale: 6, roughness: .95 });
   bootMat = new THREE.MeshStandardMaterial({ color: '#5a4630', roughness: .95 });
 }
-function frond(L, el, az, sag, width = .55, fold = .5) {
-  const N = 18, pos = [], uv = [], idx = [];
+function frond(L, el, az, sag, width = .55, fold = .5, N = 18) {
+  const pos = [], uv = [], idx = [];
   const dir = new THREE.Vector3(Math.cos(az) * Math.cos(el), Math.sin(el), Math.sin(az) * Math.cos(el));
   const C = t => dir.clone().multiplyScalar(L * t).add(new THREE.Vector3(0, -sag * t * t * L, 0));
   for (let i = 0; i <= N; i++) {
@@ -62,6 +62,14 @@ function frond(L, el, az, sag, width = .55, fold = .5) {
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals(); return g;
 }
 const cache = {};
+/* a cheaper crown for distant groves: fewer, coarser fronds */
+function crownLite() {
+  if (cache.lite) return cache.lite;
+  let s = 99; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const green = [], dead = [];
+  for (let i = 0; i < 16; i++) { const k = i / 16, az = i * 2.39996, el = 1.1 - k * 1.6; (k > .85 ? dead : green).push(frond(3.4 + r() * .6, el, az, .15 + k * .5, .6, .5, 7)); }
+  cache.lite = { green: mergeGeometries(green), dead: mergeGeometries(dead) }; return cache.lite;
+}
 function crown(seed) {
   if (cache[seed]) return cache[seed];
   let s = seed * 9973 + 1; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
@@ -96,5 +104,25 @@ export function makePalm(h = 8, seed = 1) {
     for (let i = 0; i < 60; i++) { const yy = -r() * .5, rr = .08 + (-yy) * .2; m4.makeTranslation(Math.cos(i) * rr * r(), yy, Math.sin(i * 1.3) * rr * r()); bunch.setMatrixAt(i, m4); }
     bunch.position.copy(top).add(new THREE.Vector3(Math.cos(a) * .45, -.25, Math.sin(a) * .45)); bunch.castShadow = true; g.add(bunch);
   }
+  return g;
+}
+
+/* A whole palm grove as three instanced meshes (trunks, green crowns, dry crowns): cheap enough for farms. */
+export function makePalmField(points, { h = 6.5, shadows = false, lite = false } = {}) {
+  mats();
+  const g = new THREE.Group(), n = points.length;
+  const tg = new THREE.CylinderGeometry(.24, .32, 1, 10, 6, true); tg.translate(0, .5, 0);
+  const uv = tg.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setY(i, uv.getY(i) * h / .65);
+  const cr = lite ? crownLite() : crown(2);
+  const trunk = new THREE.InstancedMesh(tg, trunkMat, n), green = new THREE.InstancedMesh(cr.green, frondMat, n), dead = new THREE.InstancedMesh(cr.dead, deadMat, n);
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0), v = new THREE.Vector3(), sc = new THREE.Vector3();
+  let s = 17; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  points.forEach(([x, z], i) => {
+    const k = .8 + r() * .4, hh = h * k;
+    q.setFromAxisAngle(up, r() * 6.28);
+    m4.compose(v.set(x, 0, z), q, sc.set(1, hh, 1)); trunk.setMatrixAt(i, m4);
+    m4.compose(v.set(x, hh + .05, z), q, sc.set(.85 + r() * .3, .85 + r() * .3, .85 + r() * .3)); green.setMatrixAt(i, m4); dead.setMatrixAt(i, m4);
+  });
+  for (const o of [trunk, green, dead]) { o.castShadow = shadows; o.receiveShadow = true; o.computeBoundingSphere(); g.add(o); }
   return g;
 }

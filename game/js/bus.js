@@ -42,20 +42,39 @@ function windowShape() {
   s.lineTo(4.55, 3.33); s.bezierCurveTo(5.25, 3.33, 5.62, 3.1, 5.72, 2.72);
   s.lineTo(5.86, 1.95); s.closePath(); return s;
 }
+const PX = 4096 / 11.9;
+/* side > 0: the curb side, canvas runs rear→front. side < 0: canvas runs front→rear, so the
+   artwork is mirrored but the lettering is drawn normally and still sits towards the front. */
 async function livery(side) {
   const w = 4096, h = 640, [c, x] = canvas(w, h); x.clearRect(0, 0, w, h);
-  // long sweeping swooshes: navy and blue from the rear, a violet ribbon above them
+  const cx = wx => side > 0 ? (wx + 5.95) * PX : (5.95 - wx) * PX;
+  x.save(); if (side < 0) { x.translate(w, 0); x.scale(-1, 1); }
+  // long sweeping swooshes from the rear towards the front
   const sweep = (y0, y1, thick, col) => { x.fillStyle = col; x.beginPath(); x.moveTo(0, y0); x.bezierCurveTo(w * .3, y0 - 40, w * .55, y1 + 20, w, y1); x.lineTo(w, y1 + thick); x.bezierCurveTo(w * .55, y1 + 20 + thick * 1.3, w * .3, y0 + thick * .6, 0, y0 + thick * 1.6); x.closePath(); x.fill(); };
-  sweep(170, 470, 120, BRAND.navy);
-  sweep(250, 380, 95, BRAND.blue);
-  sweep(110, 300, 46, BRAND.violet);
-  sweep(80, 250, 14, '#b9b2e3');
+  sweep(300, 520, 110, BRAND.navy);
+  sweep(360, 440, 80, BRAND.blue);
+  sweep(270, 400, 40, BRAND.violet);
+  sweep(250, 365, 12, '#b9b2e3');
   x.save(); x.globalAlpha = .35; x.beginPath(); x.rect(0, 150, w * .5, 490); x.clip(); network(x, w * .5, h, { n: 40, link: 220, color: 'rgba(255,255,255,.5)', dot: 'rgba(255,255,255,.8)', lw: 2.2, seed: 5 }); x.restore();
-  const logo = await loadImg('assets/img/logo-mark.webp'), lh = 230, lw = lh * logo.width / logo.height;
-  const right = w * .9; x.drawImage(logo, right - lw, 40, lw, lh);
-  x.fillStyle = BRAND.navy; x.textAlign = 'right'; x.direction = 'rtl'; x.font = '700 150px "Readex Pro"'; x.fillText('صناعيو المستقبل', right - lw - 40, 190);
-  x.fillStyle = BRAND.violet; x.font = '500 54px "Readex Pro"'; x.direction = 'ltr'; x.fillText('FUTURE INDUSTRIALISTS · 2026', right - lw - 44, 270);
-  const t = toTex(c); if (side < 0) { t.wrapS = THREE.RepeatWrapping; t.repeat.x = -1; } return t;
+  x.restore();
+  // logo + name mid-body, logo towards the front, clear of the door
+  const logo = await loadImg('assets/img/logo-mark.webp'), lh = 220, lw = lh * logo.width / logo.height;
+  const front = cx(3.0);
+  x.direction = 'rtl'; x.font = '700 140px "Readex Pro"'; const nameW = x.measureText('صناعيو المستقبل').width;
+  if (side > 0) {
+    x.drawImage(logo, front - lw, 24, lw, lh);
+    x.fillStyle = BRAND.navy; x.textAlign = 'right'; x.fillText('صناعيو المستقبل', front - lw - 36, 170);
+    x.fillStyle = BRAND.blue; x.font = '600 52px "Readex Pro"'; x.direction = 'ltr'; x.textAlign = 'right'; x.fillText('FUTURE INDUSTRIALISTS · 2026', front - lw - 40, 242);
+  } else {
+    x.drawImage(logo, front, 24, lw, lh);
+    x.fillStyle = BRAND.navy; x.textAlign = 'right'; x.fillText('صناعيو المستقبل', front + lw + 36 + nameW, 170);
+    x.fillStyle = BRAND.blue; x.font = '600 52px "Readex Pro"'; x.direction = 'ltr'; x.textAlign = 'left'; x.fillText('FUTURE INDUSTRIALISTS · 2026', front + lw + 40, 242);
+  }
+  // wheel arches: nothing painted over the wheels
+  x.globalCompositeOperation = 'destination-out';
+  for (const ax of AX) { x.beginPath(); x.arc(cx(ax), (1.99 - .42) * PX, .74 * PX, 0, Math.PI * 2); x.fill(); }
+  x.globalCompositeOperation = 'source-over';
+  return toTex(c);
 }
 function destSign() {
   const [c, x] = canvas(1024, 128); x.fillStyle = '#05060a'; x.fillRect(0, 0, 1024, 128);
@@ -89,9 +108,13 @@ export async function makeBus() {
   const zs = Wd / 2 + .006;
   // side glazing + door
   const win = new THREE.ShapeGeometry(windowShape(), 24);
-  for (const s of [1, -1]) { const w = m(win, glass, false); w.position.z = s * zs; if (s < 0) { w.scale.z = -1; w.rotation.y = 0; w.material = glass.clone(); w.material.side = THREE.BackSide; } g.add(w); }
-  const door = m(new RoundedBoxGeometry(1.0, 2.6, .03, 3, .05), glass, false); door.position.set(4.82, 1.78, zs + .004); g.add(door);
-  const seam = m(new THREE.BoxGeometry(.02, 2.55, .01), black, false); seam.position.set(4.82, 1.78, zs + .02); g.add(seam);
+  const glass2 = glass.clone(); glass2.side = THREE.DoubleSide;
+  for (const s of [1, -1]) { const w = m(win, s > 0 ? glass : glass2, false); w.position.z = s * zs; g.add(w); }
+  const doorFrame = m(new THREE.BoxGeometry(1.06, 2.66, .01), black, false); doorFrame.position.set(4.82, 1.78, zs + .001); g.add(doorFrame);
+  const leaves = [];
+  for (const k of [-1, 1]) { const lf = m(new RoundedBoxGeometry(.49, 2.58, .04, 3, .04), glass, false); lf.position.set(4.82 + k * .25, 1.78, zs + .02); g.add(lf); leaves.push({ m: lf, k, x0: 4.82 + k * .25 }); }
+  g.userData.door = t => { for (const l of leaves) { l.m.position.x = l.x0 + l.k * .42 * t; l.m.position.z = zs + .02 + .12 * Math.sin(Math.min(1, t * 2) * Math.PI / 2); } };
+  g.userData.doorPos = new THREE.Vector3(4.82, 0, Wd / 2 + .4);
   // livery decals on both flanks, below the glazing
   for (const s of [1, -1]) {
     const t = await livery(s);
@@ -124,7 +147,7 @@ export async function makeBus() {
   for (const ax of AX) {
     const well = m(new THREE.CylinderGeometry(.67, .67, Wd - .1, 40, 1, true, -Math.PI / 2, Math.PI), new THREE.MeshStandardMaterial({ color: '#08090c', roughness: .95, side: THREE.BackSide }), false);
     well.rotation.x = Math.PI / 2; well.position.set(ax, .42, 0); g.add(well);
-    for (const s of [-1, 1]) { const wh = wheel(s, tyreM, rimM, darkM); wh.position.set(ax, .52, s * (Wd / 2 - .2)); g.add(wh); }
+    for (const s of [-1, 1]) { const wh = wheel(s, tyreM, rimM, darkM); wh.position.set(ax, .52, s * (Wd / 2 - .2)); g.add(wh); (g.userData.wheels ||= []).push(wh); }
   }
   // roof pod + lower skirt trim
   const pod = m(new RoundedBoxGeometry(3.4, .22, 1.7, 6, .1), paint); pod.position.set(-1.6, 3.66, 0); g.add(pod);
