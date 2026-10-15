@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-14T23:44:40.118Z",
+        "updatedAt": "2026-10-15T00:48:59.835Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1187,7 +1187,7 @@
           "partnerLogoScale": 95,
           "webPartnerBoxSize": 170,
           "fontScale": 104,
-          "factoryFontScale": 100,
+          "factoryFontScale": 159,
           "columns": 1,
           "photoLayout": "row",
           "motion": true,
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-14T23:44:40.120Z",
+      "updatedAt": "2026-10-15T00:48:59.838Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
