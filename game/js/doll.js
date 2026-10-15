@@ -48,10 +48,11 @@ export function animateDoll(d, dt, speed, face, camPos, worldPos) {
   v.bodyPivot.position.y = Math.abs(s) * .045 * k + Math.sin(d.t * 2.1) * .004 * (1 - k);
   v.bodyPivot.rotation.z = s * .025 * k;
   v.bodyPivot.scale.y = 1 + Math.sin(d.t * 2.1) * .004 * (1 - k);
-  // arms swing out of phase; foreshortening fakes the forward/back motion
-  const sw = .2 * k, idle = Math.sin(d.t * 1.6) * .02 * (1 - k);
-  v.armL.rotation.z = -s * sw - .02 + idle; v.armR.rotation.z = -s * sw + .02 - idle;
-  v.armL.scale.y = 1 - Math.max(0, s) * .06 * k; v.armR.scale.y = 1 - Math.max(0, -s) * .06 * k;
+  // arms swing against the legs, as in a natural walk: while the left foot steps, the right arm comes
+  // forward (foreshortened, the hand rising towards the middle) and the left arm swings back, then the reverse
+  const idle = Math.sin(d.t * 1.6) * .02 * (1 - k), fwdL = Math.max(0, -s), fwdR = Math.max(0, s);
+  v.armL.rotation.z = (fwdL * .1 - fwdR * .09) * k - .02 + idle; v.armR.rotation.z = (fwdL * .09 - fwdR * .1) * k + .02 - idle;
+  v.armL.scale.y = 1 - fwdL * .17 * k + fwdR * .03 * k; v.armR.scale.y = 1 - fwdR * .17 * k + fwdL * .03 * k;
   // shoes: the stepping foot lifts and comes towards the viewer
   const lift = .055 * k, fwd = d.face === 'front' ? 1 : -1;
   const l = Math.max(0, s), r = Math.max(0, -s);

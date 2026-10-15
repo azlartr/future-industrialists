@@ -18,26 +18,65 @@ const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 const clamp = THREE.MathUtils.clamp;
 const store = { get(k, d) { try { const v = localStorage.getItem('fi.' + k); return v === null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem('fi.' + k, JSON.stringify(v)); } catch {} } };
 
-/* ---------------- audio: music + effects, each with its own volume ---------------- */
+/* ---------------- audio: music + effects, each with its own volume ----------------
+   Everything runs through one Web Audio graph (a music bus and an effects bus), so the volume sliders
+   also work on iPhones, where <audio>.volume is read-only. Two <audio> decks cross-fade the music; the
+   short effects are decoded once and played from memory. Browsers allow sound only after the first
+   tap, so the graph is unlocked on the first touch, click or key (and tried at load for returning visitors). */
+const SFX = ['ui_click', 'ui_hover', 'task_done', 'wrong', 'points', 'level_up', 'panel_open', 'panel_close', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5', 'factory_metal', 'pin_drop'];
 const Audio_ = {
-  musicVol: store.get('music', .8), sfxVol: store.get('sfx', .9), cur: null, base: .5, name: '', unlocked: false,
-  music(name, { loop = true, vol = .5 } = {}) {
-    if (this.name === name) return; this.name = name;
-    const old = this.cur, a = new Audio(`assets/music/${name}.mp3`); a.loop = loop; a.volume = 0; a.preload = 'auto';
-    this.cur = a; this.base = vol; this.play(a);
-    this.fade(a, vol * this.musicVol, 900); if (old) this.fade(old, 0, 900, () => old.pause());
+  musicVol: store.get('music', .8), sfxVol: store.get('sfx', .9), name: '', ctx: null, decks: [], cur: 0, buf: {}, primed: false,
+  init() {
+    if (this.ctx) return true;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+    const c = this.ctx = new AC();
+    this.mBus = c.createGain(); this.mBus.gain.value = this.musicVol; this.mBus.connect(c.destination);
+    this.sBus = c.createGain(); this.sBus.gain.value = this.sfxVol; this.sBus.connect(c.destination);
+    this.decks = [0, 1].map(() => {
+      const a = new Audio(); a.preload = 'auto'; const g = c.createGain(); g.gain.value = 0; c.createMediaElementSource(a).connect(g).connect(this.mBus);
+      a.addEventListener('playing', () => this.ui()); a.addEventListener('pause', () => this.ui()); return { a, g, t: 0 };
+    });
+    for (const n of SFX) fetch(`assets/sfx/${n}.mp3`).then(r => r.arrayBuffer()).then(d => c.decodeAudioData(d)).then(b => { this.buf[n] = b; }).catch(() => {});
+    c.addEventListener('statechange', () => { this.ui(); if (this.running) this.resumeTrack(); });
+    return true;
   },
-  play(a) { if (this.unlocked) a.play().then(() => this.ui()).catch(() => {}); },
-  fade(a, to, ms, done) { const from = a.volume, t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / ms); a.volume = clamp(from + (to - from) * k, 0, 1); if (k < 1) requestAnimationFrame(step); else done?.(); }; requestAnimationFrame(step); },
-  sfx(name, vol = .7) { if (!this.unlocked || this.sfxVol <= 0) return; const a = new Audio(`assets/sfx/${name}.ogg`); a.volume = Math.min(1, vol * this.sfxVol); a.play().catch(() => {}); },
-  setMusic(v) { this.musicVol = v; store.set('music', v); if (this.cur) this.cur.volume = Math.min(1, this.base * v); this.ui(); },
-  setSfx(v) { this.sfxVol = v; store.set('sfx', v); },
-  unlock() { if (this.unlocked) return; this.unlocked = true; if (this.cur) this.play(this.cur); },
-  ui() { document.body.classList.toggle('playing', !!this.cur && !this.cur.paused && this.musicVol > 0); $('#snd-wave').style.display = this.musicVol > 0 || this.sfxVol > 0 ? '' : 'none'; }
+  get running() { return this.ctx?.state === 'running'; },
+  music(name, { loop = true, vol = .5 } = {}) {
+    const old = this.decks[this.cur];
+    if (this.name === name && old && !old.a.paused) return;
+    this.name = name; if (!this.init()) return;
+    const now = this.ctx.currentTime; this.cur ^= 1; const nw = this.decks[this.cur];
+    if (old) { old.g.gain.cancelScheduledValues(now); old.g.gain.setValueAtTime(old.g.gain.value, now); old.g.gain.linearRampToValueAtTime(0, now + .9); clearTimeout(old.t); old.t = setTimeout(() => old.a.pause(), 950); }
+    clearTimeout(nw.t); nw.a.src = `assets/music/${name}.mp3`; nw.a.loop = loop;
+    nw.g.gain.cancelScheduledValues(now); nw.g.gain.setValueAtTime(0, now); nw.g.gain.linearRampToValueAtTime(vol, now + .9);
+    if (this.running || this.primed) nw.a.play().catch(() => {});
+  },
+  resumeTrack() { const d = this.decks[this.cur]; if (this.name && d?.a.paused && !d.a.ended && d.a.src.includes('/music/')) d.a.play().catch(() => {}); },
+  sfx(name, vol = .7) {
+    if (!this.running || this.sfxVol <= 0 || !this.buf[name]) return;
+    const src = this.ctx.createBufferSource(), g = this.ctx.createGain(); src.buffer = this.buf[name]; g.gain.value = vol; src.connect(g).connect(this.sBus); src.start();
+  },
+  setMusic(v) { this.musicVol = v; store.set('music', v); if (this.mBus) this.mBus.gain.value = v; this.ui(); },
+  setSfx(v) { this.sfxVol = v; store.set('sfx', v); if (this.sBus) this.sBus.gain.value = v; this.ui(); },
+  unlock() {
+    if (!this.init()) return;
+    if (!this.running && !document.hidden) this.ctx.resume().catch(() => {});
+    // iOS lets an <audio> element start later on its own only if it was started once inside a tap,
+    // so both decks play a moment of silence on the first one
+    if (!this.primed) {
+      this.primed = true;
+      for (const o of this.decks) if (o.a.paused && !o.a.src.includes('/music/')) { o.a.src = 'assets/sfx/silence.mp3'; o.a.play().catch(() => { this.primed = false; }); }
+    }
+    this.resumeTrack();
+  },
+  ui() { const d = this.decks[this.cur]; document.body.classList.toggle('playing', !!d && !d.a.paused && this.running && this.musicVol > 0); $('#snd-wave').style.display = this.musicVol > 0 || this.sfxVol > 0 ? '' : 'none'; }
 };
 const A = { sfx: (n, v) => Audio_.sfx(n, v) };
-addEventListener('pointerdown', () => Audio_.unlock(), { capture: true });
-addEventListener('keydown', () => Audio_.unlock(), { capture: true });
+for (const ev of ['pointerdown', 'touchend', 'click', 'keydown']) addEventListener(ev, () => Audio_.unlock(), { capture: true });
+// a hidden tab goes quiet and picks the music up again on return
+document.addEventListener('visibilitychange', () => { if (!Audio_.ctx) return; if (document.hidden) Audio_.ctx.suspend(); else if (Audio_.primed) Audio_.ctx.resume().catch(() => {}); });
+// returning visitors whose browser already allows sound hear the theme on the very first screen
+if (!Q.get('auto')) { try { if (Audio_.init() && Audio_.running) Audio_.music('menu', { vol: .55 }); } catch {} }
 const sp = $('#settings');
 $('#snd').addEventListener('click', e => { e.stopPropagation(); sp.hidden = !sp.hidden; Audio_.sfx(sp.hidden ? 'panel_close' : 'panel_open', .5); });
 addEventListener('pointerdown', e => { if (!sp.hidden && !sp.contains(e.target) && !$('#snd').contains(e.target)) sp.hidden = true; });
@@ -231,7 +270,7 @@ async function enterRegion() {
   const loc = L(); bus.position.set(loc.busX, .02, LAYOUT.LANE_Z); bus.userData.door(0);
   player.root.visible = true; player.root.position.set(loc.x + 1.5, .03, -25); player.yaw = 0; camYaw = Math.PI; camPitch = .28;
   show('hud'); $('#hud').classList.add('cine'); S.cine = true; skip = false; S.mode = 'intro'; updateHUD();
-  Audio_.music(REGIONS[S.region].music, { vol: .42 });
+  Audio_.music(REGIONS[S.region].music, { vol: .55 });
   const t0 = performance.now(), D = 4200;
   while (!skip) {
     const k = Math.min(1, (performance.now() - t0) / D), e = ease(k);
@@ -368,7 +407,7 @@ async function rideTo(dest) {
   bus.position.x = b; skip = false;
   // arrive: doors open, the student steps down
   S.loc = dest; show('hud'); $('#hud').classList.add('cine'); updateHUD();
-  Audio_.music(REGIONS[S.region].music, { vol: .42 }); Audio_.sfx('panel_open', .6);
+  Audio_.music(REGIONS[S.region].music, { vol: .55 }); Audio_.sfx('panel_open', .6);
   const d2 = busDoor(); player.root.visible = true; player.root.position.set(d2.x, .2, 7.2);
   const to = new THREE.Vector3(d2.x - .4, .2, 9.6);
   camera.position.set(d2.x + 5, 2.6, 14.5); camera.lookAt(d2.x, 1.3, 8);
@@ -391,7 +430,7 @@ async function enterFactory(F) {
 async function playFactory(F) {
   const T = TRACKS[F.track];
   if (F.game === 'hazard') {
-    S.mode = 'factory'; show('mhud'); Audio_.music('factory_1', { vol: .4 });
+    S.mode = 'factory'; show('mhud'); Audio_.music('factory_1', { vol: .5 });
     const far = camera.aspect < .8 ? 1.45 : camera.aspect < 1.2 ? 1.2 : 1;
     camera.position.copy(IN.view.target).add(IN.view.pos.clone().sub(IN.view.target).multiplyScalar(far)); camera.lookAt(IN.view.target);
     orbit = new OrbitControls(camera, renderer.domElement); orbit.target.copy(IN.view.target); orbit.enablePan = false; orbit.enableDamping = true;
@@ -402,7 +441,7 @@ async function playFactory(F) {
     return;
   }
   // a mini-game in front of the working factory
-  S.mode = 'minigame'; show('none'); Audio_.music(F.game === 'quiz' || F.game === 'memory' ? 'factory_2' : 'factory_1', { vol: .38 });
+  S.mode = 'minigame'; show('none'); Audio_.music(F.game === 'quiz' || F.game === 'memory' ? 'factory_2' : 'factory_1', { vol: .5 });
   await howto('f-' + F.id, `مسار ${T.name}: ${F.title}`, [['🎯', F.brief], ['⭐', 'كلما كان أداؤك أدق حصلت على نجوم أكثر (حتى 3 نجوم)'], ['✕', 'تقدر تخرج من اللعبة بأي وقت من زر الإغلاق']]);
   const out = await runMiniGame(F, A);
   if (out.exit) { leaveFactory('خرجت من المصنع · يمكنك العودة في أي وقت'); return; }
@@ -446,13 +485,14 @@ function leaveFactory(msg) {
   orbit?.dispose(); orbit = null; labels.forEach(l => l.el.remove()); labels.length = 0; cv.style.cursor = ''; hover = null;
   if (IN) { IN.dispose(); IN = null; }
   const loc = L(); player.root.visible = true; player.root.position.set(loc.x, .2, -11.6); player.yaw = 0; camYaw = .25; camPitch = .3; follow(0, true);
-  S.mode = 'world'; show('hud'); Audio_.music(REGIONS[S.region].music, { vol: .42 }); updateHUD(); if (msg) toast(msg, 2600);
+  S.mode = 'world'; show('hud'); Audio_.music(REGIONS[S.region].music, { vol: .55 }); updateHUD(); if (msg) toast(msg, 2600);
 }
 function leaveAnyFactory() { orbit?.dispose(); orbit = null; if (IN) { IN.dispose(); IN = null; } $('#mg')?.classList.remove('on'); }
 
 /* ---------------- the finale ---------------- */
+let finT = 0;
 function finale() {
-  S.mode = 'menu'; show('final'); Audio_.music('awards', { loop: false, vol: .8 }); setTimeout(() => Audio_.music('theme_song', { vol: .6 }), 11000);
+  S.mode = 'menu'; show('final'); Audio_.music('awards', { loop: false, vol: .8 }); clearTimeout(finT); finT = setTimeout(() => { if ($('#final').classList.contains('on')) Audio_.music('theme_song', { vol: .6 }); }, 11000);
   $('#fin-text').textContent = `${nameOf(S.char)}، زرت 12 مصنعاً في 4 مناطق وجمعت شارات المسارات.`;
   $('#fin-badges').innerHTML = Object.entries(TRACKS).map(([k, t]) => `<img src="${t.badge}" alt="${t.name}" class="${badgeSet().has(k) ? '' : 'off'}">`).join('');
   $('#fin-pts').textContent = `${points().toLocaleString('en')} نقطة`;
@@ -460,7 +500,7 @@ function finale() {
   const cols = ['#847bb8', '#3c58a7', '#f2c230', '#2fb36d', '#ffffff', '#e45b8f'], ps = Array.from({ length: 160 }, () => ({ x: Math.random() * c.width, y: -Math.random() * c.height, v: 60 + Math.random() * 120, r: Math.random() * 6, s: 4 + Math.random() * 6, c: cols[Math.random() * cols.length | 0] }));
   let last = performance.now(); (function fx(now) { if (!$('#final').classList.contains('on')) return; const dt = clamp((now - last) / 1000, 0, .05); last = now; x.clearRect(0, 0, c.width, c.height); for (const p of ps) { p.y += p.v * dt; p.r += dt * 4; if (p.y > c.height + 10) p.y = -10; x.save(); x.translate(p.x + Math.sin(p.r) * 10, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); } requestAnimationFrame(fx); })(last);
 }
-$('#fin-ok').onclick = () => { Audio_.sfx('ui_click'); show('hud'); S.mode = 'world'; Audio_.music(REGIONS[S.region].music, { vol: .42 }); };
+$('#fin-ok').onclick = () => { Audio_.sfx('ui_click'); show('hud'); S.mode = 'world'; Audio_.music(REGIONS[S.region].music, { vol: .55 }); };
 
 /* ---------------- loop ---------------- */
 function loop() {
@@ -483,7 +523,7 @@ function loop() {
 loop();
 
 /* ---------------- test hooks for automated screenshots ---------------- */
-window.__game = { S, show, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
+window.__game = { S, show, Audio_, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
 (async () => {
   const auto = Q.get('auto');
   if (!auto) { window.__ready = true; return; }
