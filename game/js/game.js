@@ -5,6 +5,7 @@ import { makeBus } from './bus.js';
 import { buildInterior } from './interior.js';
 import { runMiniGame } from './games.js';
 import { REGIONS, ORDER, TRACKS, ALL } from './regions.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { makeDoll, animateDoll } from './doll.js';
 import { canvas, toTex } from './tex.js';
 import { Ambient } from './fx.js';
@@ -204,12 +205,67 @@ async function loadRegion(key) {
   RW = w;
 }
 async function getPlayer(kind, tint) {
-  dolls[kind] ||= { root: null, doll: await makeDoll(kind), speed: 0, yaw: 0 };
-  const p = dolls[kind]; p.root = p.doll.root;
-  p.root.traverse(o => { if (o.material?.color && !o.userData.blob) o.material.color.set(tint); });
+  if (!dolls[kind]) { const hero = await loadHero(kind); dolls[kind] = hero ? { hero, speed: 0, yaw: 0 } : { doll: await makeDoll(kind), speed: 0, yaw: 0 }; }
+  const p = dolls[kind]; p.root = p.hero ? p.hero.root : p.doll.root;
+  if (!p.hero) p.root.traverse(o => { if (o.material?.color && !o.userData.blob) o.material.color.set(tint); });
   if (!p.root.userData.blob) { const [c, x] = canvas(128, 128); const g = x.createRadialGradient(64, 64, 4, 64, 64, 62); g.addColorStop(0, 'rgba(10,14,40,.42)'); g.addColorStop(1, 'rgba(10,14,40,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128); const blob = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.1), new THREE.MeshBasicMaterial({ map: toTex(c), transparent: true, depthWrite: false })); blob.rotation.x = -Math.PI / 2; blob.position.y = .02; blob.userData.blob = true; blob.renderOrder = 1; p.root.add(blob); p.blob = blob; p.root.userData.blob = true; }
   return p;
 }
+/* 3D characters: rigged GLB files with Mixamo bone names. Clips are picked by name (walk, run, idle) from
+   every file listed; a kind without a model keeps the paper-doll rig. */
+const HEROES = { boy: ['assets/chars/boy.glb'] }, HERO_H = 1.5;
+async function loadHero(kind) {
+  const files = HEROES[kind]; if (!files) return null;
+  try {
+    const loader = new GLTFLoader(), [main, ...extra] = await Promise.all(files.map(f => loader.loadAsync(f)));
+    const model = main.scene, box = new THREE.Box3().setFromObject(model), s = HERO_H / (box.max.y - box.min.y);
+    model.scale.setScalar(s); model.position.y = -box.min.y * s;
+    model.traverse(o => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
+    const clips = [main, ...extra].flatMap(g => g.animations), mixer = new THREE.AnimationMixer(model), act = {};
+    for (const [k, re] of [['walk', /walk/i], ['run', /run|jog/i], ['idle', /idle|breath|stand/i]]) { const c = clips.find(x => re.test(x.name)); if (c) act[k] = mixer.clipAction(c); }
+    if (!act.walk && clips[0]) act.walk = mixer.clipAction(clips[0]);
+    for (const a of Object.values(act)) { a.play(); a.setEffectiveWeight(0); }
+    const bones = {}; model.traverse(o => { if (o.isBone) bones[o.name.replace(/^mixamorig:?/, '')] = o; });
+    const root = new THREE.Group(); root.add(model);
+    const h = { root, model, mixer, act, bones, w: { walk: 0, run: 0 }, yaw: 0, t: 0, last: null, tweak: [] };
+    h.pace = { walk: pace(h, act.walk), run: pace(h, act.run) };
+    return h;
+  } catch (e) { console.warn('hero model', kind, e); return null; }
+}
+// metres per second a clip covers at normal speed: how fast the planted foot slides back under the body
+function pace(h, action) {
+  const foot = h.bones.LeftFoot; if (!action || !foot) return 1;
+  const c = action.getClip(), v = new THREE.Vector3(), N = 96, zs = [];
+  for (const a of Object.values(h.act)) a.setEffectiveWeight(a === action ? 1 : 0);
+  for (let i = 0; i <= N; i++) { h.mixer.setTime(c.duration * i / N); h.root.updateMatrixWorld(true); zs.push(foot.getWorldPosition(v).z); }
+  for (const a of Object.values(h.act)) a.setEffectiveWeight(0); h.mixer.setTime(0);
+  const back = []; for (let i = 1; i <= N; i++) { const d = (zs[i] - zs[i - 1]) / (c.duration / N); if (d < 0) back.push(-d); }
+  back.sort((a, b) => a - b); return back.length ? Math.max(.3, back[back.length >> 1]) : 1;
+}
+function faceHero(yaw) { const h = player?.hero; if (h) { h.yaw = h.model.rotation.y = yaw; h.last = null; } }
+/* speed in m/s, or null to take it from how far the character moved this frame */
+function animatePlayer(p, dt, speed, face) {
+  if (!p.hero) { animateDoll(p.doll, dt, speed ?? p.speed, face, camera.position, p.root.position); return; }
+  const h = p.hero, pos = p.root.position;
+  h.last ||= pos.clone();
+  const dx = pos.x - h.last.x, dz = pos.z - h.last.z, moved = Math.hypot(dx, dz) < 2 ? Math.hypot(dx, dz) : 0; h.last.copy(pos);
+  const v = speed ?? (dt > 0 ? moved / dt : 0);
+  if (moved > 1e-4 && v > .3) h.yaw = Math.atan2(dx, dz);
+  const turn = Math.atan2(Math.sin(h.yaw - h.model.rotation.y), Math.cos(h.yaw - h.model.rotation.y)); h.model.rotation.y += turn * Math.min(1, dt * 10);
+  // walk and run blend by speed; standing still eases back to the rest pose (or the idle clip)
+  const moveK = clamp(v / .5, 0, 1), runK = h.act.run ? clamp((v - 2.4) / 1.2, 0, 1) : 0, f = Math.min(1, dt * 8);
+  h.w.walk += (moveK * (1 - runK) - h.w.walk) * f; h.w.run += (moveK * runK - h.w.run) * f;
+  h.act.walk?.setEffectiveWeight(h.w.walk); h.act.run?.setEffectiveWeight(h.w.run); h.act.idle?.setEffectiveWeight(1 - h.w.walk - h.w.run);
+  if (h.act.walk) h.act.walk.timeScale = clamp(v / h.pace.walk, .7, 2.3);
+  if (h.act.run) h.act.run.timeScale = clamp(v / h.pace.run, .7, 1.8);
+  // small procedural touches: breathing and a glance around while standing, a forward lean when hurrying
+  for (const [b, ax, a] of h.tweak) b.rotation[ax] -= a; h.tweak.length = 0;
+  h.mixer.update(dt); h.t += dt;
+  const still = clamp(1 - h.w.walk - h.w.run, 0, 1), B = h.bones, add = (b, ax, a) => { if (b && a) { b.rotation[ax] += a; h.tweak.push([b, ax, a]); } };
+  if (!h.act.idle) { add(B.Spine2, 'x', Math.sin(h.t * 2.1) * .02 * still); add(B.Head, 'y', Math.sin(h.t * .45) * .2 * still); add(B.LeftArm, 'z', Math.sin(h.t * 2.1) * .02 * still); add(B.RightArm, 'z', -Math.sin(h.t * 2.1) * .02 * still); }
+  if (!h.act.run) add(B.Spine, 'x', clamp((v - 2) / 1.6, 0, 1) * .14);
+}
+
 function makeMarker() {
   const g = new THREE.Group();
   const ring = new THREE.Mesh(new THREE.RingGeometry(1.1, 1.4, 48), new THREE.MeshBasicMaterial({ color: '#847bb8', transparent: true, opacity: .85, depthWrite: false })); ring.rotation.x = -Math.PI / 2; ring.position.y = .05; g.add(ring);
@@ -268,14 +324,14 @@ function updateHUD() {
 /* ---------------- arrival in a region: a short establishing shot, then play ---------------- */
 async function enterRegion() {
   const loc = L(); bus.position.set(loc.busX, .02, LAYOUT.LANE_Z); bus.userData.door(0);
-  player.root.visible = true; player.root.position.set(loc.x + 1.5, .03, -25); player.yaw = 0; camYaw = Math.PI; camPitch = .28;
+  player.root.visible = true; player.root.position.set(loc.x + 1.5, .03, -25); player.yaw = 0; faceHero(0); camYaw = Math.PI; camPitch = .28;
   show('hud'); $('#hud').classList.add('cine'); S.cine = true; skip = false; S.mode = 'intro'; updateHUD();
   Audio_.music(REGIONS[S.region].music, { vol: .55 });
   const t0 = performance.now(), D = 4200;
   while (!skip) {
     const k = Math.min(1, (performance.now() - t0) / D), e = ease(k);
     camera.position.set(loc.x + 60 - e * 56, 42 - e * 37, 40 - e * 76); camera.lookAt(loc.x + (1 - e) * 10, 1.5, -20 - e * 6);
-    sunAt(camera.position.x, -10); RW.update(1 / 60); animateDoll(player.doll, 1 / 60, 0, 'back', camera.position, player.root.position);
+    sunAt(camera.position.x, -10); RW.update(1 / 60); animatePlayer(player, 1 / 60, 0, 'back');
     renderer.render(RW.scene, camera); await frame(); if (k >= 1) break;
   }
   $('#hud').classList.remove('cine'); S.cine = false; S.mode = 'world'; skip = false; follow(0, true);
@@ -304,7 +360,7 @@ function busInWay(tgt, want) {
 }
 let camDist = 6, camLift = 0;
 function follow(dt, snap = false) {
-  const r = player.root, tgt = new THREE.Vector3(r.position.x, r.position.y + 1.3, r.position.z), full = touch ? 6.6 : 6, want0 = camClear(tgt, full);
+  const r = player.root, tgt = new THREE.Vector3(r.position.x, r.position.y + 1.25, r.position.z), full = player.hero ? (touch ? 5.8 : 5.2) : (touch ? 6.6 : 6), want0 = camClear(tgt, full);
   camDist = snap || want0 < camDist ? want0 : camDist + (want0 - camDist) * Math.min(1, dt * 2.5); const dist = camDist;
   const want = new THREE.Vector3(tgt.x + Math.sin(camYaw) * Math.cos(camPitch) * dist, tgt.y + Math.sin(camPitch) * dist, tgt.z + Math.cos(camYaw) * Math.cos(camPitch) * dist);
   // the bus in the way: lift a little and swing round to the open side, unless the player is steering the view
@@ -322,7 +378,7 @@ function walk(dt) {
   let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joy.x;
   let iz = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0) + joy.y;
   const mag = Math.min(1, Math.hypot(ix, iz)), run = keys.ShiftLeft || keys.ShiftRight || (mag > .95 && touch);
-  const target = mag > .1 ? (run ? 5.4 : 3.1) : 0; p.speed += (target - p.speed) * Math.min(1, dt * 8);
+  const target = mag > .1 ? (p.hero ? (run ? 3.4 : 1.5) : (run ? 5.4 : 3.1)) : 0; p.speed += (target - p.speed) * Math.min(1, dt * 8);
   let face = null;
   if (mag > .1) {
     const ang = Math.atan2(ix, iz) + camYaw, dx = Math.sin(ang), dz = Math.cos(ang);
@@ -337,9 +393,9 @@ function walk(dt) {
     r.position.x = nx; r.position.z = nz;
     p.yaw = ang; face = Math.cos(ang - camYaw) > 0 ? 'front' : 'back';
     const onWalk = nz > 7.8 || (nz < -7.8 && nz > -13.2) || Math.abs(nz) < .8; r.position.y += ((nz < -13.2 ? .03 : onWalk ? .2 : .02) - r.position.y) * Math.min(1, dt * 12);
-    stepT -= dt * (p.speed / 3); if (stepT <= 0) { Audio_.sfx(`step_${1 + (Math.random() * 5 | 0)}`, .2); stepT = .42; }
+    stepT -= dt * (p.speed / (p.hero ? 1.5 : 3)); if (stepT <= 0) { Audio_.sfx(`step_${1 + (Math.random() * 5 | 0)}`, .2); stepT = .42; }
   }
-  animateDoll(p.doll, dt, p.speed, face, camera.position, r.position);
+  animatePlayer(p, dt, p.speed, face);
   follow(dt);
   sunAt(r.position.x, r.position.z);
   // interactions
@@ -377,7 +433,7 @@ async function rideTo(dest) {
   // board: the doors open, the student walks in
   Audio_.sfx('panel_open', .6);
   camera.position.set(door.x + 6, 2.6, 15); camera.lookAt(door.x, 1.4, 7.2);
-  let k = 0; await cine(dt => { k += dt / 1.6; bus.userData.door(Math.min(1, k * 2)); const e = ease(Math.min(1, k)); player.root.position.lerpVectors(from, new THREE.Vector3(door.x, .2, 7.2), e); player.speed = 2.4; animateDoll(player.doll, dt, 2.4, 'back', camera.position, player.root.position); return k < 1; });
+  let k = 0; await cine(dt => { k += dt / 1.6; bus.userData.door(Math.min(1, k * 2)); const e = ease(Math.min(1, k)); player.root.position.lerpVectors(from, new THREE.Vector3(door.x, .2, 7.2), e); player.speed = 2.4; animatePlayer(player, dt, null, 'back'); return k < 1; });
   player.root.visible = false; bus.userData.door(0);
   // the ride
   show('ride'); $('#ride-to').textContent = D.name;
@@ -411,7 +467,7 @@ async function rideTo(dest) {
   const d2 = busDoor(); player.root.visible = true; player.root.position.set(d2.x, .2, 7.2);
   const to = new THREE.Vector3(d2.x - .4, .2, 9.6);
   camera.position.set(d2.x + 5, 2.6, 14.5); camera.lookAt(d2.x, 1.3, 8);
-  k = 0; await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(new THREE.Vector3(d2.x, .2, 7.2), to, ease(Math.min(1, k))); player.speed = 2.4; animateDoll(player.doll, dt, 2.4, 'front', camera.position, player.root.position); return k < 1; });
+  k = 0; await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(new THREE.Vector3(d2.x, .2, 7.2), to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
   bus.userData.door(0); player.speed = 0; player.root.position.copy(to);
   camYaw = .35; camPitch = .3; follow(0, true); justArrived = D.kind === 'factory'; $('#hud').classList.remove('cine'); S.mode = 'world'; skip = false;
   toast(D.kind === 'school' ? 'وصلت إلى المدرسة' : `وصلت إلى ${D.name} · اعبر ممر المشاة إلى البوابة`, 3200);
@@ -484,7 +540,7 @@ async function showResult(F, stars) {
 function leaveFactory(msg) {
   orbit?.dispose(); orbit = null; labels.forEach(l => l.el.remove()); labels.length = 0; cv.style.cursor = ''; hover = null;
   if (IN) { IN.dispose(); IN = null; }
-  const loc = L(); player.root.visible = true; player.root.position.set(loc.x, .2, -11.6); player.yaw = 0; camYaw = .25; camPitch = .3; follow(0, true);
+  const loc = L(); player.root.visible = true; player.root.position.set(loc.x, .2, -11.6); player.yaw = 0; faceHero(0); camYaw = .25; camPitch = .3; follow(0, true);
   S.mode = 'world'; show('hud'); Audio_.music(REGIONS[S.region].music, { vol: .55 }); updateHUD(); if (msg) toast(msg, 2600);
 }
 function leaveAnyFactory() { orbit?.dispose(); orbit = null; if (IN) { IN.dispose(); IN = null; } $('#mg')?.classList.remove('on'); }
