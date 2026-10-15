@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="robots" content="noindex,nofollow">
+<title>رحلة صناعيو المستقبل</title>
+<link rel="icon" href="assets/img/logo-mark.webp">
+<style>
+@font-face{font-family:"Readex Pro";src:url(assets/readex.ttf) format("truetype");font-weight:200 700;font-display:swap}
+:root{--violet:#847bb8;--blue:#3c58a7;--navy:#2a3590;--wash:#c4d3ef;--ink:#1b2263;--muted:#5a6390;--grad:linear-gradient(135deg,#2a3590,#3c58a7 55%,#847bb8)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#0f1430;font-family:"Readex Pro",system-ui,sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none;touch-action:none}
+button{font:inherit;cursor:pointer}
+[hidden]{display:none!important}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.screen{position:fixed;inset:0;display:none;z-index:10}
+.screen.on{display:block;animation:fade .45s ease}
+@keyframes fade{from{opacity:0}}
+.glass{background:rgba(255,255,255,.72);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.8);box-shadow:0 12px 34px rgba(16,22,70,.22);border-radius:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:10px 30px;border:0;border-radius:999px;background:var(--grad);color:#fff;font-weight:700;font-size:18px;box-shadow:0 12px 26px -10px rgba(42,53,144,.8);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:rgba(255,255,255,.88);color:var(--navy);box-shadow:0 8px 20px -10px rgba(0,0,0,.4)}
+.icon-btn{width:46px;height:46px;border-radius:14px;border:0;display:grid;place-items:center;color:var(--navy)}
+
+/* title */
+#title{background:#1b2263 center/cover no-repeat}
+@media (max-aspect-ratio:1/1){#title{background-position:23% 50%}}
+#title .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,18,60,.15) 0%,rgba(14,18,60,0) 35%,rgba(14,18,60,.75) 100%)}
+#title .brand{position:absolute;top:max(18px,env(safe-area-inset-top));right:50%;transform:translateX(50%);display:flex;flex-direction:column;align-items:center;gap:4px}
+#title .brand img{width:clamp(110px,14vw,170px);filter:drop-shadow(0 6px 16px rgba(0,0,0,.35));background:rgba(255,255,255,.92);border-radius:28px;padding:10px 14px}
+#title .foot{position:absolute;bottom:max(28px,env(safe-area-inset-bottom));left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;color:#fff;padding:0 16px}
+#title h1{margin:0;font-size:clamp(28px,4.4vw,52px);font-weight:700;text-shadow:0 4px 18px rgba(0,0,0,.45)}
+#title p{margin:0;font-size:clamp(14px,1.6vw,18px);opacity:.92}
+.tap{font-size:13px;opacity:.75;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.3}}
+
+/* pick */
+.panel-screen{background:radial-gradient(120% 90% at 50% 0%,#3c58a7 0%,#232c78 55%,#141a4f 100%);color:#fff}
+.panel-screen h2{margin:0;text-align:center;font-size:clamp(24px,3vw,36px);padding-top:max(26px,env(safe-area-inset-top))}
+.panel-screen .sub{margin:6px 0 0;text-align:center;opacity:.8;font-size:15px}
+.cards{position:absolute;inset:110px 16px 110px;display:flex;justify-content:center;align-items:stretch;gap:clamp(14px,3vw,40px)}
+.pcard{position:relative;flex:0 1 330px;border:2px solid rgba(255,255,255,.18);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));overflow:hidden;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:16px;transition:transform .3s,border-color .3s,background .3s}
+.pcard img{position:absolute;bottom:72px;left:50%;height:calc(100% - 96px);transform:translateX(-50%);filter:drop-shadow(0 18px 18px rgba(0,0,0,.35));transition:transform .4s}
+.pcard b{position:relative;font-size:24px}
+.pcard small{position:relative;opacity:.8}
+.pcard:hover,.pcard.sel{border-color:#fff;background:linear-gradient(180deg,rgba(132,123,184,.45),rgba(255,255,255,.08))}
+.pcard:hover img,.pcard.sel img{transform:translateX(-50%) scale(1.04)}
+.bottom-bar{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:center;gap:12px}
+
+/* regions */
+.regions{position:absolute;inset:110px 16px 110px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;max-width:1200px;margin:auto}
+.rcard{position:relative;border:2px solid rgba(255,255,255,.18);border-radius:24px;overflow:hidden;background:#222 center/cover;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;text-align:start;min-height:160px;transition:transform .3s,border-color .3s}
+.rcard::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,14,50,.85))}
+.rcard>*{position:relative}
+.rcard b{font-size:22px}
+.rcard small{opacity:.85}
+.rcard .tag{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#fff;color:var(--navy)}
+.rcard.locked{filter:grayscale(.5) brightness(.75);cursor:not-allowed}
+.rcard.locked .tag{background:rgba(255,255,255,.25);color:#fff}
+.rcard:not(.locked):hover{transform:translateY(-4px);border-color:#fff}
+
+/* loading */
+#loading{background:#111 center/cover no-repeat}
+#loading .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,50,.1),rgba(10,14,50,.8))}
+#loading .box{position:absolute;bottom:max(34px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 32px));padding:18px 22px;color:var(--ink)}
+#loading h3{margin:0 0 4px;font-size:22px}
+#loading .tip{margin:0 0 14px;color:var(--muted);font-size:14px;min-height:40px}
+.bar{height:10px;border-radius:999px;background:rgba(42,53,144,.12);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--grad);transition:width .3s}
+
+/* hud */
+#hud{pointer-events:none}
+#hud>*{pointer-events:auto}
+.h-top{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;left:118px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none}
+.h-top>*{pointer-events:auto}
+.who{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px}
+.who .av{width:44px;height:44px;border-radius:14px;background:var(--wash) top center/150% no-repeat}
+.who b{display:block;font-size:15px}
+.who small{color:var(--muted);font-size:12px}
+.stats{display:flex;gap:2px;padding:6px}
+.stats div{min-width:66px;text-align:center;padding:4px 10px}
+.stats div+div{border-inline-start:1px solid rgba(42,53,144,.12)}
+.stats b{display:block;font-size:18px;font-variant-numeric:tabular-nums}
+.stats small{font-size:11px;color:var(--muted)}
+.mission{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));right:16px;width:min(330px,calc(100% - 32px));padding:14px 16px}
+.mission .chip{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--grad);color:#fff;font-size:12px;font-weight:600}
+.mission h4{margin:8px 0 4px;font-size:17px}
+.mission p{margin:0 0 10px;font-size:13.5px;color:var(--muted);line-height:1.6}
+.mission .row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.prompt{position:absolute;left:50%;bottom:150px;transform:translateX(-50%);display:none}
+.prompt.on{display:flex}
+.hint{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);padding:8px 14px;font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;white-space:nowrap}
+.hint kbd{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:7px;background:var(--navy);color:#fff;font:600 12px "Readex Pro"}
+.joy{position:absolute;left:28px;bottom:max(28px,env(safe-area-inset-bottom));width:132px;height:132px;border-radius:50%;background:rgba(255,255,255,.28);border:2px solid rgba(255,255,255,.6);display:none;touch-action:none}
+.joy i{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+body.touch .joy{display:block}
+body.touch .hint{display:none}
+.toast{position:fixed;z-index:40;top:90px;left:50%;transform:translateX(-50%);padding:10px 18px;font-weight:600;display:none}
+.toast.on{display:block;animation:fade .3s}
+
+/* mission screens */
+.m-head{position:absolute;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);padding:12px 20px;text-align:center;min-width:min(460px,calc(100% - 140px))}
+.m-head b{display:block;font-size:17px}
+.m-head small{color:var(--muted)}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.dots i{width:12px;height:12px;border-radius:50%;background:rgba(42,53,144,.18);transition:background .3s,transform .3s}
+.dots i.on{background:#2fb36d;transform:scale(1.15)}
+.label3d{position:absolute;transform:translate(-50%,-120%);padding:6px 12px;border-radius:12px;background:#2fb36d;color:#fff;font-size:13px;font-weight:600;white-space:nowrap;pointer-events:none;box-shadow:0 8px 18px rgba(0,0,0,.25)}
+#done{background:rgba(12,16,52,.72);backdrop-filter:blur(6px)}
+#done .card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100% - 32px));padding:26px 24px 22px;text-align:center}
+#done img{width:170px;margin-top:-100px;filter:drop-shadow(0 16px 26px rgba(42,53,144,.5));animation:spin 1.4s cubic-bezier(.2,.7,.2,1)}
+@keyframes spin{from{transform:rotateY(540deg) scale(.3)}}
+#done h3{margin:8px 0 4px;font-size:24px}
+#done p{margin:0 0 16px;color:var(--muted)}
+#done .pts{font-size:34px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
+.corner{position:fixed;top:max(12px,env(safe-area-inset-top));left:12px;z-index:30;display:flex;gap:8px}
+@media (max-width:760px){
+  .cards{inset:96px 12px 100px}
+  .pcard img{bottom:64px}
+  .regions{grid-template-columns:repeat(2,minmax(0,1fr));inset:96px 12px 100px;overflow:auto}
+  .stats div{min-width:52px;padding:4px 6px}
+  .mission{width:min(250px,calc(100% - 180px));padding:10px 12px}
+  .mission p{display:none}
+  .who small{display:none}
+}
+</style>
+<script type="importmap">{"imports":{"three":"./lib/three.module.js","three/addons/":"./lib/jsm/"}}</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="corner">
+  <button class="icon-btn glass" id="snd" type="button" aria-label="الصوت"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path id="snd-wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+  <button class="icon-btn glass" id="home" type="button" aria-label="القائمة" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
+</div>
+
+<section class="screen on" id="title" style="background-image:url(assets/ui/load_regions.webp)">
+  <div class="shade"></div>
+  <div class="brand"><img src="assets/img/logo.webp" alt="صناعيو المستقبل"></div>
+  <div class="foot">
+    <h1>رحلة صناعيو المستقبل</h1>
+    <p>اركب الباص، زُر مصانع المملكة، وأنجز المهام لتفوز بشارات المسارات الأربعة</p>
+    <button class="btn" id="start" type="button">ابدأ الرحلة</button>
+    <span class="tap">النسخة التجريبية · منطقة الرياض</span>
+  </div>
+</section>
+
+<section class="screen panel-screen" id="pick">
+  <h2>اختر شخصيتك</h2>
+  <p class="sub">من سيرافقك في رحلة المصانع؟</p>
+  <div class="cards">
+    <button class="pcard" type="button" data-c="boy"><img src="assets/ui/boy_pose_cut.webp" alt=""><b>فهد</b><small>طالب · 15 سنة</small></button>
+    <button class="pcard" type="button" data-c="girl"><img src="assets/ui/girl_pose_cut.webp" alt=""><b>سارة</b><small>طالبة · 15 سنة</small></button>
+  </div>
+  <div class="bottom-bar"><button class="btn ghost" type="button" data-back="title">رجوع</button></div>
+</section>
+
+<section class="screen panel-screen" id="regions">
+  <h2>اختر محطتك الأولى</h2>
+  <p class="sub">كل منطقة فيها مصانع ومهام مختلفة</p>
+  <div class="regions">
+    <button class="rcard" type="button" data-r="riyadh" style="background-image:url(assets/ui/load_riyadh.webp)"><span class="tag">متاحة</span><b>الرياض</b><small>مصنع الربيع للأغذية</small></button>
+    <button class="rcard locked" type="button" data-r="makkah" style="background-image:url(assets/ui/load_jeddah.webp)"><span class="tag">قريباً</span><b>مكة المكرمة</b><small>جدة · مصنع يورك للتكييف</small></button>
+    <button class="rcard locked" type="button" data-r="qassim" style="background-image:url(assets/ui/load_qassim.webp)"><span class="tag">قريباً</span><b>القصيم</b><small>مصانع التمور والأغذية</small></button>
+    <button class="rcard locked" type="button" data-r="eastern" style="background-image:url(assets/ui/load_eastern.webp)"><span class="tag">قريباً</span><b>الشرقية</b><small>الموانئ والصناعات</small></button>
+  </div>
+  <div class="bottom-bar"><button class="btn ghost" type="button" data-back="pick">رجوع</button></div>
+</section>
+
+<section class="screen" id="loading">
+  <div class="shade"></div>
+  <div class="box glass">
+    <h3 id="ld-title">الطريق إلى الرياض</h3>
+    <p class="tip" id="ld-tip"></p>
+    <div class="bar"><i id="ld-bar"></i></div>
+  </div>
+</section>
+
+<section class="screen" id="hud">
+  <div class="h-top">
+    <div class="who glass"><span class="av" id="av"></span><div><b id="who-name">فهد</b><small>مسار المكتشف</small></div></div>
+    <div class="stats glass"><div><b id="st-pts">0</b><small>نقاط</small></div><div><b id="st-fac">0/1</b><small>مصانع</small></div><div><b id="st-bdg">0</b><small>شارات</small></div></div>
+  </div>
+  <div class="mission glass" id="m-card">
+    <span class="chip">مسار المكتشف</span>
+    <h4 id="m-title">زُر مصنع الربيع</h4>
+    <p id="m-text">اعبر الطريق من ممر المشاة إلى بوابة المصنع، وادخل لاكتشاف مخاطر السلامة على خط الإنتاج.</p>
+    <div class="bar"><i id="m-bar" style="width:10%"></i></div>
+    <div class="row"><span id="m-step">الخطوة 1 من 2</span><span>+300 نقطة</span></div>
+  </div>
+  <button class="btn prompt" id="act" type="button">ادخل المصنع</button>
+  <div class="hint glass" id="kbd-hint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> أو الأسهم للحركة · اسحب لتدوير الكاميرا · <kbd>E</kbd> للتفاعل</div>
+  <div class="joy" id="joy"><i></i></div>
+</section>
+<div class="toast glass" id="toast"></div>
+
+<section class="screen" id="mhud">
+  <div class="m-head glass"><b>مهمة المكتشف: مخاطر السلامة</b><small>ابحث عن 3 مخاطر في خط الإنتاج واضغط عليها</small><div class="dots" id="m-dots"><i></i><i></i><i></i></div></div>
+  <div class="hint glass" style="display:flex">اسحب للنظر حولك · اضغط على الخطر عندما تجده</div>
+  <div id="labels"></div>
+</section>
+
+<section class="screen" id="done">
+  <div class="card glass">
+    <img src="assets/ui/badge_discoverer.webp" alt="">
+    <h3>أحسنت! أنهيت مهمة المكتشف</h3>
+    <p>اكتشفت مخاطر السلامة الثلاثة في مصنع الربيع. حصلت على شارة المكتشف.</p>
+    <div class="pts">+300 نقطة</div>
+    <button class="btn" id="done-ok" type="button">متابعة الرحلة</button>
+  </div>
+</section>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

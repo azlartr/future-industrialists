@@ -51,6 +51,8 @@ mark.hl{background:linear-gradient(transparent 58%,rgba(132,123,184,.32) 58%);co
 .btn-ghost{background:var(--surface);border-color:var(--line);color:var(--navy)}
 .btn-ghost:hover{border-color:var(--navy)}
 .btn-light{background:#fff;color:var(--navy)}
+.btn-play{gap:8px;background:linear-gradient(135deg,#847bb8,#3c58a7);color:#fff;box-shadow:0 10px 22px -10px rgba(132,123,184,.9)}
+.btn-play svg{flex:none}
 .btn-sm{min-height:40px;padding:6px 16px;font-size:15px}
 section,#trip{scroll-margin-top:136px}
 .sec{padding-block:clamp(64px,9vw,112px)}
@@ -463,6 +465,8 @@ section,#trip{scroll-margin-top:136px}
 
   .top .logo img{width:56px}
   .top-actions .btn-primary{display:none}
+  .btn-play span{display:none}
+  .btn-play{width:40px;padding:0}
   .gate-top .links .btn-ghost{display:none}
   .gate-top{flex-direction:column-reverse;align-items:center}
   .gov .gl{height:52px}
@@ -487,6 +491,7 @@ section,#trip{scroll-margin-top:136px}
     <div class="gate-top">
       <div class="gov" id="gov-logos" aria-label="الشركاء الاستراتيجيون"></div>
       <div class="links">
+        <a class="btn btn-play btn-sm" href="https://azlartr.github.io/future-industrialists/game/" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.3 5H6.7a4 4 0 0 0-3.96 3.43l-.7 5.2A2.7 2.7 0 0 0 4.7 16.7c.8 0 1.5-.4 2-1l1.3-1.7h8l1.3 1.7c.5.6 1.2 1 2 1a2.7 2.7 0 0 0 2.66-3.07l-.7-5.2A4 4 0 0 0 17.3 5z"/></svg><span>العب الآن</span></a>
         <a class="btn btn-ghost btn-sm" href="https://futureindustrialist.org/identity/account/login" target="_blank" rel="noopener">تسجيل الدخول</a>
         <a class="btn btn-primary btn-sm" href="https://futureindustrialist.org/" target="_blank" rel="noopener">تقدم بمشروعك</a>
       </div>
@@ -506,7 +511,7 @@ section,#trip{scroll-margin-top:136px}
       </div>
     </div>
     <div class="gate-roll">
-      <small>شركاؤنا في صناعة المستقبل</small>
+      <small>شركاؤنا في صناعيو المستقبل</small>
       <div class="roll mono" id="gate-roll" style="--rh:64px;--dur:80s"><div class="roll-track"></div></div>
       <p class="credit"><span class="ct">تصميم<br>وتطوير</span><span class="az-lock" dir="ltr" role="img" aria-label="azlar creative" style="--h:16px"><svg class="az-mark" viewBox="0 0 136 138.2" aria-hidden="true"><path d="M135.98,2.22v133.81h-13.27v-28.44c-13,20.86-33.05,30.61-54.71,30.61C30.61,138.2,0,110.03,0,69.13S30.61.6,67.99.6c21.67,0,43.61,10.02,54.71,30.88V2.22h13.27Z"/></svg><span class="az-words"><svg class="az-name" viewBox="164 0 412 138.2" aria-hidden="true"><path d="M265.25,37.92v97.97h-18.22v-15.99c-7.44,11.34-19.33,18.22-34.58,18.22-28.07,0-48.34-21.94-48.34-51.31s20.45-49.82,48.34-49.82c15.24,0,27.14,6.32,34.58,17.47v-16.55h18.22ZM246.29,86.82c0-19.71-12.64-33.65-31.42-33.65s-31.23,14.5-31.23,33.65,13.2,33.83,31.23,33.83,31.42-13.94,31.42-33.83Z"/><path d="M357.64,119.91v15.99h-79.38v-14.13l53.35-67.85h-50.94v-15.99h74.92v14.69l-52.98,67.3h55.03Z"/><path d="M370.47,0h19.71v135.89h-19.71V0Z"/><path d="M506.17,37.92v97.97h-18.22v-15.99c-7.44,11.34-19.33,18.22-34.58,18.22-28.07,0-48.34-21.94-48.34-51.31s20.45-49.82,48.34-49.82c15.24,0,27.14,6.32,34.58,17.47v-16.55h18.22ZM487.21,86.82c0-19.71-12.64-33.65-31.42-33.65s-31.23,14.5-31.23,33.65,13.2,33.83,31.23,33.83,31.42-13.94,31.42-33.83Z"/><path d="M575.33,35.69v18.4c-17.47.19-29,10.6-29,24.35v57.44h-19.71V37.92h18.59v12.46c6.51-8.37,17.29-14.69,30.12-14.69Z"/></svg><span class="az-c">creative</span></span></span></p>
     </div>
@@ -538,6 +543,7 @@ section,#trip{scroll-margin-top:136px}
     </nav>
     <div class="top-actions">
       <button class="region-pill" type="button" id="region-pill" aria-label="تغيير المنطقة"><i></i><span id="region-name">مكة المكرمة</span></button>
+      <a class="btn btn-play btn-sm" href="https://azlartr.github.io/future-industrialists/game/" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.3 5H6.7a4 4 0 0 0-3.96 3.43l-.7 5.2A2.7 2.7 0 0 0 4.7 16.7c.8 0 1.5-.4 2-1l1.3-1.7h8l1.3 1.7c.5.6 1.2 1 2 1a2.7 2.7 0 0 0 2.66-3.07l-.7-5.2A4 4 0 0 0 17.3 5z"/></svg><span>العب الآن</span></a>
       <a class="btn btn-primary btn-sm" href="https://futureindustrialist.org/" target="_blank" rel="noopener">تقدم بمشروعك</a>
       <button class="menu-btn" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="القائمة"><span></span><span></span><span></span></button>
     </div>
