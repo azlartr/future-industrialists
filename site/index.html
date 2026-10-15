@@ -97,6 +97,11 @@ section,#trip{scroll-margin-top:136px}
 .gate-copy p{margin:2px 0 0;color:var(--muted);font-size:15px}
 .region-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px auto 0;max-width:340px}
 .region-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:6px 16px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.85);color:var(--navy);font:600 15px "Readex Pro",sans-serif;cursor:pointer;transition:background .25s,color .25s,border-color .25s,transform .25s,box-shadow .25s}
+@media (min-width:641px) and (max-width:1100px){
+  .gate-top .gov,.gate-top .links{zoom:.8}
+  .region-btn{padding:6px 12px;font-size:14px}
+}
+.region-btn{white-space:nowrap}
 .region-btn i{width:8px;height:8px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 4px rgba(132,123,184,.18);transition:background .25s,box-shadow .25s}
 .region-btn:hover,.region-btn.hot{background:var(--navy-grad);color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 10px 22px -10px rgba(43,53,146,.7)}
 .region-btn:hover i,.region-btn.hot i{background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.25)}
@@ -107,14 +112,14 @@ section,#trip{scroll-margin-top:136px}
 .gate-roll{display:grid;gap:10px;justify-items:center}
 .gate-roll small{color:var(--muted);font-size:13px;letter-spacing:.02em}
 /* wide screens: logo and copy beside a large map instead of a narrow stack */
-@media (min-width:1000px) and (min-aspect-ratio:5/4){
-  .gate-grid{grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);grid-template-areas:"badge map" "copy map";column-gap:clamp(28px,4vw,80px);row-gap:0;width:100%;max-width:1240px;margin-inline:auto;align-items:center}
+@media (min-width:760px) and (min-aspect-ratio:5/4){
+  .gate-grid{grid-template-columns:minmax(230px,.72fr) minmax(0,1.28fr);grid-template-areas:"badge map" "copy map";column-gap:clamp(28px,4vw,80px);row-gap:0;width:100%;max-width:1240px;margin-inline:auto;align-items:center}
   .fi-badge{grid-area:badge;align-self:end;width:clamp(140px,min(15vw,25svh),240px);margin:0 0 4px}
   .gate-copy{grid-area:copy;align-self:start;margin:10px 0 0;max-width:380px}
   .gate-copy h1{font-size:clamp(28px,min(3vw,5.4svh),44px)}
   .gate-copy p{font-size:16px}
   .region-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:clamp(10px,2svh,20px)}
-  .map-stage{grid-area:map;width:100%;max-width:min(880px,calc((100svh - 262px) * 1.15));min-width:min(100%,440px);margin:0 auto}
+  .map-stage{grid-area:map;width:100%;max-width:min(880px,calc((100svh - 262px) * 1.15));min-width:min(100%,360px);margin:0 auto}
 }
 
 /* ---------- Logo roll (shared) ---------- */
@@ -1293,15 +1298,17 @@ const map = (() => {
     });
     GRAPH.regions.forEach((k, j) => {
       const i = RS + j, [x, y] = N[i], on = hot === k, appear = reduce ? 1 : Math.max(0, Math.min(1, (age - .5) * 2)); if (!appear) return;
-      const R = Math.max(58, (innerWidth < 700 ? 22 : 34) / s) * (on ? 1.08 : 1) * (.6 + .4 * appear);
+      // circles never grow past 64 map units (Qassim and Riyadh are 135 apart); text grows a little on small maps
+      const R = (s < .62 ? 64 : 58) * (on ? 1.08 : 1) * (.6 + .4 * appear);
       if (on) { const ring = 1 + ((now / 1200) % 1); cx.strokeStyle = rgba([132, 123, 184], .6 * (2 - ring)); cx.lineWidth = 3; cx.beginPath(); cx.arc(x, y, R * ring, 0, 6.283); cx.stroke(); }
       cx.save(); cx.shadowColor = 'rgba(43,53,146,.25)'; cx.shadowBlur = on ? 30 : 16; cx.shadowOffsetY = 6;
       cx.fillStyle = '#fff'; cx.beginPath(); cx.arc(x, y, R, 0, 6.283); cx.fill(); cx.restore();
       const g = cx.createLinearGradient(x - R, y - R, x + R, y + R); g.addColorStop(0, '#847bb8'); g.addColorStop(1, '#2a3590');
       cx.strokeStyle = on ? '#3c58a7' : g; cx.lineWidth = on ? 5 : 3.5; cx.beginPath(); cx.arc(x, y, R, 0, 6.283); cx.stroke();
       cx.fillStyle = on ? '#2a3590' : '#3c58a7'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
-      cx.font = `600 ${Math.max(REGIONS[k].name.length > 6 ? 19 : 23, (innerWidth < 700 ? (REGIONS[k].name.length > 6 ? 10.5 : 11) : (REGIONS[k].name.length > 6 ? 12.5 : 15)) / s)}px "Readex Pro", Tajawal, Arial, sans-serif`; cx.direction = 'rtl';
-      const nm = REGIONS[k].name, two = innerWidth < 700 && nm.includes(' '), lh = parseFloat(cx.font.match(/(\d+(?:\.\d+)?)px/)[1]);
+      const longName = REGIONS[k].name.includes(' '), fsz = Math.min(longName ? 26 : 30, Math.max(longName ? 19 : 23, 12.5 / s));
+      cx.font = `600 ${fsz}px "Readex Pro", Tajawal, Arial, sans-serif`;
+      const nm = REGIONS[k].name, two = nm.includes(' ') && fsz > 21, lh = parseFloat(cx.font.match(/(\d+(?:\.\d+)?)px/)[1]);
       if (two) { const [a1, a2] = nm.split(' '); cx.fillText(a1, x, y + 2 - lh * .55); cx.fillText(a2, x, y + 2 + lh * .6); } else cx.fillText(nm, x, y + 2);
     });
   }
