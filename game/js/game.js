@@ -10,6 +10,7 @@ import { makeDoll, animateDoll } from './doll.js';
 import { canvas, toTex } from './tex.js';
 import { Ambient } from './fx.js';
 import { makeLife } from './life.js';
+import { makeSignals } from './signals.js';
 
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const Q = new URLSearchParams(location.search);
@@ -25,7 +26,7 @@ const store = { get(k, d) { try { const v = localStorage.getItem('fi.' + k); ret
    also work on iPhones, where <audio>.volume is read-only. Two <audio> decks cross-fade the music; the
    short effects are decoded once and played from memory. Browsers allow sound only after the first
    tap, so the graph is unlocked on the first touch, click or key (and tried at load for returning visitors). */
-const SFX = ['ui_click', 'ui_hover', 'task_done', 'wrong', 'points', 'level_up', 'panel_open', 'panel_close', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5', 'factory_metal', 'pin_drop', 'bus_brake', 'bus_door_open', 'bus_door_close', 'bus_horn'];
+const SFX = ['ui_click', 'ui_hover', 'task_done', 'wrong', 'points', 'level_up', 'panel_open', 'panel_close', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5', 'factory_metal', 'pin_drop', 'bus_brake', 'bus_door_open', 'bus_door_close', 'bus_horn', 'jump', 'land'];
 const Audio_ = {
   musicVol: store.get('music', .8), sfxVol: store.get('sfx', .9), name: '', ctx: null, decks: [], cur: 0, buf: {}, primed: false,
   init() {
@@ -187,31 +188,55 @@ renderer.setPixelRatio(Math.min(devicePixelRatio || 1, touch ? 1.25 : 1.5));
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, .1, 4000);
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, .25, 4000);
 // portrait phones get a wider lens so the street and the factory floor still fit
 const fitCam = () => { renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.fov = camera.aspect < .8 ? 64 : camera.aspect < 1.2 ? 56 : 50; camera.updateProjectionMatrix(); };
 addEventListener('resize', fitCam); fitCam();
 const clock = new THREE.Clock();
 
-let RW = null, bus = null, player = null, marker = null, orbit = null, IN = null, curF = null, life = null;
+let RW = null, bus = null, player = null, marker = null, orbit = null, IN = null, curF = null, life = null, signals = null;
 const dolls = {};
 
 /* ---------------- loading screen ---------------- */
 const TIPS = ['في كل مصنع لعبة مختلفة حسب مساره: المكتشف، المبدع، الفنان، والسفير.', 'اجمع الشارات الأربع لتصبح من صناعيو المستقبل.', 'جوائز هاكثون صناعيو المستقبل تصل إلى 200,000 ريال.', 'انتبه لعلامات السلامة داخل المصنع… قد تكون جزءاً من مهمتك!', 'زيارة المصانع تكشف لك كيف تُصنع الأشياء التي تستخدمها كل يوم.'];
 const ldFx = new Ambient($('#ld-fx'), { motes: touch ? 30 : 50, net: 12, netArea: [0, .02, 1, .3] });
 const prog = { v: 0 }; THREE.DefaultLoadingManager.onProgress = (u, a, b) => { prog.v = Math.max(prog.v, a / b); };
-async function loadingScreen({ img, kicker, title, sub, from = 'انطلاق', to = 'المصنع', tips = TIPS, task, min = 2400 }) {
+/* the loading screen is a boarding pass: a ticket for a trip between regions, a visitor's pass for a factory.
+   The coach (or the hard hat) travels the route left to right as things load, then the pass is stamped. */
+function drawQR(seed) {
+  const c = $('#tk-qr'), x = c.getContext('2d'), N = 25; let s = seed * 7919 + 13; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  x.fillStyle = '#fff'; x.fillRect(0, 0, N, N); x.fillStyle = '#1b2263';
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) if (r() < .5) x.fillRect(i, j, 1, 1);
+  for (const [cx, cy] of [[0, 0], [N - 7, 0], [0, N - 7]]) { x.fillStyle = '#fff'; x.fillRect(cx, cy, 8, 8); x.fillStyle = '#1b2263'; x.fillRect(cx, cy, 7, 7); x.fillStyle = '#fff'; x.fillRect(cx + 1, cy + 1, 5, 5); x.fillStyle = '#1b2263'; x.fillRect(cx + 2, cy + 2, 3, 3); }
+}
+async function loadingScreen({ img, kicker, title, sub, from = 'البيت', to = 'المصنع', kind = 'trip', meta2 = '', tips = TIPS, task, min = 2400 }) {
   show('loading'); prog.v = 0; $('#ld-bg').style.backgroundImage = `url(${img})`; $('#ld-kicker').textContent = kicker; $('#ld-title').textContent = title; $('#ld-sub').textContent = sub;
-  $('.pin.a').lastChild.textContent = from; $('.pin.b').lastChild.textContent = to;
-  $$('.ld-head > *').forEach(e => { e.style.animation = 'none'; void e.offsetWidth; e.style.animation = ''; }); ldFx.start();
+  const trip = kind === 'trip', no = 100 + (Math.random() * 899 | 0);
+  $('#tk-kind').textContent = trip ? 'تذكرة رحلة · باص المبادرة' : 'تصريح زيارة المصنع'; $('#tk-no').textContent = `FI-${no}`;
+  $('#tk-from').textContent = from; $('#tk-to').textContent = to; $('#tk-name').textContent = nameOf(S.char); $('#tk-av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`;
+  $('#tk-m2k').textContent = trip ? 'الوجهة' : 'المسار'; $('#tk-m2').textContent = meta2 || to;
+  $('#tk-m3k').textContent = trip ? 'البوابة' : 'الوردية'; $('#tk-m3').textContent = trip ? String(1 + no % 6) : 'صباحية';
+  $('#tk-m4k').textContent = trip ? 'المقعد' : 'الخوذة'; $('#tk-m4').textContent = trip ? `${String(1 + no % 14).padStart(2, '0')}${'ABCD'[no % 4]}` : 'صفراء';
+  $('#tk-stamp').textContent = trip ? 'تم الصعود ✓' : 'مسموح بالدخول ✓'; $('#tk-stamp').classList.remove('on');
+  $('#tk-mover').innerHTML = $(trip ? '#tk-bus' : '#tk-hat').innerHTML; drawQR(no);
+  $('#tk-stat').textContent = 'جاري التجهيز';
+  for (const e of [...$$('.ld-head > *'), $('.tk-wrap')]) { e.style.animation = 'none'; void e.offsetWidth; e.style.animation = ''; } ldFx.start();
   const tipEl = $('#ld-tip'); let ti = Math.random() * tips.length | 0; tipEl.textContent = tips[ti];
   const tipT = setInterval(() => { tipEl.style.opacity = 0; setTimeout(() => { ti = (ti + 1) % tips.length; tipEl.textContent = tips[ti]; tipEl.style.opacity = 1; }, 350); }, 3400);
-  const road = $('.road'), pct = $('#ld-pct'), t0 = performance.now(); let shown = 0, doneTask = false, out;
-  const set = v => { shown = v; road.style.setProperty('--p', v); pct.textContent = Math.round(v * 100) + '%'; }; set(0);
+  const path = $('#tk-path'), len = path.getTotalLength(), done = $('#tk-done'), mover = $('#tk-mover'), track = $('.tk-track'), pct = $('#ld-pct'), t0 = performance.now();
+  let shown = 0, doneTask = false, out;
+  const set = v => {
+    shown = v; pct.textContent = Math.round(v * 100) + '%'; done.style.strokeDashoffset = 1 - v;
+    const w = track.clientWidth, h = track.clientHeight, a = path.getPointAtLength(v * len), b = path.getPointAtLength(Math.min(len, v * len + 4)), c = path.getPointAtLength(Math.max(0, v * len - 4));
+    const ang = Math.atan2((b.y - c.y) * h / 70, (b.x - c.x) * w / 400);
+    mover.style.left = a.x / 400 * w + 'px'; mover.style.top = a.y / 70 * h + 'px'; mover.style.transform = `rotate(${ang}rad)`;
+  }; set(0);
   const tick = setInterval(() => { const el = (performance.now() - t0) / min, target = doneTask ? 1 : Math.min(.92, Math.max(el * .7, prog.v * .9)); set(shown + (target - shown) * .18); }, 60);
   try { out = await task(); } finally { doneTask = true; }
   while (performance.now() - t0 < min || shown < .995) await wait(60);
-  clearInterval(tick); clearInterval(tipT); set(1); await wait(300); ldFx.stop();
+  clearInterval(tick); clearInterval(tipT); set(1);
+  // the stamp comes down on the pass
+  $('#tk-stat').textContent = 'جاهز'; $('#tk-stamp').classList.add('on'); Audio_.sfx('pin_drop', .7); await wait(850); ldFx.stop();
   return out;
 }
 
@@ -219,17 +244,18 @@ async function loadingScreen({ img, kicker, title, sub, from = 'انطلاق', t
 async function startRegion(key) {
   const R = REGIONS[key];
   Audio_.music('bus_trip', { vol: .5 }); S.mode = 'loading';
-  await loadingScreen({ img: R.img, kicker: S.region && S.region !== key ? 'السفر بالباص إلى' : 'المنطقة', title: R.name, sub: `${R.sub} · ${R.factories.map(f => f.short).join(' · ')}`, from: S.region ? REGIONS[S.region].name : 'البيت', to: R.name, task: () => loadRegion(key) });
+  await loadingScreen({ img: R.img, kicker: S.region && S.region !== key ? 'السفر بالباص إلى' : 'المنطقة', title: R.name, sub: `${R.sub} · ${R.factories.map(f => f.short).join(' · ')}`, from: S.region && S.region !== key ? REGIONS[S.region].name : 'البيت', to: R.name, meta2: R.sub, task: () => loadRegion(key) });
   S.region = key; S.loc = 0; enterRegion();
 }
 async function loadRegion(key) {
   if (RW && RW.key === key) return;
-  if (RW) { RW.scene.remove(bus, marker, player?.root); RW.dispose(); RW = null; life = null; }
+  if (RW) { RW.scene.remove(bus, marker, player?.root); RW.dispose(); RW = null; life = null; signals = null; }
   const w = await buildRegion(renderer, key); w.key = key;
   bus ||= await makeBusGLB().catch(e => { console.warn('bus model', e); return makeBus(); }); w.scene.add(bus);
   marker ||= makeMarker(); w.scene.add(marker);
   player = await getPlayer(S.char, w.tint); w.scene.add(player.root);
-  life = await makeLife(w.scene, { sea: !!w.sea }).catch(e => { console.warn('street life', e); return null; });
+  signals = makeSignals(w.scene, w.locs.map(l => l.x)); w.colliders.push(...signals.colliders);
+  life = await makeLife(w.scene, { sea: !!w.sea, people: false }).catch(e => { console.warn('street life', e); return null; });
   w.yard = [[8, 9], [16, 9], [8, 20], [16, 20]].map(([x, z]) => [LAYOUT.SCHOOL_X + x, -40 + z, .5]);
   renderer.toneMappingExposure = w.exposure;
   if (renderer.compileAsync) await renderer.compileAsync(w.scene, camera).catch(() => {});
@@ -252,13 +278,14 @@ async function loadHero(kind) {
     const model = main.scene, box = new THREE.Box3().setFromObject(model), s = HERO_H / (box.max.y - box.min.y);
     model.scale.setScalar(s); model.position.y = -box.min.y * s;
     model.traverse(o => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
+    const baseY = model.position.y;
     const clips = [main, ...extra].flatMap(g => g.animations), mixer = new THREE.AnimationMixer(model), act = {};
     for (const [k, re] of [['walk', /walk/i], ['run', /run|jog/i], ['idle', /idle|breath|stand/i]]) { const c = clips.find(x => re.test(x.name)); if (c) act[k] = mixer.clipAction(c); }
     if (!act.walk && clips[0]) act.walk = mixer.clipAction(clips[0]);
     for (const a of Object.values(act)) { a.play(); a.setEffectiveWeight(0); }
     const bones = {}; model.traverse(o => { if (o.isBone) bones[o.name.replace(/^mixamorig:?/, '')] = o; });
     const root = new THREE.Group(); root.add(model);
-    const h = { root, model, mixer, act, bones, w: { walk: 0, run: 0 }, yaw: 0, t: 0, last: null, tweak: [] };
+    const h = { root, model, mixer, act, bones, baseY, w: { walk: 0, run: 0 }, yaw: 0, t: 0, last: null, tweak: [] };
     h.pace = { walk: pace(h, act.walk), run: pace(h, act.run) };
     return h;
   } catch (e) { console.warn('hero model', kind, e); return null; }
@@ -287,7 +314,7 @@ function animatePlayer(p, dt, speed, face) {
   const moveK = clamp(v / .5, 0, 1), runK = h.act.run ? clamp((v - 2.4) / 1.2, 0, 1) : 0, f = Math.min(1, dt * 8);
   h.w.walk += (moveK * (1 - runK) - h.w.walk) * f; h.w.run += (moveK * runK - h.w.run) * f;
   h.act.walk?.setEffectiveWeight(h.w.walk); h.act.run?.setEffectiveWeight(h.w.run); h.act.idle?.setEffectiveWeight(1 - h.w.walk - h.w.run);
-  if (h.act.walk) h.act.walk.timeScale = clamp(v / h.pace.walk, .7, 2.3);
+  if (h.act.walk) h.act.walk.timeScale = p.jy > .05 ? .25 : clamp(v / h.pace.walk, .7, 2.3);
   if (h.act.run) h.act.run.timeScale = clamp(v / h.pace.run, .7, 1.8);
   // small procedural touches: breathing and a glance around while standing, a forward lean when hurrying
   for (const [b, ax, a] of h.tweak) b.rotation[ax] -= a; h.tweak.length = 0;
@@ -309,7 +336,7 @@ const busDoor = () => new THREE.Vector3(bus.position.x + bus.userData.doorPos.x,
 
 /* ---------------- input ---------------- */
 const keys = {}; let joy = { x: 0, y: 0 }, camYaw = Math.PI, camPitch = .3, drag = null, skip = false;
-addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'KeyE' && S.mode === 'world') act(); if (e.code === 'KeyE' && S.mode === 'drive') driveAct(); if (e.code === 'KeyH' && S.mode === 'drive' && !e.repeat) honk(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
+addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'Space' && S.mode === 'world') { e.preventDefault(); if (!e.repeat) jumpReq = true; } if (e.code === 'KeyE' && S.mode === 'world') act(); if (e.code === 'KeyE' && S.mode === 'drive') driveAct(); if (e.code === 'KeyH' && S.mode === 'drive' && !e.repeat) honk(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
 addEventListener('keyup', e => { keys[e.code] = false; });
 const cv = $('#c');
 cv.addEventListener('pointerdown', e => { if (S.mode === 'world') { drag = { x: e.clientX, y: e.clientY, yaw: camYaw, pitch: camPitch }; cv.setPointerCapture(e.pointerId); } });
@@ -323,6 +350,7 @@ for (const jo of [$('#joy'), $('#joy2')]) {
   jo.addEventListener('pointerup', () => { joy = { x: 0, y: 0 }; knob.style.transform = ''; });
 }
 $('#act').addEventListener('click', () => act());
+$('#jump').addEventListener('pointerdown', e => { e.preventDefault(); if (S.mode === 'world') jumpReq = true; });
 $('#skip').addEventListener('click', () => { skip = true; });
 $('#ride-skip').addEventListener('click', () => { skip = true; });
 
@@ -372,10 +400,17 @@ async function enterRegion() {
     [['⌨️', 'تحرّك بالأسهم أو W A S D · Shift للجري'], ['🖱️', 'اسحب بالفأرة لتدوير الكاميرا'], ['🟣', 'اتبع الدائرة البنفسجية: من المدرسة إلى الباص، ثم إلى المصانع'], ['🚌', 'اضغط E أو الزر الظاهر للتفاعل · في كل مصنع لعبة مختلفة']]);
   toast(`مرحباً بك في ${REGIONS[S.region].name}! الباص بانتظارك عند بوابة المدرسة 🚌`, 3400);
 }
-function sunAt(x, z) { RW.sun.position.set(x, 0, z).addScaledVector(RW.sunDir, 120); RW.sun.target.position.set(x, 0, z); }
+// the shadow camera follows the student in whole shadow-map texels, so shadows and the ground under them don't shimmer
+const _sr = new THREE.Vector3(), _su = new THREE.Vector3(), _sp = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
+function sunAt(x, z) {
+  const sh = RW.sun.shadow, texel = (sh.camera.right - sh.camera.left) / sh.mapSize.x, d = RW.sunDir;
+  _sr.crossVectors(UP, d).normalize(); _su.crossVectors(d, _sr).normalize(); _sp.set(x, 0, z);
+  const a = _sp.dot(_sr), b = _sp.dot(_su); _sp.addScaledVector(_sr, Math.round(a / texel) * texel - a).addScaledVector(_su, Math.round(b / texel) * texel - b);
+  RW.sun.target.position.copy(_sp); RW.sun.position.copy(_sp).addScaledVector(d, 120);
+}
 
 /* ---------------- walking ---------------- */
-let near = null, stepT = 0, justArrived = false;
+let near = null, stepT = 0, justArrived = false, jumpReq = false;
 // the camera slides in when a palm trunk or a lamp post would come between it and the student,
 // and rises over the roof when the bus is in the way
 function camClear(tgt, dist) {
@@ -428,6 +463,11 @@ function walk(dt) {
     const onWalk = nz > 7.8 || (nz < -7.8 && nz > -13.2) || Math.abs(nz) < .8; r.position.y += ((nz < -13.2 ? .03 : onWalk ? .2 : .02) - r.position.y) * Math.min(1, dt * 12);
     stepT -= dt * (p.speed / (p.hero ? 1.5 : 3)); if (stepT <= 0) { Audio_.sfx(`step_${1 + (Math.random() * 5 | 0)}`, .2); stepT = .42; }
   }
+  p.jy ??= 0; p.jv ??= 0;
+  if (jumpReq && p.jy === 0) { p.jv = 5.4; Audio_.sfx('jump', .5); } jumpReq = false;
+  if (p.jy > 0 || p.jv > 0) { p.jv -= 15 * dt; p.jy = Math.max(0, p.jy + p.jv * dt); if (p.jy === 0) { p.jv = 0; Audio_.sfx('land', .5); } }
+  if (p.hero) p.hero.model.position.y = p.hero.baseY + p.jy;
+  if (p.blob) p.blob.scale.setScalar(1 - Math.min(.55, p.jy * .35));
   animatePlayer(p, dt, p.speed, face);
   follow(dt);
   sunAt(r.position.x, r.position.z);
@@ -583,7 +623,7 @@ let found = 0, hover = null, hintT = 0, hints = 0, startT = 0;
 async function enterFactory(F) {
   if (S.mode !== 'world') return;
   S.mode = 'loading'; curF = F; Audio_.sfx('panel_open');
-  IN = await loadingScreen({ img: REGIONS[S.region].img, kicker: 'داخل المصنع', title: F.short, sub: `${F.name} · مسار ${TRACKS[F.track].name}`, from: 'البوابة', to: 'خط الإنتاج', min: 1700,
+  IN = await loadingScreen({ img: REGIONS[S.region].img, kicker: 'داخل المصنع', title: F.short, sub: `${F.name} · مسار ${TRACKS[F.track].name}`, from: 'البوابة', to: 'خط الإنتاج', kind: 'pass', meta2: TRACKS[F.track].name, min: 1700,
     tips: [F.brief, 'في كل مصنع لعبة مختلفة. اجمع 3 نجوم لتحصل على أعلى النقاط.'],
     task: async () => { const I = await buildInterior(renderer, F); if (renderer.compileAsync) await renderer.compileAsync(I.scene, camera).catch(() => {}); return I; } });
   await playFactory(F);
@@ -651,9 +691,8 @@ function leaveFactory(msg) {
 function leaveAnyFactory() { orbit?.dispose(); orbit = null; if (IN) { IN.dispose(); IN = null; } $('#mg')?.classList.remove('on'); }
 
 /* ---------------- the finale ---------------- */
-let finT = 0;
 function finale() {
-  S.mode = 'menu'; show('final'); Audio_.music('awards', { loop: false, vol: .8 }); clearTimeout(finT); finT = setTimeout(() => { if ($('#final').classList.contains('on')) Audio_.music('theme_song', { vol: .6 }); }, 11000);
+  S.mode = 'menu'; show('final'); Audio_.music('theme_song', { vol: .7 });
   $('#fin-text').textContent = `${nameOf(S.char)}، زرت 12 مصنعاً في 4 مناطق وجمعت شارات المسارات.`;
   $('#fin-badges').innerHTML = Object.entries(TRACKS).map(([k, t]) => `<img src="${t.badge}" alt="${t.name}" class="${badgeSet().has(k) ? '' : 'off'}">`).join('');
   $('#fin-pts').textContent = `${points().toLocaleString('en')} نقطة`;
@@ -668,7 +707,8 @@ function loop() {
   const dt = Math.min(.05, clock.getDelta()); updateEngine();
   if (life && RW && (['world', 'intro', 'ride', 'drive'].includes(S.mode) || $('#route').classList.contains('on'))) {
     const pr = player.root.position, onBus = S.mode === 'drive' || !player.root.visible, bh = bus.userData;
-    life.update(dt, onBus ? bus.position.x : pr.x, [{ x: bus.position.x, z: bus.position.z, halfLen: bh.halfLen, halfWid: .24 * 7.6 }, ...(player.root.visible ? [{ x: pr.x, z: pr.z, halfLen: .5, halfWid: .9, person: true }] : [])], camera.position);
+    signals?.update(dt, player.root.visible ? pr : null);
+    life.update(dt, onBus ? bus.position.x : pr.x, [{ x: bus.position.x, z: bus.position.z, halfLen: bh.halfLen, halfWid: .24 * 7.6 }, ...(player.root.visible ? [{ x: pr.x, z: pr.z, halfLen: .5, halfWid: .9, person: true }] : [])], camera.position, signals?.list || []);
   }
   if (S.mode === 'world' && RW) { RW.update(dt); walk(dt); renderer.render(RW.scene, camera); }
   else if (S.mode === 'drive' && RW) { RW.update(dt); driveStep(dt); renderer.render(RW.scene, camera); }
@@ -689,7 +729,7 @@ function loop() {
 loop();
 
 /* ---------------- test hooks for automated screenshots ---------------- */
-window.__game = { S, show, Audio_, startDrive, DV, get life() { return life; }, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
+window.__game = { S, show, Audio_, loadingScreen, startDrive, DV, get life() { return life; }, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
 (async () => {
   const auto = Q.get('auto');
   if (!auto) { window.__ready = true; return; }

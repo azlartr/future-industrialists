@@ -448,7 +448,7 @@ function sea(scene, anim, color = '#1f6b86') {
   anim.push((t, dt) => { nt.offset.x += dt * .004; nt.offset.y += dt * .002; });
   // corniche: wider promenade, railing, rock revetment
   const pave = mats().pave;
-  scene.add(tbox(LAYOUT.ROAD, .2, 3, pave, 0, .1, 14.5, 2.2));
+  { const pr = tbox(LAYOUT.ROAD, .2, 3, pave, 0, .1, 14.5, 2.2); pr.castShadow = false; scene.add(pr); }
   const rail = new THREE.MeshStandardMaterial({ color: '#f4f4f4', metalness: .6, roughness: .3 });
   scene.add(box(LAYOUT.ROAD, .08, .08, rail, 0, 1.1, 15.9, false), box(LAYOUT.ROAD, .06, .06, rail, 0, .6, 15.9, false));
   const posts = new THREE.InstancedMesh(new THREE.BoxGeometry(.1, 1.1, .1), rail, 488), mm = new THREE.Matrix4(); for (let i = 0; i < 488; i++) { mm.makeTranslation(-650 + i * 2.67, .55, 15.9); posts.setMatrixAt(i, mm); } scene.add(posts);
@@ -495,7 +495,7 @@ export async function buildRegion(renderer, key) {
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(envScene, .02).texture; scene.environmentIntensity = .9; pm.dispose();
   scene.fog = new THREE.FogExp2(T.fog, T.fogD);
   const sun = new THREE.DirectionalLight(T.sun, T.sunI); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
-  Object.assign(sun.shadow.camera, { left: -32, right: 32, top: 32, bottom: -32, near: 1, far: 240 }); sun.shadow.bias = -.0003; sun.shadow.normalBias = .03;
+  Object.assign(sun.shadow.camera, { left: -32, right: 32, top: 32, bottom: -32, near: 1, far: 240 }); sun.shadow.bias = -.0004; sun.shadow.normalBias = .05;
   scene.add(sun, sun.target); scene.add(new THREE.HemisphereLight('#ffffff', T.ground, .25));
   // ground (stops at the corniche when there is sea)
   const sand = pbr('aerial_sand', [260, 130]);
@@ -519,9 +519,9 @@ export async function buildRegion(renderer, key) {
   const curbT = curbTex(); curbT.repeat.set(L / 4, 1);
   const curbM = new THREE.MeshStandardMaterial({ map: curbT, roughness: .7 });
   for (const z of [.8, -.8]) scene.add(box(L, .25, .2, curbM, 0, .125, z));
-  scene.add(box(L, .22, 1.4, new THREE.MeshStandardMaterial({ ...pbr('sand_01', [L / 4, 1]), color: '#c9a77a' }), 0, .11, 0));
+  scene.add(box(L, .22, 1.4, new THREE.MeshStandardMaterial({ ...pbr('sand_01', [L / 4, 1]), color: '#c9a77a' }), 0, .11, 0, false));
   const pavM = new THREE.MeshStandardMaterial({ ...pbr('concrete_pavers', [1, 1]), color: '#e2ddd3' });
-  for (const [z0, z1] of [[7.8, 13], [-13, -7.8]]) { scene.add(tbox(L, .2, z1 - z0, pavM, 0, .1, (z0 + z1) / 2, 2.2)); scene.add(box(L, .22, .22, curbM, 0, .11, z0 > 0 ? z0 : z1)); }
+  for (const [z0, z1] of [[7.8, 13], [-13, -7.8]]) { const sw = tbox(L, .2, z1 - z0, pavM, 0, .1, (z0 + z1) / 2, 2.2); sw.castShadow = false; scene.add(sw); scene.add(box(L, .22, .22, curbM, 0, .11, z0 > 0 ? z0 : z1)); }
   // palms (one instanced grove) and street lights (instanced), leaving the crossings clear
   const nearGate = x => PLACES.some(g => Math.abs(x - g) < 6);
   const colliders = [], medPts = [], sidePts = [];

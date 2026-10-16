@@ -30,21 +30,22 @@ async function loadPeople() {
 }
 function pick(list) { const tot = list.reduce((a, [, w]) => a + w, 0); let r = Math.random() * tot; for (const [n, w] of list) if ((r -= w) <= 0) return n; return list[0][0]; }
 
-export async function makeLife(scene, { sea = false } = {}) {
-  const [cars, folk] = await Promise.all([loadCars(), loadPeople()]);
+/* people: false leaves the sidewalks empty (until NPC models that differ from the playable students exist) */
+export async function makeLife(scene, { sea = false, people: withPeople = true } = {}) {
+  const [cars, folk] = await Promise.all([loadCars(), withPeople ? loadPeople() : null]);
   const group = new THREE.Group(); group.name = 'life'; scene.add(group);
   const traffic = [], walkers = [];
   // ---- traffic
   for (const lane of LANES) for (let i = 0; i < 7; i++) {
     const name = pick(CARS), src = cars[name], o = src.clone(true), k = src.userData.k;
     o.scale.setScalar(k); o.rotation.y = lane.dir * Math.PI / 2; group.add(o);
-    const wheels = []; o.traverse(n => { if (/^wheel/.test(n.name)) wheels.push(n); });
+    const wheels = []; o.traverse(n => { if (/^wheel-(front|back)-(left|right)/.test(n.name)) wheels.push(n); }); // not the SUV's spare on the tailgate
     const len = new THREE.Box3().setFromObject(o).getSize(new THREE.Vector3()).x;
     traffic.push({ o, lane, x: 0, v: 0, vmax: 9 + Math.random() * 6, wheels, len, r: .3 * k, slot: i });
   }
   // ---- people on the sidewalks (and on the corniche promenade where there is sea)
   const paths = [8.9, 12.3, -9.2, -10.4, ...(sea ? [14.6, 14.6] : [])];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < (folk ? 14 : 0); i++) {
     const P = folk[i % 2], o = cloneSkinned(P.scene), s = 1.5 / P.h * (1 + Math.random() * .18);
     const root = new THREE.Group(); o.scale.setScalar(s); o.position.y = P.y0 * s; root.add(o); group.add(root);
     const mixer = new THREE.AnimationMixer(o), act = mixer.clipAction(P.clip); act.play(); act.time = Math.random() * P.clip.duration;
@@ -59,16 +60,27 @@ export async function makeLife(scene, { sea = false } = {}) {
   const tmp = new THREE.Vector3();
   return {
     group, traffic, walkers, place,
-    /* focus: x the window follows; obstacles: [{x, z, halfLen, halfWid}] cars must stop for; cam: camera position */
-    update(dt, focus, obstacles, cam) {
+    /* focus: x the window follows; obstacles: [{x, z, halfLen, halfWid, person}] cars must stop for; cam: camera position;
+       signals: [{x, phase: 'go' | 'amber' | 'stop'}] traffic lights at the crossings */
+    update(dt, focus, obstacles, cam, signals = []) {
       if (!placed) place(focus);
       // traffic: keep a safe gap to whatever is ahead in the lane
       for (const c of traffic) {
         const dir = c.lane.dir; let gap = 1e9;
         for (const d of traffic) if (d !== c && d.lane === c.lane) { const g = (d.x - c.x) * dir; if (g > 0 && g < gap) gap = g - (c.len + d.len) / 2; }
-        for (const ob of obstacles) if (Math.abs(ob.z - c.lane.z) < ob.halfWid + .95) { const g = (ob.x - c.x) * dir; if (g > -ob.halfLen && g < gap + ob.halfLen) gap = Math.min(gap, g - ob.halfLen - c.len / 2); }
+        for (const ob of obstacles) {
+          // anyone on this half of the road (or on the median) stops the whole carriageway, with room to spare
+          const inLane = ob.person ? Math.abs(ob.z) < 7.8 && (Math.sign(ob.z) === Math.sign(c.lane.z) || Math.abs(ob.z) < 1.2) : Math.abs(ob.z - c.lane.z) < ob.halfWid + .95;
+          if (!inLane) continue;
+          const g = (ob.x - c.x) * dir; if (g > -ob.halfLen && g < gap + ob.halfLen) gap = Math.min(gap, g - ob.halfLen - c.len / 2 - (ob.person ? 3 : 0));
+        }
+        for (const sg of signals) {
+          // red (or amber with room to stop): hold at the stop line before the crossing
+          if (sg.phase === 'go') continue; const stop = (sg.x - dir * 4.6 - c.x) * dir - c.len / 2;
+          if (stop > -.5 && stop < 70 && (sg.phase === 'stop' || stop > c.v * c.v / 12)) gap = Math.min(gap, stop + 4);
+        }
         const want = Math.max(0, Math.min(c.vmax, (gap - 4) * .8));
-        c.v += Math.max(-9 * dt, Math.min(3 * dt, want - c.v));
+        c.v += Math.max(-12 * dt, Math.min(3 * dt, want - c.v));
         c.x += dir * c.v * dt;
         // recycle cars that leave the window, or the road
         const off = c.x - focus;
