@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { buildRegion, LAYOUT } from './world.js';
+import { buildRegion } from './world.js';
+import { C, WALL, BAYS, NET, BOUNDS, routeBus, polyAt, groundY, onRoad } from './city.js';
 import { makeBus, makeBusGLB } from './bus.js';
 import { buildInterior } from './interior.js';
 import { runMiniGame } from './games.js';
@@ -11,6 +12,11 @@ import { canvas, toTex } from './tex.js';
 import { Ambient } from './fx.js';
 import { makeLife } from './life.js';
 import { makeSignals } from './signals.js';
+import { makeRobot } from './robot.js';
+import { addTour, GEAR_GEO, GEAR_MAT } from './tour.js';
+const CITY_GEARS = [[110, -87.5, 1.2], [20, 30.5, 1.2], [-171.5, 101, 1.2], [-140, -13, 1.2], [172.5, -40, 1.2], [-62, -62, 1.75]];
+import { TOUR, PPE, PPE_ICON } from './content.js';
+import { buildFinale, certificate } from './finale.js';
 
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const Q = new URLSearchParams(location.search);
@@ -19,6 +25,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 const frame = () => new Promise(requestAnimationFrame);
 const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 const clamp = THREE.MathUtils.clamp;
+const TS = +Q.get('ts') || 1; window.__TS = TS; // test runs can speed time up
 const store = { get(k, d) { try { const v = localStorage.getItem('fi.' + k); return v === null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem('fi.' + k, JSON.stringify(v)); } catch {} } };
 
 /* ---------------- audio: music + effects, each with its own volume ----------------
@@ -74,7 +81,7 @@ const Audio_ = {
   },
   ui() { const d = this.decks[this.cur]; document.body.classList.toggle('playing', !!d && !d.a.paused && this.running && this.musicVol > 0); $('#snd-wave').style.display = this.musicVol > 0 || this.sfxVol > 0 ? '' : 'none'; }
 };
-const A = { sfx: (n, v) => Audio_.sfx(n, v) };
+const A = { sfx: (n, v) => Audio_.sfx(n, v), get char() { return S.char; }, get name() { return nameOf(S.char); } };
 /* the coach's diesel engine, synthesized live: it loops without a seam and its pitch follows the bus */
 const Engine = {
   on: false,
@@ -123,10 +130,10 @@ $('#mute-all').addEventListener('click', () => { const on = Audio_.musicVol > 0 
 
 /* ---------------- state ---------------- */
 const saved = store.get('save', {});
-const S = { char: saved.char || 'boy', done: saved.done || {}, region: null, loc: 0, mode: 'menu', cine: false };
+const S = { char: saved.char || 'boy', done: saved.done || {}, xp: saved.xp || 0, gears: saved.gears || {}, facts: saved.facts || {}, quiz: saved.quiz || {}, region: null, loc: 0, mode: 'menu', cine: false };
 const nameOf = c => c === 'boy' ? 'فهد' : 'سارة';
-const persist = () => store.set('save', { char: S.char, done: S.done });
-const points = () => Object.values(S.done).reduce((a, s) => a + s * 100, 0);
+const persist = () => store.set('save', { char: S.char, done: S.done, xp: S.xp, gears: S.gears, facts: S.facts, quiz: S.quiz });
+const points = () => Object.values(S.done).reduce((a, s) => a + s * 100, 0) + S.xp;
 const doneCount = () => Object.values(S.done).filter(s => s > 0).length;
 const badgeSet = () => new Set(ALL.filter(f => S.done[f.id] > 0).map(f => f.track));
 const regionDone = r => REGIONS[r].factories.filter(f => S.done[f.id] > 0).length;
@@ -249,14 +256,16 @@ async function startRegion(key) {
 }
 async function loadRegion(key) {
   if (RW && RW.key === key) return;
-  if (RW) { RW.scene.remove(bus, marker, player?.root); RW.dispose(); RW = null; life = null; signals = null; }
+  if (RW) { RW.scene.remove(bus, marker, player?.root); if (robo) RW.scene.remove(robo.group); RW.dispose(); RW = null; life = null; signals = null; }
   const w = await buildRegion(renderer, key); w.key = key;
   bus ||= await makeBusGLB().catch(e => { console.warn('bus model', e); return makeBus(); }); w.scene.add(bus);
   marker ||= makeMarker(); w.scene.add(marker);
   player = await getPlayer(S.char, w.tint); w.scene.add(player.root);
-  signals = makeSignals(w.scene, w.locs.map(l => l.x)); w.colliders.push(...signals.colliders);
-  life = await makeLife(w.scene, { sea: !!w.sea, people: false }).catch(e => { console.warn('street life', e); return null; });
-  w.yard = [[8, 9], [16, 9], [8, 20], [16, 20]].map(([x, z]) => [LAYOUT.SCHOOL_X + x, -40 + z, .5]);
+  robo ||= await makeRobot().catch(e => { console.warn('robot', e); return null; }); if (robo) w.scene.add(robo.group);
+  signals = makeSignals(w.scene, NET); w.colliders.push(...signals.colliders);
+  life = await makeLife(w.scene, { signals }).catch(e => { console.warn('street life', e); return null; });
+  // golden gears hidden around the district (one is up high: it takes a jump)
+  w.gears = CITY_GEARS.map(([x, z, y], i) => { const id = `city-${key}-${i}`, m = new THREE.Mesh(GEAR_GEO, GEAR_MAT); m.position.set(x, y, z); m.scale.setScalar(1.3); m.castShadow = true; m.visible = !S.gears[id]; w.scene.add(m); return { id, m, y }; });
   renderer.toneMappingExposure = w.exposure;
   if (renderer.compileAsync) await renderer.compileAsync(w.scene, camera).catch(() => {});
   RW = w;
@@ -332,14 +341,23 @@ function makeMarker() {
   return g;
 }
 const L = () => RW.locs[S.loc];
-const busDoor = () => new THREE.Vector3(bus.position.x + bus.userData.doorPos.x, .2, LAYOUT.LANE_Z + bus.userData.doorPos.z + .2);
+const UPV = new THREE.Vector3(0, 1, 0);
+// the coach's door in the world, wherever it stands and however it is turned
+const busDoor = () => { const d = bus.userData.doorPos; return new THREE.Vector3(d.x, 0, d.z + .2).applyAxisAngle(UPV, bus.rotation.y).add(bus.position).setY(.2); };
+function parkAt(id) { const b = BAYS[id]; S.bay = id; bus.position.set(b.x, .02, b.z); bus.rotation.y = b.yaw; bus.userData.door(0); }
+const locOfBay = id => RW.locs.findIndex(l => l.bay?.id === id);
+/* is (x, z) inside a footprint (centre, yaw, half length, half width), grown by m? cars face +z at yaw 0, the coach +x */
+function inBox(x, z, cx, cz, yaw, hl, hw, m = 0, car = false) { const dx = x - cx, dz = z - cz, c = Math.cos(yaw), s = Math.sin(yaw), al = car ? dx * s + dz * c : dx * c - dz * s, la = car ? dx * c - dz * s : dx * s + dz * c; return Math.abs(al) < hl + m && Math.abs(la) < hw + m; }
+const inBus = (x, z, m = 0) => inBox(x, z, bus.position.x, bus.position.z, bus.rotation.y, bus.userData.halfLen, bus.userData.halfWid, m);
+const heightAt = (x, z) => { for (const [x0, z0, x1, z1, y] of RW.pads) if (x >= x0 && x <= x1 && z >= z0 && z <= z1) return y; return groundY(x, z); };
+const angTo = (a, b) => Math.atan2(Math.sin(b - a), Math.cos(b - a));
 
 /* ---------------- input ---------------- */
 const keys = {}; let joy = { x: 0, y: 0 }, camYaw = Math.PI, camPitch = .3, drag = null, skip = false;
-addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'Space' && S.mode === 'world') { e.preventDefault(); if (!e.repeat) jumpReq = true; } if (e.code === 'KeyE' && S.mode === 'world') act(); if (e.code === 'KeyE' && S.mode === 'drive') driveAct(); if (e.code === 'KeyH' && S.mode === 'drive' && !e.repeat) honk(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
+addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'Space' && (S.mode === 'world' || S.mode === 'tour') && !talkQ.busy) { e.preventDefault(); if (!e.repeat) jumpReq = true; } if (e.code === 'KeyE' && (S.mode === 'world' || S.mode === 'tour') && !talkQ.busy) act(); if (e.code === 'KeyE' && S.mode === 'drive') driveAct(); if (e.code === 'KeyH' && S.mode === 'drive' && !e.repeat) honk(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
 addEventListener('keyup', e => { keys[e.code] = false; });
 const cv = $('#c');
-cv.addEventListener('pointerdown', e => { if (S.mode === 'world') { drag = { x: e.clientX, y: e.clientY, yaw: camYaw, pitch: camPitch }; cv.setPointerCapture(e.pointerId); } });
+cv.addEventListener('pointerdown', e => { if (S.mode === 'world' || S.mode === 'tour') { drag = { x: e.clientX, y: e.clientY, yaw: camYaw, pitch: camPitch }; cv.setPointerCapture(e.pointerId); } });
 cv.addEventListener('pointermove', e => { if (!drag) return; camYaw = drag.yaw - (e.clientX - drag.x) * .006; camPitch = clamp(drag.pitch + (e.clientY - drag.y) * .004, .12, .9); });
 cv.addEventListener('pointerup', () => { drag = null; });
 for (const jo of [$('#joy'), $('#joy2')]) {
@@ -350,12 +368,12 @@ for (const jo of [$('#joy'), $('#joy2')]) {
   jo.addEventListener('pointerup', () => { joy = { x: 0, y: 0 }; knob.style.transform = ''; });
 }
 $('#act').addEventListener('click', () => act());
-$('#jump').addEventListener('pointerdown', e => { e.preventDefault(); if (S.mode === 'world') jumpReq = true; });
+$('#jump').addEventListener('pointerdown', e => { e.preventDefault(); if (S.mode === 'world' || S.mode === 'tour') jumpReq = true; });
 $('#skip').addEventListener('click', () => { skip = true; });
 $('#ride-skip').addEventListener('click', () => { skip = true; });
 
 /* ---------------- how-to cards ---------------- */
-const seen = Q.get('auto') ? { world: 1 } : store.get('seen', {});
+const seen = Q.get('auto') ? { world: 1, robot: 1 } : store.get('seen', {});
 function howto(key, title, items, force = false) {
   if (seen[key] && !force) return Promise.resolve(); seen[key] = 1; store.set('seen', seen);
   $('#ht-title').textContent = title; $('#ht-list').innerHTML = items.map(([i, t]) => `<li><i>${i}</i><span>${t}</span></li>`).join('');
@@ -364,41 +382,91 @@ function howto(key, title, items, force = false) {
 }
 
 /* ---------------- HUD ---------------- */
+/* the district from above: streets, the places, the coach, the student and where to go next */
+function drawMap(cv, { route = null, target = null } = {}) {
+  if (!RW || !cv || !cv.offsetWidth) return;
+  const dpr = Math.min(2, devicePixelRatio || 1), W = cv.offsetWidth, H = cv.offsetHeight;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
+  const B = BOUNDS, k = Math.min((W - 8) / (B.x1 - B.x0), (H - 8) / (B.z1 - B.z0)), ox = (W - (B.x1 - B.x0) * k) / 2, oz = (H - (B.z1 - B.z0) * k) / 2;
+  const P = (wx, wz) => [ox + (wx - B.x0) * k, oz + (wz - B.z0) * k];
+  x.fillStyle = 'rgba(214,190,150,.35)'; x.beginPath(); x.roundRect(2, 2, W - 4, H - 4, 10); x.fill();
+  x.fillStyle = 'rgba(255,255,255,.75)'; for (let i = 0; i < C.XS.length - 1; i++) for (let j = 0; j < C.ZS.length - 1; j++) { const [a1, b1] = P(C.XS[i] + C.HW, C.ZS[j] + C.HW), [a2, b2] = P(C.XS[i + 1] - C.HW, C.ZS[j + 1] - C.HW); x.beginPath(); x.roundRect(a1, b1, a2 - a1, b2 - b1, 3); x.fill(); }
+  x.strokeStyle = '#5b6488'; x.lineCap = 'round'; x.lineWidth = Math.max(3, C.HW * 2 * k);
+  for (const [n1, n2] of NET.edges) { x.beginPath(); x.moveTo(...P(n1.x, n1.z)); x.lineTo(...P(n2.x, n2.z)); x.stroke(); }
+  if (route) { x.strokeStyle = '#847bb8'; x.lineWidth = 2.5; x.setLineDash([4, 3]); x.beginPath(); route.pts.forEach((q, i) => { const [a1, b1] = P(q.x, q.y); i ? x.lineTo(a1, b1) : x.moveTo(a1, b1); }); x.stroke(); x.setLineDash([]); }
+  x.font = `600 ${W > 240 ? 10 : 9}px "Readex Pro"`; x.textAlign = 'center'; x.direction = 'rtl';
+  for (const l of RW.locs) {
+    const [a1, b1] = P(l.gate.x, l.gate.z), col = l.kind === 'school' ? '#1e8a5a' : S.done[l.f.id] ? '#2fb36d' : TRACKS[l.f.track].color;
+    x.fillStyle = col; x.beginPath(); x.arc(a1, b1, 4, 0, 7); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 1.5; x.stroke();
+    // names only where they help: the school and wherever the student is headed
+    if (l.kind === 'school' || (target && Math.hypot(target.x - l.gate.x, target.z - l.gate.z) < 20) || W > 300) { const lab = l.kind === 'school' ? 'المدرسة' : l.f.short, ly = b1 + (l.side > 0 ? 14 : -8); x.lineWidth = 3; x.strokeStyle = 'rgba(255,255,255,.9)'; x.strokeText(lab, a1, ly); x.fillStyle = '#1b2263'; x.fillText(lab, a1, ly); }
+  }
+  if (target) { const [a1, b1] = P(target.x, target.z), r = 6 + Math.sin(performance.now() / 180) * 1.6; x.strokeStyle = '#f2b51e'; x.lineWidth = 2; x.beginPath(); x.arc(a1, b1, r, 0, 7); x.stroke(); }
+  { const [a1, b1] = P(bus.position.x, bus.position.z); x.save(); x.translate(a1, b1); x.rotate(-bus.rotation.y); x.fillStyle = '#2a3590'; x.beginPath(); x.roundRect(-6, -3.5, 12, 7, 2); x.fill(); x.fillStyle = '#fff'; x.fillRect(2.5, -2.5, 2, 5); x.restore(); }
+  if (player?.root.visible) { const r0 = player.root.position, [a1, b1] = P(r0.x, r0.z), yaw = player.hero ? player.hero.model.rotation.y : player.yaw || 0; x.save(); x.translate(a1, b1); x.rotate(Math.atan2(Math.cos(yaw), Math.sin(yaw))); x.fillStyle = '#e94b6a'; x.strokeStyle = '#fff'; x.lineWidth = 1.5; x.beginPath(); x.moveTo(7, 0); x.lineTo(-4, 4.5); x.lineTo(-2, 0); x.lineTo(-4, -4.5); x.closePath(); x.fill(); x.stroke(); x.restore(); }
+}
+const HUD = { target: null, mapT: 0 };
 function updateHUD() {
   $('#st-pts').textContent = points().toLocaleString('en'); $('#st-fac').textContent = `${doneCount()}/12`; $('#st-bdg').textContent = `${badgeSet().size}/4`;
-  $('#av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`; $('#who-name').textContent = nameOf(S.char); $('#who-region').textContent = REGIONS[S.region]?.name || '';
+  $('#av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`; $('#who-name').textContent = nameOf(S.char); $('#who-region').textContent = `${REGIONS[S.region]?.name || ''} · ⚙ ${Object.keys(S.gears).length}`;
   if (!RW) return;
-  const x0 = LAYOUT.SCHOOL_X - 20, x1 = LAYOUT.FACT_X[2] + 20, pos = x => `${clamp((x - x0) / (x1 - x0), 0, 1) * 100}%`;
-  $('#mini-labels').innerHTML = RW.locs.map(l => `<span class="${l.kind === 'factory' && S.done[l.f.id] ? 'd' : ''}" style="left:${pos(l.x)}">${l.kind === 'school' ? 'المدرسة' : l.f.short}</span>`).join('');
-  $('#mini').dataset.ok = '1'; $('#mini').pos = pos;
   // mission card
-  const loc = L(), chip = $('#m-chip');
-  if (loc.kind === 'school') { chip.textContent = 'نقطة الانطلاق'; chip.style.background = ''; $('#m-title').textContent = 'اركب باص صناعيو المستقبل'; $('#m-text').textContent = 'اخرج من بوابة المدرسة، اعبر ممر المشاة، واركب الباص المنتظر عند المحطة.'; $('#m-step').textContent = `${REGIONS[S.region].name} · ${regionDone(S.region)}/3 مصانع`; $('#m-reward').textContent = ''; }
-  else if (!S.done[loc.f.id]) { const T = TRACKS[loc.f.track]; chip.textContent = `مسار ${T.name}`; chip.style.background = T.color; $('#m-title').textContent = `ادخل ${loc.f.name}`; $('#m-text').textContent = `اعبر ممر المشاة إلى البوابة. مهمتك: ${loc.f.title}.`; $('#m-step').textContent = `${REGIONS[S.region].name} · ${regionDone(S.region)}/3 مصانع`; $('#m-reward').textContent = 'حتى +300 نقطة'; }
-  else { chip.textContent = 'أُنجزت ✓'; chip.style.background = '#2fb36d'; $('#m-title').textContent = 'ارجع إلى الباص'; $('#m-text').textContent = regionDone(S.region) === 3 ? 'أنجزت مصانع هذه المنطقة كلها! اركب الباص وسافر إلى منطقة أخرى.' : 'أنجزت مهمة هذا المصنع. اركب الباص إلى المصنع التالي.'; $('#m-step').textContent = `${REGIONS[S.region].name} · ${regionDone(S.region)}/3 مصانع`; $('#m-reward').textContent = '⭐'.repeat(S.done[loc.f.id]); }
-  // objective marker
-  const toGate = loc.kind === 'factory' && !S.done[loc.f.id];
-  if (toGate) marker.position.set(loc.x, .05, -12.2); else { const d = busDoor(); marker.position.set(d.x, .22, 8.6); }
+  const loc = L(), chip = $('#m-chip'), step = `${REGIONS[S.region].name} · ${regionDone(S.region)}/3 مصانع`;
+  if (loc.kind === 'school') { chip.textContent = 'نقطة الانطلاق'; chip.style.background = ''; $('#m-title').textContent = 'اركب باص صناعيو المستقبل'; $('#m-text').textContent = 'باص المبادرة واقف عند بوابة المدرسة مباشرة. امشِ إلى بابه واركب.'; $('#m-reward').textContent = ''; }
+  else if (!S.done[loc.f.id]) { const T = TRACKS[loc.f.track]; chip.textContent = `مسار ${T.name}`; chip.style.background = T.color; $('#m-title').textContent = `ادخل ${loc.f.name}`; $('#m-text').textContent = `البوابة أمامك على نفس الرصيف. مهمتك: ${loc.f.title}.`; $('#m-reward').textContent = 'حتى +300 نقطة'; }
+  else { chip.textContent = 'أُنجزت ✓'; chip.style.background = '#2fb36d'; $('#m-title').textContent = 'ارجع إلى الباص'; $('#m-text').textContent = regionDone(S.region) === 3 ? 'أنجزت مصانع هذه المنطقة كلها! اركب الباص وسافر إلى منطقة أخرى.' : 'أنجزت مهمة هذا المصنع. اركب الباص إلى المصنع التالي.'; $('#m-reward').textContent = '⭐'.repeat(S.done[loc.f.id]); }
+  $('#m-step').textContent = step;
+  // where to go: the gate of an unfinished factory where the coach stands, otherwise the coach's door
+  const toGate = loc.kind === 'factory' && !S.done[loc.f.id] && S.bay === loc.bay.id, t = toGate ? loc.gate : busDoor();
+  marker.position.set(t.x, .22, t.z); HUD.target = t;
   marker.userData.ring.material.color.set(toGate ? TRACKS[loc.f.track].color : '#847bb8');
 }
 
+/* ---------------- the trip journal: every region, every factory, what was learned and found ---------------- */
+function openJournal() {
+  Audio_.sfx('panel_open', .5);
+  $('#jr-av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`; $('#jr-title').textContent = `دفتر رحلة ${nameOf(S.char)}`;
+  $('#jr-sub').textContent = `${points().toLocaleString('en')} نقطة · ${doneCount()}/12 مصانع · ⚙ ${Object.keys(S.gears).length} تروس ذهبية`;
+  $('#jr-badges').innerHTML = Object.entries(TRACKS).map(([k, t]) => `<div class="${badgeSet().has(k) ? '' : 'off'}"><img src="${t.badge}" alt="">${t.name}</div>`).join('');
+  $('#jr-regions').innerHTML = ORDER.map(r => {
+    const R = REGIONS[r], cg = CITY_GEARS.filter((_, i) => S.gears[`city-${r}-${i}`]).length;
+    return `<div class="jr-reg"><div><b>${R.name}</b><small>${regionDone(r)}/3 مصانع · ⚙ ${cg}/${CITY_GEARS.length} في المدينة</small></div>` + R.factories.map(f => {
+      const st = S.done[f.id] || 0, q = S.quiz[f.id] || 0;
+      return `<div class="jr-f">${f.logo ? `<img src="${f.logo}" alt="">` : `<i class="dot" style="background:${f.color}"></i>`}<span>${f.name}</span><span class="st">${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span><span class="chips"><i class="${(S.facts[f.id] || 0) === 3 ? 'ok' : ''}">📖 ${S.facts[f.id] || 0}/3</i><i class="${q >= 2 ? 'ok' : ''}">✓ ${q}/3</i><i class="${S.gears[f.id] ? 'ok' : ''}">⚙ ${S.gears[f.id] ? '✓' : '—'}</i></span><span class="stamp ${q >= 2 ? 'on' : ''}" title="ختم المصنع">${q >= 2 ? '✓' : ''}</span></div>`;
+    }).join('') + '</div>';
+  }).join('');
+  $('#journal').classList.add('on');
+}
+$('#who').addEventListener('click', openJournal);
+$('#jr-x').addEventListener('click', () => { Audio_.sfx('panel_close', .5); $('#journal').classList.remove('on'); });
+$('#journal').addEventListener('click', e => { if (e.target.id === 'journal') { Audio_.sfx('panel_close', .5); $('#journal').classList.remove('on'); } });
+
 /* ---------------- arrival in a region: a short establishing shot, then play ---------------- */
 async function enterRegion() {
-  const loc = L(); bus.position.set(loc.busX, .02, LAYOUT.LANE_Z); bus.userData.door(0);
-  player.root.visible = true; player.root.position.set(loc.x + 1.5, .03, -25); player.yaw = 0; faceHero(0); camYaw = Math.PI; camPitch = .28;
+  const sc = RW.locs[0]; parkAt(sc.bay.id); S.loc = 0;
+  const [yx, yz] = sc.yard, py = yz - sc.side * 5.5; player.root.visible = true; player.root.position.set(yx + 1.5, .06, py); player.speed = 0;
+  const face = sc.side > 0 ? Math.PI : 0; faceHero(face); camYaw = sc.side > 0 ? 0 : Math.PI; camPitch = .28;
   show('hud'); $('#hud').classList.add('cine'); S.cine = true; skip = false; S.mode = 'intro'; updateHUD();
   Audio_.music(REGIONS[S.region].music, { vol: .55 });
-  const t0 = performance.now(), D = 4200;
+  // from high over the district, past the plaza, down behind the student
+  const end = new THREE.Vector3(yx + 1.5, 1.25, py).add(new THREE.Vector3(Math.sin(camYaw) * Math.cos(camPitch), Math.sin(camPitch), Math.cos(camYaw) * Math.cos(camPitch)).multiplyScalar(5.6));
+  const path = new THREE.CatmullRomCurve3([new THREE.Vector3(-210, 120, 190), new THREE.Vector3(-60, 70, 120), new THREE.Vector3(60, 34, 70), new THREE.Vector3(30, 12, 40), end]);
+  const look = [new THREE.Vector3(0, 0, -20), new THREE.Vector3(60, 0, -30), new THREE.Vector3(20, 2, 0), new THREE.Vector3(yx, 1.4, py)];
+  const t0 = performance.now(), D = 7000, lk = new THREE.Vector3();
   while (!skip) {
     const k = Math.min(1, (performance.now() - t0) / D), e = ease(k);
-    camera.position.set(loc.x + 60 - e * 56, 42 - e * 37, 40 - e * 76); camera.lookAt(loc.x + (1 - e) * 10, 1.5, -20 - e * 6);
-    sunAt(camera.position.x, -10); RW.update(1 / 60); animatePlayer(player, 1 / 60, 0, 'back');
+    camera.position.copy(path.getPoint(e));
+    const f = e * (look.length - 1), i = Math.min(look.length - 2, Math.floor(f)); lk.lerpVectors(look[i], look[i + 1], ease(f - i)); camera.lookAt(lk);
+    sunAt(camera.position.x * .5, camera.position.z * .5); RW.update(1 / 60); animatePlayer(player, 1 / 60, 0, 'back');
     renderer.render(RW.scene, camera); await frame(); if (k >= 1) break;
   }
   $('#hud').classList.remove('cine'); S.cine = false; S.mode = 'world'; skip = false; follow(0, true);
-  await howto('world', 'كيف تلعب؟', touch ? [['🕹️', 'حرّك الشخصية بعصا التحكم أسفل الشاشة'], ['👆', 'اسحب على الشاشة لتدوير الكاميرا'], ['🟣', 'اتبع الدائرة البنفسجية: من المدرسة إلى الباص، ثم إلى المصانع'], ['🚌', 'في كل مصنع لعبة مختلفة، والباص ينقلك بين المصانع والمناطق']] :
-    [['⌨️', 'تحرّك بالأسهم أو W A S D · Shift للجري'], ['🖱️', 'اسحب بالفأرة لتدوير الكاميرا'], ['🟣', 'اتبع الدائرة البنفسجية: من المدرسة إلى الباص، ثم إلى المصانع'], ['🚌', 'اضغط E أو الزر الظاهر للتفاعل · في كل مصنع لعبة مختلفة']]);
-  toast(`مرحباً بك في ${REGIONS[S.region].name}! الباص بانتظارك عند بوابة المدرسة 🚌`, 3400);
+  robo?.place(new THREE.Vector3(yx - .2, 0, py - sc.side * 1.6), .2);
+  if (!seen.robot) { seen.robot = 1; store.set('seen', seen); S.mode = 'menu'; await sayAll([`أهلاً ${nameOf(S.char)}! أنا مِرشد، وسأرافقك في رحلة صناعيو المستقبل.`, `اليوم نزور مصانع ${REGIONS[S.region].name}: في كل مصنع معدات وقاية، ومحطات معلومات، ومهمة، واختبار للمشرف… وترس ذهبي مخبّأ!`, 'باص المبادرة يقف دائماً عند البوابة نفسها، فلا نقطع أي شارع. هيا إلى الباص!']); S.mode = 'world'; }
+  await howto('world', 'كيف تلعب؟', touch ? [['🕹️', 'حرّك الشخصية بعصا التحكم أسفل الشاشة'], ['👆', 'اسحب على الشاشة لتدوير الكاميرا'], ['🚌', 'باص المبادرة يقف عند بوابة كل مكان، فلا تقطع الشارع لتركبه'], ['🗺️', 'الخريطة في الأعلى تريك الباص والمصانع ووجهتك']] :
+    [['⌨️', 'تحرّك بالأسهم أو W A S D · Shift للجري · Space للقفز'], ['🖱️', 'اسحب بالفأرة لتدوير الكاميرا'], ['🚌', 'باص المبادرة يقف عند بوابة كل مكان، فلا تقطع الشارع لتركبه'], ['🗺️', 'الخريطة في الأعلى تريك الباص والمصانع ووجهتك · E للتفاعل']]);
+  toast(`مرحباً بك في ${REGIONS[S.region].name}! باص المبادرة بانتظارك عند بوابة المدرسة 🚌`, 3400);
 }
 // the shadow camera follows the student in whole shadow-map texels, so shadows and the ground under them don't shimmer
 const _sr = new THREE.Vector3(), _su = new THREE.Vector3(), _sp = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
@@ -410,90 +478,114 @@ function sunAt(x, z) {
 }
 
 /* ---------------- walking ---------------- */
-let near = null, stepT = 0, justArrived = false, jumpReq = false;
+let near = null, nearGate = -1, stepT = 0, justArrived = false, jumpReq = false;
 // the camera slides in when a palm trunk or a lamp post would come between it and the student,
-// and rises over the roof when the bus is in the way
-function camClear(tgt, dist) {
-  const dx = Math.sin(camYaw) * Math.cos(camPitch), dz = Math.cos(camYaw) * Math.cos(camPitch), near = RW.colliders.filter(([cx, cz]) => Math.abs(cx - tgt.x) < 10 && Math.abs(cz - tgt.z) < 10);
+// and rises over the roof when the coach is in the way; indoors it stays inside the hall
+function camClear(tgt, dist, circles) {
+  const dx = Math.sin(camYaw) * Math.cos(camPitch), dz = Math.cos(camYaw) * Math.cos(camPitch), close = circles.filter(([cx, cz]) => Math.abs(cx - tgt.x) < 10 && Math.abs(cz - tgt.z) < 10);
   for (let i = 1; i <= 16; i++) {
     const d = dist * i / 16, x = tgt.x + dx * d, z = tgt.z + dz * d;
-    if (near.some(([cx, cz, cr]) => Math.hypot(x - cx, z - cz) < cr + .45)) return Math.max(1.6, d - .5);
+    if (close.some(([cx, cz, cr]) => Math.hypot(x - cx, z - cz) < cr + .45)) return Math.max(1.6, d - .5);
   }
   return dist;
 }
 function busInWay(tgt, want) {
   if (!bus) return false;
-  const bh = bus.userData; for (let i = 1; i <= 12; i++) { const k = i / 12, x = tgt.x + (want.x - tgt.x) * k, z = tgt.z + (want.z - tgt.z) * k; if (Math.abs(x - bus.position.x) < bh.halfLen + .4 && Math.abs(z - LAYOUT.LANE_Z) < bh.halfWid + .4) return true; }
+  for (let i = 1; i <= 12; i++) { const k = i / 12; if (inBus(tgt.x + (want.x - tgt.x) * k, tgt.z + (want.z - tgt.z) * k, .4)) return true; }
   return false;
 }
+const worldSpace = () => ({ world: true, boxes: RW.boxes, circles: RW.colliders, bounds: BOUNDS, height: x => x, solid: (x, z) => inBus(x, z, .3) || (life?.traffic || []).some(c => inBox(x, z, c.x, c.z, c.yaw, c.len / 2, 1, .3, true)) });
 let camDist = 6, camLift = 0;
-function follow(dt, snap = false) {
-  const r = player.root, tgt = new THREE.Vector3(r.position.x, r.position.y + 1.25, r.position.z), full = player.hero ? (touch ? 5.8 : 5.2) : (touch ? 6.6 : 6), want0 = camClear(tgt, full);
+function follow(dt, snap = false, sp = null) {
+  sp ||= S.mode === 'tour' && IN ? tourSpace() : worldSpace();
+  const r = player.root, tgt = new THREE.Vector3(r.position.x, r.position.y + 1.25, r.position.z), full = player.hero ? (touch ? 5.8 : 5.2) : (touch ? 6.6 : 6);
+  let want0 = camClear(tgt, full, sp.circles);
+  if (sp.indoor) { const b = sp.bounds, dx = Math.sin(camYaw), dz = Math.cos(camYaw); for (let d = want0; d > 1.6; d -= .25) { const x = tgt.x + dx * d * Math.cos(camPitch), z = tgt.z + dz * d * Math.cos(camPitch); if (x > b.x0 - .2 && x < b.x1 + .2 && z > b.z0 - .2 && z < b.z1 + .2) { want0 = d; break; } want0 = d; } }
   camDist = snap || want0 < camDist ? want0 : camDist + (want0 - camDist) * Math.min(1, dt * 2.5); const dist = camDist;
   const want = new THREE.Vector3(tgt.x + Math.sin(camYaw) * Math.cos(camPitch) * dist, tgt.y + Math.sin(camPitch) * dist, tgt.z + Math.cos(camYaw) * Math.cos(camPitch) * dist);
-  // the bus in the way: lift a little and swing round to the open side, unless the player is steering the view
-  const blocked = busInWay(tgt, want), lift = blocked ? Math.max(0, 7 - want.y) : 0; camLift = snap ? lift : camLift + (lift - camLift) * Math.min(1, dt * 4); want.y += camLift;
-  if (blocked && !drag) { const goal = r.position.z > bus.position.z ? 0 : Math.PI, dy = Math.atan2(Math.sin(goal - camYaw), Math.cos(goal - camYaw)); camYaw += dy * Math.min(1, dt * 2.2); }
+  // the coach in the way: lift a little and swing round to the open side, unless the player is steering the view
+  const blocked = sp.world && busInWay(tgt, want), lift = blocked ? Math.max(0, 7 - want.y) : 0; camLift = snap ? lift : camLift + (lift - camLift) * Math.min(1, dt * 4); want.y += camLift;
+  if (blocked && !drag) { const ax = bus.position.x - r.position.x, az = bus.position.z - r.position.z, goal = Math.atan2(-ax, -az); camYaw += angTo(camYaw, goal) * Math.min(1, dt * 2.2); }
   if (snap) camera.position.copy(want); else camera.position.lerp(want, Math.min(1, dt * 6)); camera.lookAt(tgt);
 }
 function act() {
+  if (S.mode === 'tour') return tourAct();
   if (S.mode !== 'world') return;
-  if (near === 'gate') enterFactory(L().f);
+  if (near === 'gate') { S.loc = nearGate; enterFactory(L().f); }
   else if (near === 'bus') openRoute();
 }
-function walk(dt) {
-  const p = player, r = p.root, loc = L();
+/* the student on foot, in the street or on a factory floor */
+function moveStudent(dt, sp) {
+  const p = player, r = p.root;
   let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joy.x;
   let iz = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0) + joy.y;
   const mag = Math.min(1, Math.hypot(ix, iz)), run = keys.ShiftLeft || keys.ShiftRight || (mag > .95 && touch);
   const target = mag > .1 ? (p.hero ? (run ? 3.4 : 1.5) : (run ? 5.4 : 3.1)) : 0; p.speed += (target - p.speed) * Math.min(1, dt * 8);
+  p.jy ??= 0; p.jv ??= 0; const feet = r.position.y + p.jy;
   let face = null;
   if (mag > .1) {
     const ang = Math.atan2(ix, iz) + camYaw, dx = Math.sin(ang), dz = Math.cos(ang);
-    const ox = r.position.x, oz = r.position.z; let nx = ox + dx * p.speed * dt, nz = oz + dz * p.speed * dt;
-    // walkable area: the street around this stop, plus the school yard through its gate
-    nx = clamp(nx, loc.x - 36, loc.x + 36); nz = Math.min(nz, 12.6);
-    const yard = loc.kind === 'school';
-    if (oz < -14.2) { nx = clamp(nx, loc.x - 20.5, loc.x + 20.5); nz = Math.max(nz, -33); if (nz > -14.2 && Math.abs(nx - loc.x) > 3.4) nz = -14.4; }
-    else if (nz < -13.4 && !(yard && Math.abs(nx - loc.x) < 3.4)) nz = -13.4;
-    const bh = bus.userData; if (Math.abs(nx - bus.position.x) < bh.halfLen && Math.abs(nz - LAYOUT.LANE_Z) < bh.halfWid) { nx = ox; nz = oz; }
-    for (const [cx, cz, cr] of [...RW.colliders, ...RW.yard]) { const ddx = nx - cx, ddz = nz - cz, d = Math.hypot(ddx, ddz), min = cr + .3; if (d < min && d > 1e-4) { nx = cx + ddx / d * min; nz = cz + ddz / d * min; } }
+    const ox = r.position.x, oz = r.position.z; let nx = clamp(ox + dx * p.speed * dt, sp.bounds.x0, sp.bounds.x1), nz = clamp(oz + dz * p.speed * dt, sp.bounds.z0, sp.bounds.z1);
+    // walls and buildings (boxes) push out along the shallowest side; posts and trunks (circles) push out radially
+    for (const [x0, z0, x1, z1] of sp.boxes) {
+      const a = x0 - .3, b = x1 + .3, c = z0 - .3, d = z1 + .3; if (nx <= a || nx >= b || nz <= c || nz >= d) continue;
+      const m = Math.min(nx - a, b - nx, nz - c, d - nz); if (m === nx - a) nx = a; else if (m === b - nx) nx = b; else if (m === nz - c) nz = c; else nz = d;
+    }
+    for (const [cx, cz, cr] of sp.circles) { const ddx = nx - cx, ddz = nz - cz, d = Math.hypot(ddx, ddz), min = cr + .3; if (d < min && d > 1e-4) { nx = cx + ddx / d * min; nz = cz + ddz / d * min; } }
+    // the coach, the cars, a crate too high to step on
+    if (sp.solid(nx, nz, feet)) { nx = ox; nz = oz; }
     r.position.x = nx; r.position.z = nz;
     p.yaw = ang; face = Math.cos(ang - camYaw) > 0 ? 'front' : 'back';
-    const onWalk = nz > 7.8 || (nz < -7.8 && nz > -13.2) || Math.abs(nz) < .8; r.position.y += ((nz < -13.2 ? .03 : onWalk ? .2 : .02) - r.position.y) * Math.min(1, dt * 12);
-    stepT -= dt * (p.speed / (p.hero ? 1.5 : 3)); if (stepT <= 0) { Audio_.sfx(`step_${1 + (Math.random() * 5 | 0)}`, .2); stepT = .42; }
+    stepT -= dt * (p.speed / (p.hero ? 1.5 : 3)); if (stepT <= 0) { if (p.jy === 0) Audio_.sfx(`step_${1 + (Math.random() * 5 | 0)}`, .2); stepT = .42; }
   }
-  p.jy ??= 0; p.jv ??= 0;
+  const gy = sp.world ? heightAt(r.position.x, r.position.z) : sp.height(r.position.x, r.position.z, feet);
+  // stepping up is quick; walking off a crate drops you onto the floor
+  if (gy > r.position.y) { const up = gy - r.position.y; r.position.y = gy; if (p.jy > 0) p.jy = Math.max(0, p.jy - up); }
+  else r.position.y += (gy - r.position.y) * Math.min(1, dt * (sp.indoor ? 18 : 12));
   if (jumpReq && p.jy === 0) { p.jv = 5.4; Audio_.sfx('jump', .5); } jumpReq = false;
   if (p.jy > 0 || p.jv > 0) { p.jv -= 15 * dt; p.jy = Math.max(0, p.jy + p.jv * dt); if (p.jy === 0) { p.jv = 0; Audio_.sfx('land', .5); } }
   if (p.hero) p.hero.model.position.y = p.hero.baseY + p.jy;
   if (p.blob) p.blob.scale.setScalar(1 - Math.min(.55, p.jy * .35));
   animatePlayer(p, dt, p.speed, face);
-  follow(dt);
+  follow(dt, false, sp);
+}
+function walk(dt) {
+  const r = player.root;
+  moveStudent(dt, worldSpace());
   sunAt(r.position.x, r.position.z);
-  // interactions
+  guide(dt, HUD.target, r.position.y);
+  // interactions: a factory gate, or the coach's door, whichever is nearer
   const door = busDoor(), dBus = Math.hypot(r.position.x - door.x, r.position.z - door.z);
-  const dGate = loc.kind === 'factory' ? Math.hypot(r.position.x - loc.x, r.position.z + 12.8) : 99;
+  let gd = 2.6; nearGate = -1; RW.locs.forEach((l, i) => { if (l.kind !== 'factory') return; const d = Math.hypot(r.position.x - l.gate.x, r.position.z - l.gate.z); if (d < gd) { gd = d; nearGate = i; } });
   if (dBus > 4) justArrived = false;
-  near = dGate < 3.4 && !S.done[loc.f?.id] ? 'gate' : dBus < 2.8 && !justArrived ? 'bus' : dGate < 3.4 ? 'gate' : null;
-  const btn = $('#act'); btn.classList.toggle('on', !!near); if (near) btn.textContent = near === 'gate' ? (S.done[loc.f.id] ? '🔁 العب مرة أخرى' : `ادخل ${loc.f.short}`) : '🚌 اركب الباص';
+  near = nearGate >= 0 && (dBus >= 2.8 || justArrived || gd < dBus) ? 'gate' : dBus < 2.8 && !justArrived ? 'bus' : null;
+  const btn = $('#act'); btn.classList.toggle('on', !!near);
+  if (near) { const t = near === 'gate' ? (S.done[RW.locs[nearGate].f.id] ? '🔁 زُر المصنع مرة أخرى' : `ادخل ${RW.locs[nearGate].f.short}`) : '🚌 اركب الباص'; if (btn.textContent !== t) btn.textContent = t; }
   const t = performance.now() / 1000; marker.userData.arrow.position.y = 3.2 + Math.sin(t * 2.4) * .25; marker.userData.arrow.rotation.y = t;
-  // minimap
-  const pos = $('#mini').pos; if (pos) { $('#mini-me').style.left = pos(r.position.x); $('#mini-bus').style.left = pos(bus.position.x); }
+  if ((HUD.mapT -= dt) <= 0) { HUD.mapT = .1; drawMap($('#mini-cv'), { target: HUD.target }); }
+  // gears: spin, and collect the one you walk (or jump) into
+  const feet = r.position.y + (player.jy || 0);
+  for (const g of RW.gears) {
+    if (!g.m.visible) continue; g.m.rotation.y = t * 1.8; g.m.position.y = g.y + Math.sin(t * 2.2 + g.y) * .08;
+    if (Math.hypot(r.position.x - g.m.position.x, r.position.z - g.m.position.z) < 1.1 && feet >= g.y - 1.25) {
+      g.m.visible = false; S.gears[g.id] = 1; S.xp += 50; persist(); Audio_.sfx('level_up', .6); flash(); updateHUD();
+      const n = RW.gears.filter(x => !x.m.visible).length; say(n === RW.gears.length ? `جمعت كل تروس ${REGIONS[S.region].name} الذهبية! ⚙️ أنت مستكشف حقيقي.` : `ترس ذهبي! ⚙️ +50 · وجدت ${n} من ${RW.gears.length} في هذه المدينة.`, { wait: false });
+    }
+  }
 }
 
-/* ---------------- the bus: route menu, boarding, the ride, arrival ---------------- */
+/* ---------------- the coach: route menu, boarding, the ride, arrival ---------------- */
 function openRoute() {
   S.mode = 'menu'; Audio_.sfx('panel_open', .5);
   const list = $('#route-list'); list.innerHTML = '';
   const dv = document.createElement('button'); dv.type = 'button'; dv.className = 'drive-me';
-  dv.innerHTML = `<span class="ic" style="background:var(--grad);display:grid;place-items:center;font-size:22px">🚌</span><span class="tx"><b>سُق الباص بنفسك</b><small>تجوّل في المدينة وتوقّف عند أي محطة</small></span><span class="st">جديد</span>`;
+  dv.innerHTML = `<span class="ic" style="background:var(--grad);display:grid;place-items:center;font-size:22px">🚌</span><span class="tx"><b>سُق الباص بنفسك</b><small>شوارع وتقاطعات وإشارات · توقّف في موقف أي بوابة</small></span><span class="st">جديد</span>`;
   dv.onclick = () => { Audio_.sfx('ui_click'); $('#route').classList.remove('on'); startDrive(); }; list.append(dv);
   RW.locs.forEach((l, i) => {
-    const b = document.createElement('button'); b.type = 'button'; b.disabled = i === S.loc;
+    const b = document.createElement('button'), here = l.bay.id === S.bay; b.type = 'button'; b.disabled = here;
     if (l.kind === 'school') b.innerHTML = `<span class="ic" style="background-image:url(assets/img/logo-mark.webp)"></span><span class="tx"><b>المدرسة</b><small>نقطة الانطلاق</small></span><span class="st"></span>`;
     else { const st = S.done[l.f.id] || 0; b.innerHTML = `<span class="ic" style="${l.f.logo ? `background-image:url(${l.f.logo})` : `background:${l.f.color}`}"></span><span class="tx"><b>${l.f.name}</b><small>مسار ${TRACKS[l.f.track].name} · ${l.f.title}</small></span><span class="st">${st ? '★'.repeat(st) + '☆'.repeat(3 - st) : 'جديد'}</span>`; }
-    if (i === S.loc) b.querySelector('small').textContent = 'أنت هنا الآن';
+    if (here) b.querySelector('small').textContent = 'الباص هنا الآن';
     b.onclick = () => { Audio_.sfx('ui_click'); $('#route').classList.remove('on'); rideTo(i); };
     list.append(b);
   });
@@ -502,169 +594,386 @@ function openRoute() {
 $('#route-close').onclick = () => { Audio_.sfx('panel_close'); $('#route').classList.remove('on'); S.mode = 'world'; };
 $('#route-region').onclick = () => { Audio_.sfx('ui_click'); $('#route').classList.remove('on'); showRegions(true); };
 
-async function cine(fn) { S.cine = true; skip = false; if (marker) marker.visible = false; let last = performance.now(); for (;;) { const now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now; RW.update(dt); if (fn(dt) === false || skip) break; renderer.render(RW.scene, camera); await frame(); } S.cine = false; if (marker) marker.visible = true; }
+async function cine(fn) { S.cine = true; skip = false; if (marker) marker.visible = false; let last = performance.now(); for (;;) { const now = performance.now(), dt = Math.min(.05, (now - last) / 1000) * TS; last = now; RW.update(dt); robo?.update(dt); if (fn(dt) === false || skip) break; renderer.render(RW.scene, camera); await frame(); } S.cine = false; if (marker) marker.visible = true; }
+// the side of the coach the door is on, as a unit vector on the ground
+const doorSide = () => new THREE.Vector3(Math.sin(bus.rotation.y), 0, Math.cos(bus.rotation.y));
 async function board() {
   S.mode = 'ride'; show('hud'); $('#hud').classList.add('cine'); $('#act').classList.remove('on');
-  const door = busDoor(), from = player.root.position.clone();
-  // board: the doors open, the student walks in
+  const door = busDoor(), from = player.root.position.clone(), out = doorSide(), fw = new THREE.Vector3(Math.cos(bus.rotation.y), 0, -Math.sin(bus.rotation.y));
   Audio_.sfx('bus_door_open', .8);
-  camera.position.set(door.x + 6, 2.6, 15); camera.lookAt(door.x, 1.4, 7.2);
-  let k = 0; await cine(dt => { k += dt / 1.6; bus.userData.door(Math.min(1, k * 2)); const e = ease(Math.min(1, k)); player.root.position.lerpVectors(from, new THREE.Vector3(door.x, .2, door.z - .3), e); player.speed = 2.4; animatePlayer(player, dt, null, 'back'); return k < 1; });
+  // مِرشد hops in first
+  if (robo) { robo.look = null; robo.target.copy(door).addScaledVector(out, -.6); robo.floor = .9; }
+  camera.position.copy(door).addScaledVector(out, 7).addScaledVector(fw, 5).setY(2.6); camera.lookAt(door.x, 1.4, door.z);
+  let k = 0; await cine(dt => { k += dt / 1.6; bus.userData.door(Math.min(1, k * 2)); const e = ease(Math.min(1, k)); player.root.position.lerpVectors(from, door.clone().addScaledVector(out, -.3), e); player.speed = 2.4; animatePlayer(player, dt, null, 'back'); return k < 1; });
   player.root.visible = false; bus.userData.door(0); Audio_.sfx('bus_door_close', .8); setTimeout(() => Audio_.sfx('bus_horn', .45), 900);
 }
+/* drive the coach along a route: it keeps to its lane, waits at red lights and behind cars, slows into turns */
+let busPrio = null;
+function coachStep(R, st, dt, { ghost = false } = {}) {
+  const P = new THREE.Vector2(), Dv = new THREE.Vector2(), bh = bus.userData;
+  let gap = R.len - st.s; busPrio = null;
+  for (const sp of R.stops) if (sp.at > st.s + bh.halfLen - 1) { if (sp.at - st.s < 60) busPrio = sp.lane; const g = signals?.state(sp.lane) || 'go'; if (g === 'stop' || (g === 'amber' && sp.at - st.s - bh.halfLen > st.v * st.v / 8 + 2)) gap = Math.min(gap, sp.at - st.s - bh.halfLen - .8); break; }
+  if (!ghost) for (let d = bh.halfLen; d < Math.min(gap + bh.halfLen, 34); d += 1.5) { polyAt(R, st.s + d, P); if ((life?.traffic || []).some(c => Math.hypot(c.x - P.x, c.z - P.y) < 2.4)) { gap = Math.min(gap, d - bh.halfLen - 3.5); break; } }
+  // ease off before a bend: the heading change over the next 12 m
+  polyAt(R, st.s + 1, P, Dv); const h0 = Math.atan2(Dv.y, Dv.x); polyAt(R, st.s + 12, P, Dv); const bend = Math.abs(angTo(h0, Math.atan2(Dv.y, Dv.x)));
+  const want = Math.min(st.vmax, bend > 1 ? 4.5 : bend > .4 ? 7 : 16, Math.sqrt(Math.max(0, 2 * 3.2 * gap)));
+  const dv = want - st.v; st.v = Math.max(0, st.v + (dv > 0 ? Math.min(dv, 2.4 * dt) : Math.max(dv, -6 * dt)));
+  st.s = Math.min(R.len, st.s + st.v * dt);
+  const a = polyAt(R, Math.max(0, st.s - 2), new THREE.Vector2()), b = polyAt(R, Math.min(R.len, st.s + 2), new THREE.Vector2()), c2 = polyAt(R, st.s, P);
+  const yaw = Math.atan2(-(b.y - a.y), b.x - a.x), px = bus.position.x, pz = bus.position.z;
+  bus.position.set(c2.x, .02, c2.y); bus.rotation.y += angTo(bus.rotation.y, yaw) * Math.min(1, dt * 7);
+  bus.userData.roll(Math.hypot(c2.x - px, c2.y - pz)); busV = st.v;
+}
 async function rideTo(dest) {
-  const D = RW.locs[dest]; await board();
-  // the ride
+  const D = RW.locs[dest], from = RW.locs[locOfBay(S.bay)], R = routeBus(S.bay, D.bay.id); await board();
   show('ride'); $('#ride-to').textContent = D.name;
-  const x0 = LAYOUT.SCHOOL_X - 20, x1 = LAYOUT.FACT_X[2] + 20, pos = x => clamp((x - x0) / (x1 - x0), 0, 1) * 100;
-  $('#ride-stops').innerHTML = RW.locs.map(l => `<span style="left:${pos(l.x)}%">${l.kind === 'school' ? 'المدرسة' : l.f.short}</span>`).join('');
+  $('#ride-stops').innerHTML = `<span style="left:4%">${from?.kind === 'factory' ? from.f.short : 'المدرسة'}</span><span style="left:96%">${D.kind === 'school' ? 'المدرسة' : D.f.short}</span>`;
   Audio_.music('bus_trip', { vol: .5 });
+  // camera shots taken relative to the coach: alongside, chasing, low in front, a drone above
   const shots = [
-    (x, t) => [[x + 7 - t * 3, 2, 17], [x, 1.9, LAYOUT.LANE_Z]],
-    (x, t) => [[x - 17, 6.5, 10], [x + 8, 2, LAYOUT.LANE_Z]],
-    (x, t) => [[x + 15 + t, 1.1, 9], [x - 2, 2.2, LAYOUT.LANE_Z]],
-    (x, t) => [[x - 26 + t * 4, 34, 42], [x + 14, 0, -6]]
+    (p, f, r, t) => [p.clone().addScaledVector(r, -13).addScaledVector(f, 3 - t * .6).setY(3), p.clone().addScaledVector(f, 3).setY(1.8)],
+    (p, f, r) => [p.clone().addScaledVector(f, -16).setY(7), p.clone().addScaledVector(f, 10).setY(1.5)],
+    (p, f, r, t) => [p.clone().addScaledVector(f, 15 - t * 1.5).addScaledVector(r, -3.5).setY(1.3), p.clone().setY(2)],
+    (p, f, r, t) => [p.clone().addScaledVector(f, -24 + t * 2).addScaledVector(r, -22).setY(30), p.clone().addScaledVector(f, 14)]
   ];
-  const drive = async (a, b, mode) => {
-    const dist = b - a, T = mode === 'full' ? Math.max(6, dist / 20) : 3.4; let t = 0, prev = a, shotT = 0, shot = (Math.random() * 4) | 0;
-    await cine(dt => {
-      t = Math.min(T, t + dt); const u = t / T, e = mode === 'full' ? (1 - Math.cos(u * Math.PI)) / 2 : mode === 'out' ? u * u : 1 - (1 - u) * (1 - u);
-      const x = a + dist * e; bus.position.x = x; const v = (x - prev) / Math.max(dt, 1e-4); prev = x; busV = v; bus.userData.roll(v * dt);
-      shotT += dt; if (shotT > 3.4) { shotT = 0; shot = (shot + 1) % shots.length; }
-      const [cp, lk] = shots[shot](x, shotT); camera.position.set(...cp); camera.lookAt(...lk);
-      sunAt(x, 0); $('#ride-fill').style.width = pos(x) + '%';
-      return t < T;
-    });
-  };
-  const a = bus.position.x, b = D.busX;
-  if (b > a && b - a < 900) await drive(a, b, 'full');
-  else { await drive(a, a + 80, 'out'); if (!skip) { flash(); await wait(200); } await drive(b - 90, b, 'in'); }
-  bus.position.x = b; skip = false; busV = 0; Audio_.sfx('bus_brake', .75);
+  const st = { s: 0, v: 0, vmax: 16 }; let shot = Math.random() * 4 | 0, shotT = 0, stuck = 0, cut = true;
+  await cine(dt => {
+    coachStep(R, st, dt, { ghost: stuck > 8 }); stuck = st.v < .3 ? stuck + dt : 0;
+    const p = bus.position.clone(), f = new THREE.Vector3(Math.cos(bus.rotation.y), 0, -Math.sin(bus.rotation.y)), r = new THREE.Vector3(Math.sin(bus.rotation.y), 0, Math.cos(bus.rotation.y));
+    shotT += dt; if (shotT > 4.2) { shotT = 0; shot = (shot + 1) % shots.length; cut = true; }
+    const [cp, lk] = shots[shot](p, f, r, shotT); if (cut) { camera.position.copy(cp); cut = false; } else camera.position.lerp(cp, Math.min(1, dt * 4)); camera.lookAt(lk);
+    sunAt(p.x, p.z); $('#ride-fill').style.width = st.s / R.len * 100 + '%';
+    return st.s < R.len - .02;
+  });
+  if (skip) { flash(); const b = BAYS[D.bay.id]; bus.position.set(b.x, .02, b.z); bus.rotation.y = b.yaw; }
+  parkAt(D.bay.id); skip = false; busV = 0; Audio_.sfx('bus_brake', .75);
   await alight(dest);
 }
-// arrive: the air brakes hiss, the doors open, the student steps down
+// arrive: the air brakes hiss, the doors open, the student steps down onto the sidewalk by the gate
 async function alight(dest) {
   const D = RW.locs[dest]; let k = 0;
   S.mode = 'ride'; S.loc = dest; show('hud'); $('#hud').classList.add('cine'); updateHUD();
   Audio_.music(REGIONS[S.region].music, { vol: .55 }); setTimeout(() => Audio_.sfx('bus_door_open', .8), 350);
-  const d2 = busDoor(); player.root.visible = true; player.root.position.set(d2.x, .2, d2.z - .3);
-  const to = new THREE.Vector3(d2.x - .4, .2, 9.6);
-  camera.position.set(d2.x + 5, 2.6, 14.5); camera.lookAt(d2.x, 1.3, 8);
-  await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(new THREE.Vector3(d2.x, .2, d2.z - .3), to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
+  const d2 = busDoor(), out = doorSide(), fw = new THREE.Vector3(Math.cos(bus.rotation.y), 0, -Math.sin(bus.rotation.y));
+  const a = d2.clone().addScaledVector(out, -.3), to = d2.clone().addScaledVector(out, 1.3); player.root.visible = true; player.root.position.copy(a);
+  camera.position.copy(d2).addScaledVector(out, 6.5).addScaledVector(fw, 4.5).setY(2.6); camera.lookAt(d2.x, 1.3, d2.z);
+  await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(a, to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
   bus.userData.door(0); Audio_.sfx('bus_door_close', .6); player.speed = 0; player.root.position.copy(to);
-  camYaw = .35; camPitch = .3; follow(0, true); justArrived = D.kind === 'factory'; $('#hud').classList.remove('cine'); S.mode = 'world'; skip = false;
-  toast(D.kind === 'school' ? 'وصلت إلى المدرسة' : `وصلت إلى ${D.name} · اعبر ممر المشاة إلى البوابة`, 3200);
+  robo?.place(to.clone().addScaledVector(fw, -1.5).addScaledVector(out, -.2), to.y + .15);
+  // look along the sidewalk toward the gate
+  // the camera sits back over the bay, not against the compound wall
+  const g = D.gate, gy = Math.atan2(g.x - to.x, g.z - to.z), cv2 = new THREE.Vector3(to.x - g.x, 0, to.z - g.z).normalize().addScaledVector(out, -.7); faceHero(gy); camYaw = Math.atan2(cv2.x, cv2.z); camPitch = .34; follow(0, true);
+  justArrived = true; $('#hud').classList.remove('cine'); S.mode = 'world'; skip = false;
+  toast(D.kind === 'school' ? 'وصلت إلى المدرسة' : `وصلت إلى ${D.name} · البوابة أمامك`, 3200);
 }
 
-/* ---------------- driving the bus yourself ---------------- */
-const DV = { v: 0, yaw: 0, near: null, bump: 0 };
-const KMH = 3.6, VMAX = 16, VREV = -4;
+/* ---------------- driving the coach yourself ---------------- */
+const DV = { v: 0, steer: 0, near: null, bump: 0, red: 0, front: null };
+const KMH = 3.6, VMAX = 16, VREV = -4, WHEELBASE = 4.4;
 async function startDrive() {
   await board();
-  DV.v = 0; DV.yaw = 0; DV.near = null; bus.rotation.y = 0;
+  // the coach pulls out of the bay into the lane by itself, then the wheel is yours
+  const out = { ...BAYS[S.bay].out, stops: [] }, st = { s: 0, v: 0, vmax: 7 };
+  show('drive'); $('#hud').classList.remove('cine'); document.body.classList.add('driving'); S.mode = 'ride';
+  await cine(dt => { coachStep(out, st, dt, { ghost: true }); chaseCam(bus.position.x, bus.position.z, bus.rotation.y, dt); return st.s < out.len - .05; });
+  skip = false; DV.v = st.v; DV.steer = 0; DV.near = null; DV.front = null; DV.red = 0;
   S.mode = 'drive'; show('drive'); $('#hud').classList.remove('cine'); marker.visible = false; document.body.classList.add('driving');
-  const x0 = LAYOUT.SCHOOL_X - 20, x1 = LAYOUT.FACT_X[2] + 20; DV.pos = x => clamp((x - x0) / (x1 - x0), 0, 1) * 100;
-  $('#dv-stops').innerHTML = RW.locs.map(l => `<span style="left:${DV.pos(l.x)}%">${l.kind === 'school' ? 'المدرسة' : l.f.short}</span>`).join('');
   Audio_.music('bus_trip', { vol: .4 });
-  toast(touch ? 'حرّك عصا التحكم: للأمام تسارع، للخلف فرامل، يمين ويسار للتوجيه' : 'W للتسارع · S للفرامل · A و D للتوجيه · توقّف عند أي محطة 🚏 لتنزل', 4200);
+  toast(touch ? 'حرّك عصا التحكم: للأمام تسارع، للخلف فرامل، يمين ويسار للتوجيه' : 'W للتسارع · S للفرامل · A و D للتوجيه · احترم الإشارات وتوقّف في موقف أي بوابة', 4200);
+}
+/* behind and above the coach; it comes in closer rather than end up inside a palm */
+let chaseD = 15;
+function chaseCam(x, z, yaw, dt) {
+  const fx = Math.cos(yaw), fz = -Math.sin(yaw); let want = 15;
+  for (const [cx, cz, cr] of RW.colliders) {
+    if (cr < .45) continue; const t = -((cx - x) * fx + (cz - z) * fz); if (t < 3 || t > want + 1) continue;
+    const lat = Math.abs((cx - x) * fz - (cz - z) * fx); if (lat < 2.2) want = Math.max(7, t - 2);
+  }
+  chaseD += (want - chaseD) * Math.min(1, dt * (want < chaseD ? 6 : 1.5));
+  camera.position.lerp(new THREE.Vector3(x - fx * chaseD, 3 + chaseD * .23, z - fz * chaseD), Math.min(1, dt * 3)); camera.lookAt(x + fx * 9, 1.8, z + fz * 9);
 }
 function honk() { Audio_.sfx('bus_horn', .6); }
 $('#dv-horn').addEventListener('click', honk);
 $('#dv-act').addEventListener('click', () => driveAct());
+// all four corners of the coach must stay on the road (a little overhang onto the kerb is fine)
+function busFits(x, z, yaw) {
+  const bh = bus.userData, c = Math.cos(yaw), s = Math.sin(yaw), L2 = bh.halfLen - .45, W2 = bh.halfWid - .55;
+  for (const [a, b] of [[L2, W2], [L2, -W2], [-L2, W2], [-L2, -W2], [0, W2], [0, -W2]]) if (!onRoadPt(x + a * c + b * s, z - a * s + b * c)) return false;
+  return true;
+}
+const onRoadPt = (x, z) => onRoad(x, z, -.05);
 function driveStep(dt) {
   const bh = bus.userData;
   const up = keys.KeyW || keys.ArrowUp || joy.y < -.35, down = keys.KeyS || keys.ArrowDown || joy.y > .35;
-  const steer = ((keys.KeyA || keys.ArrowLeft) ? 1 : 0) - ((keys.KeyD || keys.ArrowRight) ? 1 : 0) - (Math.abs(joy.x) > .15 ? joy.x : 0);
+  const steerIn = ((keys.KeyA || keys.ArrowLeft) ? 1 : 0) - ((keys.KeyD || keys.ArrowRight) ? 1 : 0) - (Math.abs(joy.x) > .15 ? joy.x : 0);
   if (up) DV.v += (DV.v < 0 ? 8 : 3.2 * (1 - DV.v / (VMAX + 4))) * dt;
   else if (down) { const was = DV.v; DV.v -= (DV.v > .3 ? 8 : 2) * dt; if (was > 9 && DV.v <= 9) Audio_.sfx('bus_brake', .35); }
   else DV.v -= Math.sign(DV.v) * Math.min(Math.abs(DV.v), (.5 + Math.abs(DV.v) * .05) * dt);
   DV.v = clamp(DV.v, VREV, VMAX);
-  // steering bites with speed; with the wheel straight the coach settles back along the road
-  const grip = clamp(Math.abs(DV.v) / 5, 0, 1) * (DV.v < 0 ? -1 : 1);
-  DV.yaw += steer * .75 * grip * dt; if (!steer) DV.yaw -= DV.yaw * Math.min(1, dt * 1.1); DV.yaw = clamp(DV.yaw, -.36, .36);
-  const ox = bus.position.x, oz = bus.position.z, halfW = .24 * 7.6;
-  let x = ox + Math.cos(DV.yaw) * DV.v * dt, z = oz - Math.sin(DV.yaw) * DV.v * dt;
-  // the eastbound carriageway, between the median and the curb
-  const zMin = 1.1 + halfW + .05, zMax = 7.55 - halfW + .1;
-  if (z < zMin || z > zMax) { z = clamp(z, zMin, zMax); DV.yaw *= .5; DV.v *= 1 - dt * 1.8; }
-  x = clamp(x, -630, 630); if (Math.abs(x) >= 630) DV.v = 0;
-  // cars in the inner lane: no driving through them
+  // the wheel turns at a steady rate and lets go gently; tighter lock at walking pace
+  const lock = .62 - clamp(Math.abs(DV.v) / VMAX, 0, 1) * .34;
+  DV.steer += clamp(steerIn * lock - DV.steer, -2.2 * dt, 2.2 * dt);
+  const ox = bus.position.x, oz = bus.position.z, oy = bus.rotation.y;
+  const yaw = oy + DV.v * Math.tan(DV.steer) / WHEELBASE * dt;
+  let x = ox + Math.cos(yaw) * DV.v * dt, z = oz - Math.sin(yaw) * DV.v * dt, ny = yaw;
+  if (!busFits(x, z, ny)) {
+    // brushing a kerb: ease off it rather than stop dead; keep whichever nearby pose still fits
+    const tries = [[x, z, ny + .035], [x, z, ny - .035], [x, oz, oy], [ox, z, oy], [ox, oz, oy + .03], [ox, oz, oy - .03], [ox, oz, oy]];
+    [x, z, ny] = tries.find(([a, b, c]) => busFits(a, b, c)) || [ox, oz, oy];
+    if (Math.abs(DV.v) > 5 && DV.bump <= 0) { Audio_.sfx('factory_metal', .25); DV.bump = 1.2; } DV.v *= 1 - Math.min(.5, dt * 2.5);
+  }
+  // cars are solid
   for (const c of life?.traffic || []) {
-    if (c.lane.dir < 0 || Math.abs(c.lane.z - z) > halfW + .95) continue;
-    if (Math.abs(c.x - x) < bh.halfLen - .15 + c.len / 2 && Math.sign(c.x - x) === Math.sign(DV.v || 1)) { x = ox; z = oz; if (Math.abs(DV.v) > 2 && DV.bump <= 0) { Audio_.sfx('factory_metal', .35); DV.bump = .8; } DV.v = Math.min(DV.v, c.v * .9); }
+    if (!inBox(c.x, c.z, x, z, ny, bh.halfLen, bh.halfWid, .2) && !inBox(c.x + Math.sin(c.yaw) * c.len * .4, c.z + Math.cos(c.yaw) * c.len * .4, x, z, ny, bh.halfLen, bh.halfWid) && !inBox(c.x - Math.sin(c.yaw) * c.len * .4, c.z - Math.cos(c.yaw) * c.len * .4, x, z, ny, bh.halfLen, bh.halfWid)) continue;
+    x = ox; z = oz; ny = oy; if (Math.abs(DV.v) > 2 && DV.bump <= 0) { Audio_.sfx('factory_metal', .35); DV.bump = .8; toast('انتبه! اصطدمت بسيارة 🚗', 1600); } DV.v = 0; break;
   }
   DV.bump -= dt;
-  bus.position.set(x, .02, z); bus.rotation.y = DV.yaw; busV = DV.v; bus.userData.roll((x - ox) / Math.max(.01, Math.cos(DV.yaw)) * Math.sign(Math.cos(DV.yaw)));
-  // chase camera
-  const fx = Math.cos(DV.yaw), fz = -Math.sin(DV.yaw);
-  const want = new THREE.Vector3(x - fx * 15, 6.4, z - fz * 15 + 1.2);
-  camera.position.lerp(want, Math.min(1, dt * 3)); camera.lookAt(x + fx * 9, 1.8, z + fz * 9);
+  bus.position.set(x, .02, z); bus.rotation.y = ny; busV = DV.v; bus.userData.roll((x - ox) * Math.cos(ny) - (z - oz) * Math.sin(ny));
+  // running a red light: the front of the coach crosses a stop line while that approach is red
+  const f = new THREE.Vector2(x + Math.cos(ny) * bh.halfLen, z - Math.sin(ny) * bh.halfLen);
+  if (DV.front) for (const sg of signals?.list || []) for (const Lq of sg.appr) {
+    const p1 = Lq.pts[1], a0 = (DV.front.x - p1.x) * Lq.d.x + (DV.front.y - p1.y) * Lq.d.y, a1 = (f.x - p1.x) * Lq.d.x + (f.y - p1.y) * Lq.d.y, lat = (f.x - p1.x) * Lq.r.x + (f.y - p1.y) * Lq.r.y;
+    if (a0 < 0 && a1 >= 0 && Math.abs(lat) < 2.8 && signals.state(Lq) === 'stop') { DV.red++; Audio_.sfx('wrong', .5); toast('⚠️ تجاوزت الإشارة الحمراء! انتظر الأخضر في المرة القادمة', 2600); }
+  }
+  DV.front = f; busPrio = null;
+  for (const sg of signals?.list || []) for (const Lq of sg.appr) { const p1 = Lq.pts[1], al = (f.x - p1.x) * Lq.d.x + (f.y - p1.y) * Lq.d.y, lat = (f.x - p1.x) * Lq.r.x + (f.y - p1.y) * Lq.r.y; if (al > -50 && al < 0 && Math.abs(lat) < 3 && Math.cos(ny) * Lq.d.x - Math.sin(ny) * Lq.d.y > .7) busPrio = Lq; }
+  chaseCam(x, z, ny, dt);
   sunAt(x, z);
-  // stops: slow down beside one to get off
-  let best = null; RW.locs.forEach((l, i) => { const d = Math.abs(x - l.busX); if (d < 9 && Math.abs(z - LAYOUT.LANE_Z) < 1.4 && (!best || d < best.d)) best = { l, i, d }; });
-  DV.near = best; const act = $('#dv-act'), name = best ? (best.l.kind === 'school' ? 'المدرسة' : best.l.f.short) : '';
-  act.classList.toggle('on', !!best); if (best) act.textContent = Math.abs(DV.v) < 1.2 ? `🚏 انزل عند ${name}` : `خفّف السرعة للتوقف عند ${name}`;
+  // bays: slow down in one to get off
+  let best = null; for (const l of RW.locs) { const b = l.bay, d = Math.hypot(x - b.x, z - b.z); if (d < 9 && Math.cos(angTo(ny, b.yaw)) > .7 && (!best || d < best.d)) best = { l, i: RW.locs.indexOf(l), d }; }
+  DV.near = best; const btn = $('#dv-act'), name = best ? (best.l.kind === 'school' ? 'المدرسة' : best.l.f.short) : '';
+  btn.classList.toggle('on', !!best); if (best) { const t = Math.abs(DV.v) < 1.2 ? `🚏 انزل عند ${name}` : `خفّف السرعة للتوقف عند ${name}`; if (btn.textContent !== t) btn.textContent = t; }
   $('#dv-kmh').textContent = Math.round(Math.abs(DV.v) * KMH);
-  const ahead = RW.locs.filter(l => l.busX > x + 9).sort((a, b) => a.busX - b.busX)[0];
-  $('#dv-next').textContent = ahead ? `${ahead.kind === 'school' ? 'المدرسة' : ahead.f.short} · ${Math.round(ahead.busX - x)} م` : 'نهاية الطريق';
-  $('#dv-fill').style.width = DV.pos(x) + '%';
+  const goal = RW.locs.filter(l => l.kind === 'factory' && !S.done[l.f.id])[0] || RW.locs[0];
+  $('#dv-next').textContent = `${goal.kind === 'school' ? 'المدرسة' : goal.f.short} · ${Math.round(Math.hypot(goal.bay.x - x, goal.bay.z - z))} م`;
+  if ((HUD.mapT -= dt) <= 0) { HUD.mapT = .1; drawMap($('#dv-map'), { target: goal.bay }); }
 }
 async function driveAct() {
   const n = DV.near; if (S.mode !== 'drive' || !n || Math.abs(DV.v) > 1.2) return;
   S.mode = 'ride'; show('hud'); $('#hud').classList.add('cine'); Audio_.sfx('bus_brake', .7);
-  // pull in neatly beside the stop
-  const x0 = bus.position.x, z0 = bus.position.z, y0 = DV.yaw; let k = 0;
-  await cine(dt => { k = Math.min(1, k + dt / 1.1); const e = ease(k), px = bus.position.x; bus.position.set(x0 + (n.l.busX - x0) * e, .02, z0 + (LAYOUT.LANE_Z - z0) * e); bus.rotation.y = y0 * (1 - e); bus.userData.roll(bus.position.x - px); busV = 0; return k < 1; });
-  bus.rotation.y = 0; DV.v = 0; document.body.classList.remove('driving'); await alight(n.i); marker.visible = true;
+  // pull in neatly beside the gate
+  const b = n.l.bay, x0 = bus.position.x, z0 = bus.position.z, y0 = bus.rotation.y; let k = 0;
+  await cine(dt => { k = Math.min(1, k + dt / 1.2); const e = ease(k), px = bus.position.x, pz = bus.position.z; bus.position.set(x0 + (b.x - x0) * e, .02, z0 + (b.z - z0) * e); bus.rotation.y = y0 + angTo(y0, b.yaw) * e; bus.userData.roll(Math.hypot(bus.position.x - px, bus.position.z - pz)); busV = 0; return k < 1; });
+  parkAt(b.id); DV.v = 0; document.body.classList.remove('driving'); await alight(n.i); marker.visible = true;
+  if (DV.red) setTimeout(() => toast(`قطعت ${DV.red} ${DV.red === 1 ? 'إشارة حمراء' : 'إشارات حمراء'} في هذه الجولة 🚦`, 3200), 3400);
 }
 
-/* ---------------- factories ---------------- */
-let found = 0, hover = null, hintT = 0, hints = 0, startT = 0;
+/* ---------------- مِرشد: the guide who goes everywhere with the student ---------------- */
+let robo = null;
+const talkQ = { busy: false };
+/* a line from the guide; resolves when the player has read it (tap, E, Space or Enter) */
+function say(text, { role = '', wait = true, ms = 0 } = {}) {
+  const box = $('#talk'), out = $('#t-text'); $('#t-role').textContent = role || (IN ? `مرشدك في ${TV.F?.short || 'المصنع'}` : 'مرشدك في الرحلة');
+  box.hidden = false; out.textContent = ''; robo?.talk(Math.min(6, text.length / 18 + 1)); Audio_.sfx('panel_open', .25);
+  $('#t-next').style.visibility = wait ? '' : 'hidden';
+  let i = 0, done = false; clearInterval(say.t); clearTimeout(say.h);
+  say.t = setInterval(() => { i = Math.min(text.length, i + 2); out.textContent = text.slice(0, i); if (i >= text.length) { clearInterval(say.t); done = true; } }, 28);
+  if (!wait) { say.h = setTimeout(() => { if (out.textContent && !talkQ.busy) box.hidden = true; }, ms || Math.max(2600, text.length * 70)); return Promise.resolve(); }
+  talkQ.busy = true;
+  return new Promise(res => {
+    const next = e => { if (e?.type === 'keydown' && !['KeyE', 'Space', 'Enter'].includes(e.code)) return; if (!done) { clearInterval(say.t); out.textContent = text; done = true; return; } box.removeEventListener('click', next); removeEventListener('keydown', next); box.hidden = true; talkQ.busy = false; Audio_.sfx('ui_click', .3); res(); };
+    setTimeout(() => { box.addEventListener('click', next); addEventListener('keydown', next); }, 250);
+  });
+}
+async function sayAll(lines, opt) { for (const l of lines) await say(l, opt); }
+/* the guide floats beside the student, or a little ahead toward where to go next */
+function guide(dt, lead = null, floorY = 0) {
+  if (!robo) return; const r = player.root.position, yaw = player.hero ? player.hero.model.rotation.y : 0;
+  const fw = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw)), rt = new THREE.Vector3(fw.z, 0, -fw.x);
+  const tgt = r.clone().addScaledVector(rt, -1.25).addScaledVector(fw, -.5);
+  if (lead) { const d = new THREE.Vector3(lead.x - r.x, 0, lead.z - r.z), L = d.length(); if (L > 5) tgt.copy(r).addScaledVector(d.normalize(), 2.3).addScaledVector(rt, -.6); }
+  robo.target.set(tgt.x, 0, tgt.z); robo.floor = floorY + .15; robo.look = talkQ.busy || !$('#talk').hidden ? camera.position : null; robo.update(dt);
+}
+
+/* ---------------- factories: a walk-through visit ---------------- */
+const TV = { F: null, tour: null, ppe: false, facts: new Set(), mission: null, quiz: null, gear: false, busy: false, hz: false, hzT: 0, hints: 0, next: null };
 async function enterFactory(F) {
   if (S.mode !== 'world') return;
   S.mode = 'loading'; curF = F; Audio_.sfx('panel_open');
-  IN = await loadingScreen({ img: REGIONS[S.region].img, kicker: 'داخل المصنع', title: F.short, sub: `${F.name} · مسار ${TRACKS[F.track].name}`, from: 'البوابة', to: 'خط الإنتاج', kind: 'pass', meta2: TRACKS[F.track].name, min: 1700,
-    tips: [F.brief, 'في كل مصنع لعبة مختلفة. اجمع 3 نجوم لتحصل على أعلى النقاط.'],
-    task: async () => { const I = await buildInterior(renderer, F); if (renderer.compileAsync) await renderer.compileAsync(I.scene, camera).catch(() => {}); return I; } });
-  await playFactory(F);
+  IN = await loadingScreen({ img: REGIONS[S.region].img, kicker: 'زيارة المصنع', title: F.short, sub: `${F.name} · مسار ${TRACKS[F.track].name}`, from: 'البوابة', to: 'خط الإنتاج', kind: 'pass', meta2: TRACKS[F.track].name, min: 1700,
+    tips: [F.brief, 'ارتدِ معدات الوقاية، اقرأ المحطات الثلاث، أنجز المهمة، ثم اختبار المشرف.', 'في كل مصنع ترس ذهبي مخبّأ… ابحث عنه!'],
+    task: async () => { const I = await buildInterior(renderer, F); I.tour = addTour(I, F); if (renderer.compileAsync) await renderer.compileAsync(I.scene, camera).catch(() => {}); return I; } });
+  await startTour(F);
 }
-async function playFactory(F) {
+async function startTour(F) {
   const T = TRACKS[F.track];
+  Object.assign(TV, { F, tour: IN.tour, ppe: false, facts: new Set(), mission: null, quiz: null, gear: !!S.gears[F.id], busy: true, hz: false, hints: 0 });
+  if (TV.gear) TV.tour.gear.visible = false;
+  RW.scene.remove(player.root); IN.scene.add(player.root); player.root.visible = true; player.root.position.copy(TV.tour.spawn); player.root.position.y = 0; player.speed = 0;
+  // facing the lockers, the camera outside the glass of the gear room
+  faceHero(0); camYaw = Math.PI; camPitch = .3; follow(0, true, tourSpace());
+  if (robo) { RW.scene.remove(robo.group); IN.scene.add(robo.group); robo.place(new THREE.Vector3(-17.6, 0, 9.6)); }
+  show('hud'); document.body.classList.add('in-tour'); S.mode = 'tour'; renderTour();
+  Audio_.music('factory_1', { vol: .42 });
+  await howto('tour', 'جولة المصنع', [['🦺', 'ابدأ بخزانة معدات الوقاية: اختر ما يحتاجه هذا المصنع'], ['📖', 'اقرأ محطات المعلومات الثلاث على الممر الأخضر'], ['★', 'أنجز مهمة المصنع عند الشاشة الكبيرة'], ['✓', 'أجب عن أسئلة المشرف لتحصل على ختم المصنع · وابحث عن الترس الذهبي ⚙️']]);
+  await sayAll([`أهلاً ${nameOf(S.char)}! أنا مِرشد، وسأرافقك في ${F.name}.`, 'قبل أن ندخل خط الإنتاج: افتح خزانة معدات الوقاية واختر ما يحتاجه هذا المصنع بالضبط.']);
+  TV.busy = false;
+}
+const tourSpace = () => ({ indoor: true, boxes: IN.boxes, circles: IN.circles, bounds: IN.bounds,
+  height: (x, z, feet) => { let h = 0; for (const [x0, z0, x1, z1, hh] of TV.tour.platforms) if (x >= x0 && x <= x1 && z >= z0 && z <= z1 && feet >= hh - .35) h = Math.max(h, hh); return h; },
+  solid: (x, z, feet) => TV.tour.platforms.some(([x0, z0, x1, z1, hh]) => x > x0 - .25 && x < x1 + .25 && z > z0 - .25 && z < z1 + .25 && feet < hh - .35) });
+function renderTour() {
+  const F = TV.F, T = TRACKS[F.track], C = TOUR[F.id];
+  $('#tc-logo').src = F.logo || 'assets/img/logo-mark.webp'; $('#tc-name').textContent = F.name; $('#tc-track').textContent = `مسار ${T.name} · ${F.title}`;
+  const steps = [['ppe', '🦺', 'معدات الوقاية', TV.ppe, ''], ['facts', '📖', 'محطات المعلومات', TV.facts.size === 3, `${TV.facts.size}/3`], ['mission', '★', `المهمة: ${F.title}`, TV.mission != null, TV.mission != null ? '⭐'.repeat(TV.mission) : ''], ['quiz', '✓', 'اختبار المشرف', TV.quiz != null, TV.quiz != null ? `${TV.quiz}/3` : ''], ['gear', '⚙', 'الترس الذهبي (سرّي)', TV.gear, '']];
+  const now = !TV.ppe ? 'ppe' : TV.mission == null ? (TV.facts.size < 3 ? 'facts' : 'mission') : TV.quiz == null ? 'quiz' : '';
+  $('#tc-list').innerHTML = steps.map(([k, i, t, ok, v]) => `<li class="${ok ? 'ok' : k === now ? 'now' : ''}"><em>${ok ? '✓' : i}</em><span>${t}</span><small>${v}</small></li>`).join('');
+  // the marker over the next place to go
+  const ic = TV.tour.icons; for (const k in ic) ic[k].visible = false;
+  if (!TV.ppe) { ic.ppe.visible = true; TV.next = TV.tour.points.ppe; }
+  else {
+    TV.tour.kiosks.forEach(k => { ic['k' + k.i].visible = !TV.facts.has(k.i); });
+    ic.mission.visible = TV.mission == null; ic.quiz.visible = TV.mission != null && TV.quiz == null;
+    const k = TV.tour.kiosks.find(k => !TV.facts.has(k.i));
+    TV.next = TV.mission == null ? (k && TV.facts.size < 3 ? new THREE.Vector3(k.x, 0, k.z) : TV.tour.points.mission) : TV.quiz == null ? TV.tour.points.quiz : TV.tour.points.exit;
+  }
+  $('#st-pts').textContent = points().toLocaleString('en');
+}
+let tnear = null;
+function tourStep(dt) {
+  IN.update(dt); TV.tour.update(dt);
+  const sp = tourSpace();
+  if (TV.busy || talkQ.busy) { player.speed = 0; animatePlayer(player, dt, 0, null); follow(dt, false, sp); }
+  else moveStudent(dt, sp);
+  const r = player.root.position, feet = r.y + (player.jy || 0);
+  guide(dt, TV.next, 0);
+  // the golden gear: walk (or jump) into it
+  const g = TV.tour.gear; if (!TV.gear && g.visible && Math.hypot(r.x - g.position.x, r.z - g.position.z) < 1 && feet > .55) {
+    TV.gear = true; g.visible = false; S.gears[TV.F.id] = 1; S.xp += 50; persist(); Audio_.sfx('level_up', .6); flash(); renderTour();
+    say('وجدت الترس الذهبي! ⚙️ هذا من أسرار المصنع: +50 نقطة.', { wait: false });
+  }
+  // what is within reach
+  const P = TV.tour.points, d2 = p => Math.hypot(r.x - p.x, r.z - p.z);
+  tnear = null;
+  if (TV.hz) { const h = IN.hazards.find(h => !h.found && Math.hypot(r.x - h.anchor.x, r.z - h.anchor.z) < 3.3); if (h) tnear = { k: 'hz', h, t: '⚠️ بلّغ عن هذا الخطر' }; }
+  if (!tnear) {
+    if (d2(P.ppe) < 1.9) tnear = { k: 'ppe', t: TV.ppe ? '🦺 معدات الوقاية' : '🦺 افتح خزانة معدات الوقاية' };
+    else if (d2(P.exit) < 1.4) tnear = { k: 'exit', t: '🚪 اخرج من المصنع' };
+    else if (TV.ppe) {
+      const k = TV.tour.kiosks.find(k => Math.hypot(r.x - k.x, r.z - k.z) < 1.7);
+      if (k) tnear = { k: 'fact', i: k.i, t: `📖 اقرأ المحطة ${k.i + 1}` };
+      else if (d2(P.mission) < 2.1) tnear = { k: 'mission', t: TV.mission == null ? '▶ ابدأ المهمة' : TV.mission < 3 ? '🔁 أعد المهمة لنجوم أكثر' : '★ المهمة مكتملة' };
+      else if (d2(P.quiz) < 2.1) tnear = { k: 'quiz', t: TV.mission == null ? '📝 اختبار المشرف (بعد المهمة)' : TV.quiz == null ? '📝 اختبار المشرف' : '🏁 أنهِ الزيارة' };
+    }
+  }
+  const btn = $('#act'); btn.classList.toggle('on', !!tnear && !TV.busy && !talkQ.busy); if (tnear && btn.textContent !== tnear.t) btn.textContent = tnear.t;
+  if (TV.hz) { TV.hzT += dt; if (TV.hzT > 30) { TV.hzT = 0; const left = IN.hazards.find(h => !h.found); if (left) { TV.hints++; say('تلميح: ' + ({ oil: 'انظر إلى ممر المشاة الأخضر… هل هو نظيف؟', exit: 'تفقّد مخرج الطوارئ على الجدار الأيمن', panel: 'هل كل الأبواب على الجدار الأيسر مغلقة؟' })[left.key], { wait: false }); } } }
+}
+async function tourAct() {
+  if (!tnear || TV.busy || talkQ.busy) return; const n = tnear, C = TOUR[TV.F.id];
+  TV.busy = true; $('#act').classList.remove('on');
+  try {
+    if (n.k === 'ppe') { if (!TV.ppe) await openPPE(); else await say(C.why.ar); }
+    else if (n.k === 'fact') await openFact(n.i);
+    else if (n.k === 'mission') { if (TV.mission === 3) await say('أنجزت المهمة بثلاث نجوم! توجّه إلى مكتب المشرف.'); else await startMission(); }
+    else if (n.k === 'quiz') { if (TV.mission == null) await say('أنجز مهمة المصنع أولاً، ثم تعال إلى المشرف.'); else if (TV.quiz == null) await openQuiz(); else await finishTour(); }
+    else if (n.k === 'exit') { if (TV.quiz != null || await confirmLeave()) { TV.busy = false; leaveFactory(TV.quiz != null ? '' : 'خرجت من المصنع · يمكنك العودة لإكمال الجولة'); return; } }
+    else if (n.k === 'hz') await reportHazard(n.h);
+  } finally { TV.busy = false; renderTour(); }
+}
+async function confirmLeave() { await say('ستخرج قبل أن تُكمل الجولة. تقدر ترجع في أي وقت، لكن ختم المصنع يحتاج الجولة كاملة.'); return true; }
+/* ---- gear lockers: choose exactly what this floor needs ---- */
+function openPPE() {
+  const C = TOUR[TV.F.id], need = C.ppe, keys = Object.keys(PPE).sort(() => Math.random() - .5), sel = new Set(), ov = $('#ppe'), grid = $('#ppe-grid'), ok = $('#ppe-ok'), note = $('#ppe-note');
+  $('#ppe-sub').textContent = `اختر ${need.length} معدات يحتاجها العامل في ${TV.F.name}. فكّر: ما الخطر هنا؟`;
+  grid.innerHTML = keys.map(k => `<button type="button" data-k="${k}"><svg viewBox="0 0 24 24">${PPE_ICON[k]}</svg>${PPE[k].ar}</button>`).join('');
+  note.textContent = `اختر ${need.length} معدات`; ok.disabled = true; ov.classList.add('on'); Audio_.sfx('panel_open', .5);
+  let tries = 0;
+  return new Promise(res => {
+    grid.onclick = e => {
+      const b = e.target.closest('button'); if (!b) return; const k = b.dataset.k;
+      grid.querySelectorAll('.good,.bad').forEach(x => x.classList.remove('good', 'bad'));
+      if (sel.has(k)) sel.delete(k); else if (sel.size < need.length) sel.add(k); else return Audio_.sfx('wrong', .3);
+      b.classList.toggle('sel', sel.has(k)); Audio_.sfx('ui_click', .4); ok.disabled = sel.size !== need.length; note.textContent = `${sel.size} / ${need.length}`;
+    };
+    ok.onclick = async () => {
+      tries++; const wrong = [...sel].filter(k => !need.includes(k));
+      grid.querySelectorAll('button').forEach(b => { if (sel.has(b.dataset.k)) b.classList.add(need.includes(b.dataset.k) ? 'good' : 'bad'); });
+      if (wrong.length) { Audio_.sfx('wrong', .5); note.textContent = `${wrong.map(k => PPE[k].ar).join(' و')} ${wrong.length > 1 ? 'ليست' : 'ليس'} ما يحتاجه هذا المصنع. بدّل وجرّب مرة أخرى.`; return; }
+      Audio_.sfx('task_done'); ok.disabled = true; await wait(700); ov.classList.remove('on');
+      TV.ppe = true; S.xp += tries === 1 ? 40 : 15; persist(); equip(need); TV.tour.openGate(); Audio_.sfx('bus_door_open', .4); renderTour();
+      await sayAll([C.why.ar, tries === 1 ? 'اخترت الصحيح من أول مرة! بوابة خط الإنتاج انفتحت.' : 'هكذا تماماً. بوابة خط الإنتاج انفتحت.', 'اقرأ المحطات الثلاث على الممر الأخضر، ثم ابدأ المهمة عند الشاشة الكبيرة في آخره.']);
+      res();
+    };
+  });
+}
+/* hard hat or hairnet on the student's head while on the floor */
+let headGear = null;
+function equip(list) {
+  unequip(); const h = player.hero, head = h?.bones.Head; if (!head) return;
+  const hat = list.includes('helmet'), net = list.includes('hairnet') || list.includes('coat');
+  if (!hat && !net) return;
+  const g = new THREE.Group();
+  if (hat) { const m = new THREE.MeshStandardMaterial({ color: '#f2c230', roughness: .35, metalness: .1 }); const dome = new THREE.Mesh(new THREE.SphereGeometry(.15, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), m); dome.scale.set(1, .85, 1.08); g.add(dome); const brim = new THREE.Mesh(new THREE.CylinderGeometry(.19, .19, .015, 28), m); brim.scale.z = 1.12; g.add(brim); const ridge = new THREE.Mesh(new THREE.BoxGeometry(.03, .025, .26), m); ridge.position.y = .12; g.add(ridge); }
+  else { const m = new THREE.MeshStandardMaterial({ color: '#f4f7fb', roughness: .9 }); const cap = new THREE.Mesh(new THREE.SphereGeometry(.155, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), m); cap.scale.set(1, .8, 1.1); g.add(cap); }
+  g.traverse(o => { if (o.isMesh) o.castShadow = true; });
+  // hang it on the head bone, sized and placed in world units
+  h.root.updateMatrixWorld(true); const wp = head.getWorldPosition(new THREE.Vector3()), ws = head.getWorldScale(new THREE.Vector3()).x, top = wp.clone().add(new THREE.Vector3(0, .17, .01));
+  head.add(g); g.position.copy(head.worldToLocal(top)); g.scale.setScalar(1 / ws); g.quaternion.copy(head.getWorldQuaternion(new THREE.Quaternion()).invert()); headGear = g;
+}
+function unequip() { headGear?.parent?.remove(headGear); headGear = null; }
+/* ---- information kiosks ---- */
+function openFact(i) {
+  const f = TOUR[TV.F.id].facts[i], T = TRACKS[TV.F.track], ov = $('#fact'), isNew = !TV.facts.has(i);
+  $('#fact-n').textContent = i + 1; $('#fact-n').style.background = T.color; $('#fact-t').textContent = f.t.ar; $('#fact-b').textContent = f.b.ar;
+  ov.classList.add('on'); Audio_.sfx('panel_open', .5);
+  return new Promise(res => { $('#fact-ok').onclick = async () => {
+    ov.classList.remove('on'); Audio_.sfx('ui_click');
+    if (isNew) { TV.facts.add(i); S.xp += 20; S.facts[TV.F.id] = Math.max(S.facts[TV.F.id] || 0, TV.facts.size); persist(); Audio_.sfx('points', .45); renderTour();
+      await say(TV.facts.size === 3 ? 'قرأت المحطات الثلاث! الآن أنت جاهز للمهمة عند الشاشة الكبيرة.' : `معلومة جديدة في دفترك (+20). باقي ${3 - TV.facts.size} ${3 - TV.facts.size === 1 ? 'محطة' : 'محطات'}.`, { wait: false }); }
+    res(); }; });
+}
+/* ---- the factory's mission ---- */
+async function startMission() {
+  const F = TV.F, T = TRACKS[F.track];
   if (F.game === 'hazard') {
-    S.mode = 'factory'; show('mhud'); Audio_.music('factory_1', { vol: .5 });
-    const far = camera.aspect < .8 ? 1.45 : camera.aspect < 1.2 ? 1.2 : 1;
-    camera.position.copy(IN.view.target).add(IN.view.pos.clone().sub(IN.view.target).multiplyScalar(far)); camera.lookAt(IN.view.target);
-    orbit = new OrbitControls(camera, renderer.domElement); orbit.target.copy(IN.view.target); orbit.enablePan = false; orbit.enableDamping = true;
-    orbit.minDistance = 5; orbit.maxDistance = 22 * far; orbit.maxPolarAngle = 1.35; orbit.minPolarAngle = .35; orbit.update();
-    IN.hazards.forEach(h => { h.found = false; }); found = 0; hints = 0; hintT = 0; startT = performance.now(); renderDots(); labels.forEach(l => l.el.remove()); labels.length = 0;
-    if (!IN.ring) { IN.ring = new THREE.Mesh(new THREE.RingGeometry(.9, 1.15, 48), new THREE.MeshBasicMaterial({ color: '#f2c230', transparent: true, opacity: .9, depthTest: false })); IN.ring.rotation.x = -Math.PI / 2; IN.ring.renderOrder = 5; IN.ring.visible = false; IN.scene.add(IN.ring); }
-    await howto('f-' + F.id, `مسار ${T.name}: ${F.title}`, [['🔎', F.brief], [touch ? '👆' : '🖱️', touch ? 'اسحب لتدوير الكاميرا · كبّر بإصبعين أو بزر ＋' : 'اسحب لتدوير الكاميرا · كبّر بعجلة الفأرة أو بزر ＋'], ['✅', 'اضغط على الخطر عندما تجده لتسجّله'], ['💡', 'محتار؟ اضغط «تلميح» · وتقدر تخرج من المصنع بأي وقت']]);
+    IN.hazards.forEach(h => { h.found = false; }); TV.hz = true; TV.hzT = 0; TV.hints = 0; TV.hzStart = performance.now();
+    await sayAll([`مهمتك يا ${T.name}: ${F.brief}`, 'تجوّل في المصنع، وعندما تقف قرب الخطر اضغط «بلّغ». سأعطيك تلميحاً إذا احترت.']);
     return;
   }
-  // a mini-game in front of the working factory
-  S.mode = 'minigame'; show('none'); Audio_.music(F.game === 'quiz' || F.game === 'memory' ? 'factory_2' : 'factory_1', { vol: .5 });
+  if (TV.facts.size < 3) await say('تقدر تبدأ الآن، لكن معلومات المحطات ستفيدك كثيراً في اختبار المشرف!', { wait: false });
+  S.mode = 'minigame'; show('none'); document.body.classList.remove('in-tour'); $('#talk').hidden = true; Audio_.music(F.game === 'quiz' || F.game === 'memory' ? 'factory_2' : 'factory_1', { vol: .5 });
   await howto('f-' + F.id, `مسار ${T.name}: ${F.title}`, [['🎯', F.brief], ['⭐', 'كلما كان أداؤك أدق حصلت على نجوم أكثر (حتى 3 نجوم)'], ['✕', 'تقدر تخرج من اللعبة بأي وقت من زر الإغلاق']]);
   const out = await runMiniGame(F, A);
-  if (out.exit) { leaveFactory('خرجت من المصنع · يمكنك العودة في أي وقت'); return; }
-  await showResult(F, out.stars);
+  S.mode = 'tour'; show('hud'); document.body.classList.add('in-tour'); follow(0, true, tourSpace()); Audio_.music('factory_1', { vol: .42 });
+  if (out.exit) return say('رجعنا إلى المصنع. تقدر تبدأ المهمة متى ما أردت.', { wait: false });
+  missionDone(out.stars);
 }
-function renderDots() { $('#m-dots').innerHTML = IN.hazards.map(h => `<i class="${h.found ? 'on' : ''}"></i>`).join(''); $('#m-count').textContent = `${IN.hazards.filter(h => h.found).length} / ${IN.hazards.length}`; }
-const labels = [];
-const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(); let downAt = null;
-function pickHazard(e) { ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); const h = ray.intersectObjects(IN.hazards.map(z => z.mesh))[0]; return h ? h.object.userData.hz : null; }
-cv.addEventListener('pointerdown', e => { downAt = [e.clientX, e.clientY]; });
-cv.addEventListener('pointermove', e => { if (S.mode !== 'factory' || e.pointerType === 'touch') return; const hz = pickHazard(e); hover = hz && !hz.found ? hz : null; cv.style.cursor = hover ? 'pointer' : ''; });
-cv.addEventListener('pointerup', e => {
-  if (S.mode !== 'factory' || !downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 10) return;
-  const hz = pickHazard(e); if (!hz) { Audio_.sfx('ui_click', .25); return; } if (hz.found) return;
-  hz.found = true; found++; Audio_.sfx('task_done'); Audio_.sfx('points', .5); renderDots(); hintT = 0; hover = null;
-  const el = document.createElement('div'); el.className = 'label3d'; el.textContent = '✓ ' + hz.label; $('#labels').append(el); labels.push({ el, hz });
-  if (found === IN.hazards.length) setTimeout(async () => { const secs = (performance.now() - startT) / 1000; orbit?.dispose(); orbit = null; await showResult(curF, hints === 0 && secs < 90 ? 3 : hints <= 1 ? 2 : 1); }, 900);
-});
-$('#exit-fac').addEventListener('click', () => { Audio_.sfx('panel_close'); leaveFactory('خرجت من المصنع · يمكنك العودة في أي وقت'); });
-function zoom(f) { if (!orbit) return; const off = camera.position.clone().sub(orbit.target); camera.position.copy(orbit.target).add(off.setLength(clamp(off.length() * f, orbit.minDistance, orbit.maxDistance))); orbit.update(); Audio_.sfx('ui_click', .3); }
-$('#zin').addEventListener('click', () => zoom(.8)); $('#zout').addEventListener('click', () => zoom(1.25));
-$('#hint').addEventListener('click', () => { const left = IN?.hazards.find(h => !h.found); if (!left) return; hints++; Audio_.sfx('panel_open', .4); hover = left; toast('تلميح: ' + ({ oil: 'انظر إلى ممر المشاة الأخضر', exit: 'تفقّد مخرج الطوارئ على الجدار الأيمن', panel: 'هل كل الأبواب على الجدار الأيسر مغلقة؟' })[left.key], 3000); setTimeout(() => { if (hover === left) hover = null; }, 2500); });
+async function missionDone(stars) {
+  const was = TV.mission; TV.mission = Math.max(TV.mission ?? 0, stars); renderTour();
+  Audio_.sfx(stars ? 'level_up' : 'wrong', .6);
+  await say(stars ? `${'⭐'.repeat(stars)} ${stars === 3 ? 'أداء مذهل!' : 'أحسنت!'} ${was == null ? 'آخر خطوة: اختبار المشرف في المكتب خلف المصنع.' : ''}` : 'لم تكتمل المهمة. جرّب مرة أخرى من الشاشة.');
+}
+async function reportHazard(h) {
+  h.found = true; Audio_.sfx('task_done'); Audio_.sfx('points', .5); TV.hzT = 0;
+  const n = IN.hazards.filter(x => x.found).length; renderTour();
+  await say(`✓ ${h.label} — أحسنت ملاحظتك! (${n}/${IN.hazards.length})`, { wait: false });
+  if (n === IN.hazards.length) { TV.hz = false; const secs = (performance.now() - TV.hzStart) / 1000; await wait(900); await missionDone(TV.hints === 0 && secs < 120 ? 3 : TV.hints <= 1 ? 2 : 1); }
+}
+/* ---- the supervisor's quiz ---- */
+function openQuiz() {
+  const qs = TOUR[TV.F.id].facts, ov = $('#quiz'), dots = [...$('#quiz-dots').children]; let i = 0, score = 0;
+  dots.forEach(d => d.className = ''); ov.classList.add('on'); Audio_.sfx('panel_open', .5);
+  return new Promise(res => {
+    const ask = () => {
+      const f = qs[i], opts = f.a.map((a, k) => [a.ar, k === 0]).sort(() => Math.random() - .5); dots[i].className = 'on';
+      $('#quiz-q').textContent = f.q.ar; $('#quiz-opts').innerHTML = opts.map(([t, ok], k) => `<button type="button" data-ok="${ok ? 1 : 0}">${t}</button>`).join('');
+      $('#quiz-opts').onclick = async e => {
+        const b = e.target.closest('button'); if (!b || $('#quiz-opts').dataset.lock) return; $('#quiz-opts').dataset.lock = 1;
+        const ok = b.dataset.ok === '1'; b.classList.add(ok ? 'good' : 'bad'); if (!ok) $('#quiz-opts').querySelector('[data-ok="1"]').classList.add('good');
+        Audio_.sfx(ok ? 'task_done' : 'wrong', .55); dots[i].className = ok ? 'ok' : 'no'; if (ok) score++;
+        await wait(1100); delete $('#quiz-opts').dataset.lock; i++;
+        if (i < qs.length) ask(); else { ov.classList.remove('on'); TV.quiz = score; S.xp += score * 30; S.quiz[TV.F.id] = Math.max(S.quiz[TV.F.id] || 0, score); persist(); renderTour(); await finishTour(); res(); }
+      };
+    };
+    ask();
+  });
+}
+async function finishTour() {
+  const F = TV.F;
+  await say(TV.quiz >= 2 ? `أجبت ${TV.quiz} من 3! تستحق ختم ${F.short} في دفتر رحلتك. 🏅` : `أجبت ${TV.quiz} من 3. المعلومات في المحطات الثلاث… تقدر تراجعها وتعود.`);
+  await showResult(F, TV.mission || 0);
+}
 
 async function showResult(F, stars) {
   S.mode = 'result'; const T = TRACKS[F.track], before = badgeSet().has(F.track), prevBest = S.done[F.id] || 0;
@@ -673,52 +982,70 @@ async function showResult(F, stars) {
   $('#done-badge').src = T.badge; $('#done-badge').style.filter = stars ? '' : 'grayscale(1) opacity(.5)';
   $('#done-title').textContent = stars ? (stars === 3 ? 'أداء مذهل!' : 'أحسنت!') : 'حاول مرة أخرى';
   $('#done-stars').innerHTML = [0, 1, 2].map(i => `<i class="${i < stars ? 'on' : ''}">★</i>`).join('');
-  $('#done-text').textContent = stars ? `أنهيت مهمة «${F.title}» في ${F.name}.${newBadge ? ` حصلت على شارة ${T.name}!` : ''}` : 'لم تكتمل المهمة هذه المرة. أعد المحاولة لتحصل على نجومك.';
+  $('#done-text').innerHTML = (stars ? `أنهيت زيارة ${F.name}.${newBadge ? ` حصلت على شارة ${T.name}!` : ''}` : 'لم تكتمل المهمة هذه المرة. أعد المحاولة لتحصل على نجومك.')
+    + `<span class="brk"><i>🦺 ${TV.ppe ? '✓' : '—'}</i><i>📖 ${TV.facts.size}/3</i><i>✓ ${TV.quiz ?? 0}/3</i><i>⚙ ${TV.gear ? '✓' : '؟'}</i></span>`;
   $('#done-pts').textContent = gained ? `+${gained} نقطة` : stars ? 'سجّلت أفضل نتيجة لديك سابقاً' : '';
-  $('#done-retry').hidden = stars === 3; $('#done-ok').textContent = stars ? 'متابعة الرحلة' : 'خروج من المصنع';
+  $('#done-retry').hidden = stars === 3; $('#done-retry').textContent = '🔁 أعد المهمة'; $('#done-ok').textContent = stars ? 'متابعة الرحلة' : 'خروج من المصنع';
   show('done'); Audio_.music(stars ? 'mission_complete' : 'factory_2', { loop: false, vol: .7 }); if (stars) Audio_.sfx('level_up', .6);
   return new Promise(res => {
-    $('#done-retry').onclick = async () => { Audio_.sfx('ui_click'); res(); await playFactory(F); };
+    $('#done-retry').onclick = () => { Audio_.sfx('ui_click'); res(); S.mode = 'tour'; show('hud'); document.body.classList.add('in-tour'); follow(0, true, tourSpace()); Audio_.music('factory_1', { vol: .42 }); say('ارجع إلى شاشة المهمة متى ما أردت.', { wait: false }); };
     $('#done-ok').onclick = () => { Audio_.sfx('ui_click'); res(); leaveFactory(stars ? `+${gained} نقطة · ${'⭐'.repeat(stars)}` : ''); if (doneCount() === 12 && stars) setTimeout(finale, 900); else if (regionDone(S.region) === 3 && stars) setTimeout(() => toast(`أنجزت مصانع ${REGIONS[S.region].name} كلها! اركب الباص وسافر إلى منطقة أخرى 🗺️`, 4200), 1200); };
   });
 }
 function leaveFactory(msg) {
-  orbit?.dispose(); orbit = null; labels.forEach(l => l.el.remove()); labels.length = 0; cv.style.cursor = ''; hover = null;
-  if (IN) { IN.dispose(); IN = null; }
-  const loc = L(); player.root.visible = true; player.root.position.set(loc.x, .2, -11.6); player.yaw = 0; faceHero(0); camYaw = .25; camPitch = .3; follow(0, true);
+  unequip(); $('#talk').hidden = true; document.body.classList.remove('in-tour'); TV.hz = false; TV.busy = false;
+  if (IN) { IN.scene.remove(player.root); if (robo) IN.scene.remove(robo.group); IN.dispose(); IN = null; }
+  RW.scene.add(player.root); if (robo) RW.scene.add(robo.group);
+  // back out of the gate onto the sidewalk, facing the street with the camera on the street side
+  const loc = L(), g = loc.gate; player.root.visible = true; player.root.position.set(g.x, .2, g.z - loc.side * 1.2); faceHero(loc.side > 0 ? Math.PI : 0); camYaw = (loc.side > 0 ? Math.PI : 0) + .25; camPitch = .3; follow(0, true); justArrived = false;
+  robo?.place(player.root.position.clone().add(new THREE.Vector3(1.2, 0, -loc.side * .8)), .35);
   S.mode = 'world'; show('hud'); Audio_.music(REGIONS[S.region].music, { vol: .55 }); updateHUD(); if (msg) toast(msg, 2600);
 }
-function leaveAnyFactory() { orbit?.dispose(); orbit = null; if (IN) { IN.dispose(); IN = null; } $('#mg')?.classList.remove('on'); }
+function leaveAnyFactory() { unequip(); $('#talk').hidden = true; document.body.classList.remove('in-tour'); if (IN) { IN.scene.remove(player.root); if (robo) IN.scene.remove(robo.group); IN.dispose(); IN = null; RW?.scene.add(player.root); if (robo) RW?.scene.add(robo.group); } $('#mg')?.classList.remove('on'); }
 
 /* ---------------- the finale ---------------- */
-function finale() {
-  S.mode = 'menu'; show('final'); Audio_.music('theme_song', { vol: .7 });
-  $('#fin-text').textContent = `${nameOf(S.char)}، زرت 12 مصنعاً في 4 مناطق وجمعت شارات المسارات.`;
-  $('#fin-badges').innerHTML = Object.entries(TRACKS).map(([k, t]) => `<img src="${t.badge}" alt="${t.name}" class="${badgeSet().has(k) ? '' : 'off'}">`).join('');
-  $('#fin-pts').textContent = `${points().toLocaleString('en')} نقطة`;
-  const c = $('#fin-fx'), x = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight;
-  const cols = ['#847bb8', '#3c58a7', '#f2c230', '#2fb36d', '#ffffff', '#e45b8f'], ps = Array.from({ length: 160 }, () => ({ x: Math.random() * c.width, y: -Math.random() * c.height, v: 60 + Math.random() * 120, r: Math.random() * 6, s: 4 + Math.random() * 6, c: cols[Math.random() * cols.length | 0] }));
-  let last = performance.now(); (function fx(now) { if (!$('#final').classList.contains('on')) return; const dt = clamp((now - last) / 1000, 0, .05); last = now; x.clearRect(0, 0, c.width, c.height); for (const p of ps) { p.y += p.v * dt; p.r += dt * 4; if (p.y > c.height + 10) p.y = -10; x.save(); x.translate(p.x + Math.sin(p.r) * 10, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); } requestAnimationFrame(fx); })(last);
+let FIN = null;
+async function finale() {
+  S.mode = 'finale'; Audio_.music('theme_song', { vol: .75 }); $('#talk').hidden = true;
+  const badges = Object.entries(TRACKS).map(([k, t]) => ({ src: t.badge, on: badgeSet().has(k) }));
+  FIN = await buildFinale(renderer, { badges }); FIN.camK = 0; $('#final').classList.remove('cert');
+  // the student on the podium, مِرشد beside, everyone facing the camera
+  player.root.parent?.remove(player.root); FIN.scene.add(player.root); player.root.visible = true; player.root.position.copy(FIN.podium); faceHero(0); player.speed = 0;
+  if (robo) { robo.group.parent?.remove(robo.group); FIN.scene.add(robo.group); robo.place(new THREE.Vector3(1.6, 0, .6), 1.5); robo.look = null; robo.wave(30); }
+  show('final'); $('#fin-cert').classList.remove('on');
+  $('#fin-h').textContent = `مبروك يا ${nameOf(S.char)}!`;
+  $('#fin-text').textContent = `زرت ${doneCount()} مصنعاً في 4 مناطق، وجمعت ${badgeSet().size} شارات و${Object.keys(S.gears).length} تروس ذهبية. أنت الآن من صناعيو المستقبل.`;
+  const cert = await certificate({ name: nameOf(S.char), char: S.char, factories: doneCount(), regions: 4, points: points(), gears: Object.keys(S.gears).length, badges, date: new Date().toLocaleDateString('ar-SA-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' }) });
+  $('#fin-img').src = cert.toDataURL('image/png');
+  $('#fin-dl').onclick = () => { const a = document.createElement('a'); a.download = 'future-industrialist-certificate.png'; a.href = $('#fin-img').src; a.click(); Audio_.sfx('ui_click'); };
+  setTimeout(() => { if (S.mode === 'finale') { $('#fin-cert').classList.add('on'); $('#final').classList.add('cert'); Audio_.sfx('level_up', .5); } }, 7000);
 }
-$('#fin-ok').onclick = () => { Audio_.sfx('ui_click'); show('hud'); S.mode = 'world'; Audio_.music(REGIONS[S.region].music, { vol: .55 }); };
+function finaleStep(dt) {
+  FIN.update(dt); animatePlayer(player, dt, 0, null); if (robo) { robo.target.set(1.6, 0, .6); robo.floor = 1.5; robo.update(dt); }
+  const t = performance.now() / 1000, cert = $('#fin-cert').classList.contains('on'), a = t * .14;
+  FIN.camK += ((cert ? 1 : 0) - FIN.camK) * Math.min(1, dt * 1.2); const k = FIN.camK, r = 5.2 + Math.sin(t * .23) * .6 + k * 6;
+  camera.position.set(Math.sin(a) * r, 2.5 + Math.sin(t * .3) * .3 + k * 2.6, Math.cos(a) * r + 1.2); camera.lookAt(0, 2.5 + k * 1.6, 0);
+}
+$('#fin-ok').onclick = () => {
+  Audio_.sfx('ui_click'); FIN.scene.remove(player.root); if (robo) FIN.scene.remove(robo.group); FIN.dispose(); FIN = null;
+  RW.scene.add(player.root); if (robo) RW.scene.add(robo.group);
+  show('hud'); S.mode = 'world'; follow(0, true); Audio_.music(REGIONS[S.region].music, { vol: .55 });
+};
 
 /* ---------------- loop ---------------- */
 function loop() {
-  const dt = Math.min(.05, clock.getDelta()); updateEngine();
+  const dt = Math.min(.05, clock.getDelta()) * TS; updateEngine();
+  if (robo) robo.group.visible = !!player?.root.visible || S.mode === 'finale';
   if (life && RW && (['world', 'intro', 'ride', 'drive'].includes(S.mode) || $('#route').classList.contains('on'))) {
-    const pr = player.root.position, onBus = S.mode === 'drive' || !player.root.visible, bh = bus.userData;
-    signals?.update(dt, player.root.visible ? pr : null);
-    life.update(dt, onBus ? bus.position.x : pr.x, [{ x: bus.position.x, z: bus.position.z, halfLen: bh.halfLen, halfWid: .24 * 7.6 }, ...(player.root.visible ? [{ x: pr.x, z: pr.z, halfLen: .5, halfWid: .9, person: true }] : [])], camera.position, signals?.list || []);
+    const pr = player.root.position, bh = bus.userData;
+    if (S.mode !== 'ride' && S.mode !== 'drive') busPrio = null;
+    signals?.update(dt, player.root.visible ? pr : null, busPrio);
+    life.update(dt, [{ x: bus.position.x, z: bus.position.z, yaw: bus.rotation.y, halfLen: bh.halfLen, halfWid: bh.halfWid }, ...(player.root.visible ? [{ x: pr.x, z: pr.z, person: true }] : [])], camera.position);
   }
   if (S.mode === 'world' && RW) { RW.update(dt); walk(dt); renderer.render(RW.scene, camera); }
   else if (S.mode === 'drive' && RW) { RW.update(dt); driveStep(dt); renderer.render(RW.scene, camera); }
-  else if (S.mode === 'factory' && IN) {
-    IN.update(dt); orbit?.update();
-    for (const { el, hz } of labels) { const v = hz.anchor.clone().project(camera); el.style.display = v.z < 1 ? '' : 'none'; el.style.left = (v.x * .5 + .5) * innerWidth + 'px'; el.style.top = (-v.y * .5 + .5) * innerHeight + 'px'; }
-    IN.ring.visible = !!hover; if (hover) { IN.ring.position.set(hover.mesh.position.x, .05, hover.mesh.position.z); IN.ring.scale.setScalar(1 + Math.sin(performance.now() / 160) * .08); }
-    hintT += dt; if (hintT > 25) { hintT = 0; toast('محتار؟ اضغط زر «تلميح» 💡', 2400); }
-    renderer.render(IN.scene, camera);
-  }
+  else if (S.mode === 'tour' && IN) { tourStep(dt); renderer.render(IN.scene, camera); }
+  else if (S.mode === 'finale' && FIN) { finaleStep(dt); renderer.render(FIN.scene, camera); }
   else if ((S.mode === 'minigame' || S.mode === 'result') && IN) {
     IN.update(dt); const t = performance.now() / 1000; camera.position.set(Math.sin(t * .08) * 14, 6 + Math.sin(t * .13), 12 + Math.cos(t * .08) * 4); camera.lookAt(0, 1.2, -2);
     renderer.render(IN.scene, camera);
@@ -729,19 +1056,20 @@ function loop() {
 loop();
 
 /* ---------------- test hooks for automated screenshots ---------------- */
-window.__game = { S, show, Audio_, loadingScreen, startDrive, DV, get life() { return life; }, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
+window.__game = { renderer, TV, TOUR, missionDone, S, show, Audio_, loadingScreen, BAYS, NET, routeBus, parkAt, drawMap, get signals() { return signals; }, startDrive, DV, get life() { return life; }, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
 (async () => {
   const auto = Q.get('auto');
   if (!auto) { window.__ready = true; return; }
   $('#splash').classList.remove('on'); spFx.stop(); S.char = Q.get('c') || S.char;
   if (auto === 'title') { showTitle(); }
+  else if (auto === 'finale') { skip = true; await startRegion('riyadh'); while (S.mode !== 'world') { skip = true; await wait(100); } for (const f of ALL) S.done[f.id] = 3; await finale(); }
   else if (auto === 'mg') { const F = ALL.find(f => f.id === Q.get('id')); show('none'); runMiniGame(F, A); }
   else {
     const F = Q.get('id') ? ALL.find(f => f.id === Q.get('id')) : null, r = F ? F.region : Q.get('r') || 'riyadh';
     skip = true; await startRegion(r);
     while (S.mode !== 'world') { skip = true; await wait(100); }
     if (auto === 'ride') { rideTo(+(Q.get('to') || 1)); await wait(+(Q.get('t') || 4000)); }
-    else if (F) { const i = RW.locs.findIndex(l => l.f?.id === F.id); S.loc = i; bus.position.x = RW.locs[i].busX; player.root.position.set(F ? RW.locs[i].x : 0, .2, -11.5); updateHUD(); if (auto === 'factory') { S.mode = 'world'; enterFactory(F); while (!IN || S.mode === 'loading') await wait(100); if (Q.get('ht') === '0') { await wait(300); $('#ht-ok').click(); } await wait(+(Q.get('t') || 800)); } }
+    else if (F) { const i = RW.locs.findIndex(l => l.f?.id === F.id), l = RW.locs[i]; S.loc = i; parkAt(l.bay.id); player.root.position.set(l.gate.x, .2, l.gate.z); updateHUD(); if (auto === 'factory') { S.mode = 'world'; enterFactory(F); while (!IN || S.mode === 'loading') await wait(100); if (Q.get('ht') === '0') { await wait(300); $('#ht-ok').click(); } await wait(+(Q.get('t') || 800)); } }
   }
   window.__ready = true;
 })();

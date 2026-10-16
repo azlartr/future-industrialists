@@ -5,13 +5,11 @@ import { canvas, toTex, loadImg, pbr, BRAND, network, grad, noise2 } from './tex
 import { makePalm, makePalmField } from './palm.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { REGIONS } from './regions.js';
+import { C, WALL, PLACES, BAYS, placeFrame, toWorld, buildStreets } from './city.js';
 
-/* One street per region: a 4-lane road along x with a palm median, the bus stop on the near
-   sidewalk (+z), three factory compounds behind a wall on the far side (-z) and two compounds
-   still under construction. Each region adds its own scenery and light. */
-/* The road runs along x. Every place sits behind the wall on the far side (-z) with a zebra crossing
-   at its gate; the coach stops on the near lane just before each crossing. */
-export const LAYOUT = { SCHOOL_X: -360, FACT_X: [-120, 120, 360], SOON_X: [0, 240], WALL_Z: -14, LANE_Z: 5.6, STOP_BACK: 14, ROAD: 1300 };
+/* One industrial district per region (streets and bays in city.js): the school and three factory
+   compounds open onto the main avenue, with a plaza and two sites still under construction.
+   Each region adds its own scenery and light around it. */
 
 const THEMES = {
   riyadh: { elev: 50, azim: -35, turb: 3.2, ray: 1.2, mie: .004, sun: '#fff1dc', sunI: 3, fog: '#d8e1ea', fogD: .0017, ground: '#e9c99a', exposure: .95, tint: '#ffffff', sea: false },
@@ -20,6 +18,7 @@ const THEMES = {
   eastern: { elev: 11, azim: 172, turb: 7, ray: 2.4, mie: .006, sun: '#ffb87e', sunI: 2.4, fog: '#e9cbb8', fogD: .0012, ground: '#e5c9a0', exposure: 1.0, tint: '#ffe9dc', sea: true }
 };
 
+function put(parent, o, x, y, z) { o.position.set(x, y, z); parent.add(o); return o; }
 function m(g, mat, cast = true) { const o = new THREE.Mesh(g, mat); o.castShadow = cast; o.receiveShadow = true; return o; }
 function box(w, h, d, mat, x, y, z, cast = true) { const o = m(new THREE.BoxGeometry(w, h, d), mat, cast); o.position.set(x, y, z); return o; }
 function cyl(rt, rb, h, mat, x, y, z, seg = 32, cast = true) { const o = m(new THREE.CylinderGeometry(rt, rb, h, seg), mat, cast); o.position.set(x, y, z); return o; }
@@ -229,8 +228,8 @@ function flame() {
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: toTex(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); return s;
 }
 
-async function compound(F, region, x, anim) {
-  const M = mats(), g = new THREE.Group(); g.position.set(x, 0, -40);
+async function compound(F, region, fr, anim) {
+  const M = mats(), g = new THREE.Group(); g.position.set(fr.x, 0, fr.z); g.rotation.y = fr.rot;
   const brand = col(F.color);
   const P = F.product;
   // ---- main buildings by product
@@ -315,6 +314,7 @@ async function compound(F, region, x, anim) {
   sp.position.set(sx, sy, front + .05); g.add(sp);
   // ---- wall with a gate opening at local x = 0
   g.add(tbox(19, 2.2, .4, M.wall, -13.5, 1.1, 26, 1.6), tbox(19, 2.2, .4, M.wall, 13.5, 1.1, 26, 1.6));
+  g.add(tbox(.4, 2.2, 50.4, M.wall, -23.2, 1.1, .9, 1.6), tbox(.4, 2.2, 50.4, M.wall, 23.2, 1.1, .9, 1.6), tbox(46.8, 2.2, .4, M.wall, 0, 1.1, -24.2, 1.6));
   for (const xx of [-4.2, 4.2]) g.add(box(.6, 4.8, .6, M.dark, xx, 2.4, 26));
   g.add(box(9, .5, .6, M.dark, 0, 4.95, 26));
   const gt = await gateSign(F, region);
@@ -344,8 +344,8 @@ async function schoolBanner() {
   x.font = '400 70px "Readex Pro"'; x.fillStyle = 'rgba(255,255,255,.88)'; x.fillText('تنطلق من مدرستك إلى مصانع المملكة', W - 520, 360);
   return toTex(c);
 }
-async function schoolCompound(region, x, anim) {
-  const M = mats(), g = new THREE.Group(); g.position.set(x, 0, -40);
+async function schoolCompound(region, fr, anim) {
+  const M = mats(), g = new THREE.Group(); g.position.set(fr.x, 0, fr.z); g.rotation.y = fr.rot;
   const wallM = new THREE.MeshStandardMaterial({ map: facadeStone(10, 3, 21, '#e9dcc3', '#2c5f73'), roughness: .85 });
   wallM.map.repeat.set(1, 1);
   const bld = box(46, 10, 14, wallM, 0, 5, -6); g.add(bld);
@@ -365,14 +365,15 @@ async function schoolCompound(region, x, anim) {
   for (const xx of [12, 20]) g.add(box(2.4, .12, .6, benchM, xx, .5, 14.5));
   // wall, gate, sign
   g.add(tbox(19, 2.2, .4, M.wall, -13.5, 1.1, 26, 1.6), tbox(19, 2.2, .4, M.wall, 13.5, 1.1, 26, 1.6));
+  g.add(tbox(.4, 2.2, 39.4, M.wall, -23.2, 1.1, 6.5, 1.6), tbox(.4, 2.2, 39.4, M.wall, 23.2, 1.1, 6.5, 1.6));
   for (const xx of [-4.2, 4.2]) g.add(box(.6, 4.8, .6, M.dark, xx, 2.4, 26));
   g.add(box(9, .5, .6, M.dark, 0, 4.95, 26));
   const st = schoolSign(region); const sg = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 1.6), new THREE.MeshStandardMaterial({ map: st, roughness: .4 })); sg.position.set(0, 6.1, 26.2); g.add(sg);
   g.add(box(7.8, 1.9, .3, M.dark, 0, 6.1, 26));
   return g;
 }
-async function soonCompound(name, x, anim) {
-  const M = mats(), g = new THREE.Group(); g.position.set(x, 0, -40);
+async function soonCompound(name, fr, anim) {
+  const M = mats(), g = new THREE.Group(); g.position.set(fr.x, 0, fr.z); g.rotation.y = fr.rot; const x = fr.x;
   const steel = new THREE.MeshStandardMaterial({ color: '#e07b2a', metalness: .5, roughness: .45 });
   for (let i = -3; i <= 3; i++) for (const z of [-10, 0, 10]) g.add(box(.5, 12, .5, steel, i * 5.5, 6, z));
   for (const y of [6, 12]) { for (const z of [-10, 0, 10]) g.add(box(33.5, .45, .45, steel, 0, y, z)); for (let i = -3; i <= 3; i++) g.add(box(.45, .45, 20.5, steel, i * 5.5, y, 0)); }
@@ -383,10 +384,78 @@ async function soonCompound(name, x, anim) {
   const jib = new THREE.Group(); jib.position.y = 30.5; tower.add(jib); jib.add(box(26, 1, 1, tm, -6, 0, 0)); jib.add(box(3, 2, 2, M.dark, 6, -.4, 0));
   anim.push(t2 => { jib.rotation.y = Math.sin(t2 * .15 + x) * .9; });
   // hoarding with the "coming soon" board
-  g.add(box(46, 2.6, .25, new THREE.MeshStandardMaterial({ color: '#2a3590', roughness: .6 }), 0, 1.3, 26));
+  const hoard = new THREE.MeshStandardMaterial({ color: '#2a3590', roughness: .6 });
+  g.add(box(46, 2.6, .25, hoard, 0, 1.3, 26), box(.25, 2.6, 42, hoard, -23, 1.3, 5), box(.25, 2.6, 42, hoard, 23, 1.3, 5), box(46, 2.6, .25, hoard, 0, 1.3, -16));
   const st = soonSign(name); const sb = new THREE.Mesh(new THREE.PlaneGeometry(9, 4.5), new THREE.MeshStandardMaterial({ map: st, emissive: '#ffffff', emissiveMap: st, emissiveIntensity: .15 }));
   sb.position.set(0, 5.6, 26.3); g.add(sb); for (const xx of [-4, 4]) g.add(box(.25, 3.4, .25, M.dark, xx, 1.7, 26.1));
   return g;
+}
+
+/* ---------------- the initiative's plaza: a pool round a monument of the logo ----------------
+   Three figures lift a network globe (the logo's mark) above a fountain; benches, lawns with palms,
+   lamps and a big screen with the hackathon around it. */
+async function plaza(scene, p, { colliders, boxes, pads, anim }) {
+  const x0 = C.XS[2] + C.HW + C.SW, x1 = C.XS[3] - C.HW - C.SW, z0 = C.ZS[0] + C.HW + C.SW, z1 = -C.HW - C.SW, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+  const M = mats(), stone = new THREE.MeshStandardMaterial({ color: "#efe9de", roughness: .55, side: THREE.DoubleSide });
+  const slab = tbox(x1 - x0, .2, z1 - z0, new THREE.MeshStandardMaterial({ ...pbr('concrete_pavers', [1, 1]), color: '#efe6d6' }), cx, .1, cz, 2.6); slab.castShadow = false; scene.add(slab);
+  pads.push([x0, z0, x1, z1, .2]);
+  // radiating paving bands
+  const band = new THREE.MeshStandardMaterial({ color: '#c9b79a', roughness: .7 });
+  for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, b = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 24), band); b.rotation.x = -Math.PI / 2; b.rotation.z = a; b.position.set(cx + Math.sin(a) * 23, .205, cz + Math.cos(a) * 23); b.receiveShadow = true; scene.add(b); }
+  // the pool
+  const g = new THREE.Group(); g.position.set(cx, .2, cz); scene.add(g);
+  put(g, m(new THREE.CylinderGeometry(10.4, 10.6, .7, 72, 1, true), stone), 0, .35, 0);
+  put(g, m(new THREE.CylinderGeometry(9.8, 9.8, .7, 72, 1, true), stone), 0, .35, 0);
+  const rim = m(new THREE.RingGeometry(9.8, 10.4, 72), stone); rim.rotation.x = -Math.PI / 2; rim.position.y = .7; g.add(rim);
+  const nt = new THREE.TextureLoader().load('assets/tex/waternormals.jpg'); nt.wrapS = nt.wrapT = THREE.RepeatWrapping; nt.repeat.set(3, 3);
+  const water = new THREE.Mesh(new THREE.CircleGeometry(9.8, 72), new THREE.MeshStandardMaterial({ color: '#2f8fb5', roughness: .06, metalness: .2, normalMap: nt, normalScale: new THREE.Vector2(.4, .4), envMapIntensity: 1.3 }));
+  water.rotation.x = -Math.PI / 2; water.position.y = .52; water.receiveShadow = true; g.add(water);
+  anim.push((t, dt) => { nt.offset.x += dt * .03; nt.offset.y += dt * .017; });
+  colliders.push([cx, cz, 10.7]);
+  const jetM = new THREE.MeshStandardMaterial({ color: '#ffffff', transparent: true, opacity: .55, roughness: .1, emissive: '#cfefff', emissiveIntensity: .25, depthWrite: false });
+  const jets = [];
+  for (let k = 0; k < 14; k++) { const a = k / 14 * Math.PI * 2, j = new THREE.Mesh(new THREE.CylinderGeometry(.03, .12, 1, 8), jetM); j.position.set(Math.cos(a) * 7.6, .5, Math.sin(a) * 7.6); j.rotation.z = Math.cos(a) * .25; j.rotation.x = -Math.sin(a) * .25; g.add(j); jets.push(j); }
+  anim.push(t => jets.forEach((j, k) => { const h = 1.6 + Math.sin(t * 2.2 + k * .9) * .6; j.scale.y = h; j.position.y = .52 + h / 2; }));
+  // the monument: stepped island, three figures, the network globe
+  put(g, m(new THREE.CylinderGeometry(3.6, 3.9, .9, 48), stone), 0, .45, 0);
+  put(g, m(new THREE.CylinderGeometry(2.6, 2.9, .9, 48), stone), 0, 1.35, 0);
+  const fig = ['#2a3590', '#3c58a7', '#847bb8'];
+  fig.forEach((c, k) => {
+    const a = k / 3 * Math.PI * 2 + Math.PI / 6, f = new THREE.Group(); f.position.set(Math.cos(a) * 1.55, 1.8, Math.sin(a) * 1.55); f.rotation.y = -a + Math.PI / 2; g.add(f);
+    const mat = new THREE.MeshPhysicalMaterial({ color: c, metalness: .5, roughness: .25, clearcoat: 1 });
+    put(f, m(new THREE.CapsuleGeometry(.5, 2.2, 8, 20), mat), 0, 1.6, 0);
+    put(f, m(new THREE.SphereGeometry(.52, 24, 16), mat), 0, 3.6, 0);
+    for (const sd of [-1, 1]) { const arm = m(new THREE.CapsuleGeometry(.17, 1.9, 6, 12), mat); arm.position.set(sd * .62, 3.5, .35); arm.rotation.set(-.35, 0, -sd * .38); f.add(arm); }
+  });
+  const globe = new THREE.Group(); globe.position.y = 8.6; g.add(globe);
+  const ico = new THREE.IcosahedronGeometry(3.3, 1), pos = ico.attributes.position, verts = [];
+  for (let i = 0; i < pos.count; i++) { const v = new THREE.Vector3().fromBufferAttribute(pos, i); if (!verts.some(u => u.distanceTo(v) < .01)) verts.push(v); }
+  const edges = []; for (let i = 0; i < verts.length; i++) for (let j = i + 1; j < verts.length; j++) { const d = verts[i].distanceTo(verts[j]); if (d < 3.3 * .7) edges.push([verts[i], verts[j]]); }
+  const edgeG = mergeGeometries(edges.map(([u, v]) => { const len = u.distanceTo(v), c = new THREE.CylinderGeometry(.07, .07, len, 6); c.translate(0, len / 2, 0); c.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), v.clone().sub(u).normalize())); c.translate(u.x, u.y, u.z); return c.toNonIndexed(); }));
+  globe.add(m(edgeG, new THREE.MeshStandardMaterial({ color: '#847bb8', metalness: .8, roughness: .25 })));
+  const nodes = new THREE.InstancedMesh(new THREE.SphereGeometry(.2, 14, 10), new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#c9c3ff', emissiveIntensity: .9 }), verts.length);
+  const mm = new THREE.Matrix4(); verts.forEach((v, i) => { mm.makeTranslation(v.x, v.y, v.z); nodes.setMatrixAt(i, mm); }); globe.add(nodes);
+  const orbit = m(new THREE.TorusGeometry(4.3, .06, 8, 96), new THREE.MeshStandardMaterial({ color: '#f2c230', metalness: .8, roughness: .2, emissive: '#f2c230', emissiveIntensity: .3 }), false); orbit.rotation.x = 1.2; globe.add(orbit);
+  anim.push(t => { globe.rotation.y = t * .18; orbit.rotation.z = t * .5; });
+  // benches round the pool, lamps between them
+  const wood = new THREE.MeshStandardMaterial({ color: '#b07a4a', roughness: .6 }), lampM = new THREE.MeshStandardMaterial({ color: '#2b3038', metalness: .6, roughness: .4 }), glow = new THREE.MeshStandardMaterial({ color: '#fff', emissive: '#fff3d6', emissiveIntensity: 1.2 });
+  for (let k = 0; k < 8; k++) {
+    const a = (k + .5) / 8 * Math.PI * 2, bx = cx + Math.cos(a) * 15, bz = cz + Math.sin(a) * 15, b = new THREE.Group(); b.position.set(bx, .2, bz); b.rotation.y = -a + Math.PI / 2; scene.add(b);
+    put(b, m(new RoundedBoxGeometry(2.6, .12, .6, 2, .04), wood), 0, .48, 0); put(b, m(new RoundedBoxGeometry(2.6, .5, .08, 2, .03), wood), 0, .8, .3);
+    for (const sx of [-1.1, 1.1]) b.add(box(.08, .45, .5, M.dark, sx, .23, 0));
+    colliders.push([bx, bz, 1.2]);
+    const la = a + Math.PI / 8, lx = cx + Math.cos(la) * 15, lz = cz + Math.sin(la) * 15;
+    scene.add(cyl(.07, .09, 3.6, lampM, lx, 2, lz, 10)); const bulb = new THREE.Mesh(new THREE.SphereGeometry(.28, 16, 12), glow); bulb.position.set(lx, 3.95, lz); scene.add(bulb); colliders.push([lx, lz, .2]);
+  }
+  // lawns with palms in the four corners
+  const lawnM = new THREE.MeshStandardMaterial({ color: '#5f9a43', roughness: .95 }), pts = [];
+  for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const lx = cx + sx * 31, lz = cz + sz * 23, lawn = tbox(18, .1, 14, lawnM, lx, .25, lz); lawn.castShadow = false; scene.add(lawn);
+    for (const [ox, oz] of [[-5, -3], [4, 3], [5, -4]]) { pts.push([lx + ox * sx, lz + oz * sz]); colliders.push([lx + ox * sx, lz + oz * sz, .5]); }
+  }
+  const palms = makePalmField(pts, { h: 7.5, shadows: true }); palms.position.y = .3; scene.add(palms);
+  // the big screen at the back of the plaza
+  const scr = billboard(await fiAd(), 14, 7, 6); scr.position.set(cx, .2, z0 + 3); scene.add(scr); colliders.push([cx, z0 + 3, .7]);
 }
 
 /* ---------------- region scenery ---------------- */
@@ -421,7 +490,7 @@ function warehouses(scene, avoidX = []) {
   const M = mats();
   const shedM = [M.clad('#e4e7ec'), M.clad('#d9d2c4')], roofM = ['#2f63a8', '#9aa3ad', '#c8ccd2'].map(c => new THREE.MeshStandardMaterial({ color: c, metalness: .4, roughness: .45 }));
   for (let i = 0; i < 64; i++) {
-    const x = -620 + (i % 16) * 78 + rnd() * 14, z = -100 - Math.floor(i / 16) * 44 - rnd() * 8, w = 30 + rnd() * 14, d = 22 + rnd() * 10, h = 8 + rnd() * 6;
+    const x = -620 + (i % 16) * 78 + rnd() * 14, z = -175 - Math.floor(i / 16) * 44 - rnd() * 8, w = 30 + rnd() * 14, d = 22 + rnd() * 10, h = 8 + rnd() * 6;
     const g = new THREE.BoxGeometry(w, h, d); g.translate(x, h / 2, z); worldUV(g, 2.5); scene.add(m(g, shedM[i % 2], false));
     const r = new THREE.Mesh(new THREE.BoxGeometry(w + .4, .5, d + .4), roofM[i % 3]); r.position.set(x, h + .25, z); scene.add(r);
   }
@@ -444,17 +513,17 @@ function mountains(scene, color, z) {
 function sea(scene, anim, color = '#1f6b86') {
   const nt = new THREE.TextureLoader().load('assets/tex/waternormals.jpg'); nt.wrapS = nt.wrapT = THREE.RepeatWrapping; nt.repeat.set(90, 45);
   const wm = new THREE.MeshStandardMaterial({ color, roughness: .1, metalness: .25, normalMap: nt, normalScale: new THREE.Vector2(.55, .55), envMapIntensity: 1.2 });
-  const w = new THREE.Mesh(new THREE.PlaneGeometry(4000, 2000), wm); w.rotation.x = -Math.PI / 2; w.position.set(0, -1.1, 1018); w.receiveShadow = true; scene.add(w);
+  const w = new THREE.Mesh(new THREE.PlaneGeometry(4000, 2000), wm); w.rotation.x = -Math.PI / 2; w.position.set(0, -1.1, 1112); w.receiveShadow = true; scene.add(w);
   anim.push((t, dt) => { nt.offset.x += dt * .004; nt.offset.y += dt * .002; });
   // corniche: wider promenade, railing, rock revetment
   const pave = mats().pave;
-  { const pr = tbox(LAYOUT.ROAD, .2, 3, pave, 0, .1, 14.5, 2.2); pr.castShadow = false; scene.add(pr); }
+  { const pr = tbox(1300, .2, 4, pave, 0, .1, 107.5, 2.2); pr.castShadow = false; scene.add(pr); }
   const rail = new THREE.MeshStandardMaterial({ color: '#f4f4f4', metalness: .6, roughness: .3 });
-  scene.add(box(LAYOUT.ROAD, .08, .08, rail, 0, 1.1, 15.9, false), box(LAYOUT.ROAD, .06, .06, rail, 0, .6, 15.9, false));
-  const posts = new THREE.InstancedMesh(new THREE.BoxGeometry(.1, 1.1, .1), rail, 488), mm = new THREE.Matrix4(); for (let i = 0; i < 488; i++) { mm.makeTranslation(-650 + i * 2.67, .55, 15.9); posts.setMatrixAt(i, mm); } scene.add(posts);
+  scene.add(box(1300, .08, .08, rail, 0, 1.1, 109.4, false), box(1300, .06, .06, rail, 0, .6, 109.4, false));
+  const posts = new THREE.InstancedMesh(new THREE.BoxGeometry(.1, 1.1, .1), rail, 488), mm = new THREE.Matrix4(); for (let i = 0; i < 488; i++) { mm.makeTranslation(-650 + i * 2.67, .55, 109.4); posts.setMatrixAt(i, mm); } scene.add(posts);
   const rockM = new THREE.MeshStandardMaterial({ color: '#9c8f7d', roughness: 1, flatShading: true });
   const rocks = new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1, 0), rockM, 700), q = new THREE.Quaternion(), e = new THREE.Euler();
-  for (let i = 0; i < 700; i++) { const s = .7 + rnd() * .9; e.set(rnd() * 3, rnd() * 3, rnd() * 3); q.setFromEuler(e); mm.compose(new THREE.Vector3(-650 + rnd() * 1300, -.6 + rnd() * .5, 16.6 + rnd() * 2.6), q, new THREE.Vector3(s, s * .7, s)); rocks.setMatrixAt(i, mm); }
+  for (let i = 0; i < 700; i++) { const s = .7 + rnd() * .9; e.set(rnd() * 3, rnd() * 3, rnd() * 3); q.setFromEuler(e); mm.compose(new THREE.Vector3(-650 + rnd() * 1300, -.6 + rnd() * .5, 110.4 + rnd() * 2.6), q, new THREE.Vector3(s, s * .7, s)); rocks.setMatrixAt(i, mm); }
   rocks.receiveShadow = true; scene.add(rocks);
 }
 
@@ -500,57 +569,47 @@ export async function buildRegion(renderer, key) {
   // ground (stops at the corniche when there is sea)
   const sand = pbr('aerial_sand', [260, 130]);
   const gm = new THREE.MeshStandardMaterial({ ...sand, color: T.ground, roughness: 1 }); breakTiling(gm);
-  const ground = m(new THREE.PlaneGeometry(2400, T.sea ? 1216 : 2400), gm, false);
-  ground.rotation.x = -Math.PI / 2; ground.position.z = T.sea ? -592 : 0; scene.add(ground);
-  // road
-  const asph = pbr('clean_asphalt', [LAYOUT.ROAD / 8, 4]);
-  const road = m(new THREE.PlaneGeometry(LAYOUT.ROAD, 15.6), new THREE.MeshStandardMaterial({ ...asph, color: '#9a9a9a', roughness: .92 }), false); road.rotation.x = -Math.PI / 2; road.position.y = .02; scene.add(road);
-  const paint = new THREE.MeshStandardMaterial({ color: '#f4f4f0', roughness: .6 }), yellow = new THREE.MeshStandardMaterial({ color: '#f0bf2a', roughness: .6 });
-  const dash = new THREE.InstancedMesh(new THREE.PlaneGeometry(3, .14), paint, 400), mm = new THREE.Matrix4(), qf = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
-  const L = LAYOUT.ROAD, PLACES = [LAYOUT.SCHOOL_X, ...LAYOUT.FACT_X];
-  let k = 0; for (const z of [4.3, -4.3]) for (let x = -L / 2 + 5; x < L / 2; x += 9) { mm.compose(new THREE.Vector3(x, .035, z), qf, new THREE.Vector3(1, 1, 1)); dash.setMatrixAt(k++, mm); }
-  dash.count = k; scene.add(dash);
-  for (const z of [7.55, -7.55]) { const l = m(new THREE.PlaneGeometry(L, .16), paint, false); l.rotation.x = -Math.PI / 2; l.position.set(0, .035, z); scene.add(l); }
-  for (const z of [1.1, -1.1]) { const l = m(new THREE.PlaneGeometry(L, .14), yellow, false); l.rotation.x = -Math.PI / 2; l.position.set(0, .035, z); scene.add(l); }
-  const zebra = new THREE.InstancedMesh(new THREE.PlaneGeometry(4, .5), paint, 80); k = 0;
-  for (const gx of PLACES) for (let z = -7.2; z <= 7.2; z += 1) { if (Math.abs(z) < 1) continue; mm.compose(new THREE.Vector3(gx, .036, z), qf, new THREE.Vector3(1, 1, 1)); zebra.setMatrixAt(k++, mm); }
-  zebra.count = k; scene.add(zebra);
-  // median, curbs and sidewalks
-  const curbT = curbTex(); curbT.repeat.set(L / 4, 1);
-  const curbM = new THREE.MeshStandardMaterial({ map: curbT, roughness: .7 });
-  for (const z of [.8, -.8]) scene.add(box(L, .25, .2, curbM, 0, .125, z));
-  scene.add(box(L, .22, 1.4, new THREE.MeshStandardMaterial({ ...pbr('sand_01', [L / 4, 1]), color: '#c9a77a' }), 0, .11, 0, false));
+  const ground = m(new THREE.PlaneGeometry(2400, T.sea ? 1312 : 2400), gm, false);
+  ground.rotation.x = -Math.PI / 2; ground.position.z = T.sea ? -544 : 0; scene.add(ground);
+  // streets, sidewalks, junctions, lights and palms
+  const curbM = new THREE.MeshStandardMaterial({ color: '#cfccc4', roughness: .8 });
   const pavM = new THREE.MeshStandardMaterial({ ...pbr('concrete_pavers', [1, 1]), color: '#e2ddd3' });
-  for (const [z0, z1] of [[7.8, 13], [-13, -7.8]]) { const sw = tbox(L, .2, z1 - z0, pavM, 0, .1, (z0 + z1) / 2, 2.2); sw.castShadow = false; scene.add(sw); scene.add(box(L, .22, .22, curbM, 0, .11, z0 > 0 ? z0 : z1)); }
-  // palms (one instanced grove) and street lights (instanced), leaving the crossings clear
-  const nearGate = x => PLACES.some(g => Math.abs(x - g) < 6);
-  const colliders = [], medPts = [], sidePts = [];
-  for (let x = -L / 2 + 10; x <= L / 2 - 10; x += 13) if (!nearGate(x)) { medPts.push([x, 0]); colliders.push([x, 0, .5]); }
-  for (let x = -L / 2 + 12; x <= L / 2 - 12; x += 15) if (!nearGate(x) && !nearGate(x + 7)) { sidePts.push([x, -11.4]); colliders.push([x, -11.4, .5]); }
-  const med = makePalmField(medPts, { h: 7.6, shadows: true }); med.position.y = .22; scene.add(med);
-  const side = makePalmField(sidePts, { h: 6.4, shadows: true }); side.position.y = .2; scene.add(side);
-  const poleM = new THREE.MeshStandardMaterial({ color: '#9aa1ab', metalness: .7, roughness: .35 }), ledM = new THREE.MeshStandardMaterial({ color: '#f7f9ff', emissive: '#eaf2ff', emissiveIntensity: .6 });
-  const lampParts = [new THREE.CylinderGeometry(.09, .17, 11, 12).translate(0, 5.5, 0)], ledParts = [];
-  for (const s2 of [-1, 1]) {
-    lampParts.push(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(new THREE.Vector3(0, 10.4, 0), new THREE.Vector3(0, 11.2, s2 * 1.4), new THREE.Vector3(0, 11.1, s2 * 2.8)), 12, .055, 6));
-    lampParts.push(new RoundedBoxGeometry(.38, .12, .9, 2, .04).translate(0, 11.08, s2 * 3.1));
-    ledParts.push(new THREE.PlaneGeometry(.3, .8).rotateX(Math.PI / 2).translate(0, 11.015, s2 * 3.1));
+  const streets = await buildStreets(scene, { pave: pavM, curb: curbM, region: R.name });
+  const colliders = streets.colliders, boxes = [], pads = [], locs = [];
+  const boxW = (p, lx0, lz0, lx1, lz1) => { const [ax, az] = toWorld(p, lx0, lz0), [bx, bz] = toWorld(p, lx1, lz1); boxes.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]); };
+  const circW = (p, lx, lz, r) => { const [x, z] = toWorld(p, lx, lz); colliders.push([x, z, r]); };
+  const gateAt = p => new THREE.Vector3(p.x, .2, p.side * (WALL - 1.3));
+  for (const p of PLACES) {
+    const fr = placeFrame(p);
+    if (p.kind === 'factory') {
+      const F = R.factories[p.i]; scene.add(await compound(F, key, fr, anim));
+      boxW(p, -23.5, -24.5, 23.5, 26.25); for (const lx of [-6.5, 6.5]) circW(p, lx, 27.4, .3);
+      locs.push({ kind: 'factory', id: p.id, f: F, place: p, x: p.x, side: p.side, name: F.name, bay: BAYS[p.id], gate: gateAt(p) });
+    } else if (p.kind === 'school') {
+      scene.add(await schoolCompound(key, fr, anim));
+      boxW(p, -23.4, -13.4, 23.4, 1.3); boxW(p, -6.3, 1, 6.3, 2.3);
+      boxW(p, -23.5, 1, -23, 26.3); boxW(p, 23, 1, 23.5, 26.3); boxW(p, -23.5, 25.8, -4, 26.3); boxW(p, 4, 25.8, 23.5, 26.3);
+      for (const [lx, lz, r] of [[-4.6, 6, .25], [4.6, 6, .25], [8, 9, .5], [16, 9, .5], [8, 20, .5], [16, 20, .5], [-18.6, 14, .2], [-5.4, 14, .2], [-4.2, 26, .4], [4.2, 26, .4]]) circW(p, lx, lz, r);
+      for (const bx of [12, 20]) boxW(p, bx - 1.2, 14.2, bx + 1.2, 14.8);
+      { const [ax, az] = toWorld(p, -22, 4.5), [bx, bz] = toWorld(p, 22, 25.5); pads.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz), .055]); }
+      locs.unshift({ kind: 'school', id: p.id, place: p, x: p.x, side: p.side, name: 'المدرسة', bay: BAYS[p.id], gate: gateAt(p), yard: toWorld(p, 0, 15) });
+    } else if (p.kind === 'soon') { scene.add(await soonCompound(R.soon[p.i], fr, anim)); boxW(p, -23.2, -16.2, 23.2, 26.2); }
+    else if (p.kind === 'plaza') await plaza(scene, p, { colliders, boxes, pads, anim });
   }
-  const strip = g2 => { const o = g2.index ? g2.toNonIndexed() : g2; for (const a of Object.keys(o.attributes)) if (!['position', 'normal', 'uv'].includes(a)) o.deleteAttribute(a); return o; };
-  const lampG = mergeGeometries(lampParts.map(strip)), ledG = mergeGeometries(ledParts.map(strip));
-  const lampX = []; for (let x = -L / 2 + 20; x <= L / 2 - 20; x += 26) if (!nearGate(x + 6.5)) lampX.push(x + 6.5);
-  const lamps = new THREE.InstancedMesh(lampG, poleM, lampX.length), leds = new THREE.InstancedMesh(ledG, ledM, lampX.length);
-  lampX.forEach((x, i) => { mm.makeTranslation(x, .22, 0); lamps.setMatrixAt(i, mm); leds.setMatrixAt(i, mm); colliders.push([x, 0, .3]); });
-  lamps.castShadow = true; lamps.computeBoundingSphere(); leds.computeBoundingSphere(); scene.add(lamps, leds);
-  // places: the school, three factories and two under construction; a bus stop for each
-  const posterT = await posterTex(), tagT = stopTag(key), locs = [];
-  const addStop = x => { const busX = x - LAYOUT.STOP_BACK, st = busStop(posterT, tagT); st.position.set(busX - 3, .2, 10.7); scene.add(st); colliders.push([busX - 6.3, 10.7, .25], [busX + .05, 10.9, .7]); return busX; };
-  scene.add(await schoolCompound(key, LAYOUT.SCHOOL_X, anim));
-  locs.push({ kind: 'school', x: LAYOUT.SCHOOL_X, name: 'المدرسة', gate: new THREE.Vector3(LAYOUT.SCHOOL_X, 0, LAYOUT.WALL_Z + .6), busX: addStop(LAYOUT.SCHOOL_X) });
-  for (let i = 0; i < 3; i++) { const F = R.factories[i], x = LAYOUT.FACT_X[i]; scene.add(await compound(F, key, x, anim)); locs.push({ kind: 'factory', f: F, x, name: F.name, gate: new THREE.Vector3(x, 0, LAYOUT.WALL_Z + .6), busX: addStop(x) }); }
-  for (let i = 0; i < 2; i++) scene.add(await soonCompound(R.soon[i], LAYOUT.SOON_X[i], anim));
-  const b1 = billboard(await fiAd()); b1.position.set(LAYOUT.SCHOOL_X + 60, 0, T.sea ? 13.4 : 17); b1.rotation.y = Math.PI; scene.add(b1);
-  const b2 = billboard(await fiAd(), 11, 5.5, 8.5); b2.position.set(LAYOUT.SOON_X[1] - 60, 0, -18); scene.add(b2);
+  locs.sort((a, b) => (a.kind === 'school' ? -1 : a.place.i) - (b.kind === 'school' ? -1 : b.place.i));
+  // the second site still being built, across the north street
+  scene.add(await soonCompound(R.soon[1], { x: 0, z: C.ZS[0] - WALL - 26, rot: 0 }, anim));
+  // a shelter where each bay begins, open to the road
+  const posterT = await posterTex(), tagT = stopTag(key);
+  for (const b of Object.values(BAYS)) {
+    const sh = busStop(posterT, tagT), s2 = b.side, sx = b.x - s2 * (C.BAY_L / 2 + C.BAY_T + 4.6), sz = s2 * (C.HW + 3.1);
+    sh.rotation.y = s2 > 0 ? 0 : Math.PI; sh.position.set(sx, .2, sz); scene.add(sh);
+    const q = { x: sx, side: s2 > 0 ? -1 : 1 }, w = (lx, lz) => s2 > 0 ? [sx + lx, sz + lz] : [sx - lx, sz - lz];
+    const [ax, az] = w(-3.45, .45), [bx, bz] = w(3.45, 1.15); boxes.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]);
+    for (const lx of [-3.3, 3.3]) { const [cx, cz] = w(lx, -1); colliders.push([cx, cz, .15]); }
+  }
+  const b1 = billboard(await fiAd()); b1.position.set(-82, 0, C.ZS[2] + WALL + 6); scene.add(b1);
+  const b2 = billboard(await fiAd(), 11, 5.5, 8.5); b2.position.set(82, 0, C.ZS[0] - WALL - 6); scene.add(b2);
   // ---- scenery by region
   if (R.theme === 'riyadh') {
     warehouses(scene);
@@ -574,10 +633,10 @@ export async function buildRegion(renderer, key) {
   if (R.theme === 'qassim') {
     // palm farms behind a mud wall on the near side, Najdi houses and a water tower beyond the factories
     const najdiM = new THREE.MeshStandardMaterial({ map: najdi(4), roughness: .95 });
-    scene.add(tbox(LAYOUT.ROAD, 2.2, .5, najdiM, 0, 1.1, 16.2, 3));
-    const pts = []; for (let z = 22; z < 120; z += 9) for (let x = -640; x < 640; x += 9) pts.push([x + (rnd() - .5) * 2, z + (rnd() - .5) * 2]);
+    scene.add(tbox(1300, 2.2, .5, najdiM, 0, 1.1, 112, 3));
+    const pts = []; for (let z = 122; z < 230; z += 9) for (let x = -640; x < 640; x += 9) pts.push([x + (rnd() - .5) * 2, z + (rnd() - .5) * 2]);
     scene.add(makePalmField(pts, { h: 6.5, lite: true }));
-    cityBlocks(scene, { n: 130, x0: -520, x1: 560, z0: -110, z1: -700, mats: [4, 5, 6].map(i => new THREE.MeshStandardMaterial({ map: najdi(i), roughness: .95 })), tallMats: [new THREE.MeshStandardMaterial({ map: facadeStone(6, 12, 9, '#e3d2b5'), roughness: .85 })], tallP: .06, hMin: 7, hMax: 16, tMin: 25, tMax: 45 });
+    cityBlocks(scene, { n: 130, x0: -520, x1: 560, z0: -190, z1: -700, mats: [4, 5, 6].map(i => new THREE.MeshStandardMaterial({ map: najdi(i), roughness: .95 })), tallMats: [new THREE.MeshStandardMaterial({ map: facadeStone(6, 12, 9, '#e3d2b5'), roughness: .85 })], tallP: .06, hMin: 7, hMax: 16, tMin: 25, tMax: 45 });
     const wt = new THREE.Group(); wt.position.set(-150, 0, -330); scene.add(wt);
     wt.add(cyl(4, 6, 60, new THREE.MeshStandardMaterial({ color: '#e9e4da', roughness: .6 }), 0, 30, 0, 24, false));
     const bowl = m(new THREE.SphereGeometry(18, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#4a8fc8', metalness: .3, roughness: .4 }), false); bowl.rotation.x = Math.PI; bowl.position.y = 72; wt.add(bowl);
@@ -592,7 +651,7 @@ export async function buildRegion(renderer, key) {
     const ring = m(new THREE.TorusGeometry(16, 1.2, 8, 40), wtm, false); ring.rotation.x = Math.PI / 2; ring.position.y = 100; wt.add(ring);
     // port cranes on the shore to the east
     const cm = new THREE.MeshStandardMaterial({ color: '#d84a2a', metalness: .4, roughness: .5 });
-    for (let i = 0; i < 4; i++) { const c = new THREE.Group(); c.position.set(260 + i * 34, 0, 70); for (const xx of [-7, 7]) for (const zz of [-6, 6]) c.add(box(1.2, 40, 1.2, cm, xx, 20, zz, false)); c.add(box(16, 2, 14, cm, 0, 40, 0, false)); c.add(box(3, 2.4, 70, cm, 0, 44, 20, false)); scene.add(c); }
+    for (let i = 0; i < 4; i++) { const c = new THREE.Group(); c.position.set(240 + i * 34, 0, 60); for (const xx of [-7, 7]) for (const zz of [-6, 6]) c.add(box(1.2, 40, 1.2, cm, xx, 20, zz, false)); c.add(box(16, 2, 14, cm, 0, 40, 0, false)); c.add(box(3, 2.4, 70, cm, 0, 44, 20, false)); scene.add(c); }
     // refinery skyline behind the factories with burning flares
     const M0 = mats();
     const tankM = new THREE.MeshStandardMaterial({ color: '#e8e9eb', metalness: .4, roughness: .45 });
@@ -607,8 +666,7 @@ export async function buildRegion(renderer, key) {
   }
   let t = 0;
   return {
-    scene, sun, sunDir, tint: T.tint, exposure: T.exposure, colliders, sea: T.sea,
-    locs, laneZ: LAYOUT.LANE_Z,
+    scene, sun, sunDir, tint: T.tint, exposure: T.exposure, colliders, boxes, pads, sea: T.sea, locs,
     update(dt) { t += dt; for (const f of anim) f(t, dt); },
     dispose() { scene.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach(mt => { for (const k2 in mt) if (mt[k2]?.isTexture && !mt[k2].userData.keep) mt[k2].dispose(); mt.dispose(); }); }); scene.environment?.dispose(); }
   };

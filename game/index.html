@@ -152,9 +152,9 @@ body.playing #snd svg{transform:translateY(-5px) scale(.8)}
 .tk-track>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .tk-mover{position:absolute;left:0;top:0;width:64px;translate:-50% -78%;transform-origin:50% 78%;will-change:transform;filter:drop-shadow(0 4px 5px rgba(20,30,90,.45));z-index:2}
 .tk-mover svg{display:block;width:100%;height:auto;animation:bump .32s ease-in-out infinite alternate}
-.tk-mover .wh{transform-box:fill-box;transform-origin:center;animation:spin .5s linear infinite}
+.tk-mover .wh{transform-box:fill-box;transform-origin:center;animation:wheel .5s linear infinite}
 @keyframes bump{to{transform:translateY(-1.5px)}}
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+@keyframes wheel{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
 .tk-meta{display:grid;grid-template-columns:1.5fr 1.4fr .8fr .8fr;gap:8px;border-top:1px solid #e3e6f3;padding-top:10px}
 .tk-meta div{min-width:0}
 .tk-meta small{display:block;font-size:10.5px;color:var(--muted);font-weight:600;line-height:1.5}
@@ -165,6 +165,79 @@ body.playing #snd svg{transform:translateY(-5px) scale(.8)}
 @keyframes stamp{from{opacity:0;scale:2.6}to{opacity:.92;scale:1}}
 #loading .tip{position:absolute;left:50%;bottom:max(16px,env(safe-area-inset-bottom));translate:-50% 0;width:min(680px,calc(100% - 32px));margin:0;text-align:center;color:rgba(255,255,255,.92);font-size:14px;line-height:1.7;text-shadow:0 2px 10px rgba(0,0,0,.6);min-height:24px;transition:opacity .35s}
 @media (max-width:560px){.ticket{--stub:96px}.tk-stub canvas{width:58px;height:58px}#ld-pct{font-size:20px}.tk-main{padding:12px 12px 12px 16px}.tk-meta{grid-template-columns:1fr 1fr}.tk-head img{height:24px}.tk-track{height:58px}.tk-mover{width:52px}.tk-wrap{bottom:max(84px,calc(env(safe-area-inset-bottom) + 70px))}}
+
+
+/* ---------- the factory tour ---------- */
+body.in-tour .mini,body.in-tour #m-card{display:none}
+.tour-card{position:absolute;right:16px;bottom:max(16px,env(safe-area-inset-bottom));width:min(300px,calc(100% - 32px));padding:14px 16px;display:none}
+body.in-tour .tour-card{display:block}
+.tour-card .tc-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tour-card .tc-head img,.tour-card .tc-head i{width:40px;height:40px;border-radius:12px;object-fit:contain;background:#fff;flex:none;box-shadow:0 4px 10px rgba(16,22,70,.12)}
+.tour-card .tc-head b{display:block;font-size:15px;line-height:1.4}.tour-card .tc-head small{font-size:12px;color:var(--muted)}
+.tour-card ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.tour-card li{display:flex;align-items:center;gap:10px;font-size:13.5px;line-height:1.5;color:var(--muted)}
+.tour-card li em{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;background:rgba(42,53,144,.08);color:var(--navy)}
+.tour-card li.now{color:var(--ink);font-weight:600}.tour-card li.now em{background:var(--grad);color:#fff;box-shadow:0 0 0 4px rgba(132,123,184,.25)}
+.tour-card li.ok{color:#2b8a57}.tour-card li.ok em{background:#2fb36d;color:#fff}
+.tour-card li span{flex:1}.tour-card li small{font-variant-numeric:tabular-nums}
+/* مِرشد talks */
+.talk{position:fixed;z-index:41;left:50%;bottom:max(22px,calc(env(safe-area-inset-bottom) + 10px));translate:-50% 0;width:min(640px,calc(100% - 24px));display:flex;align-items:flex-start;gap:14px;padding:14px 16px;cursor:pointer;animation:talkin .35s cubic-bezier(.2,.8,.2,1)}
+.talk[hidden]{display:none}
+@keyframes talkin{from{opacity:0;translate:-50% 18px}}
+.talk .t-av{flex:none;width:58px;height:58px;border-radius:18px;background:linear-gradient(160deg,#ffffff,#e6e9f6);display:grid;place-items:center;box-shadow:inset 0 0 0 2px rgba(132,123,184,.35)}
+.talk .t-av svg{width:46px;height:46px}
+.talk .t-body{flex:1;min-width:0}
+.talk b{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--navy)}
+.talk b small{font-weight:500;color:var(--muted);font-size:12px}
+.talk p{margin:4px 0 0;font-size:16px;line-height:1.75;min-height:2.6em}
+.talk .t-next{position:absolute;left:14px;bottom:10px;font-size:12px;color:var(--muted);animation:blinkit 1.2s infinite}
+@keyframes blinkit{50%{opacity:.3}}
+/* overlays: gear lockers, fact cards, the supervisor's quiz */
+.ovl{position:fixed;inset:0;z-index:46;display:none;place-items:center;background:rgba(10,14,48,.45);backdrop-filter:blur(4px)}
+.ovl.on{display:grid}
+.ovl .card{width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;padding:22px 22px 18px;animation:cardIn .45s cubic-bezier(.2,.8,.2,1)}
+.ovl h3{margin:0 0 4px;font-size:22px;line-height:1.4}
+.ovl .sub{margin:0 0 14px;color:var(--muted);font-size:14.5px;line-height:1.7}
+.ppe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.ppe-grid button{position:relative;display:grid;justify-items:center;gap:6px;padding:12px 6px 10px;border-radius:16px;border:2px solid transparent;background:#fff;color:var(--navy);font:600 13.5px "Readex Pro";cursor:pointer;box-shadow:0 6px 16px -10px rgba(16,22,70,.5);transition:transform .15s,border-color .2s,background .2s}
+.ppe-grid button svg{width:40px;height:40px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ppe-grid button:hover{translate:0 -2px}
+.ppe-grid button.sel{border-color:var(--violet);background:#efeafd}
+.ppe-grid button.sel::after{content:"✓";position:absolute;top:6px;left:8px;width:20px;height:20px;border-radius:50%;background:var(--violet);color:#fff;font-size:12px;display:grid;place-items:center}
+.ppe-grid button.good{border-color:#2fb36d;background:#e6f7ee}.ppe-grid button.bad{border-color:#e0464f;background:#fdecee}
+.ovl .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.ovl .note{font-size:13.5px;color:var(--muted);line-height:1.6;flex:1;min-width:160px}
+.fact-n{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;font-weight:700;margin-bottom:10px;box-shadow:0 10px 24px -10px rgba(16,22,70,.6)}
+.fact-b{font-size:17px;line-height:1.85;margin:6px 0 16px}
+.fact-saved{display:inline-flex;gap:6px;align-items:center;padding:6px 12px;border-radius:999px;background:#e6f7ee;color:#2b8a57;font-size:13px;font-weight:600}
+.quiz-dots{display:flex;gap:6px;margin-bottom:12px}.quiz-dots i{width:28px;height:6px;border-radius:999px;background:rgba(42,53,144,.15)}.quiz-dots i.on{background:var(--violet)}.quiz-dots i.ok{background:#2fb36d}.quiz-dots i.no{background:#e0464f}
+.quiz-q{font-size:19px;font-weight:700;line-height:1.7;margin:0 0 14px}
+.quiz-opts{display:grid;gap:10px}
+.quiz-opts button{min-height:52px;padding:10px 16px;border-radius:14px;border:2px solid transparent;background:#fff;color:var(--ink);font:600 15.5px "Readex Pro";text-align:start;cursor:pointer;box-shadow:0 6px 16px -10px rgba(16,22,70,.5)}
+.quiz-opts button:hover{border-color:rgba(132,123,184,.6)}
+.quiz-opts button.good{background:#2fb36d;color:#fff}.quiz-opts button.bad{background:#e0464f;color:#fff}
+@media (max-width:560px){.ppe-grid{gap:8px}.ppe-grid button{font-size:12.5px;padding:10px 4px 8px}.ppe-grid button svg{width:34px;height:34px}.talk p{font-size:15px}.talk .t-av{width:46px;height:46px}.talk .t-av svg{width:36px;height:36px}}
+
+
+/* the trip journal */
+.who{border:0;font:inherit;color:inherit;text-align:start;cursor:pointer}
+.who .av{position:relative}.who .av em{position:absolute;left:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:12px;box-shadow:0 2px 6px rgba(16,22,70,.25)}
+.jr{width:min(720px,calc(100% - 24px))!important}
+.jr-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.jr-head .av{width:56px;height:56px;border-radius:16px;background:var(--wash) top center/150% no-repeat;flex:none}
+.jr-head div{flex:1}.jr-head h3{margin:0}.jr-head small{color:var(--muted);font-size:13px}
+.jr-x{width:40px;height:40px;border-radius:12px;border:0;background:rgba(42,53,144,.08);color:var(--navy);font-size:18px;cursor:pointer}
+.jr-badges{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;text-align:center;font-size:12px;color:var(--muted)}
+.jr-badges img{width:min(80px,100%);display:block;margin:0 auto 4px;filter:drop-shadow(0 6px 10px rgba(42,53,144,.3))}.jr-badges .off img{filter:grayscale(1) opacity(.3)}
+.jr-reg{margin-bottom:12px;padding:12px;border-radius:16px;background:rgba(255,255,255,.6)}
+.jr-reg>div:first-child{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.jr-reg b{font-size:16px}.jr-reg small{color:var(--muted);font-size:12.5px}
+.jr-f{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid rgba(42,53,144,.08);font-size:13.5px}
+.jr-f img,.jr-f i.dot{width:34px;height:34px;border-radius:10px;object-fit:contain;background:#fff;flex:none}
+.jr-f span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jr-f .st{color:#e0b21c;letter-spacing:1px}.jr-f .chips{display:flex;gap:4px;flex:none}
+.jr-f .chips i{font-style:normal;font-size:11.5px;padding:2px 7px;border-radius:999px;background:rgba(42,53,144,.07);color:var(--navy)}.jr-f .chips i.ok{background:#e6f7ee;color:#2b8a57}
+.jr-f .stamp{flex:none;width:30px;height:30px;border-radius:50%;border:2px dashed #c9cde6;display:grid;place-items:center;font-size:14px;color:#c9cde6}.jr-f .stamp.on{border:2px solid #2fb36d;color:#2fb36d;background:#e6f7ee;transform:rotate(-12deg)}
+@media (max-width:560px){.jr-f .chips{display:none}}
 
 /* character + region screens come alive */
 .panel-screen{background:radial-gradient(120% 90% at 50% 0%,#3c58a7 0%,#232c78 55%,#141a4f 100%)}
@@ -214,6 +287,19 @@ body.touch .joy{display:block}
 .jump-btn{position:absolute;right:20px;bottom:calc(max(16px,env(safe-area-inset-bottom)) + 104px);width:62px;height:62px;border-radius:50%;font-size:26px;display:none}
 body.touch .jump-btn{display:grid;place-items:center}
 body.touch .hint{display:none}
+/* phones and tablets: the mission becomes a slim banner under the top bar, the bottom is left to the thumbs */
+body.touch .mission{top:calc(max(12px,env(safe-area-inset-top)) + 70px);bottom:auto;left:12px;right:12px;width:auto;padding:8px 12px;display:flex;align-items:center;gap:10px}
+body.touch .mission h4{margin:0;font-size:14.5px;line-height:1.45;flex:1;min-width:0}
+body.touch .mission p,body.touch .mission .row{display:none}
+body.touch .mission .chip{flex:none;font-size:11px}
+body.touch .jump-btn{right:28px;bottom:calc(max(28px,env(safe-area-inset-bottom)) + 30px);width:74px;height:74px;font-size:30px}
+body.touch #hud .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 150px)}
+body.touch .toast{top:calc(max(12px,env(safe-area-inset-top)) + 128px)}
+body.touch.in-tour .toast{top:calc(max(12px,env(safe-area-inset-top)) + 70px)}
+body.touch.in-tour .tour-card{top:calc(max(12px,env(safe-area-inset-top)) + 70px);bottom:auto;left:12px;right:12px;width:auto;padding:8px 12px;display:flex;align-items:center;gap:10px}
+body.touch .tour-card .tc-head{margin:0}body.touch .tour-card .tc-head>div{display:none}body.touch .tour-card .tc-head img{width:34px;height:34px}
+body.touch .tour-card ul{flex:1}body.touch .tour-card li{display:none}body.touch .tour-card li.now{display:flex}
+body.touch .talk{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 150px)}
 #hud .hint{left:16px;transform:none;max-width:calc(100% - 380px);flex-wrap:wrap;white-space:normal;line-height:1.9;row-gap:2px}
 @media (max-width:900px){#hud .hint{display:none}}
 .toast{position:fixed;z-index:40;top:90px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);box-sizing:border-box;padding:10px 18px;font-weight:600;line-height:1.6;text-align:center;display:none}
@@ -221,15 +307,12 @@ body.touch .hint{display:none}
 
 
 /* minimap strip */
-.mini{flex:1;max-width:420px;padding:10px 16px 8px;align-self:stretch;display:grid;gap:6px}
-.mini-line{position:relative;height:6px;border-radius:999px;background:rgba(42,53,144,.15)}
-.mini-line i{position:absolute;top:50%;width:14px;height:14px;margin:-7px;border-radius:50%;transition:left .2s}
-.mini-me{background:var(--violet);box-shadow:0 0 0 4px rgba(132,123,184,.3)}
-.mini-bus{width:22px!important;height:12px!important;margin:-6px -11px!important;border-radius:4px!important;background:var(--navy)}
-.mini-labels{position:relative;height:16px;font-size:11px;font-weight:600;color:var(--muted)}
-.mini-labels span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-.mini-labels span.d{color:#2fb36d}
-.mini-labels span::before{content:"";position:absolute;left:50%;top:-12px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:currentColor}
+.mini{flex:0 1 290px;height:118px;padding:6px;align-self:flex-start}
+.mini canvas{display:block;width:100%;height:100%}
+#dv-map{display:block;width:100%;height:100%}
+.dv-mapbox{position:absolute;top:max(12px,env(safe-area-inset-top));right:16px;width:240px;height:150px;padding:6px;z-index:2}
+.drive-top{width:min(420px,calc(100% - 560px))!important}
+@media (max-width:900px){.dv-mapbox{top:auto;bottom:calc(max(16px,env(safe-area-inset-bottom)) + 110px);width:170px;height:106px}.drive-top{width:auto!important}}
 .mission .row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
 /* bus ride */
 #ride{pointer-events:none}
@@ -280,15 +363,20 @@ body.driving .toast{top:auto;bottom:calc(max(16px,env(safe-area-inset-bottom)) +
 @keyframes starpop{to{transform:scale(1)}}
 .mg-row2{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 /* final ceremony */
-#final{background:radial-gradient(120% 90% at 50% 20%,#3c58a7,#141a4f);z-index:44}
-#final canvas{position:absolute;inset:0;width:100%;height:100%}
-#final .card{position:absolute;inset:0;margin:auto;height:fit-content;max-height:calc(100% - 24px);overflow:auto;box-sizing:border-box;width:min(560px,calc(100% - 24px));padding:24px;text-align:center;animation:cardIn .6s cubic-bezier(.2,.7,.2,1) both}
-.fin-logo{width:120px}
-#final h3{margin:10px 0 8px;font-size:24px}
-#final p{color:var(--muted);margin:0 0 12px}
-.fin-badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:8px 0 12px}
-.fin-badges img{width:100%;filter:drop-shadow(0 8px 14px rgba(42,53,144,.35))}
-.fin-badges img.off{filter:grayscale(1) opacity(.35)}
+#final{background:transparent;z-index:44;pointer-events:none}
+#final>*{pointer-events:auto}
+.fin-title{position:absolute;top:max(70px,calc(env(safe-area-inset-top) + 56px));left:0;right:0;text-align:center;color:#fff;pointer-events:none;text-shadow:0 6px 30px rgba(132,123,184,.9),0 2px 8px rgba(0,0,0,.5)}
+.fin-title{transition:opacity .8s,transform .8s}
+#final.cert .fin-title{opacity:0;transform:translateY(-30px)}
+.fin-title small{display:inline-block;padding:4px 16px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(6px);font-size:14px;letter-spacing:.04em;animation:word .8s ease .3s both}
+.fin-title h2{margin:14px 0 8px;font-size:clamp(36px,6.4vw,78px);line-height:1.25;animation:ldin 1.4s cubic-bezier(.2,.7,.2,1) .5s both}
+.fin-title p{margin:0 auto;max-width:min(680px,calc(100% - 32px));font-size:clamp(15px,2vw,20px);line-height:1.7;opacity:.95;animation:word 1s ease 1.2s both}
+.fin-cert{position:absolute;left:50%;bottom:max(20px,env(safe-area-inset-bottom));translate:-50% 0;width:min(620px,calc(100% - 24px));padding:12px 12px 14px;display:none;text-align:center}
+.fin-cert.on{display:block;animation:certIn 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes certIn{from{opacity:0;transform:translateY(120px) rotate(-3deg) scale(.9)}}
+.fin-cert img{display:block;width:100%;border-radius:12px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);margin-bottom:12px}
+.fin-cert .mg-row2{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+@media (max-width:560px){.fin-cert .btn{min-height:44px;padding:8px 16px;font-size:15px}.fin-title{top:max(62px,calc(env(safe-area-inset-top) + 50px))}}
 @media (max-width:760px){.mini{display:none}}
 /* settings */
 .settings{position:fixed;top:calc(max(12px,env(safe-area-inset-top)) + 56px);left:12px;z-index:45;width:min(300px,calc(100% - 24px));padding:16px;display:grid;gap:12px;color:var(--ink)}
@@ -336,6 +424,7 @@ body.driving .toast{top:auto;bottom:calc(max(16px,env(safe-area-inset-bottom)) +
 @keyframes spin{from{transform:rotateY(540deg) scale(.3)}}
 #done h3{margin:10px 0 8px;font-size:24px}
 #done p{margin:0 0 16px;color:var(--muted)}
+#done .brk{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}#done .brk i{font-style:normal;padding:4px 12px;border-radius:999px;background:rgba(42,53,144,.07);font-size:13px;color:var(--navy)}
 #done .pts{font-size:34px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
 .corner{position:fixed;top:max(12px,env(safe-area-inset-top));left:12px;z-index:43;display:flex;gap:8px}
 @media (max-width:760px){
@@ -459,8 +548,8 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
 
 <section class="screen" id="hud">
   <div class="h-top">
-    <div class="who glass"><span class="av" id="av"></span><div><b id="who-name">فهد</b><small id="who-region">الرياض</small></div></div>
-    <div class="mini glass" id="mini"><div class="mini-line"><i class="mini-bus" id="mini-bus"></i><i class="mini-me" id="mini-me"></i></div><div class="mini-labels" id="mini-labels"></div></div>
+    <button class="who glass" id="who" type="button" aria-label="دفتر الرحلة"><span class="av" id="av"><em>📒</em></span><div><b id="who-name">فهد</b><small id="who-region">الرياض</small></div></button>
+    <div class="mini glass" id="mini"><canvas id="mini-cv" aria-label="خريطة المنطقة"></canvas></div>
     <div class="stats glass"><div><b id="st-pts">0</b><small>نقاط</small></div><div><b id="st-fac">0/12</b><small>مصانع</small></div><div><b id="st-bdg">0/4</b><small>شارات</small></div></div>
   </div>
   <div class="mission glass" id="m-card">
@@ -469,6 +558,7 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
     <p id="m-text"></p>
     <div class="row"><span id="m-step"></span><span id="m-reward"></span></div>
   </div>
+  <div class="tour-card glass" id="tour-card"><div class="tc-head"><img id="tc-logo" alt=""><div><b id="tc-name"></b><small id="tc-track"></small></div></div><ul id="tc-list"></ul></div>
   <button class="btn prompt" id="act" type="button">ادخل المصنع</button>
   <div class="hint glass" id="kbd-hint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> أو الأسهم للحركة · Shift للجري · <kbd>Space</kbd> للقفز · اسحب لتدوير الكاميرا · <kbd>E</kbd> للتفاعل</div>
   <div class="joy" id="joy"><i></i></div>
@@ -480,7 +570,8 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
   <button class="btn ghost skip2" id="ride-skip" type="button">تخطّي الطريق ⏭</button>
 </section>
 <section class="screen" id="drive">
-  <div class="ride-top glass drive-top"><small>أنت تقود باص صناعيو المستقبل · المحطة التالية</small><b id="dv-next"></b><div class="ride-bar"><div class="ride-line"><i id="dv-fill"></i></div><div class="ride-stops" id="dv-stops"></div></div></div>
+  <div class="ride-top glass drive-top"><small>أنت تقود باص صناعيو المستقبل · وجهتك</small><b id="dv-next"></b></div>
+  <div class="dv-mapbox glass"><canvas id="dv-map" aria-label="خريطة"></canvas></div>
   <div class="speedo glass"><b id="dv-kmh">0</b><small>كم/س</small></div>
   <button class="btn prompt" id="dv-act" type="button">🚏 انزل هنا</button>
   <div class="hint glass" id="dv-hint"><kbd>W</kbd> تسارع · <kbd>S</kbd> فرامل · <kbd>A</kbd><kbd>D</kbd> توجيه · <kbd>H</kbd> البوق · توقّف عند محطة الباص 🚏 لتنزل</div>
@@ -495,6 +586,12 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
     <div class="route-foot"><button class="btn ghost small" id="route-region" type="button">🗺️ السفر إلى منطقة أخرى</button><button class="btn ghost small" id="route-close" type="button">البقاء هنا</button></div>
   </div>
 </section>
+
+<div class="talk glass" id="talk" hidden><div class="t-av"><svg viewBox="0 0 64 64" aria-hidden="true"><line x1="32" y1="6" x2="32" y2="14" stroke="#1b2263" stroke-width="2.5"/><circle cx="32" cy="6" r="4" fill="#f2c230"/><rect x="8" y="14" width="48" height="36" rx="13" fill="#fff" stroke="#c9cde6" stroke-width="2"/><rect x="13" y="21" width="38" height="22" rx="8" fill="#0c1030"/><rect x="21" y="26" width="6" height="10" rx="3" fill="#6ff3ff"/><rect x="37" y="26" width="6" height="10" rx="3" fill="#6ff3ff"/><path d="M28 39q4 3 8 0" stroke="#6ff3ff" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="3" y="26" width="6" height="12" rx="3" fill="#847bb8"/><rect x="55" y="26" width="6" height="12" rx="3" fill="#847bb8"/></svg></div><div class="t-body"><b>مِرشد <small id="t-role">مرشدك في الرحلة</small></b><p id="t-text"></p></div><span class="t-next" id="t-next">اضغط للمتابعة ◂</span></div>
+<section class="ovl" id="ppe"><div class="card glass"><h3>خزانة معدات الوقاية</h3><p class="sub" id="ppe-sub"></p><div class="ppe-grid" id="ppe-grid"></div><div class="row"><span class="note" id="ppe-note">اختر 3 معدات</span><button class="btn" id="ppe-ok" type="button" disabled>ارتدِ المعدات</button></div></div></section>
+<section class="ovl" id="journal"><div class="card glass jr"><div class="jr-head"><span class="av" id="jr-av"></span><div><h3 id="jr-title">دفتر الرحلة</h3><small id="jr-sub"></small></div><button class="jr-x" id="jr-x" type="button" aria-label="إغلاق">✕</button></div><div class="jr-badges" id="jr-badges"></div><div id="jr-regions"></div></div></section>
+<section class="ovl" id="fact"><div class="card glass"><div class="fact-n" id="fact-n">1</div><h3 id="fact-t"></h3><p class="fact-b" id="fact-b"></p><div class="row"><span class="fact-saved">✓ حُفظت في دفتر الرحلة</span><button class="btn" id="fact-ok" type="button">تم</button></div></div></section>
+<section class="ovl" id="quiz"><div class="card glass"><h3>اختبار المشرف</h3><p class="sub" id="quiz-sub">ثلاثة أسئلة مما تعلّمته في المصنع</p><div class="quiz-dots" id="quiz-dots"><i></i><i></i><i></i></div><p class="quiz-q" id="quiz-q"></p><div class="quiz-opts" id="quiz-opts"></div></div></section>
 <div class="toast glass" id="toast"></div>
 
 <section class="screen" id="mhud">
@@ -526,15 +623,8 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
   </div>
 </section>
 <section class="screen" id="final">
-  <canvas id="fin-fx"></canvas>
-  <div class="card glass">
-    <img src="assets/img/logo.webp" alt="" class="fin-logo">
-    <h3>مبروك! أنت من صناعيو المستقبل</h3>
-    <p id="fin-text"></p>
-    <div class="fin-badges" id="fin-badges"></div>
-    <div class="pts" id="fin-pts"></div>
-    <div class="mg-row2"><a class="btn ghost" href="https://futureindustrialist.org/" target="_blank" rel="noopener">سجّل في الهاكثون</a><button class="btn" id="fin-ok" type="button">العودة للرحلة</button></div>
-  </div>
+  <div class="fin-title"><small>حفل صناعيو المستقبل</small><h2 id="fin-h">مبروك!</h2><p id="fin-text"></p></div>
+  <div class="fin-cert glass" id="fin-cert"><img id="fin-img" alt="شهادة صناعي المستقبل"><div class="mg-row2"><button class="btn ghost" id="fin-dl" type="button">⬇ حمّل الشهادة</button><a class="btn ghost" href="https://futureindustrialist.org/" target="_blank" rel="noopener">سجّل في الهاكثون</a><button class="btn" id="fin-ok" type="button">العودة للرحلة</button></div></div>
 </section>
 
 <script type="module" src="js/game.js"></script>

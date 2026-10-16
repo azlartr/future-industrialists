@@ -114,7 +114,7 @@ function tank(r, h, mat, band) {
 }
 
 export async function buildInterior(renderer, F) {
-  const scene = new THREE.Scene(), P = F.product, anim = [];
+  const scene = new THREE.Scene(), P = F.product, anim = [], boxes = [], circles = [];
   scene.background = new THREE.Color('#cfd6e2');
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .7; pm.dispose();
   scene.fog = new THREE.Fog('#cfd6e2', 30, 70);
@@ -150,7 +150,7 @@ export async function buildInterior(renderer, F) {
     const p = new THREE.Mesh(new THREE.CircleGeometry(1.3, 40), new THREE.MeshStandardMaterial({ map: toTex(c), roughness: .5 })); p.position.set(W / 2 - .08, 5.4, -4); p.rotation.y = -Math.PI / 2; scene.add(p); }
   // ---- the line
   const belt = beltTex(), frameM = std('#9aa3ad', { metalness: .7, roughness: .3 });
-  scene.add(box(30, .12, 1.4, new THREE.MeshStandardMaterial({ map: belt, roughness: .8 }), 0, .95, 0));
+  scene.add(box(30, .12, 1.4, new THREE.MeshStandardMaterial({ map: belt, roughness: .8 }), 0, .95, 0)); boxes.push([-15.2, -.9, 15.2, .9]);
   scene.add(box(30, .25, .12, frameM, 0, .85, .76), box(30, .25, .12, frameM, 0, .85, -.76));
   for (let x = -14; x <= 14; x += 2) for (const z of [-.7, .7]) scene.add(box(.1, .85, .1, frameM, x, .42, z));
   const units = [], gap = P === 'steel' ? 3 : P === 'ac' ? 3.4 : 2.55, lift = { juice: 1.28, bottles: 1.28, lab: 1.04, ac: 1.37, dairy: 1.24, steel: 1.16, dates: 1.08, water: 1.28, sweets: 1.13, chem: 1.3, membranes: 1.22, containers: 1.22 }[P];
@@ -159,25 +159,27 @@ export async function buildInterior(renderer, F) {
   const scr = txt => { const [c, x] = canvas(512, 320); x.fillStyle = '#0d1b3a'; x.fillRect(0, 0, 512, 320); x.fillStyle = '#4fd1a5'; x.font = '600 44px "Readex Pro"'; x.textAlign = 'center'; x.direction = 'rtl'; x.fillText(txt, 256, 120); x.fillStyle = '#7fb2ff'; for (let i = 0; i < 6; i++) { const hh = 40 + (i * 23) % 120; x.fillRect(60 + i * 66, 290 - hh, 40, hh); } return toTex(c); };
   const stationNames = { juice: ['تعبئة العصير', 'فحص الجودة'], bottles: ['تعبئة العبوات', 'فحص الجودة'], lab: ['المختبر', 'الاختبارات'], ac: ['اختبار الضغط', 'فحص الجودة'], dairy: ['البسترة', 'التغليف'], steel: ['الدرفلة', 'التبريد'], dates: ['الفرز', 'التعبئة'], water: ['التعقيم', 'التعبئة'], sweets: ['التشكيل', 'التغليف'], chem: ['غرفة التحكم', 'المختبر'], membranes: ['الترشيح', 'التحكم'], containers: ['الشحن', 'التخليص'] }[P];
   for (const [x, t] of [[-11, stationNames[0]], [10, stationNames[1]]]) {
-    scene.add(box(2.2, 1.8, 1.2, std('#dfe3e9', { metalness: .4, roughness: .4 }), x, .9, -3.2));
+    scene.add(box(2.2, 1.8, 1.2, std('#dfe3e9', { metalness: .4, roughness: .4 }), x, .9, -3.2)); boxes.push([x - 1.15, -3.85, x + 1.15, -2.55]);
     const st = scr(t); const sc = new THREE.Mesh(new THREE.PlaneGeometry(1.3, .8), new THREE.MeshStandardMaterial({ map: st, emissive: '#ffffff', emissiveMap: st, emissiveIntensity: .8 })); sc.position.set(x, 1.35, -2.59); scene.add(sc);
   }
   const robots = [];
-  for (const [x, z, ry] of [[-6, -1.8, 0], [4, -1.8, 0], [-1, 1.9, Math.PI]]) { const r = robotArm(P === 'steel' ? '#e0a21c' : '#f28c28'); r.base.position.set(x, 0, z); r.base.rotation.y = ry; scene.add(r.base); robots.push(r); }
+  for (const [x, z, ry] of [[-6, -1.8, 0], [4, -1.8, 0], [-1, 1.9, Math.PI]]) { const r = robotArm(P === 'steel' ? '#e0a21c' : '#f28c28'); r.base.position.set(x, 0, z); r.base.rotation.y = ry; scene.add(r.base); robots.push(r); circles.push([x, z, .7]); }
   // ---- equipment by product along the back wall
   const steel = std('#d7dbe1', { metalness: .95, roughness: .22 });
-  if (['juice', 'dairy', 'water', 'chem', 'bottles'].includes(P)) for (let i = 0; i < 3; i++) { const tk = tank(1.25, 3.6, P === 'chem' ? std('#eef0f3', { metalness: .6 }) : steel, brand); tk.position.set(5 + i * 3.4, 0, -9.6); scene.add(tk); }
+  if (['juice', 'dairy', 'water', 'chem', 'bottles'].includes(P)) for (let i = 0; i < 3; i++) { const tk = tank(1.25, 3.6, P === 'chem' ? std('#eef0f3', { metalness: .6 }) : steel, brand); tk.position.set(5 + i * 3.4, 0, -9.6); scene.add(tk); circles.push([5 + i * 3.4, -9.6, 1.4]); }
   if (['juice', 'dairy', 'water', 'chem', 'bottles'].includes(P)) { const pipe = cyl(.09, .09, 10.2, std('#c7ccd3', { metalness: .9, roughness: .25 }), 8.4, 5.4, -9.6, 12); pipe.rotation.z = Math.PI / 2; scene.add(pipe); }
-  if (P === 'lab') for (let i = 0; i < 5; i++) { const rack = box(1.2, 2.4, .9, std('#1e2430', { metalness: .5 }), 4 + i * 1.5, 1.2, -11.2); scene.add(rack); for (let k = 0; k < 8; k++) { const led = new THREE.Mesh(new THREE.PlaneGeometry(.06, .06), new THREE.MeshBasicMaterial({ color: k % 3 ? '#4fd1a5' : '#7fb2ff' })); led.position.set(4 + i * 1.5 - .4 + (k % 4) * .25, .6 + Math.floor(k / 4) * 1.2, -10.74); scene.add(led); anim.push(t => { led.visible = Math.sin(t * (3 + k) + i) > -.3; }); } }
-  if (P === 'steel') { const fur = box(4, 3.2, 3, std('#3b3f46', { metalness: .6 }), 9, 1.6, -9.5); scene.add(fur); const mouth = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.2), new THREE.MeshStandardMaterial({ color: '#ff7a1a', emissive: '#ff6a00', emissiveIntensity: 2 })); mouth.position.set(9, 1.4, -7.99); scene.add(mouth); const glow = new THREE.PointLight('#ff8a30', 6, 9); glow.position.set(9, 1.6, -6.8); scene.add(glow); anim.push(t => { glow.intensity = 5 + Math.sin(t * 7) * 1.2; }); }
+  if (P === 'lab') for (let i = 0; i < 5; i++) { const rack = box(1.2, 2.4, .9, std('#1e2430', { metalness: .5 }), 4 + i * 1.5, 1.2, -11.2); scene.add(rack); boxes.push([3.3 + i * 1.5, -11.7, 4.7 + i * 1.5, -10.7]); for (let k = 0; k < 8; k++) { const led = new THREE.Mesh(new THREE.PlaneGeometry(.06, .06), new THREE.MeshBasicMaterial({ color: k % 3 ? '#4fd1a5' : '#7fb2ff' })); led.position.set(4 + i * 1.5 - .4 + (k % 4) * .25, .6 + Math.floor(k / 4) * 1.2, -10.74); scene.add(led); anim.push(t => { led.visible = Math.sin(t * (3 + k) + i) > -.3; }); } }
+  if (P === 'steel') { const fur = box(4, 3.2, 3, std('#3b3f46', { metalness: .6 }), 9, 1.6, -9.5); scene.add(fur); boxes.push([6.9, -11.1, 11.1, -7.9]); const mouth = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.2), new THREE.MeshStandardMaterial({ color: '#ff7a1a', emissive: '#ff6a00', emissiveIntensity: 2 })); mouth.position.set(9, 1.4, -7.99); scene.add(mouth); const glow = new THREE.PointLight('#ff8a30', 6, 9); glow.position.set(9, 1.6, -6.8); scene.add(glow); anim.push(t => { glow.intensity = 5 + Math.sin(t * 7) * 1.2; }); }
+  if (P === 'dates' || P === 'sweets' || P === 'membranes' || P === 'containers' || P === 'ac') boxes.push([5.4, -11.4, 10.8, -10.2]);
   if (P === 'dates' || P === 'sweets' || P === 'membranes' || P === 'containers' || P === 'ac') for (let i = 0; i < 4; i++) for (let k = 0; k < 2 + (i % 2); k++) scene.add(box(1, .8, 1, new THREE.MeshStandardMaterial({ map: T.cardboard, roughness: .8 }), 6 + i * 1.15, .4 + k * .82, -10.8));
   // storage racks with boxes
   const rackM = std(F.color, { metalness: .5, roughness: .4 }), shelfM = std('#f28c28', { metalness: .4 }), cbM = new THREE.MeshStandardMaterial({ map: T.cardboard, roughness: .8 });
   for (const x of [-15, -10]) {
+    boxes.push([x - 1.6, -11.8, x + 1.6, -10.2]);
     for (const xx of [-1.4, 1.4]) for (const z of [-11.6, -10.4]) scene.add(box(.1, 5, .1, rackM, x + xx, 2.5, z));
     for (const y of [.15, 1.8, 3.4]) { scene.add(box(2.9, .1, 1.3, shelfM, x, y, -11)); for (let k = 0; k < 3; k++) { const b = box(.8, .6, .8, cbM, x - .9 + k * .9, y + .36, -11); b.rotation.y = k * .3; scene.add(b); } }
   }
-  for (let i = 0; i < 3; i++) scene.add(cyl(.3, .3, .9, std('#c0392b', { metalness: .5 }), 16.5, .45, -6 + i * .8, 16));
+  for (let i = 0; i < 3; i++) scene.add(cyl(.3, .3, .9, std('#c0392b', { metalness: .5 }), 16.5, .45, -6 + i * .8, 16)); boxes.push([16.1, -6.4, 16.9, -4]);
 
   // ---------------- hazards (only for the safety mission) ----------------
   const hazards = []; let sparks = null, sparkLight = null;
@@ -190,7 +192,7 @@ export async function buildInterior(renderer, F) {
     const door = box(2.2, 2.6, .12, std('#5f6b7a', { metalness: .5 }), W / 2 - .08, 1.3, 8); door.rotation.y = Math.PI / 2; scene.add(door);
     const et = exitTex(); const ex = new THREE.Mesh(new THREE.PlaneGeometry(1.6, .6), new THREE.MeshStandardMaterial({ map: et, emissive: '#ffffff', emissiveMap: et, emissiveIntensity: .9 })); ex.rotation.y = -Math.PI / 2; ex.position.set(W / 2 - .1, 3, 8); scene.add(ex);
     for (let i = 0; i < 7; i++) { const b = box(1.1, .6, .9, cbM, W / 2 - 1.2 - (i % 2) * .7, .3 + Math.floor(i / 3) * .62, 7.2 + (i % 3) * .75); b.rotation.y = i * .7; scene.add(b); }
-    hit(2.2, 3, 3, W / 2 - 1.3, 1.5, 8, 'مخرج الطوارئ مسدود بالصناديق', 'exit');
+    hit(2.2, 3, 3, W / 2 - 1.3, 1.5, 8, 'مخرج الطوارئ مسدود بالصناديق', 'exit'); boxes.push([W / 2 - 2.6, 6.6, W / 2, 9.4]);
     const pnl = new THREE.Group(); pnl.position.set(-W / 2 + .35, 0, 6); scene.add(pnl);
     pnl.add(box(.5, 1.9, 1.3, std('#c9ced6', { metalness: .5 }), 0, 1.45, 0));
     const inner = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.6), std('#30353d')); inner.rotation.y = Math.PI / 2; inner.position.set(.26, 1.45, 0); pnl.add(inner);
@@ -199,12 +201,12 @@ export async function buildInterior(renderer, F) {
     const warn = new THREE.Mesh(new THREE.PlaneGeometry(.45, .45), new THREE.MeshStandardMaterial({ map: warnTex(), transparent: true })); warn.rotation.y = Math.PI / 2; warn.position.set(.03, 0, -.95); dr.add(warn);
     sparks = new THREE.Group(); sparks.position.set(.32, 1.2, -.2); pnl.add(sparks); const sm = new THREE.MeshBasicMaterial({ color: '#fff3a0' }); for (let i = 0; i < 6; i++) sparks.add(new THREE.Mesh(new THREE.SphereGeometry(.025, 6, 4), sm));
     sparkLight = new THREE.PointLight('#ffd27a', 0, 4); sparkLight.position.set(.5, 1.2, -.2); pnl.add(sparkLight);
-    hit(1.4, 2.4, 2.2, -W / 2 + .9, 1.2, 6, 'لوحة كهرباء مفتوحة ومكشوفة', 'panel');
+    hit(1.4, 2.4, 2.2, -W / 2 + .9, 1.2, 6, 'لوحة كهرباء مفتوحة ومكشوفة', 'panel'); boxes.push([-W / 2, 5.2, -W / 2 + .7, 6.8]);
   }
 
   let t = 0;
   return {
-    scene, hazards,
+    scene, hazards, boxes, circles, bounds: { x0: -W / 2 + .5, x1: W / 2 - .5, z0: -D / 2 + .5, z1: D / 2 - .5 }, anim,
     view: { pos: new THREE.Vector3(0, 8.5, 17), target: new THREE.Vector3(0, .8, 0) },
     update(dt) {
       t += dt;

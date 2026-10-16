@@ -1,17 +1,15 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
+import { NET, polyAt } from './city.js';
 
-/* Street life around the player: traffic in the lanes and students on the sidewalks.
-   Only a window around the focus point (the player or the bus) is simulated; anything that
-   leaves the window is recycled to its far edge, so the 1.3 km road always feels busy. */
+/* Traffic through the district. Every car follows the lanes and, at a junction, picks a way on
+   (mostly straight on). It keeps its distance to the car ahead, waits at red lights, takes turns at
+   give-way junctions (one car at a time inside), and stops well short of anyone on the road: the
+   student on foot, or the coach. */
 const CARS = [['sedan', 5], ['suv', 4], ['suv-luxury', 3], ['sedan-sports', 2], ['hatchback-sports', 2], ['taxi', 2], ['van', 2], ['delivery', 2], ['truck', 2], ['police', .6], ['ambulance', .4], ['garbage-truck', .5]];
-// eastbound inner lane, both westbound lanes; the eastbound curb lane belongs to the bus
-const LANES = [{ z: 2.75, dir: 1 }, { z: -2.75, dir: -1 }, { z: -5.9, dir: -1 }];
-const WIN = 210, CAR_LEN = 4.4, ROAD_END = 640;
-let protos = null, people = null;
+const CAR_LEN = 4.4, COUNT = 26;
+let protos = null;
 const loader = new GLTFLoader();
-
 async function loadCars() {
   if (protos) return protos; protos = {};
   await Promise.all(CARS.map(async ([n]) => { const g = await loader.loadAsync(`assets/cars/${n}.glb`); protos[n] = g.scene; }));
@@ -20,93 +18,76 @@ async function loadCars() {
   for (const s of Object.values(protos)) { s.userData.k = k; s.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); }
   return protos;
 }
-async function loadPeople() {
-  if (people) return people;
-  const [m, w] = await Promise.all(['man', 'woman'].map(n => loader.loadAsync(`assets/chars/npc_${n}.glb`)));
-  return (people = [m, w].map(g => {
-    const b = new THREE.Box3().setFromObject(g.scene); g.scene.traverse(o => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
-    return { scene: g.scene, clip: g.animations.find(a => /walk/i.test(a.name)) || g.animations[0], h: b.max.y - b.min.y, y0: -b.min.y };
-  }));
-}
 function pick(list) { const tot = list.reduce((a, [, w]) => a + w, 0); let r = Math.random() * tot; for (const [n, w] of list) if ((r -= w) <= 0) return n; return list[0][0]; }
+function choose(L) {
+  const opts = L.next.filter(c => c.turn !== 'U'); if (!opts.length) return L.next[0];
+  return opts[pick(opts.map((c, i) => [i, c.turn === 'S' ? 3 : c.turn === 'R' ? 1.6 : 1.2]))];
+}
+const P = new THREE.Vector2(), D = new THREE.Vector2();
 
-/* people: false leaves the sidewalks empty (until NPC models that differ from the playable students exist) */
-export async function makeLife(scene, { sea = false, people: withPeople = true } = {}) {
-  const [cars, folk] = await Promise.all([loadCars(), withPeople ? loadPeople() : null]);
+export async function makeLife(scene, { signals }) {
+  const cars = await loadCars();
   const group = new THREE.Group(); group.name = 'life'; scene.add(group);
-  const traffic = [], walkers = [];
-  // ---- traffic
-  for (const lane of LANES) for (let i = 0; i < 7; i++) {
+  const traffic = [], lanes = NET.lanes, total = lanes.reduce((a, L) => a + L.len, 0);
+  for (let i = 0; i < COUNT; i++) {
     const name = pick(CARS), src = cars[name], o = src.clone(true), k = src.userData.k;
-    o.scale.setScalar(k); o.rotation.y = lane.dir * Math.PI / 2; group.add(o);
+    o.scale.setScalar(k); group.add(o);
+    const size = new THREE.Box3().setFromObject(o).getSize(new THREE.Vector3());
     const wheels = []; o.traverse(n => { if (/^wheel-(front|back)-(left|right)/.test(n.name)) wheels.push(n); }); // not the SUV's spare on the tailgate
-    const len = new THREE.Box3().setFromObject(o).getSize(new THREE.Vector3()).x;
-    traffic.push({ o, lane, x: 0, v: 0, vmax: 9 + Math.random() * 6, wheels, len, r: .3 * k, slot: i });
+    // a free spot on a lane, chosen by length
+    let L, s, tries = 0;
+    do { let r = Math.random() * total; L = lanes.find(l => (r -= l.len) <= 0) || lanes[0]; s = 4 + Math.random() * Math.max(1, L.len - 8); tries++; }
+    while (tries < 40 && traffic.some(c => c.seg === L && Math.abs(c.s - s) < 14));
+    const c = { o, name, len: size.z, wheels, r: .3 * k, vmax: 9 + Math.random() * 4, seg: L, s, v: 0, next: choose(L), wait: 0, x: 0, z: 0, yaw: 0 };
+    polyAt(L, s, P, D); c.x = P.x; c.z = P.y; c.yaw = Math.atan2(D.x, D.y); traffic.push(c);
   }
-  // ---- people on the sidewalks (and on the corniche promenade where there is sea)
-  const paths = [8.9, 12.3, -9.2, -10.4, ...(sea ? [14.6, 14.6] : [])];
-  for (let i = 0; i < (folk ? 14 : 0); i++) {
-    const P = folk[i % 2], o = cloneSkinned(P.scene), s = 1.5 / P.h * (1 + Math.random() * .18);
-    const root = new THREE.Group(); o.scale.setScalar(s); o.position.y = P.y0 * s; root.add(o); group.add(root);
-    const mixer = new THREE.AnimationMixer(o), act = mixer.clipAction(P.clip); act.play(); act.time = Math.random() * P.clip.duration;
-    walkers.push({ root, o, mixer, act, z: paths[i % paths.length] + (Math.random() - .5) * .5, x: 0, v: 0, vmax: .95 + Math.random() * .45, tx: 0, wait: Math.random() * 3, w: 0, yaw: 0 });
-  }
-  let placed = false;
-  function place(focus) {
-    traffic.forEach(c => { c.x = focus + (c.slot / 7 - .5) * 2 * WIN + Math.random() * 18; c.v = c.vmax * .8; });
-    walkers.forEach(p => { p.x = focus + (Math.random() - .5) * 160; p.tx = p.x + (Math.random() - .5) * 60; });
-    placed = true;
-  }
-  const tmp = new THREE.Vector3();
+  const ahead = (path, d) => { for (const p of path) if (d >= p.off && d <= p.off + p.seg.len) return polyAt(p.seg, d - p.off, P); return null; };
   return {
-    group, traffic, walkers, place,
-    /* focus: x the window follows; obstacles: [{x, z, halfLen, halfWid, person}] cars must stop for; cam: camera position;
-       signals: [{x, phase: 'go' | 'amber' | 'stop'}] traffic lights at the crossings */
-    update(dt, focus, obstacles, cam, signals = []) {
-      if (!placed) place(focus);
-      // traffic: keep a safe gap to whatever is ahead in the lane
+    group, traffic,
+    /* obstacles: [{ x, z, person } | { x, z, yaw, halfLen, halfWid }] — the student on foot and the coach */
+    update(dt, obstacles = [], cam) {
       for (const c of traffic) {
-        const dir = c.lane.dir; let gap = 1e9;
-        for (const d of traffic) if (d !== c && d.lane === c.lane) { const g = (d.x - c.x) * dir; if (g > 0 && g < gap) gap = g - (c.len + d.len) / 2; }
-        for (const ob of obstacles) {
-          // anyone on this half of the road (or on the median) stops the whole carriageway, with room to spare
-          const inLane = ob.person ? Math.abs(ob.z) < 7.8 && (Math.sign(ob.z) === Math.sign(c.lane.z) || Math.abs(ob.z) < 1.2) : Math.abs(ob.z - c.lane.z) < ob.halfWid + .95;
-          if (!inLane) continue;
-          const g = (ob.x - c.x) * dir; if (g > -ob.halfLen && g < gap + ob.halfLen) gap = Math.min(gap, g - ob.halfLen - c.len / 2 - (ob.person ? 3 : 0));
+        const seg = c.seg, path = [{ seg, off: -c.s }];
+        if (seg.kind === 'lane') { path.push({ seg: c.next, off: seg.len - c.s }); path.push({ seg: c.next.to, off: seg.len - c.s + c.next.len }); }
+        else path.push({ seg: seg.to, off: seg.len - c.s });
+        let gap = 70;
+        // the car ahead, on this stretch or the next ones
+        for (const o of traffic) if (o !== c) for (const p of path) if (o.seg === p.seg) { const dd = p.off + o.s; if (dd > 0) gap = Math.min(gap, dd - (c.len + o.len) / 2 - 2); }
+        // the junction at the end of this lane: lights, or a turn at a give-way junction
+        if (seg.kind === 'lane') {
+          const toEnd = seg.len - c.s, n = seg.to;
+          let stop = false;
+          if (n.signal) { const st = signals?.state(seg) || 'go'; stop = st === 'stop' || (st === 'amber' && toEnd > c.v * c.v / 10 + 1.5); }
+          else if (n.lock && n.lock !== c && c.wait < 7) stop = true;
+          else if (toEnd < 4 + c.v * 1.2) n.lock = c;
+          if (stop) gap = Math.min(gap, toEnd - c.len / 2 - .6);
         }
-        for (const sg of signals) {
-          // red (or amber with room to stop): hold at the stop line before the crossing
-          if (sg.phase === 'go') continue; const stop = (sg.x - dir * 4.6 - c.x) * dir - c.len / 2;
-          if (stop > -.5 && stop < 70 && (sg.phase === 'stop' || stop > c.v * c.v / 12)) gap = Math.min(gap, stop + 4);
+        // anyone in the way: sample the road ahead
+        const look = Math.min(gap + c.len, 40);
+        for (let d = c.len / 2; d < look && obstacles.length; d += 1.5) {
+          const p = ahead(path, d); if (!p) break; let hit = false;
+          for (const ob of obstacles) {
+            if (ob.person) { if (Math.hypot(p.x - ob.x, p.y - ob.z) < 1.9) { gap = Math.min(gap, d - c.len / 2 - 3.5); hit = true; } }
+            else { const dx = p.x - ob.x, dz = p.y - ob.z, ca = Math.cos(ob.yaw), sa = Math.sin(ob.yaw), al = dx * ca - dz * sa, la = dx * sa + dz * ca; if (Math.abs(al) < ob.halfLen + .6 && Math.abs(la) < ob.halfWid + .9) { gap = Math.min(gap, d - c.len / 2 - 1.5); hit = true; } }
+          }
+          if (hit) break;
         }
-        const want = Math.max(0, Math.min(c.vmax, (gap - 4) * .8));
-        c.v += Math.max(-12 * dt, Math.min(3 * dt, want - c.v));
-        c.x += dir * c.v * dt;
-        // recycle cars that leave the window, or the road
-        const off = c.x - focus;
-        if (Math.abs(off) > WIN + 10 || Math.abs(c.x) > ROAD_END) {
-          let nx = focus - Math.sign(off) * WIN; nx = THREE.MathUtils.clamp(nx, -ROAD_END + 5, ROAD_END - 5);
-          const busy = traffic.some(d => d !== c && d.lane === c.lane && Math.abs(d.x - nx) < 14);
-          if (!busy) { c.x = nx; c.v = c.vmax * .7; }
+        // speed: what the gap allows, slower into a turn
+        let want = Math.min(c.vmax, seg.vmax, Math.sqrt(Math.max(0, 2 * 6 * (gap - 1))));
+        if (seg.kind === 'lane') want = Math.min(want, Math.sqrt(c.next.vmax ** 2 + 2 * 3 * Math.max(0, seg.len - c.s)));
+        const dv = want - c.v; c.v += dv > 0 ? Math.min(dv, 2.6 * dt) : Math.max(dv, (gap < 3 ? -16 : -8) * dt); c.v = Math.max(0, c.v);
+        c.wait = c.v < .2 ? c.wait + dt : 0;
+        c.s += c.v * dt;
+        while (c.s > c.seg.len) {
+          c.s -= c.seg.len;
+          if (c.seg.kind === 'lane') c.seg = c.next;
+          else { if (c.seg.node.lock === c) c.seg.node.lock = null; c.seg = c.seg.to; c.next = choose(c.seg); }
         }
-        c.o.position.set(c.x, .02, c.lane.z);
-        for (const w of c.wheels) w.rotation.x += c.v * dt / c.r;
-      }
-      // people: stroll to a point, pause a little, pick another; keep clear of the player
-      for (const p of walkers) {
-        if (p.wait > 0) { p.wait -= dt; p.v = Math.max(0, p.v - dt * 3); }
-        else {
-          const d = p.tx - p.x;
-          if (Math.abs(d) < .3) { p.wait = 1.5 + Math.random() * 5; p.tx = p.x + (Math.random() < .5 ? -1 : 1) * (10 + Math.random() * 50); }
-          else { const blocked = obstacles.some(ob => ob.person && Math.abs(ob.z - p.z) < 1 && (ob.x - p.x) * Math.sign(d) > 0 && Math.abs(ob.x - p.x) < 1.6); p.v += ((blocked ? 0 : p.vmax) - p.v) * Math.min(1, dt * 4); p.yaw = d > 0 ? Math.PI / 2 : -Math.PI / 2; }
-          p.x += Math.sign(d) * p.v * dt;
-        }
-        if (Math.abs(p.x - focus) > 120) { p.x = focus + (p.x < focus ? 1 : -1) * (90 + Math.random() * 20); p.tx = p.x + (focus - p.x) * .3; }
-        p.root.position.set(p.x, .2, p.z);
-        p.o.rotation.y += Math.atan2(Math.sin(p.yaw - p.o.rotation.y), Math.cos(p.yaw - p.o.rotation.y)) * Math.min(1, dt * 6);
-        // walk blends out to the rest pose when standing; far-away people are not animated
-        p.w += ((p.v > .1 ? 1 : 0) - p.w) * Math.min(1, dt * 6); p.act.setEffectiveWeight(p.w); p.act.timeScale = Math.max(.6, p.v / .7);
-        if (!cam || cam.distanceTo(tmp.set(p.x, 1, p.z)) < 80) p.mixer.update(dt);
+        if (c.wait > 9) for (const n of NET.nodes) if (n.lock === c) n.lock = null;
+        polyAt(c.seg, c.s, P, D);
+        c.x = P.x; c.z = P.y; const yaw = Math.atan2(D.x, D.y), dy = Math.atan2(Math.sin(yaw - c.yaw), Math.cos(yaw - c.yaw)); c.yaw += dy * Math.min(1, dt * 8);
+        c.o.position.set(c.x, .02, c.z); c.o.rotation.y = c.yaw;
+        if (!cam || cam.distanceToSquared(c.o.position) < 9000) for (const w of c.wheels) w.rotation.x += c.v * dt / c.r;
       }
     }
   };

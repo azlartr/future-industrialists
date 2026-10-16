@@ -33,7 +33,7 @@ function css() {
 #mg .opt.bad{background:#e0464f;color:#fff}
 #mg .shake{animation:shake .4s}
 @keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-#mg .panel{padding:16px;width:min(760px,100%)}
+#mg .panel{padding:16px;width:min(760px,100%);max-height:100%;overflow:auto;box-sizing:border-box}
 #mg .grid{display:grid;gap:10px;width:100%}
 #mg .card3{aspect-ratio:3/4;perspective:700px;cursor:pointer}
 #mg .card3 .in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
@@ -84,60 +84,169 @@ function canvasIn(stage) {
   o.pt = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   return o;
 }
-function rafLoop(fn) { let on = true, last = null; const f = now => { if (!on) return; if (last === null) last = now; const dt = Math.max(0, Math.min(.05, (now - last) / 1000)); last = now; fn(dt, now / 1000); requestAnimationFrame(f); }; requestAnimationFrame(f); return () => { on = false; }; }
+function rafLoop(fn) { let on = true, last = null; const f = now => { if (!on) return; if (last === null) last = now; const dt = Math.max(0, Math.min(.05, (now - last) / 1000)) * (window.__TS || 1); last = now; fn(dt, now / 1000); requestAnimationFrame(f); }; requestAnimationFrame(f); return () => { on = false; }; }
 function rr(cx, x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
 function txt(cx, s, x, y, size, color = '#fff', weight = 700, align = 'center') { cx.font = `${weight} ${size}px ${FONT}`; cx.fillStyle = color; cx.textAlign = align; cx.direction = /[\u0600-\u06FF]/.test(s) ? 'rtl' : 'ltr'; cx.textBaseline = 'middle'; cx.fillText(s, x, y); }
 
-/* ================= 1. photo: shoot the golden bottle in the frame (Coca-Cola, Ambassador) ================= */
+/* ================= 1. the bottling line and the ambassador's ad (Coca-Cola, Ambassador) =================
+   Part one: bottles run under the capping head; press as each one passes under it to seal it. A
+   cracked bottle must be left for the reject arm; a golden one scores double. Part two: the ad studio:
+   pick the scene and the line that fit the client's brief, and the poster is shot with the student
+   as the campaign's ambassador. The poster can be saved. */
+const IMG = {}; const img = src => IMG[src] ||= new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; });
+function drawBottle(cx, x, base, s, { cap = false, gold = false, crack = false, t = 0, glint = 0 } = {}) {
+  const h = 150 * s, w = 46 * s;
+  cx.save(); cx.translate(x, base);
+  if (gold) { const gg = cx.createRadialGradient(0, -h * .5, 4, 0, -h * .5, h * .9); gg.addColorStop(0, 'rgba(255,214,90,.55)'); gg.addColorStop(1, 'rgba(255,214,90,0)'); cx.fillStyle = gg; cx.beginPath(); cx.arc(0, -h * .5, h * .9, 0, 7); cx.fill(); }
+  const body = () => { cx.beginPath(); cx.moveTo(-w * .42, 0); cx.quadraticCurveTo(-w * .5, -h * .04, -w * .5, -h * .12); cx.lineTo(-w * .46, -h * .3); cx.quadraticCurveTo(-w * .38, -h * .38, -w * .48, -h * .48); cx.lineTo(-w * .48, -h * .58); cx.quadraticCurveTo(-w * .48, -h * .74, -w * .2, -h * .86); cx.lineTo(-w * .17, -h * .97); cx.lineTo(w * .17, -h * .97); cx.lineTo(w * .2, -h * .86); cx.quadraticCurveTo(w * .48, -h * .74, w * .48, -h * .58); cx.lineTo(w * .48, -h * .48); cx.quadraticCurveTo(w * .38, -h * .38, w * .46, -h * .3); cx.lineTo(w * .5, -h * .12); cx.quadraticCurveTo(w * .5, -h * .04, w * .42, 0); cx.closePath(); };
+  // glass and the dark drink inside
+  body(); const lg = cx.createLinearGradient(-w / 2, 0, w / 2, 0); lg.addColorStop(0, '#2a0b05'); lg.addColorStop(.35, '#5a1a0c'); lg.addColorStop(.65, '#3a0f07'); lg.addColorStop(1, '#1c0703'); cx.fillStyle = lg; cx.fill();
+  cx.save(); body(); cx.clip(); cx.fillStyle = 'rgba(255,255,255,.08)'; cx.fillRect(-w / 2, -h, w, h * .16);
+  for (let k = 0; k < 6; k++) { const by = -((t * 60 + k * 23 * s) % (h * .7)) - h * .05, bx = Math.sin(k * 2.3 + t) * w * .25; cx.fillStyle = 'rgba(255,230,200,.35)'; cx.beginPath(); cx.arc(bx, by, 1.6 * s, 0, 7); cx.fill(); }
+  cx.restore();
+  // label: red band with a white wave
+  cx.fillStyle = gold ? '#d9a521' : '#d71a28'; cx.fillRect(-w * .49, -h * .5, w * .98, h * .17);
+  cx.strokeStyle = '#ffffff'; cx.lineWidth = 2.2 * s; cx.beginPath(); cx.moveTo(-w * .49, -h * .4); cx.bezierCurveTo(-w * .2, -h * .48, w * .1, -h * .32, w * .49, -h * .42); cx.stroke();
+  // shine
+  cx.fillStyle = 'rgba(255,255,255,.28)'; cx.beginPath(); cx.ellipse(-w * .28, -h * .62, w * .06, h * .2, 0, 0, 7); cx.fill();
+  cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 1.2; body(); cx.stroke();
+  if (crack) { cx.strokeStyle = '#f4f7ff'; cx.lineWidth = 2 * s; cx.beginPath(); cx.moveTo(-w * .3, -h * .75); cx.lineTo(-w * .05, -h * .64); cx.lineTo(-w * .2, -h * .56); cx.lineTo(w * .15, -h * .46); cx.moveTo(-w * .05, -h * .64); cx.lineTo(w * .2, -h * .7); cx.stroke(); }
+  if (cap) { cx.fillStyle = gold ? '#f2c230' : '#c4151f'; cx.beginPath(); cx.roundRect(-w * .21, -h * 1.02, w * .42, h * .07, 2); cx.fill(); cx.fillStyle = 'rgba(255,255,255,.4)'; cx.fillRect(-w * .18, -h * 1.01, w * .36, h * .015); }
+  if (glint > 0) { cx.globalAlpha = glint; cx.fillStyle = '#fff'; for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + t * 3; cx.beginPath(); cx.moveTo(0, -h * 1.05); cx.lineTo(Math.cos(a) * 16 * s, -h * 1.05 + Math.sin(a) * 16 * s); cx.lineTo(Math.cos(a + .2) * 4 * s, -h * 1.05 + Math.sin(a + .2) * 4 * s); cx.fill(); } cx.globalAlpha = 1; }
+  cx.restore();
+}
+/* the three scenes the ad can be shot in */
+function drawScene(cx, w, h, kind, t = 0) {
+  if (kind === 'beach') {
+    let g = cx.createLinearGradient(0, 0, 0, h * .62); g.addColorStop(0, '#2a9fe0'); g.addColorStop(1, '#bfe9ff'); cx.fillStyle = g; cx.fillRect(0, 0, w, h);
+    const sg = cx.createRadialGradient(w * .78, h * .2, 4, w * .78, h * .2, h * .3); sg.addColorStop(0, 'rgba(255,250,220,1)'); sg.addColorStop(.25, 'rgba(255,236,160,.9)'); sg.addColorStop(1, 'rgba(255,236,160,0)'); cx.fillStyle = sg; cx.fillRect(0, 0, w, h);
+    g = cx.createLinearGradient(0, h * .55, 0, h * .72); g.addColorStop(0, '#1a8ccf'); g.addColorStop(1, '#5cc7e8'); cx.fillStyle = g; cx.fillRect(0, h * .55, w, h * .17);
+    cx.fillStyle = 'rgba(255,255,255,.7)'; for (let i = 0; i < 9; i++) cx.fillRect((i * 97 + t * 20) % w, h * (.58 + (i % 3) * .04), 40, 2);
+    g = cx.createLinearGradient(0, h * .7, 0, h); g.addColorStop(0, '#f3d9a4'); g.addColorStop(1, '#e2b877'); cx.fillStyle = g; cx.beginPath(); cx.moveTo(0, h * .72); cx.quadraticCurveTo(w * .5, h * .66, w, h * .73); cx.lineTo(w, h); cx.lineTo(0, h); cx.fill();
+  } else if (kind === 'night') {
+    const g = cx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#0b1030'); g.addColorStop(1, '#2a2350'); cx.fillStyle = g; cx.fillRect(0, 0, w, h);
+    cx.fillStyle = '#fff'; for (let i = 0; i < 70; i++) { cx.globalAlpha = .3 + (i * 37 % 10) / 14; cx.fillRect((i * 131) % w, (i * 71) % (h * .6), 2, 2); } cx.globalAlpha = 1;
+    cx.fillStyle = '#f4efe0'; cx.beginPath(); cx.arc(w * .2, h * .2, h * .07, 0, 7); cx.fill(); cx.fillStyle = '#0b1030'; cx.beginPath(); cx.arc(w * .2 + h * .03, h * .19, h * .065, 0, 7); cx.fill();
+    cx.fillStyle = '#3b2a4a'; cx.beginPath(); cx.moveTo(0, h * .78); cx.quadraticCurveTo(w * .3, h * .62, w * .6, h * .76); cx.quadraticCurveTo(w * .8, h * .68, w, h * .74); cx.lineTo(w, h); cx.lineTo(0, h); cx.fill();
+  } else {
+    const g = cx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#e9edf3'); g.addColorStop(1, '#c9d1dc'); cx.fillStyle = g; cx.fillRect(0, 0, w, h);
+    cx.fillStyle = '#b8c2cf'; for (let i = 0; i < 5; i++) cx.fillRect(w * (.08 + i * .19), h * .12, w * .14, h * .38);
+    cx.fillStyle = '#8d6e52'; cx.fillRect(0, h * .74, w, h * .26); cx.fillStyle = '#7a5c43'; cx.fillRect(0, h * .74, w, 6);
+  }
+}
 async function photo(F, A) {
-  const fr = frame(F, { title: F.title, stat: '📸 3' }), { stage } = fr;
-  stage.append(el('div', 'mg-brief glass', 'العبوات تتحرك على الخط. انتظر العبوة <b>الذهبية</b> واضغط «التقط» عندما تكون داخل المربع الأوسط. لديك 3 لقطات.'));
-  const C = canvasIn(stage), btn = el('button', 'btn mg-big', '📸 التقط الصورة'); stage.append(btn);
-  let shots = 3, best = 0, t = 0, flash = 0; const items = []; let spawn = 0, n = 0; const results = [];
-  const loopOff = rafLoop(dt => {
-    const { cx, w, h } = C; if (!w) return; t += dt; flash = Math.max(0, flash - dt * 3);
-    spawn -= dt; if (spawn <= 0) { n++; items.push({ x: -60, gold: n % 4 === 0 }); spawn = 1.05; }
-    const speed = Math.min(w * .26, 260); for (const it of items) it.x += speed * dt; while (items.length && items[0].x > w + 80) items.shift();
-    // studio backdrop
-    const g = cx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#7a0f16'); g.addColorStop(1, '#2a0508'); cx.fillStyle = g; cx.fillRect(0, 0, w, h);
-    for (let i = 0; i < 6; i++) { cx.fillStyle = `rgba(255,255,255,${.03 + .02 * Math.sin(t + i)})`; cx.beginPath(); cx.arc(w * (i / 5), h * .15, 120, 0, 7); cx.fill(); }
-    const by = h * .7; cx.fillStyle = '#1b1d22'; cx.fillRect(0, by, w, 22); cx.fillStyle = '#2c2f36'; for (let x = (-t * speed) % 30; x < w; x += 30) cx.fillRect(x, by + 4, 14, 4);
-    for (const it of items) {
-      const bx = it.x, s = Math.min(1.45, h / 380), bh = 150 * s, bw = 46 * s;
-      cx.save(); cx.translate(bx, by);
-      if (it.gold) { const gg = cx.createRadialGradient(0, -bh * .5, 5, 0, -bh * .5, bh); gg.addColorStop(0, 'rgba(255,215,90,.45)'); gg.addColorStop(1, 'rgba(255,215,90,0)'); cx.fillStyle = gg; cx.beginPath(); cx.arc(0, -bh * .5, bh, 0, 7); cx.fill(); }
-      cx.fillStyle = '#2a0d06'; cx.beginPath(); cx.moveTo(-bw / 2, 0); cx.lineTo(-bw / 2, -bh * .55); cx.quadraticCurveTo(-bw / 2, -bh * .75, -bw * .2, -bh * .9); cx.lineTo(-bw * .18, -bh); cx.lineTo(bw * .18, -bh); cx.lineTo(bw * .2, -bh * .9); cx.quadraticCurveTo(bw / 2, -bh * .75, bw / 2, -bh * .55); cx.lineTo(bw / 2, 0); cx.closePath(); cx.fill();
-      cx.fillStyle = it.gold ? '#e8b931' : '#d71a28'; cx.fillRect(-bw / 2, -bh * .48, bw, bh * .2); cx.fillStyle = it.gold ? '#e8b931' : '#d71a28'; cx.fillRect(-bw * .2, -bh * 1.03, bw * .4, bh * .06);
-      cx.fillStyle = 'rgba(255,255,255,.18)'; cx.fillRect(-bw * .35, -bh * .85, bw * .1, bh * .8);
-      cx.restore();
+  const fr = frame(F, { title: 'خط التعبئة وإعلان السفير', stat: '⏱ 35' }), { stage } = fr;
+  stage.append(el('div', 'mg-brief glass', 'اضغط <b>«أغلق»</b> أو المسافة عندما تكون العبوة تحت رأس الإغلاق تماماً. اترك العبوة <b>المشروخة</b> لذراع الرفض، والعبوة الذهبية نقاطها مضاعفة!'));
+  const C = canvasIn(stage), btn = el('button', 'btn mg-big', '⬇ أغلق العبوة'); stage.append(btn);
+  const logo = F.logo ? await img(F.logo) : null;
+  const DUR = 35; let t = 0, spawn = .4, n = 0, score = 0, combo = 0, bestCombo = 0, capped = 0, missed = 0, wrongs = 0, rejected = 0, piston = 0, kick = 0, shake = 0, over = false;
+  let bottles = [], fx = [], sparks = [];
+  let resolve; const done = new Promise(r => resolve = r);
+  const layout = () => { const { w, h } = C, s = Math.min(1.25, h / 420, w / 560), base = h * .74, capX = w * .52; return { w, h, s, base, capX, win: 46 * s * .42, rejX: capX + Math.min(w * .22, 220) }; };
+  const press = () => {
+    if (over || piston > 0) return; piston = .26; A.sfx('ui_click', .5);
+    const L = layout(), cand = bottles.filter(b => !b.capped && !b.gone).sort((a, b) => Math.abs(a.x - L.capX) - Math.abs(b.x - L.capX))[0], d = cand ? Math.abs(cand.x - L.capX) : 1e9;
+    if (!cand || d > L.win * 2.2) { combo = 0; fx.push({ x: L.capX, y: L.base - 190 * L.s, s: 'فارغ!', c: '#ffd0d0', life: 1 }); return; }
+    if (cand.crack) { wrongs++; combo = 0; score = Math.max(0, score - 50); shake = .3; cand.gone = true; fx.push({ x: cand.x, y: L.base - 180 * L.s, s: 'مشروخة! −50', c: '#ff8a8a', life: 1.2 }); A.sfx('wrong', .6); for (let k = 0; k < 18; k++) sparks.push({ x: cand.x, y: L.base - 90 * L.s, vx: rand(-160, 160), vy: rand(-260, -60), life: .8, c: '#e9f2ff' }); return; }
+    const perfect = d < L.win * .45, pts = (perfect ? 100 : 50) * (cand.gold ? 2 : 1) * (1 + Math.min(4, Math.floor(combo / 4)) * .25);
+    cand.capped = true; cand.glint = 1; capped++; combo++; bestCombo = Math.max(bestCombo, combo); score += Math.round(pts);
+    fx.push({ x: cand.x, y: L.base - 185 * L.s, s: `${perfect ? 'مثالي' : 'جيد'} +${Math.round(pts)}`, c: perfect ? '#ffe28a' : '#ffffff', life: 1 });
+    A.sfx(perfect ? 'task_done' : 'points', .45); if (cand.gold) A.sfx('level_up', .35);
+  };
+  btn.addEventListener('pointerdown', e => { e.preventDefault(); press(); });
+  const kd = e => { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); if (!e.repeat) press(); } }; addEventListener('keydown', kd);
+  C.cv.addEventListener('pointerdown', () => press());
+  const stop = rafLoop(dt => {
+    const { cx } = C, L = layout(), { w, h, s, base, capX } = L; if (!w) return;
+    t += dt; const left = Math.max(0, DUR - t); fr.setStat(`⏱ ${Math.ceil(left)}`);
+    const speed = (130 + t * 5.5) * s;
+    spawn -= dt; if (spawn <= 0 && t < DUR - 1.5) { n++; const crack = n > 3 && Math.random() < .16, gold = !crack && n % 9 === 0; bottles.push({ x: -40, crack, gold, capped: false, glint: 0 }); spawn = Math.max(.42, 1.05 - t * .016) * (.85 + Math.random() * .3); }
+    piston = Math.max(0, piston - dt); kick = Math.max(0, kick - dt); shake = Math.max(0, shake - dt);
+    for (const b of bottles) {
+      b.x += speed * dt; b.glint = Math.max(0, b.glint - dt * 2);
+      if (!b.capped && !b.crack && !b.counted && b.x > capX + L.win * 2.2) { b.counted = true; missed++; combo = 0; fx.push({ x: b.x, y: base - 180 * s, s: 'فاتتك', c: '#ffb0b0', life: .9 }); A.sfx('wrong', .25); }
+      if (b.crack && !b.gone && b.x > L.rejX) { b.gone = true; rejected++; kick = .3; fx.push({ x: L.rejX, y: base - 170 * s, s: 'رُفضت ✓', c: '#b8ffd0', life: 1 }); b.fly = { vx: 60, vy: -240 }; }
     }
-    // viewfinder
-    const fw = Math.min(w * .2, 170), fx = w / 2 - fw / 2, fy = h * .22, fh = h * .56;
-    cx.strokeStyle = 'rgba(255,255,255,.25)'; cx.lineWidth = 1; for (const k of [1, 2]) { cx.beginPath(); cx.moveTo(w * k / 3, 0); cx.lineTo(w * k / 3, h); cx.stroke(); cx.beginPath(); cx.moveTo(0, h * k / 3); cx.lineTo(w, h * k / 3); cx.stroke(); }
-    cx.strokeStyle = '#ffd36a'; cx.lineWidth = 3; const L = 22;
-    for (const [a, b, dx, dy] of [[fx, fy, 1, 1], [fx + fw, fy, -1, 1], [fx, fy + fh, 1, -1], [fx + fw, fy + fh, -1, -1]]) { cx.beginPath(); cx.moveTo(a, b + dy * L); cx.lineTo(a, b); cx.lineTo(a + dx * L, b); cx.stroke(); }
-    cx.fillStyle = '#ff3b3b'; cx.beginPath(); cx.arc(28, 28, 7 + Math.sin(t * 6) * 1.5, 0, 7); cx.fill(); txt(cx, 'REC', 64, 29, 14, '#fff', 700);
-    if (flash > 0) { cx.fillStyle = `rgba(255,255,255,${flash})`; cx.fillRect(0, 0, w, h); }
+    // the hall: brand red, soft lights, the logo watermark
+    cx.save(); if (shake > 0) cx.translate(Math.sin(t * 90) * 5 * shake, 0);
+    const g = cx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#a3121d'); g.addColorStop(.6, '#5e0911'); g.addColorStop(1, '#2a0408'); cx.fillStyle = g; cx.fillRect(-10, 0, w + 20, h);
+    for (let i = 0; i < 5; i++) { const lx = w * (.1 + i * .2), rg = cx.createRadialGradient(lx, 0, 4, lx, 0, h * .7); rg.addColorStop(0, 'rgba(255,240,220,.16)'); rg.addColorStop(1, 'rgba(255,240,220,0)'); cx.fillStyle = rg; cx.fillRect(0, 0, w, h); }
+    if (logo) { const lw = Math.min(w * .5, 420), lh = lw * logo.height / logo.width; cx.globalAlpha = .1; cx.drawImage(logo, w / 2 - lw / 2, h * .08, lw, lh); cx.globalAlpha = 1; }
+    // conveyor: belt, rails, rollers
+    cx.fillStyle = '#1d1f25'; cx.fillRect(-10, base, w + 20, 26 * s); cx.fillStyle = '#2c2f37'; for (let x = (t * speed) % (34 * s) - 34 * s; x < w; x += 34 * s) cx.fillRect(x, base + 3 * s, 16 * s, 5 * s);
+    cx.fillStyle = '#c9ced6'; cx.fillRect(-10, base - 3 * s, w + 20, 4 * s); cx.fillStyle = '#8d939d'; cx.fillRect(-10, base + 26 * s, w + 20, 6 * s);
+    for (let x = 0; x < w + 40; x += 70 * s) { cx.fillStyle = '#5a5f6a'; cx.fillRect(x, base + 32 * s, 8 * s, h - base); }
+    // bottles
+    for (const b of bottles) {
+      if (b.fly) { b.fly.vy += 900 * dt; b.x += b.fly.vx * dt; b.dy = (b.dy || 0) + b.fly.vy * dt; b.rot = (b.rot || 0) + dt * 6; }
+      if (b.gone && !b.fly) continue;
+      cx.save(); cx.translate(b.x, base + (b.dy || 0)); cx.rotate(b.rot || 0); drawBottle(cx, 0, 0, s, { cap: b.capped, gold: b.gold, crack: b.crack, t: t + b.x * .01, glint: b.glint }); cx.restore();
+    }
+    bottles = bottles.filter(b => b.x < w + 60 && (b.dy || 0) < h);
+    // the capping head: column, cap magazine, piston
+    const top = base - 230 * s, pd = piston > 0 ? Math.sin((1 - piston / .26) * Math.PI) * 62 * s : 0;
+    cx.fillStyle = '#9aa3ad'; cx.fillRect(capX - 70 * s, 0, 140 * s, top - 10 * s); cx.fillStyle = '#7d858f'; cx.fillRect(capX - 70 * s, top - 22 * s, 140 * s, 12 * s);
+    cx.fillStyle = '#e8ebef'; rr(cx, capX - 46 * s, 14 * s, 92 * s, top - 60 * s, 10 * s); cx.fill();
+    for (let k = 0; k < 6; k++) { cx.fillStyle = '#c4151f'; rr(cx, capX - 18 * s, 24 * s + k * 14 * s, 36 * s, 9 * s, 3); cx.fill(); }
+    cx.fillStyle = '#c9ced6'; cx.fillRect(capX - 9 * s, top - 10 * s, 18 * s, 30 * s + pd); cx.fillStyle = '#2b3038'; rr(cx, capX - 24 * s, top + 16 * s + pd, 48 * s, 16 * s, 5); cx.fill();
+    cx.fillStyle = piston > 0 ? '#ffd36a' : '#3ee07a'; cx.beginPath(); cx.arc(capX + 52 * s, top - 40 * s, 6 * s, 0, 7); cx.fill();
+    // the window under the head
+    cx.strokeStyle = 'rgba(255,226,138,.65)'; cx.setLineDash([6, 6]); cx.lineWidth = 2; cx.beginPath(); cx.moveTo(capX - L.win, top + 40 * s); cx.lineTo(capX - L.win, base - 2); cx.moveTo(capX + L.win, top + 40 * s); cx.lineTo(capX + L.win, base - 2); cx.stroke(); cx.setLineDash([]);
+    // the reject arm
+    const kx = L.rejX - 40 * s + (kick > 0 ? Math.sin((1 - kick / .3) * Math.PI) * 40 * s : 0);
+    cx.fillStyle = '#5a5f6a'; cx.fillRect(L.rejX - 90 * s, base - 70 * s, 50 * s, 30 * s); cx.fillStyle = '#f2c230'; cx.fillRect(kx - 10 * s, base - 64 * s, 30 * s, 18 * s);
+    txt(cx, 'رفض', L.rejX - 65 * s, base - 84 * s, 12 * s, '#ffd36a', 600);
+    // sparks and labels
+    for (const p of sparks) { p.vy += 700 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; cx.globalAlpha = Math.max(0, p.life); cx.fillStyle = p.c; cx.fillRect(p.x, p.y, 3, 3); } cx.globalAlpha = 1; sparks = sparks.filter(p => p.life > 0);
+    for (const f of fx) { f.y -= 50 * dt; f.life -= dt; cx.globalAlpha = Math.max(0, Math.min(1, f.life * 2)); txt(cx, f.s, f.x, f.y, 20 * Math.max(.8, s), f.c); cx.globalAlpha = 1; } fx = fx.filter(f => f.life > 0);
+    cx.restore();
+    // score and streak
+    txt(cx, score.toLocaleString('en'), w - 24, 34, 28, '#fff', 700, 'right'); txt(cx, 'نقاط', w - 24, 60, 13, 'rgba(255,255,255,.75)', 500, 'right');
+    if (combo >= 3) txt(cx, `سلسلة ×${combo}`, 24, 34, 22, '#ffe28a', 700, 'left');
+    const tl = Math.max(0, left / DUR); cx.fillStyle = 'rgba(255,255,255,.2)'; rr(cx, w * .3, h - 18, w * .4, 6, 3); cx.fill(); cx.fillStyle = '#ffe28a'; rr(cx, w * .3, h - 18, w * .4 * tl, 6, 3); cx.fill();
+    if (t >= DUR && !over) { over = true; resolve(); }
   });
-  const result = new Promise(res => {
-    btn.onclick = async () => {
-      if (shots <= 0) return; shots--; flash = 1; A.sfx('panel_open', .8);
-      const { w } = C, gold = items.filter(i => i.gold).map(i => Math.abs(i.x - w / 2)).sort((a, b) => a - b)[0];
-      const fw = Math.min(w * .2, 170), q = gold == null ? 0 : Math.max(0, Math.round(100 - gold / (fw / 2) * 60));
-      const sc = gold != null && gold < fw * .9 ? Math.max(q, 20) : 0; results.push(sc); best = Math.max(best, sc);
-      fr.setStat(`📸 ${shots}`); A.sfx(sc >= 70 ? 'task_done' : sc > 0 ? 'points' : 'wrong', .6);
-      const tag = el('div', 'mg-brief glass', sc ? `لقطة رائعة! جودة الصورة ${sc}%` : 'العبوة الذهبية ليست داخل الإطار… جرّب مرة أخرى'); stage.querySelector('.mg-brief').replaceWith(tag);
-      if (shots === 0) {
-        await wait(700); loopOff(); C.off(); btn.remove(); C.cv.remove(); tag.remove();
-        if (!best) return res({ stars: 0, score: 0 });
-        const p = el('div', 'panel glass'); p.innerHTML = '<b style="font-size:18px">اختر شعار الحملة الإعلانية</b><div class="mg-row" style="margin-top:12px"></div>';
-        const slogans = ['انتعش بطعم سعودي', 'لحظاتك أحلى مع كل رشفة', 'صُنع بأيدٍ سعودية'];
-        slogans.forEach(s => { const b = el('button', 'opt', s); b.onclick = async () => { A.sfx('ui_click'); p.innerHTML = `<div style="display:grid;place-items:center;gap:10px;padding:10px"><div style="width:min(360px,80vw);aspect-ratio:4/5;border-radius:18px;background:linear-gradient(160deg,#d71a28,#7a0f16);display:grid;place-items:center;color:#fff;box-shadow:0 20px 40px -18px rgba(0,0,0,.6);position:relative;overflow:hidden"><div style="font-size:90px;filter:drop-shadow(0 0 18px #ffd36a)">🍾</div><div style="position:absolute;bottom:22px;left:0;right:0;text-align:center;font-weight:700;font-size:24px">${s}</div><div style="position:absolute;top:14px;right:16px;font-size:13px;opacity:.85">حملة ${F.short} · صناعيو المستقبل</div></div><b>إعلانك جاهز للنشر!</b></div>`; await wait(2200); res({ stars: best >= 80 ? 3 : best >= 55 ? 2 : 1, score: best }); }; p.querySelector('.mg-row').append(b); });
-        stage.append(p);
-      }
-    };
-  });
-  return { result, stop: () => { loopOff(); C.off(); } };
+  await done; stop(); C.off(); removeEventListener('keydown', kd); btn.remove(); C.cv.remove(); stage.querySelector('.mg-brief').remove();
+  const lineQ = capped / Math.max(1, capped + missed + wrongs * 1.5);
+  A.sfx('level_up', .5);
+  // ---- part two: the ambassador's ad
+  const pose = await img(`assets/ui/${A.char || 'boy'}_pose_cut.webp`);
+  const panel = el('div', 'panel glass');
+  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px"><b style="font-size:18px">استوديو الإعلان</b><span style="font-size:13px;color:var(--muted)">خط التعبئة: ${capped} عبوة · أفضل سلسلة ×${bestCombo}</span></div>
+    <div style="padding:10px 12px;border-radius:14px;background:#fff7e0;border:1px solid #f2d27a;font-size:14.5px;line-height:1.7;margin-bottom:12px">📋 <b>طلب العميل:</b> حملة <b>صيفية منعشة</b> للشباب، تُعرض على لوحات الطرق في جدة.</div>
+    <div style="font-weight:600;margin:4px 0 8px">١. اختر مكان التصوير</div><div id="ad-scene" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
+    <div style="font-weight:600;margin:12px 0 8px">٢. اختر عبارة الإعلان</div><div class="mg-row" id="ad-line"></div>
+    <div class="mg-row" style="margin-top:14px"><button class="btn" id="ad-shoot" type="button" disabled>📸 صوّر الإعلان</button></div>`;
+  stage.append(panel);
+  const scenes = [['beach', 'شاطئ وقت الظهيرة'], ['night', 'صحراء في الليل'], ['office', 'مكتب رسمي']].sort(() => Math.random() - .5);
+  const lines = [['انتعش… الصيف أحلى معك', 1], ['جودة ثابتة منذ سنوات', 0], ['لحظة هدوء قبل النوم', 0]].sort(() => Math.random() - .5);
+  let scene = null, line = null;
+  for (const [k, name] of scenes) { const b = el('button', 'opt'), cvs = document.createElement('canvas'); cvs.width = 150; cvs.height = 84; cvs.style.cssText = 'display:block;width:100%;height:auto;aspect-ratio:150/84;border-radius:10px;margin-bottom:6px'; drawScene(cvs.getContext('2d'), 150, 84, k); b.append(cvs, name); b.style.padding = '8px'; b.onclick = () => { scene = k; A.sfx('ui_click'); panel.querySelectorAll('#ad-scene .opt').forEach(x => x.classList.toggle('sel', x === b)); $('#ad-shoot', panel).disabled = !(scene && line); }; $('#ad-scene', panel).append(b); }
+  for (const [s2, ok] of lines) { const b = el('button', 'opt', s2); b.onclick = () => { line = [s2, ok]; A.sfx('ui_click'); panel.querySelectorAll('#ad-line .opt').forEach(x => x.classList.toggle('sel', x === b)); $('#ad-shoot', panel).disabled = !(scene && line); }; $('#ad-line', panel).append(b); }
+  await new Promise(r => $('#ad-shoot', panel).onclick = r);
+  A.sfx('panel_open', .8);
+  // the poster
+  const P = document.createElement('canvas'); P.width = 900; P.height = 1200; const px = P.getContext('2d');
+  drawScene(px, 900, 1200, scene, 1.3);
+  const vg = px.createLinearGradient(0, 760, 0, 1200); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); px.fillStyle = vg; px.fillRect(0, 0, 900, 1200);
+  if (pose) { const ph = 820, pw = ph * pose.width / pose.height; px.drawImage(pose, 900 - pw - 10, 1200 - ph - 60, pw, ph); }
+  for (const [bx, bs] of [[200, 2.3], [330, 2.7], [460, 2.3]]) drawBottle(px, bx, 1080, bs, { cap: true, t: 2 });
+  px.fillStyle = 'rgba(255,255,255,.75)'; for (let k = 0; k < 26; k++) { px.beginPath(); px.arc(150 + (k * 53) % 380, 700 + (k * 97) % 330, 3 + k % 4, 0, 7); px.fill(); }
+  px.textAlign = 'center'; px.direction = 'rtl'; px.fillStyle = '#fff'; let fs = 80; px.font = `700 ${fs}px "Readex Pro"`; while (px.measureText(line[0]).width > 800 && fs > 40) { fs -= 4; px.font = `700 ${fs}px "Readex Pro"`; } px.shadowColor = 'rgba(0,0,0,.45)'; px.shadowBlur = 18; px.fillText(line[0], 450, 190); px.shadowBlur = 0;
+  if (logo) { const lw = 260, lh = lw * logo.height / logo.width; px.fillStyle = 'rgba(255,255,255,.92)'; px.beginPath(); px.roundRect(450 - lw / 2 - 20, 250, lw + 40, lh + 30, 18); px.fill(); px.drawImage(logo, 450 - lw / 2, 265, lw, lh); }
+  px.fillStyle = 'rgba(255,255,255,.92)'; px.beginPath(); px.roundRect(30, 1130, 520, 50, 25); px.fill(); px.fillStyle = '#2a3590'; px.font = '600 26px "Readex Pro"'; px.fillText(`سفير الحملة: ${A.name || ''} · صناعيو المستقبل`, 290, 1164);
+  const fit = (scene === 'beach' ? 1 : 0) + line[1];
+  const stars = Math.max(0, Math.min(3, (lineQ >= .8 ? 2 : lineQ >= .5 ? 1 : 0) + (fit === 2 ? 1 : 0)));
+  panel.innerHTML = '';
+  const show = el('div', '', ''); show.style.cssText = 'display:grid;gap:12px;justify-items:center';
+  P.style.cssText = 'width:min(300px,62vw);height:auto;border-radius:16px;box-shadow:0 24px 50px -20px rgba(0,0,0,.6);animation:cardIn .6s cubic-bezier(.2,.8,.2,1)';
+  const verdict = fit === 2 ? '👍 العميل: هذا بالضبط ما طلبناه! صيفي ومنعش.' : scene !== 'beach' ? '🤔 العميل: الإعلان جميل، لكن المكان لا يوحي بالصيف والانتعاش.' : '🤔 العميل: المكان مناسب، لكن العبارة لا تناسب حملة صيفية للشباب.';
+  const row = el('div', 'mg-row'), save = el('button', 'btn ghost', '⬇ حمّل إعلانك'), next = el('button', 'btn', 'متابعة');
+  save.onclick = () => { const a = document.createElement('a'); a.download = 'ad-future-industrialists.png'; a.href = P.toDataURL('image/png'); a.click(); A.sfx('ui_click'); };
+  row.append(save, next); show.append(P, el('div', '', `<b style="font-size:15px">${verdict}</b>`), row); panel.append(show);
+  A.sfx(fit === 2 ? 'task_done' : 'points', .6);
+  await new Promise(r => next.onclick = r);
+  return { stars, score };
 }
 
 /* ================= 2. circuit: rotate tiles to power three satellites (KACST, Creative) ================= */
