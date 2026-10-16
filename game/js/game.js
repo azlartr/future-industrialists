@@ -14,7 +14,7 @@ import { makeLife } from './life.js';
 import { makeSignals } from './signals.js';
 import { makeRobot } from './robot.js';
 import { addTour, GEAR_GEO, GEAR_MAT } from './tour.js';
-const CITY_GEARS = [[110, -87.5, 1.2], [20, 30.5, 1.2], [-171.5, 101, 1.2], [-140, -13, 1.2], [172.5, -40, 1.2], [-62, -62, 1.75]];
+const CITY_GEARS = [[-110, -85.5, 1.2], [-90, 33, 1.2], [-175, 105, 1.2], [82, -17, 1.2], [175, -40, 1.2], [65, 60, 1.75]];
 import { TOUR, PPE, PPE_ICON } from './content.js';
 import { buildFinale, certificate } from './finale.js';
 
@@ -126,11 +126,13 @@ paintR(vm, '#vm-out'); paintR(vs, '#vs-out');
 vm.addEventListener('input', () => { Audio_.setMusic(vm.value / 100); paintR(vm, '#vm-out'); });
 vs.addEventListener('input', () => { Audio_.setSfx(vs.value / 100); paintR(vs, '#vs-out'); });
 vs.addEventListener('change', () => Audio_.sfx('ui_click'));
+$('#robot-on').checked = store.get('robot', true);
+$('#robot-on').addEventListener('change', e => { S.robot = e.target.checked; store.set('robot', S.robot); Audio_.sfx('ui_click'); if (!S.robot) { talkQ.q.length = 0; talkQ.cur = null; if (!talkQ.busy) $('#talk').hidden = true; } else robo?.wave(1.5); });
 $('#mute-all').addEventListener('click', () => { const on = Audio_.musicVol > 0 || Audio_.sfxVol > 0; vm.value = vs.value = on ? 0 : 80; vm.dispatchEvent(new Event('input')); vs.dispatchEvent(new Event('input')); });
 
 /* ---------------- state ---------------- */
 const saved = store.get('save', {});
-const S = { char: saved.char || 'boy', done: saved.done || {}, xp: saved.xp || 0, gears: saved.gears || {}, facts: saved.facts || {}, quiz: saved.quiz || {}, region: null, loc: 0, mode: 'menu', cine: false };
+const S = { robot: store.get('robot', true), char: saved.char || 'boy', done: saved.done || {}, xp: saved.xp || 0, gears: saved.gears || {}, facts: saved.facts || {}, quiz: saved.quiz || {}, region: null, loc: 0, mode: 'menu', cine: false };
 const nameOf = c => c === 'boy' ? 'فهد' : 'سارة';
 const persist = () => store.set('save', { char: S.char, done: S.done, xp: S.xp, gears: S.gears, facts: S.facts, quiz: S.quiz });
 const points = () => Object.values(S.done).reduce((a, s) => a + s * 100, 0) + S.xp;
@@ -323,7 +325,7 @@ function animatePlayer(p, dt, speed, face) {
   const moveK = clamp(v / .5, 0, 1), runK = h.act.run ? clamp((v - 2.4) / 1.2, 0, 1) : 0, f = Math.min(1, dt * 8);
   h.w.walk += (moveK * (1 - runK) - h.w.walk) * f; h.w.run += (moveK * runK - h.w.run) * f;
   h.act.walk?.setEffectiveWeight(h.w.walk); h.act.run?.setEffectiveWeight(h.w.run); h.act.idle?.setEffectiveWeight(1 - h.w.walk - h.w.run);
-  if (h.act.walk) h.act.walk.timeScale = p.jy > .05 ? .25 : clamp(v / h.pace.walk, .7, 2.3);
+  if (h.act.walk) h.act.walk.timeScale = p.jy > .05 ? .25 : clamp(v / h.pace.walk, .7, 3);
   if (h.act.run) h.act.run.timeScale = clamp(v / h.pace.run, .7, 1.8);
   // small procedural touches: breathing and a glance around while standing, a forward lean when hurrying
   for (const [b, ax, a] of h.tweak) b.rotation[ax] -= a; h.tweak.length = 0;
@@ -446,13 +448,13 @@ $('#journal').addEventListener('click', e => { if (e.target.id === 'journal') { 
 async function enterRegion() {
   const sc = RW.locs[0]; parkAt(sc.bay.id); S.loc = 0;
   const [yx, yz] = sc.yard, py = yz - sc.side * 5.5; player.root.visible = true; player.root.position.set(yx + 1.5, .06, py); player.speed = 0;
-  const face = sc.side > 0 ? Math.PI : 0; faceHero(face); camYaw = sc.side > 0 ? 0 : Math.PI; camPitch = .28;
+  const face = sc.side > 0 ? Math.PI : 0; faceHero(face); camYaw = sc.side > 0 ? 0 : Math.PI; camPitch = .42;
   show('hud'); $('#hud').classList.add('cine'); S.cine = true; skip = false; S.mode = 'intro'; updateHUD();
   Audio_.music(REGIONS[S.region].music, { vol: .55 });
   // from high over the district, past the plaza, down behind the student
   const end = new THREE.Vector3(yx + 1.5, 1.25, py).add(new THREE.Vector3(Math.sin(camYaw) * Math.cos(camPitch), Math.sin(camPitch), Math.cos(camYaw) * Math.cos(camPitch)).multiplyScalar(5.6));
-  const path = new THREE.CatmullRomCurve3([new THREE.Vector3(-210, 120, 190), new THREE.Vector3(-60, 70, 120), new THREE.Vector3(60, 34, 70), new THREE.Vector3(30, 12, 40), end]);
-  const look = [new THREE.Vector3(0, 0, -20), new THREE.Vector3(60, 0, -30), new THREE.Vector3(20, 2, 0), new THREE.Vector3(yx, 1.4, py)];
+  const path = new THREE.CatmullRomCurve3([new THREE.Vector3(60, 130, 210), new THREE.Vector3(-20, 80, 110), new THREE.Vector3(-70, 40, 30), new THREE.Vector3(yx + 14, 12, py + 20), end]);
+  const look = [new THREE.Vector3(-40, 0, -20), new THREE.Vector3(-110, 8, -47), new THREE.Vector3(-110, 3, 0), new THREE.Vector3(yx, 1.4, py)];
   const t0 = performance.now(), D = 7000, lk = new THREE.Vector3();
   while (!skip) {
     const k = Math.min(1, (performance.now() - t0) / D), e = ease(k);
@@ -463,7 +465,7 @@ async function enterRegion() {
   }
   $('#hud').classList.remove('cine'); S.cine = false; S.mode = 'world'; skip = false; follow(0, true);
   robo?.place(new THREE.Vector3(yx - .2, 0, py - sc.side * 1.6), .2);
-  if (!seen.robot) { seen.robot = 1; store.set('seen', seen); S.mode = 'menu'; await sayAll([`أهلاً ${nameOf(S.char)}! أنا مِرشد، وسأرافقك في رحلة صناعيو المستقبل.`, `اليوم نزور مصانع ${REGIONS[S.region].name}: في كل مصنع معدات وقاية، ومحطات معلومات، ومهمة، واختبار للمشرف… وترس ذهبي مخبّأ!`, 'باص المبادرة يقف دائماً عند البوابة نفسها، فلا نقطع أي شارع. هيا إلى الباص!']); S.mode = 'world'; }
+  if (!seen.robot && S.robot) { seen.robot = 1; store.set('seen', seen); S.mode = 'menu'; await say(`أهلاً ${nameOf(S.char)}! أنا مِرشد، مرشدك في الرحلة. باص المبادرة واقف عند بوابة المدرسة، وفي كل مصنع مهمة وترس ذهبي مخبّأ. (تقدر تخفيني من الإعدادات ⚙)`, { wait: true }); S.mode = 'world'; }
   await howto('world', 'كيف تلعب؟', touch ? [['🕹️', 'حرّك الشخصية بعصا التحكم أسفل الشاشة'], ['👆', 'اسحب على الشاشة لتدوير الكاميرا'], ['🚌', 'باص المبادرة يقف عند بوابة كل مكان، فلا تقطع الشارع لتركبه'], ['🗺️', 'الخريطة في الأعلى تريك الباص والمصانع ووجهتك']] :
     [['⌨️', 'تحرّك بالأسهم أو W A S D · Shift للجري · Space للقفز'], ['🖱️', 'اسحب بالفأرة لتدوير الكاميرا'], ['🚌', 'باص المبادرة يقف عند بوابة كل مكان، فلا تقطع الشارع لتركبه'], ['🗺️', 'الخريطة في الأعلى تريك الباص والمصانع ووجهتك · E للتفاعل']]);
   toast(`مرحباً بك في ${REGIONS[S.region].name}! باص المبادرة بانتظارك عند بوابة المدرسة 🚌`, 3400);
@@ -519,8 +521,9 @@ function moveStudent(dt, sp) {
   const p = player, r = p.root;
   let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joy.x;
   let iz = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0) + joy.y;
-  const mag = Math.min(1, Math.hypot(ix, iz)), run = keys.ShiftLeft || keys.ShiftRight || (mag > .95 && touch);
-  const target = mag > .1 ? (p.hero ? (run ? 3.4 : 1.5) : (run ? 5.4 : 3.1)) : 0; p.speed += (target - p.speed) * Math.min(1, dt * 8);
+  // on a touch screen, pushing the stick past about two-thirds breaks into a run
+  const mag = Math.min(1, Math.hypot(ix, iz)), run = keys.ShiftLeft || keys.ShiftRight || (mag > .72 && touch);
+  const target = mag > .1 ? (p.hero ? (run ? 3.9 : 2.1) : (run ? 5.6 : 3.3)) : 0; p.speed += (target - p.speed) * Math.min(1, dt * 8);
   p.jy ??= 0; p.jv ??= 0; const feet = r.position.y + p.jy;
   let face = null;
   if (mag > .1) {
@@ -659,10 +662,10 @@ async function alight(dest) {
   camera.position.copy(d2).addScaledVector(out, 6.5).addScaledVector(fw, 4.5).setY(2.6); camera.lookAt(d2.x, 1.3, d2.z);
   await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(a, to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
   bus.userData.door(0); Audio_.sfx('bus_door_close', .6); player.speed = 0; player.root.position.copy(to);
-  robo?.place(to.clone().addScaledVector(fw, -1.5).addScaledVector(out, -.2), to.y + .15);
   // look along the sidewalk toward the gate
-  // the camera sits back over the bay, not against the compound wall
-  const g = D.gate, gy = Math.atan2(g.x - to.x, g.z - to.z), cv2 = new THREE.Vector3(to.x - g.x, 0, to.z - g.z).normalize().addScaledVector(out, -.7); faceHero(gy); camYaw = Math.atan2(cv2.x, cv2.z); camPitch = .34; follow(0, true);
+  // the camera behind the student along the sidewalk, looking toward the gate
+  const g = D.gate, gy = Math.atan2(g.x - to.x, g.z - to.z), cv2 = new THREE.Vector3(to.x - g.x, 0, to.z - g.z).normalize().addScaledVector(out, .15); faceHero(gy); camYaw = Math.atan2(cv2.x, cv2.z); camPitch = .34; follow(0, true);
+  { let fx = to.x - camera.position.x, fz = to.z - camera.position.z; const fl = Math.hypot(fx, fz) || 1; fx /= fl; fz /= fl; robo?.place(new THREE.Vector3(to.x - fz * 1.3 + fx * .5, 0, to.z + fx * 1.3 + fz * .5), to.y + .6); }
   justArrived = true; $('#hud').classList.remove('cine'); S.mode = 'world'; skip = false;
   toast(D.kind === 'school' ? 'وصلت إلى المدرسة' : `وصلت إلى ${D.name} · البوابة أمامك`, 3200);
 }
@@ -672,11 +675,8 @@ const DV = { v: 0, steer: 0, near: null, bump: 0, red: 0, front: null };
 const KMH = 3.6, VMAX = 16, VREV = -4, WHEELBASE = 4.4;
 async function startDrive() {
   await board();
-  // the coach pulls out of the bay into the lane by itself, then the wheel is yours
-  const out = { ...BAYS[S.bay].out, stops: [] }, st = { s: 0, v: 0, vmax: 7 };
-  show('drive'); $('#hud').classList.remove('cine'); document.body.classList.add('driving'); S.mode = 'ride';
-  await cine(dt => { coachStep(out, st, dt, { ghost: true }); chaseCam(bus.position.x, bus.position.z, bus.rotation.y, dt); return st.s < out.len - .05; });
-  skip = false; DV.v = st.v; DV.steer = 0; DV.near = null; DV.front = null; DV.red = 0;
+  // the coach is already in its own lane: the wheel is yours
+  skip = false; DV.v = 0; DV.steer = 0; DV.near = null; DV.front = null; DV.red = 0; chaseD = 15;
   S.mode = 'drive'; show('drive'); $('#hud').classList.remove('cine'); marker.visible = false; document.body.classList.add('driving');
   Audio_.music('bus_trip', { vol: .4 });
   toast(touch ? 'حرّك عصا التحكم: للأمام تسارع، للخلف فرامل، يمين ويسار للتوجيه' : 'W للتسارع · S للفرامل · A و D للتوجيه · احترم الإشارات وتوقّف في موقف أي بوابة', 4200);
@@ -732,11 +732,12 @@ function driveStep(dt) {
   // running a red light: the front of the coach crosses a stop line while that approach is red
   const f = new THREE.Vector2(x + Math.cos(ny) * bh.halfLen, z - Math.sin(ny) * bh.halfLen);
   if (DV.front) for (const sg of signals?.list || []) for (const Lq of sg.appr) {
+    // across the whole half of the road that approaches the junction (both lanes)
     const p1 = Lq.pts[1], a0 = (DV.front.x - p1.x) * Lq.d.x + (DV.front.y - p1.y) * Lq.d.y, a1 = (f.x - p1.x) * Lq.d.x + (f.y - p1.y) * Lq.d.y, lat = (f.x - p1.x) * Lq.r.x + (f.y - p1.y) * Lq.r.y;
-    if (a0 < 0 && a1 >= 0 && Math.abs(lat) < 2.8 && signals.state(Lq) === 'stop') { DV.red++; Audio_.sfx('wrong', .5); toast('⚠️ تجاوزت الإشارة الحمراء! انتظر الأخضر في المرة القادمة', 2600); }
+    if (a0 < 0 && a1 >= 0 && lat > -C.CAR - .3 && lat < C.HW - C.CAR + .3 && signals.state(Lq) === 'stop') { DV.red++; Audio_.sfx('wrong', .5); toast('⚠️ تجاوزت الإشارة الحمراء! انتظر الأخضر في المرة القادمة', 2600); }
   }
   DV.front = f; busPrio = null;
-  for (const sg of signals?.list || []) for (const Lq of sg.appr) { const p1 = Lq.pts[1], al = (f.x - p1.x) * Lq.d.x + (f.y - p1.y) * Lq.d.y, lat = (f.x - p1.x) * Lq.r.x + (f.y - p1.y) * Lq.r.y; if (al > -50 && al < 0 && Math.abs(lat) < 3 && Math.cos(ny) * Lq.d.x - Math.sin(ny) * Lq.d.y > .7) busPrio = Lq; }
+  for (const sg of signals?.list || []) for (const Lq of sg.appr) { const p1 = Lq.pts[1], al = (f.x - p1.x) * Lq.d.x + (f.y - p1.y) * Lq.d.y, lat = (f.x - p1.x) * Lq.r.x + (f.y - p1.y) * Lq.r.y; if (al > -50 && al < 0 && lat > -C.CAR - .3 && lat < C.HW - C.CAR + .3 && Math.cos(ny) * Lq.d.x - Math.sin(ny) * Lq.d.y > .7) busPrio = Lq; }
   chaseCam(x, z, ny, dt);
   sunAt(x, z);
   // bays: slow down in one to get off
@@ -760,29 +761,40 @@ async function driveAct() {
 
 /* ---------------- مِرشد: the guide who goes everywhere with the student ---------------- */
 let robo = null;
-const talkQ = { busy: false };
-/* a line from the guide; resolves when the player has read it (tap, E, Space or Enter) */
-function say(text, { role = '', wait = true, ms = 0 } = {}) {
+const talkQ = { busy: false, q: [], cur: null };
+/* a line from the guide. Most lines show for a moment and go (queued, never in the way); wait: true
+   holds the game until the player taps. With the guide switched off, short lines become toasts. */
+function say(text, { role = '', wait = false, ms = 0 } = {}) {
+  if (!S.robot) { if (!wait) toast(text, ms || Math.max(2600, text.length * 60)); return Promise.resolve(); }
+  if (!wait) { talkQ.q.push([text, ms]); pumpTalk(); return Promise.resolve(); }
+  talkQ.q.length = 0; clearTimeout(talkQ.h); talkQ.cur = null;
   const box = $('#talk'), out = $('#t-text'); $('#t-role').textContent = role || (IN ? `مرشدك في ${TV.F?.short || 'المصنع'}` : 'مرشدك في الرحلة');
-  box.hidden = false; out.textContent = ''; robo?.talk(Math.min(6, text.length / 18 + 1)); Audio_.sfx('panel_open', .25);
-  $('#t-next').style.visibility = wait ? '' : 'hidden';
-  let i = 0, done = false; clearInterval(say.t); clearTimeout(say.h);
+  box.hidden = false; box.classList.remove('soft'); out.textContent = ''; robo?.talk(Math.min(6, text.length / 18 + 1)); Audio_.sfx('panel_open', .25); $('#t-next').style.visibility = '';
+  let i = 0, done = false; clearInterval(say.t);
   say.t = setInterval(() => { i = Math.min(text.length, i + 2); out.textContent = text.slice(0, i); if (i >= text.length) { clearInterval(say.t); done = true; } }, 28);
-  if (!wait) { say.h = setTimeout(() => { if (out.textContent && !talkQ.busy) box.hidden = true; }, ms || Math.max(2600, text.length * 70)); return Promise.resolve(); }
   talkQ.busy = true;
   return new Promise(res => {
-    const next = e => { if (e?.type === 'keydown' && !['KeyE', 'Space', 'Enter'].includes(e.code)) return; if (!done) { clearInterval(say.t); out.textContent = text; done = true; return; } box.removeEventListener('click', next); removeEventListener('keydown', next); box.hidden = true; talkQ.busy = false; Audio_.sfx('ui_click', .3); res(); };
+    const next = e => { if (e?.type === 'keydown' && !['KeyE', 'Space', 'Enter'].includes(e.code)) return; if (!done) { clearInterval(say.t); out.textContent = text; done = true; return; } box.removeEventListener('click', next); removeEventListener('keydown', next); box.hidden = true; talkQ.busy = false; Audio_.sfx('ui_click', .3); res(); pumpTalk(); };
     setTimeout(() => { box.addEventListener('click', next); addEventListener('keydown', next); }, 250);
   });
+}
+function pumpTalk() {
+  if (talkQ.busy || talkQ.cur) return; const n = talkQ.q.shift(); if (!n) return;
+  const [text, ms] = n, box = $('#talk'), out = $('#t-text'); talkQ.cur = n;
+  $('#t-role').textContent = IN ? `مرشدك في ${TV.F?.short || 'المصنع'}` : 'مرشدك في الرحلة';
+  box.hidden = false; box.classList.add('soft'); out.textContent = text; $('#t-next').style.visibility = 'hidden'; robo?.talk(Math.min(5, text.length / 18 + 1));
+  const close = () => { if (talkQ.cur !== n) return; box.hidden = true; box.classList.remove('soft'); talkQ.cur = null; box.onclick = null; pumpTalk(); };
+  box.onclick = close; talkQ.h = setTimeout(close, ms || Math.max(2800, text.length * 65));
 }
 async function sayAll(lines, opt) { for (const l of lines) await say(l, opt); }
 /* the guide floats beside the student, or a little ahead toward where to go next */
 function guide(dt, lead = null, floorY = 0) {
-  if (!robo) return; const r = player.root.position, yaw = player.hero ? player.hero.model.rotation.y : 0;
-  const fw = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw)), rt = new THREE.Vector3(fw.z, 0, -fw.x);
-  const tgt = r.clone().addScaledVector(rt, -1.25).addScaledVector(fw, -.5);
-  if (lead) { const d = new THREE.Vector3(lead.x - r.x, 0, lead.z - r.z), L = d.length(); if (L > 5) tgt.copy(r).addScaledVector(d.normalize(), 2.3).addScaledVector(rt, -.6); }
-  robo.target.set(tgt.x, 0, tgt.z); robo.floor = floorY + .15; robo.look = talkQ.busy || !$('#talk').hidden ? camera.position : null; robo.update(dt);
+  if (!robo) return; const r = player.root.position;
+  // the camera's forward and right on the ground: the guide stays to the right of the student, a step further away
+  let fx = r.x - camera.position.x, fz = r.z - camera.position.z; const fl = Math.hypot(fx, fz) || 1; fx /= fl; fz /= fl; const rx = -fz, rz = fx;
+  const tgt = new THREE.Vector3(r.x + rx * 1.3 + fx * .5, 0, r.z + rz * 1.3 + fz * .5);
+  if (lead) { const dx = lead.x - r.x, dz = lead.z - r.z, L = Math.hypot(dx, dz); if (L > 6) tgt.set(r.x + dx / L * 1.8 + rx * .7, 0, r.z + dz / L * 1.8 + rz * .7); }
+  robo.target.copy(tgt); robo.floor = floorY + .6; robo.look = !$('#talk').hidden ? camera.position : null; robo.update(dt);
 }
 
 /* ---------------- factories: a walk-through visit ---------------- */
@@ -806,7 +818,7 @@ async function startTour(F) {
   show('hud'); document.body.classList.add('in-tour'); S.mode = 'tour'; renderTour();
   Audio_.music('factory_1', { vol: .42 });
   await howto('tour', 'جولة المصنع', [['🦺', 'ابدأ بخزانة معدات الوقاية: اختر ما يحتاجه هذا المصنع'], ['📖', 'اقرأ محطات المعلومات الثلاث على الممر الأخضر'], ['★', 'أنجز مهمة المصنع عند الشاشة الكبيرة'], ['✓', 'أجب عن أسئلة المشرف لتحصل على ختم المصنع · وابحث عن الترس الذهبي ⚙️']]);
-  await sayAll([`أهلاً ${nameOf(S.char)}! أنا مِرشد، وسأرافقك في ${F.name}.`, 'قبل أن ندخل خط الإنتاج: افتح خزانة معدات الوقاية واختر ما يحتاجه هذا المصنع بالضبط.']);
+  say(`أهلاً بك في ${F.name}! ابدأ من خزانة معدات الوقاية 🦺`);
   TV.busy = false;
 }
 const tourSpace = () => ({ indoor: true, boxes: IN.boxes, circles: IN.circles, bounds: IN.bounds,
@@ -836,6 +848,7 @@ function tourStep(dt) {
   if (TV.busy || talkQ.busy) { player.speed = 0; animatePlayer(player, dt, 0, null); follow(dt, false, sp); }
   else moveStudent(dt, sp);
   const r = player.root.position, feet = r.y + (player.jy || 0);
+  hazardsBite(dt, r);
   guide(dt, TV.next, 0);
   // the golden gear: walk (or jump) into it
   const g = TV.tour.gear; if (!TV.gear && g.visible && Math.hypot(r.x - g.position.x, r.z - g.position.z) < 1 && feet > .55) {
@@ -859,19 +872,36 @@ function tourStep(dt) {
   const btn = $('#act'); btn.classList.toggle('on', !!tnear && !TV.busy && !talkQ.busy); if (tnear && btn.textContent !== tnear.t) btn.textContent = tnear.t;
   if (TV.hz) { TV.hzT += dt; if (TV.hzT > 30) { TV.hzT = 0; const left = IN.hazards.find(h => !h.found); if (left) { TV.hints++; say('تلميح: ' + ({ oil: 'انظر إلى ممر المشاة الأخضر… هل هو نظيف؟', exit: 'تفقّد مخرج الطوارئ على الجدار الأيمن', panel: 'هل كل الأبواب على الجدار الأيسر مغلقة؟' })[left.key], { wait: false }); } } }
 }
+/* the safety mission's hazards are real: oil makes you slip, the open panel throws sparks and pushes you back */
+function hazardsBite(dt, r) {
+  TV.slipT = Math.max(0, (TV.slipT || 0) - dt); TV.shake = Math.max(0, (TV.shake || 0) - dt);
+  const h = player.hero; if (h) h.model.rotation.z = TV.slipT > 0 ? Math.sin(TV.slipT * 28) * .35 * TV.slipT : 0;
+  if (TV.shake > 0) camera.position.add(new THREE.Vector3((Math.random() - .5) * TV.shake * .5, (Math.random() - .5) * TV.shake * .3, (Math.random() - .5) * TV.shake * .5));
+  if (TV.F.game !== 'hazard') return;
+  const push = (cx, cz, to) => { let dx = r.x - cx, dz = r.z - cz; const L = Math.hypot(dx, dz) || 1; r.x = cx + dx / L * to; r.z = cz + dz / L * to; player.speed = 0; };
+  const oil = IN.hazards.find(z => z.key === 'oil'), pnl = IN.hazards.find(z => z.key === 'panel');
+  if (oil && TV.slipT <= 0 && Math.hypot(r.x - 6.5, r.z - 4.8) < 1.2) {
+    push(6.5, 4.8, 2.2); TV.slipT = 1.1; TV.shake = .5; Audio_.sfx('wrong', .55); setTimeout(() => Audio_.sfx('land', .7), 250);
+    if (!TV.saidOil) { TV.saidOil = 1; say(oil.found ? 'انتبه! الزيت ما زال هنا حتى يُنظّف.' : '⚠️ كدت تنزلق! بقعة زيت على ممر المشاة… هذا خطر حقيقي على العمال.'); }
+  }
+  if (pnl && Math.hypot(r.x + 19.1, r.z - 6) < 2.4) {
+    push(-19.1, 6, 3); TV.shake = .7; flash(); Audio_.sfx('factory_metal', .7); Audio_.sfx('wrong', .5);
+    if (!TV.saidPanel) { TV.saidPanel = 1; say('⚡ ابتعد! لوحة الكهرباء مفتوحة والأسلاك مكشوفة. لا تلمسها أبداً.'); }
+  }
+}
 async function tourAct() {
   if (!tnear || TV.busy || talkQ.busy) return; const n = tnear, C = TOUR[TV.F.id];
   TV.busy = true; $('#act').classList.remove('on');
   try {
-    if (n.k === 'ppe') { if (!TV.ppe) await openPPE(); else await say(C.why.ar); }
+    if (n.k === 'ppe') { if (!TV.ppe) await openPPE(); else say(C.why.ar); }
     else if (n.k === 'fact') await openFact(n.i);
-    else if (n.k === 'mission') { if (TV.mission === 3) await say('أنجزت المهمة بثلاث نجوم! توجّه إلى مكتب المشرف.'); else await startMission(); }
-    else if (n.k === 'quiz') { if (TV.mission == null) await say('أنجز مهمة المصنع أولاً، ثم تعال إلى المشرف.'); else if (TV.quiz == null) await openQuiz(); else await finishTour(); }
+    else if (n.k === 'mission') { if (TV.mission === 3) say('أنجزت المهمة بثلاث نجوم! توجّه إلى مكتب المشرف.'); else await startMission(); }
+    else if (n.k === 'quiz') { if (TV.mission == null) say('أنجز مهمة المصنع أولاً، ثم تعال إلى المشرف.'); else if (TV.quiz == null) await openQuiz(); else await finishTour(); }
     else if (n.k === 'exit') { if (TV.quiz != null || await confirmLeave()) { TV.busy = false; leaveFactory(TV.quiz != null ? '' : 'خرجت من المصنع · يمكنك العودة لإكمال الجولة'); return; } }
     else if (n.k === 'hz') await reportHazard(n.h);
   } finally { TV.busy = false; renderTour(); }
 }
-async function confirmLeave() { await say('ستخرج قبل أن تُكمل الجولة. تقدر ترجع في أي وقت، لكن ختم المصنع يحتاج الجولة كاملة.'); return true; }
+async function confirmLeave() { say('خرجت قبل إكمال الجولة. تقدر ترجع في أي وقت لتكملها.'); return true; }
 /* ---- gear lockers: choose exactly what this floor needs ---- */
 function openPPE() {
   const C = TOUR[TV.F.id], need = C.ppe, keys = Object.keys(PPE).sort(() => Math.random() - .5), sel = new Set(), ov = $('#ppe'), grid = $('#ppe-grid'), ok = $('#ppe-ok'), note = $('#ppe-note');
@@ -892,7 +922,7 @@ function openPPE() {
       if (wrong.length) { Audio_.sfx('wrong', .5); note.textContent = `${wrong.map(k => PPE[k].ar).join(' و')} ${wrong.length > 1 ? 'ليست' : 'ليس'} ما يحتاجه هذا المصنع. بدّل وجرّب مرة أخرى.`; return; }
       Audio_.sfx('task_done'); ok.disabled = true; await wait(700); ov.classList.remove('on');
       TV.ppe = true; S.xp += tries === 1 ? 40 : 15; persist(); equip(need); TV.tour.openGate(); Audio_.sfx('bus_door_open', .4); renderTour();
-      await sayAll([C.why.ar, tries === 1 ? 'اخترت الصحيح من أول مرة! بوابة خط الإنتاج انفتحت.' : 'هكذا تماماً. بوابة خط الإنتاج انفتحت.', 'اقرأ المحطات الثلاث على الممر الأخضر، ثم ابدأ المهمة عند الشاشة الكبيرة في آخره.']);
+      say(`${tries === 1 ? 'صحيح من أول مرة! ' : ''}${C.why.ar}`, { ms: 6500 }); say('البوابة انفتحت: اقرأ المحطات الثلاث على الممر الأخضر، ثم المهمة في آخره.');
       res();
     };
   });
@@ -928,7 +958,7 @@ async function startMission() {
   const F = TV.F, T = TRACKS[F.track];
   if (F.game === 'hazard') {
     IN.hazards.forEach(h => { h.found = false; }); TV.hz = true; TV.hzT = 0; TV.hints = 0; TV.hzStart = performance.now();
-    await sayAll([`مهمتك يا ${T.name}: ${F.brief}`, 'تجوّل في المصنع، وعندما تقف قرب الخطر اضغط «بلّغ». سأعطيك تلميحاً إذا احترت.']);
+    say(`مهمتك: ${F.brief}`, { ms: 6000 }); say('عندما تقف قرب الخطر اضغط «بلّغ». وانتبه على نفسك!');
     return;
   }
   if (TV.facts.size < 3) await say('تقدر تبدأ الآن، لكن معلومات المحطات ستفيدك كثيراً في اختبار المشرف!', { wait: false });
@@ -942,7 +972,7 @@ async function startMission() {
 async function missionDone(stars) {
   const was = TV.mission; TV.mission = Math.max(TV.mission ?? 0, stars); renderTour();
   Audio_.sfx(stars ? 'level_up' : 'wrong', .6);
-  await say(stars ? `${'⭐'.repeat(stars)} ${stars === 3 ? 'أداء مذهل!' : 'أحسنت!'} ${was == null ? 'آخر خطوة: اختبار المشرف في المكتب خلف المصنع.' : ''}` : 'لم تكتمل المهمة. جرّب مرة أخرى من الشاشة.');
+  say(stars ? `${'⭐'.repeat(stars)} ${stars === 3 ? 'أداء مذهل!' : 'أحسنت!'} ${was == null ? 'آخر خطوة: اختبار المشرف في المكتب خلف المصنع.' : ''}` : 'لم تكتمل المهمة. جرّب مرة أخرى من الشاشة.');
 }
 async function reportHazard(h) {
   h.found = true; Audio_.sfx('task_done'); Audio_.sfx('points', .5); TV.hzT = 0;
@@ -971,7 +1001,7 @@ function openQuiz() {
 }
 async function finishTour() {
   const F = TV.F;
-  await say(TV.quiz >= 2 ? `أجبت ${TV.quiz} من 3! تستحق ختم ${F.short} في دفتر رحلتك. 🏅` : `أجبت ${TV.quiz} من 3. المعلومات في المحطات الثلاث… تقدر تراجعها وتعود.`);
+  say(TV.quiz >= 2 ? `أجبت ${TV.quiz} من 3! تستحق ختم ${F.short} في دفتر رحلتك. 🏅` : `أجبت ${TV.quiz} من 3. المعلومات في المحطات الثلاث… تقدر تراجعها وتعود.`); await wait(1600);
   await showResult(F, TV.mission || 0);
 }
 
@@ -1035,7 +1065,7 @@ $('#fin-ok').onclick = () => {
 /* ---------------- loop ---------------- */
 function loop() {
   const dt = Math.min(.05, clock.getDelta()) * TS; updateEngine();
-  if (robo) robo.group.visible = !!player?.root.visible || S.mode === 'finale';
+  if (robo) robo.group.visible = S.robot && (!!player?.root.visible || S.mode === 'finale');
   if (life && RW && (['world', 'intro', 'ride', 'drive'].includes(S.mode) || $('#route').classList.contains('on'))) {
     const pr = player.root.position, bh = bus.userData;
     if (S.mode !== 'ride' && S.mode !== 'drive') busPrio = null;

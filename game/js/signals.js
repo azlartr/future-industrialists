@@ -36,7 +36,7 @@ export function makeSignals(scene, NET) {
     const sg = { node: n, x: n.x, z: n.z, appr: n.inL, cur: k % n.inL.length, phase: 'green', t: 3 + k * 2.3, peds: [], heads: new Map(), want: false, shown: '' };
     for (const L of n.inL) {
       // the pole stands on the right-hand corner just before the stop line, the head facing the drivers
-      const p = L.pts[1], r = L.r, d = L.d, px = p.x + r.x * (C.HW - C.LANE + .9) - d.x * .6, pz = p.y + r.y * (C.HW - C.LANE + .9) - d.y * .6;
+      const p = L.pts[1], r = L.r, d = L.d, px = p.x + r.x * (C.HW - C.CAR + .9) - d.x * .6, pz = p.y + r.y * (C.HW - C.CAR + .9) - d.y * .6;
       pole(px, pz);
       const head = new THREE.Group(); head.position.set(px, 3.9, pz); head.rotation.y = Math.atan2(-d.x, -d.y); scene.add(head);
       const bx = new THREE.Mesh(new THREE.BoxGeometry(.38, 1.06, .26), boxM); bx.castShadow = true; head.add(bx);
@@ -49,7 +49,7 @@ export function makeSignals(scene, NET) {
       sg.heads.set(L, lamps);
       // walk signals at both ends of this arm's zebra, each facing the far kerb
       pedHead(sg, px, pz, Math.atan2(-r.x, -r.y));
-      const ox = p.x - r.x * (C.LANE + C.HW + .9) - d.x * .6, oz = p.y - r.y * (C.LANE + C.HW + .9) - d.y * .6;
+      const ox = p.x - r.x * (C.CAR + C.HW + .9) - d.x * .6, oz = p.y - r.y * (C.CAR + C.HW + .9) - d.y * .6;
       pole(ox, oz, 3.1); pedHead(sg, ox, oz, Math.atan2(r.x, r.y));
     }
     return sg;
@@ -57,7 +57,7 @@ export function makeSignals(scene, NET) {
   const sgOf = new Map(list.map(s => [s.node, s]));
   function state(L) {
     const sg = sgOf.get(L.to); if (!sg) return 'go';
-    if (sg.appr[sg.cur] !== L) return 'stop';
+    if (sg.appr[sg.cur].appr !== L.appr) return 'stop'; // the coach's kerb lane shares its arm's light
     return sg.phase === 'green' ? 'go' : sg.phase === 'amber' ? 'amber' : 'stop';
   }
   function paint(sg) {
@@ -71,7 +71,7 @@ export function makeSignals(scene, NET) {
     update(dt, p, prio = null) {
       for (const sg of list) {
         const d = p ? Math.hypot(p.x - sg.x, p.z - sg.z) : 99, road = !!p && onRoad(p.x, p.z);
-        const waiting = d > 5 && d < 15 && !road, crossing = d < 12 && road, mine = prio && prio.to === sg.node ? sg.appr.indexOf(prio) : -1;
+        const waiting = d > 5 && d < 15 && !road, crossing = d < 12 && road, mine = prio && prio.to === sg.node ? sg.appr.findIndex(a => a.appr === prio.appr) : -1;
         if (waiting) sg.want = true;
         sg.t -= dt;
         if (mine >= 0 && !sg.want) { if (sg.phase === 'green' && sg.cur === mine) sg.t = Math.max(sg.t, 2.5); else { sg.next = mine; if (sg.phase === 'green') sg.t = Math.min(sg.t, 1); } }

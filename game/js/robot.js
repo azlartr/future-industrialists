@@ -36,7 +36,7 @@ export async function makeRobot() {
   const ring = mesh(new THREE.TorusGeometry(.17, .03, 8, 28), navy, 0, .2, 0); ring.rotation.x = Math.PI / 2; body.add(ring);
   const [sc, sx] = canvas(64, 64); const gr = sx.createRadialGradient(32, 32, 2, 32, 32, 30); gr.addColorStop(0, 'rgba(120,200,255,.55)'); gr.addColorStop(1, 'rgba(120,200,255,0)'); sx.fillStyle = gr; sx.fillRect(0, 0, 64, 64);
   const glow = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.1), new THREE.MeshBasicMaterial({ map: toTex(sc), transparent: true, depthWrite: false })); glow.rotation.x = -Math.PI / 2; glow.position.y = .03; g.add(glow);
-  body.position.y = .55; g.scale.setScalar(1.05);
+  body.position.y = .55; g.scale.setScalar(.62);
   let t = Math.random() * 10, blink = 2, talk = 0, wave = 0, yaw = 0;
   const R = {
     group: g, head,
