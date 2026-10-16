@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { canvas, toTex, loadImg, BRAND, network, grad } from './tex.js';
 
 /* A modern touring coach in the initiative's livery: sculpted side profile with a sloping,
@@ -115,6 +116,8 @@ export async function makeBus() {
   for (const k of [-1, 1]) { const lf = m(new RoundedBoxGeometry(.49, 2.58, .04, 3, .04), glass, false); lf.position.set(4.82 + k * .25, 1.78, zs + .02); g.add(lf); leaves.push({ m: lf, k, x0: 4.82 + k * .25 }); }
   g.userData.door = t => { for (const l of leaves) { l.m.position.x = l.x0 + l.k * .42 * t; l.m.position.z = zs + .02 + .12 * Math.sin(Math.min(1, t * 2) * Math.PI / 2); } };
   g.userData.doorPos = new THREE.Vector3(4.82, 0, Wd / 2 + .4);
+  g.userData.halfLen = L / 2 + .2; g.userData.halfWid = Wd / 2 + .25;
+  g.userData.roll = d => { for (const w of g.userData.wheels) w.rotation.z -= d / .52; };
   // livery decals on both flanks, below the glazing
   for (const s of [1, -1]) {
     const t = await livery(s);
@@ -152,5 +155,60 @@ export async function makeBus() {
   // roof pod + lower skirt trim
   const pod = m(new RoundedBoxGeometry(3.4, .22, 1.7, 6, .1), paint); pod.position.set(-1.6, 3.66, 0); g.add(pod);
   for (const s of [-1, 1]) { const trim = m(new THREE.BoxGeometry(11.5, .06, .02), chrome, false); trim.position.set(-.1, 1.92, s * (zs + .01)); g.add(trim); }
+  return g;
+}
+
+/* The team's coach model (assets/models/bus.glb), used as made: one unit long, front towards -z, door on +x.
+   It is turned to face +x with the door on the +z (curb) side and scaled to a 7.6 m coach. Spinning
+   wheels sit over the modelled ones and a two-leaf door opens over the modelled door. Same interface as makeBus(). */
+const GB = { file: 'assets/models/bus.glb', S: 7.6, ground: .249, axles: [[-.261, -.192], [.141, -.191], [.268, -.191]], r: .0595, xOut: .2125,
+  door: { z0: -.432, z1: -.332, y0: -.206, y1: .092, x: .2205 } };
+function rimTexture() {
+  const [c, x] = canvas(256, 256); x.translate(128, 128);
+  x.fillStyle = '#17181c'; x.beginPath(); x.arc(0, 0, 128, 0, 7); x.fill();
+  x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 3; for (let i = 0; i < 36; i++) { x.rotate(Math.PI / 18); x.beginPath(); x.moveTo(104, 0); x.lineTo(122, 0); x.stroke(); }
+  const g = x.createRadialGradient(-20, -20, 10, 0, 0, 80); g.addColorStop(0, '#f4f6f9'); g.addColorStop(1, '#9aa1ad');
+  x.fillStyle = g; x.beginPath(); x.arc(0, 0, 80, 0, 7); x.fill();
+  x.fillStyle = '#2b2f37'; for (let i = 0; i < 10; i++) { x.rotate(Math.PI / 5); x.beginPath(); x.ellipse(52, 0, 16, 9, 0, 0, 7); x.fill(); }
+  x.fillStyle = '#5d6470'; x.beginPath(); x.arc(0, 0, 26, 0, 7); x.fill();
+  x.fillStyle = '#d7dbe2'; for (let i = 0; i < 8; i++) { x.rotate(Math.PI / 4); x.beginPath(); x.arc(17, 0, 3.5, 0, 7); x.fill(); }
+  x.fillStyle = '#1d2027'; x.beginPath(); x.arc(0, 0, 9, 0, 7); x.fill();
+  return toTex(c);
+}
+export async function makeBusGLB() {
+  const gltf = await new GLTFLoader().loadAsync(GB.file), S = GB.S;
+  const g = new THREE.Group(); g.name = 'bus';
+  const m = new THREE.Group(); m.rotation.y = -Math.PI / 2; m.scale.setScalar(S); m.position.y = GB.ground * S; g.add(m); m.add(gltf.scene);
+  gltf.scene.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  // wheels: a tyre and a turning rim face over each modelled wheel
+  const tyreM = new THREE.MeshStandardMaterial({ color: '#141518', roughness: .9 }), rimM = new THREE.MeshStandardMaterial({ map: rimTexture(), metalness: .55, roughness: .35, polygonOffset: true, polygonOffsetFactor: -2 });
+  const tyreG = new THREE.CylinderGeometry(GB.r, GB.r, .07, 40).rotateZ(Math.PI / 2), faceG = new THREE.CircleGeometry(GB.r * .985, 40);
+  const wheels = [];
+  for (const [z, y] of GB.axles) for (const side of [1, -1]) {
+    const w = new THREE.Group(); w.position.set(side * (GB.xOut - .035), y, z); m.add(w);
+    const tyre = new THREE.Mesh(tyreG, tyreM); tyre.castShadow = true; w.add(tyre);
+    const face = new THREE.Mesh(faceG, rimM); face.rotation.y = side * Math.PI / 2; face.position.x = side * .0355; w.add(face);
+    wheels.push(w);
+  }
+  g.userData.wheels = wheels;
+  g.userData.roll = d => { for (const w of wheels) w.rotation.x -= d / (GB.r * S); };
+  // the door: a dark doorway and two glass leaves that swing out from their hinges
+  const D = GB.door, dh = D.y1 - D.y0, lw = (D.z1 - D.z0) / 2, dy = (D.y0 + D.y1) / 2;
+  const way = new THREE.Mesh(new THREE.PlaneGeometry(D.z1 - D.z0, dh), new THREE.MeshStandardMaterial({ color: '#15171c', roughness: .9, polygonOffset: true, polygonOffsetFactor: -3 }));
+  way.rotation.y = Math.PI / 2; way.position.set(D.x, dy, (D.z0 + D.z1) / 2); way.visible = false; m.add(way);
+  // each leaf: tinted glass in a slim white frame, like the coach's own door
+  const leafM = new THREE.MeshPhysicalMaterial({ color: '#5d7286', roughness: .05, metalness: .1, transparent: true, opacity: .55, clearcoat: 1, depthWrite: false }), frameM = new THREE.MeshStandardMaterial({ color: '#eef0f3', roughness: .35 });
+  const leaves = [[D.z0, 1], [D.z1, -1]].map(([zh, dir]) => {
+    const h = new THREE.Group(); h.position.set(D.x + .002, dy, zh); h.visible = false; m.add(h);
+    const pane = new THREE.Mesh(new THREE.BoxGeometry(.002, dh * .94, lw * .9), leafM); pane.position.z = dir * lw / 2; h.add(pane);
+    for (const [zz, hh, ww] of [[lw * .02, dh, .004], [lw * .98, dh, .004], [lw / 2, .005, lw], [lw / 2, .005, lw]]) {
+      const b = new THREE.Mesh(new THREE.BoxGeometry(.004, hh, ww), frameM); b.position.z = dir * zz; h.add(b); b.castShadow = true;
+    }
+    h.children[3].position.y = dh / 2 - .0025; h.children[4].position.y = -dh / 2 + .0025;
+    return { h, dir };
+  });
+  g.userData.door = t => { const open = t > .01; way.visible = open; for (const l of leaves) { l.h.visible = open; l.h.rotation.y = l.dir * t * 1.45; } };
+  g.userData.doorPos = new THREE.Vector3(-(D.z0 + D.z1) / 2 * S, 0, (D.x + .01) * S);
+  g.userData.halfLen = .5 * S + .15; g.userData.halfWid = .24 * S + .15;
   return g;
 }

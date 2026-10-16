@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { buildRegion, LAYOUT } from './world.js';
-import { makeBus } from './bus.js';
+import { makeBus, makeBusGLB } from './bus.js';
 import { buildInterior } from './interior.js';
 import { runMiniGame } from './games.js';
 import { REGIONS, ORDER, TRACKS, ALL } from './regions.js';
@@ -24,7 +24,7 @@ const store = { get(k, d) { try { const v = localStorage.getItem('fi.' + k); ret
    also work on iPhones, where <audio>.volume is read-only. Two <audio> decks cross-fade the music; the
    short effects are decoded once and played from memory. Browsers allow sound only after the first
    tap, so the graph is unlocked on the first touch, click or key (and tried at load for returning visitors). */
-const SFX = ['ui_click', 'ui_hover', 'task_done', 'wrong', 'points', 'level_up', 'panel_open', 'panel_close', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5', 'factory_metal', 'pin_drop'];
+const SFX = ['ui_click', 'ui_hover', 'task_done', 'wrong', 'points', 'level_up', 'panel_open', 'panel_close', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5', 'factory_metal', 'pin_drop', 'bus_brake', 'bus_door_open', 'bus_door_close', 'bus_horn'];
 const Audio_ = {
   musicVol: store.get('music', .8), sfxVol: store.get('sfx', .9), name: '', ctx: null, decks: [], cur: 0, buf: {}, primed: false,
   init() {
@@ -73,6 +73,35 @@ const Audio_ = {
   ui() { const d = this.decks[this.cur]; document.body.classList.toggle('playing', !!d && !d.a.paused && this.running && this.musicVol > 0); $('#snd-wave').style.display = this.musicVol > 0 || this.sfxVol > 0 ? '' : 'none'; }
 };
 const A = { sfx: (n, v) => Audio_.sfx(n, v) };
+/* the coach's diesel engine, synthesized live: it loops without a seam and its pitch follows the bus */
+const Engine = {
+  on: false,
+  start() {
+    if (this.on || !Audio_.running) return; const c = Audio_.ctx; this.on = true;
+    this.out = c.createGain(); this.out.gain.value = 0; this.out.connect(Audio_.sBus);
+    this.lp = c.createBiquadFilter(); this.lp.type = 'lowpass'; this.lp.frequency.value = 220; this.lp.Q.value = .9; this.lp.connect(this.out);
+    const chug = c.createGain(); chug.gain.value = .55; chug.connect(this.lp);
+    this.o1 = c.createOscillator(); this.o1.type = 'sawtooth'; this.o1.frequency.value = 32; this.o1.connect(chug);
+    this.o2 = c.createOscillator(); this.o2.type = 'square'; this.o2.frequency.value = 16; const g2 = c.createGain(); g2.gain.value = .45; this.o2.connect(g2).connect(chug);
+    const nb = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    this.ns = c.createBufferSource(); this.ns.buffer = nb; this.ns.loop = true;
+    const nf = c.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.value = 140; nf.Q.value = .8; const ng = c.createGain(); ng.gain.value = .4; this.ns.connect(nf).connect(ng).connect(chug);
+    // the diesel's firing pulses: a low LFO beating the level
+    this.lfo = c.createOscillator(); this.lfo.frequency.value = 14; const lg = c.createGain(); lg.gain.value = .3; this.lfo.connect(lg).connect(chug.gain);
+    for (const n of [this.o1, this.o2, this.ns, this.lfo]) n.start();
+  },
+  set(rpm, vol) {
+    if (!this.on) return; const t = Audio_.ctx.currentTime, f = 30 + rpm * 40;
+    this.o1.frequency.setTargetAtTime(f, t, .2); this.o2.frequency.setTargetAtTime(f / 2, t, .2); this.lfo.frequency.setTargetAtTime(f / 2.2, t, .2);
+    this.lp.frequency.setTargetAtTime(190 + rpm * 560, t, .25); this.out.gain.setTargetAtTime(vol, t, .3);
+  }
+};
+let busV = 0;
+function updateEngine() {
+  if (!RW || !bus || !Audio_.running) return; Engine.start();
+  const audible = ['world', 'intro', 'ride'].includes(S.mode) || $('#route').classList.contains('on'), d = camera.position.distanceTo(bus.position);
+  Engine.set(clamp(.06 + Math.abs(busV) / 22, 0, 1), audible ? .5 * Math.pow(clamp(1 - d / 55, 0, 1), 1.4) * (S.mode === 'ride' ? 1.2 : 1) : 0);
+}
 for (const ev of ['pointerdown', 'touchend', 'click', 'keydown']) addEventListener(ev, () => Audio_.unlock(), { capture: true });
 // a hidden tab goes quiet and picks the music up again on return
 document.addEventListener('visibilitychange', () => { if (!Audio_.ctx) return; if (document.hidden) Audio_.ctx.suspend(); else if (Audio_.primed) Audio_.ctx.resume().catch(() => {}); });
@@ -196,7 +225,7 @@ async function loadRegion(key) {
   if (RW && RW.key === key) return;
   if (RW) { RW.scene.remove(bus, marker, player?.root); RW.dispose(); RW = null; }
   const w = await buildRegion(renderer, key); w.key = key;
-  bus ||= await makeBus(); w.scene.add(bus);
+  bus ||= await makeBusGLB().catch(e => { console.warn('bus model', e); return makeBus(); }); w.scene.add(bus);
   marker ||= makeMarker(); w.scene.add(marker);
   player = await getPlayer(S.char, w.tint); w.scene.add(player.root);
   w.yard = [[8, 9], [16, 9], [8, 20], [16, 20]].map(([x, z]) => [LAYOUT.SCHOOL_X + x, -40 + z, .5]);
@@ -213,7 +242,7 @@ async function getPlayer(kind, tint) {
 }
 /* 3D characters: rigged GLB files with Mixamo bone names. Clips are picked by name (walk, run, idle) from
    every file listed; a kind without a model keeps the paper-doll rig. */
-const HEROES = { boy: ['assets/chars/boy.glb'] }, HERO_H = 1.5;
+const HEROES = { boy: ['assets/chars/boy.glb'], girl: ['assets/chars/girl.glb'] }, HERO_H = 1.5;
 async function loadHero(kind) {
   const files = HEROES[kind]; if (!files) return null;
   try {
@@ -274,7 +303,7 @@ function makeMarker() {
   return g;
 }
 const L = () => RW.locs[S.loc];
-const busDoor = () => new THREE.Vector3(bus.position.x + 4.82, .2, 7.4);
+const busDoor = () => new THREE.Vector3(bus.position.x + bus.userData.doorPos.x, .2, LAYOUT.LANE_Z + bus.userData.doorPos.z + .2);
 
 /* ---------------- input ---------------- */
 const keys = {}; let joy = { x: 0, y: 0 }, camYaw = Math.PI, camPitch = .3, drag = null, skip = false;
@@ -355,7 +384,7 @@ function camClear(tgt, dist) {
 }
 function busInWay(tgt, want) {
   if (!bus) return false;
-  for (let i = 1; i <= 12; i++) { const k = i / 12, x = tgt.x + (want.x - tgt.x) * k, z = tgt.z + (want.z - tgt.z) * k; if (Math.abs(x - bus.position.x) < 6.8 && z > 3.6 && z < 7.6) return true; }
+  const bh = bus.userData; for (let i = 1; i <= 12; i++) { const k = i / 12, x = tgt.x + (want.x - tgt.x) * k, z = tgt.z + (want.z - tgt.z) * k; if (Math.abs(x - bus.position.x) < bh.halfLen + .4 && Math.abs(z - LAYOUT.LANE_Z) < bh.halfWid + .4) return true; }
   return false;
 }
 let camDist = 6, camLift = 0;
@@ -388,7 +417,7 @@ function walk(dt) {
     const yard = loc.kind === 'school';
     if (oz < -14.2) { nx = clamp(nx, loc.x - 20.5, loc.x + 20.5); nz = Math.max(nz, -33); if (nz > -14.2 && Math.abs(nx - loc.x) > 3.4) nz = -14.4; }
     else if (nz < -13.4 && !(yard && Math.abs(nx - loc.x) < 3.4)) nz = -13.4;
-    if (nx > bus.position.x - 6.4 && nx < bus.position.x + 6.4 && nz > 4.1 && nz < 7) { nx = ox; nz = oz; }
+    const bh = bus.userData; if (Math.abs(nx - bus.position.x) < bh.halfLen && Math.abs(nz - LAYOUT.LANE_Z) < bh.halfWid) { nx = ox; nz = oz; }
     for (const [cx, cz, cr] of [...RW.colliders, ...RW.yard]) { const ddx = nx - cx, ddz = nz - cz, d = Math.hypot(ddx, ddz), min = cr + .3; if (d < min && d > 1e-4) { nx = cx + ddx / d * min; nz = cz + ddz / d * min; } }
     r.position.x = nx; r.position.z = nz;
     p.yaw = ang; face = Math.cos(ang - camYaw) > 0 ? 'front' : 'back';
@@ -431,10 +460,10 @@ async function rideTo(dest) {
   S.mode = 'ride'; show('hud'); $('#hud').classList.add('cine'); $('#act').classList.remove('on');
   const door = busDoor(), from = player.root.position.clone(), D = RW.locs[dest];
   // board: the doors open, the student walks in
-  Audio_.sfx('panel_open', .6);
+  Audio_.sfx('bus_door_open', .8);
   camera.position.set(door.x + 6, 2.6, 15); camera.lookAt(door.x, 1.4, 7.2);
-  let k = 0; await cine(dt => { k += dt / 1.6; bus.userData.door(Math.min(1, k * 2)); const e = ease(Math.min(1, k)); player.root.position.lerpVectors(from, new THREE.Vector3(door.x, .2, 7.2), e); player.speed = 2.4; animatePlayer(player, dt, null, 'back'); return k < 1; });
-  player.root.visible = false; bus.userData.door(0);
+  let k = 0; await cine(dt => { k += dt / 1.6; bus.userData.door(Math.min(1, k * 2)); const e = ease(Math.min(1, k)); player.root.position.lerpVectors(from, new THREE.Vector3(door.x, .2, door.z - .3), e); player.speed = 2.4; animatePlayer(player, dt, null, 'back'); return k < 1; });
+  player.root.visible = false; bus.userData.door(0); Audio_.sfx('bus_door_close', .8); setTimeout(() => Audio_.sfx('bus_horn', .45), 900);
   // the ride
   show('ride'); $('#ride-to').textContent = D.name;
   const x0 = LAYOUT.SCHOOL_X - 20, x1 = LAYOUT.FACT_X[2] + 20, pos = x => clamp((x - x0) / (x1 - x0), 0, 1) * 100;
@@ -450,7 +479,7 @@ async function rideTo(dest) {
     const dist = b - a, T = mode === 'full' ? Math.max(6, dist / 20) : 3.4; let t = 0, prev = a, shotT = 0, shot = (Math.random() * 4) | 0;
     await cine(dt => {
       t = Math.min(T, t + dt); const u = t / T, e = mode === 'full' ? (1 - Math.cos(u * Math.PI)) / 2 : mode === 'out' ? u * u : 1 - (1 - u) * (1 - u);
-      const x = a + dist * e; bus.position.x = x; const v = (x - prev) / Math.max(dt, 1e-4); prev = x; for (const w of bus.userData.wheels) w.rotation.z -= v * dt / .52;
+      const x = a + dist * e; bus.position.x = x; const v = (x - prev) / Math.max(dt, 1e-4); prev = x; busV = v; bus.userData.roll(v * dt);
       shotT += dt; if (shotT > 3.4) { shotT = 0; shot = (shot + 1) % shots.length; }
       const [cp, lk] = shots[shot](x, shotT); camera.position.set(...cp); camera.lookAt(...lk);
       sunAt(x, 0); $('#ride-fill').style.width = pos(x) + '%';
@@ -460,15 +489,15 @@ async function rideTo(dest) {
   const a = bus.position.x, b = D.busX;
   if (b > a && b - a < 900) await drive(a, b, 'full');
   else { await drive(a, a + 80, 'out'); if (!skip) { flash(); await wait(200); } await drive(b - 90, b, 'in'); }
-  bus.position.x = b; skip = false;
-  // arrive: doors open, the student steps down
+  bus.position.x = b; skip = false; busV = 0; Audio_.sfx('bus_brake', .75);
+  // arrive: the air brakes hiss, the doors open, the student steps down
   S.loc = dest; show('hud'); $('#hud').classList.add('cine'); updateHUD();
-  Audio_.music(REGIONS[S.region].music, { vol: .55 }); Audio_.sfx('panel_open', .6);
-  const d2 = busDoor(); player.root.visible = true; player.root.position.set(d2.x, .2, 7.2);
+  Audio_.music(REGIONS[S.region].music, { vol: .55 }); setTimeout(() => Audio_.sfx('bus_door_open', .8), 350);
+  const d2 = busDoor(); player.root.visible = true; player.root.position.set(d2.x, .2, d2.z - .3);
   const to = new THREE.Vector3(d2.x - .4, .2, 9.6);
   camera.position.set(d2.x + 5, 2.6, 14.5); camera.lookAt(d2.x, 1.3, 8);
-  k = 0; await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(new THREE.Vector3(d2.x, .2, 7.2), to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
-  bus.userData.door(0); player.speed = 0; player.root.position.copy(to);
+  k = 0; await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(new THREE.Vector3(d2.x, .2, d2.z - .3), to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
+  bus.userData.door(0); Audio_.sfx('bus_door_close', .6); player.speed = 0; player.root.position.copy(to);
   camYaw = .35; camPitch = .3; follow(0, true); justArrived = D.kind === 'factory'; $('#hud').classList.remove('cine'); S.mode = 'world'; skip = false;
   toast(D.kind === 'school' ? 'وصلت إلى المدرسة' : `وصلت إلى ${D.name} · اعبر ممر المشاة إلى البوابة`, 3200);
 }
@@ -560,7 +589,7 @@ $('#fin-ok').onclick = () => { Audio_.sfx('ui_click'); show('hud'); S.mode = 'wo
 
 /* ---------------- loop ---------------- */
 function loop() {
-  const dt = Math.min(.05, clock.getDelta());
+  const dt = Math.min(.05, clock.getDelta()); updateEngine();
   if (S.mode === 'world' && RW) { RW.update(dt); walk(dt); renderer.render(RW.scene, camera); }
   else if (S.mode === 'factory' && IN) {
     IN.update(dt); orbit?.update();
