@@ -217,6 +217,19 @@ body.touch .hint{display:none}
 .ride-line i{position:absolute;inset:0 auto 0 0;width:0;background:var(--grad);border-radius:inherit}
 .ride-stops{position:relative;height:18px;margin-top:6px;font-size:11px;font-weight:600;color:var(--muted)}
 .ride-stops span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+/* driving the bus */
+#drive{pointer-events:none}
+#drive>*{pointer-events:auto}
+.drive-top{top:max(12px,env(safe-area-inset-top))}
+.speedo{position:absolute;right:16px;bottom:max(16px,env(safe-area-inset-bottom));width:96px;height:96px;border-radius:50%;display:grid;place-content:center;text-align:center;line-height:1.1}
+.speedo b{font-size:30px;font-variant-numeric:tabular-nums;color:var(--navy)}
+.speedo small{font-size:12px;color:var(--muted)}
+.dv-horn{position:absolute;right:124px;bottom:max(36px,env(safe-area-inset-bottom));font-size:22px}
+#drive .hint{display:flex}
+body.touch #drive .hint{display:none}
+body.touch #drive .joy{display:block}
+#drive .prompt{bottom:130px}
+body.driving .toast{top:auto;bottom:calc(max(16px,env(safe-area-inset-bottom)) + 190px)}
 .skip2{position:absolute;bottom:calc(8vh + 14px);left:50%;transform:translateX(-50%);z-index:2}
 /* route menu */
 #route{background:rgba(12,16,52,.5);backdrop-filter:blur(4px);z-index:41}
@@ -313,7 +326,12 @@ body.touch .hint{display:none}
   .m-head b{font-size:15px}.m-head small{font-size:12px;line-height:1.6;display:block}
   #mhud .hint{display:none}
   .toast{top:76px;font-size:14px}
+  .drive-top{left:auto;right:12px;transform:none;width:calc(100% - 132px);box-sizing:border-box;padding:10px 12px}
+  .drive-top small{font-size:11px}.drive-top b{font-size:17px;margin:2px 0 8px}
+  .speedo{width:80px;height:80px}.speedo b{font-size:24px}
+  .dv-horn{right:104px}
 }
+body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 150px)}
 </style>
 <script type="importmap">{"imports":{"three":"./lib/three.module.min.js","three/addons/":"./lib/jsm/"}}</script>
 </head>
@@ -418,6 +436,14 @@ body.touch .hint{display:none}
 <section class="screen" id="ride">
   <div class="ride-top glass"><small>الباص في الطريق إلى</small><b id="ride-to"></b><div class="ride-bar"><div class="ride-line"><i id="ride-fill"></i></div><div class="ride-stops" id="ride-stops"></div></div></div>
   <button class="btn ghost skip2" id="ride-skip" type="button">تخطّي الطريق ⏭</button>
+</section>
+<section class="screen" id="drive">
+  <div class="ride-top glass drive-top"><small>أنت تقود باص صناعيو المستقبل · المحطة التالية</small><b id="dv-next"></b><div class="ride-bar"><div class="ride-line"><i id="dv-fill"></i></div><div class="ride-stops" id="dv-stops"></div></div></div>
+  <div class="speedo glass"><b id="dv-kmh">0</b><small>كم/س</small></div>
+  <button class="btn prompt" id="dv-act" type="button">🚏 انزل هنا</button>
+  <div class="hint glass" id="dv-hint"><kbd>W</kbd> تسارع · <kbd>S</kbd> فرامل · <kbd>A</kbd><kbd>D</kbd> توجيه · <kbd>H</kbd> البوق · توقّف عند محطة الباص 🚏 لتنزل</div>
+  <button class="icon-btn glass dv-horn" id="dv-horn" type="button" aria-label="البوق">📯</button>
+  <div class="joy" id="joy2"><i></i></div>
 </section>
 <section class="screen" id="route">
   <div class="card glass">

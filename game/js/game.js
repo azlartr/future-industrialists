@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { makeDoll, animateDoll } from './doll.js';
 import { canvas, toTex } from './tex.js';
 import { Ambient } from './fx.js';
+import { makeLife } from './life.js';
 
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const Q = new URLSearchParams(location.search);
@@ -99,7 +100,7 @@ const Engine = {
 let busV = 0;
 function updateEngine() {
   if (!RW || !bus || !Audio_.running) return; Engine.start();
-  const audible = ['world', 'intro', 'ride'].includes(S.mode) || $('#route').classList.contains('on'), d = camera.position.distanceTo(bus.position);
+  const audible = ['world', 'intro', 'ride', 'drive'].includes(S.mode) || $('#route').classList.contains('on'), d = camera.position.distanceTo(bus.position);
   Engine.set(clamp(.06 + Math.abs(busV) / 22, 0, 1), audible ? .5 * Math.pow(clamp(1 - d / 55, 0, 1), 1.4) * (S.mode === 'ride' ? 1.2 : 1) : 0);
 }
 for (const ev of ['pointerdown', 'touchend', 'click', 'keydown']) addEventListener(ev, () => Audio_.unlock(), { capture: true });
@@ -129,7 +130,7 @@ const doneCount = () => Object.values(S.done).filter(s => s > 0).length;
 const badgeSet = () => new Set(ALL.filter(f => S.done[f.id] > 0).map(f => f.track));
 const regionDone = r => REGIONS[r].factories.filter(f => S.done[f.id] > 0).length;
 
-function show(id) { $$('.screen').forEach(s => { if (s.id !== 'mg') s.classList.toggle('on', s.id === id); }); $('#home').hidden = !['hud', 'mhud', 'ride'].includes(id); }
+function show(id) { $$('.screen').forEach(s => { if (s.id !== 'mg') s.classList.toggle('on', s.id === id); }); $('#home').hidden = !['hud', 'mhud', 'ride', 'drive'].includes(id); }
 function toast(t, ms = 2600) { const e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('on'), ms); }
 const flash = () => { const f = $('#flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); };
 $$('button').forEach(b => b.addEventListener('pointerenter', () => !touch && Audio_.sfx('ui_hover', .25)));
@@ -192,7 +193,7 @@ const fitCam = () => { renderer.setSize(innerWidth, innerHeight); camera.aspect 
 addEventListener('resize', fitCam); fitCam();
 const clock = new THREE.Clock();
 
-let RW = null, bus = null, player = null, marker = null, orbit = null, IN = null, curF = null;
+let RW = null, bus = null, player = null, marker = null, orbit = null, IN = null, curF = null, life = null;
 const dolls = {};
 
 /* ---------------- loading screen ---------------- */
@@ -223,11 +224,12 @@ async function startRegion(key) {
 }
 async function loadRegion(key) {
   if (RW && RW.key === key) return;
-  if (RW) { RW.scene.remove(bus, marker, player?.root); RW.dispose(); RW = null; }
+  if (RW) { RW.scene.remove(bus, marker, player?.root); RW.dispose(); RW = null; life = null; }
   const w = await buildRegion(renderer, key); w.key = key;
   bus ||= await makeBusGLB().catch(e => { console.warn('bus model', e); return makeBus(); }); w.scene.add(bus);
   marker ||= makeMarker(); w.scene.add(marker);
   player = await getPlayer(S.char, w.tint); w.scene.add(player.root);
+  life = await makeLife(w.scene, { sea: !!w.sea }).catch(e => { console.warn('street life', e); return null; });
   w.yard = [[8, 9], [16, 9], [8, 20], [16, 20]].map(([x, z]) => [LAYOUT.SCHOOL_X + x, -40 + z, .5]);
   renderer.toneMappingExposure = w.exposure;
   if (renderer.compileAsync) await renderer.compileAsync(w.scene, camera).catch(() => {});
@@ -307,17 +309,19 @@ const busDoor = () => new THREE.Vector3(bus.position.x + bus.userData.doorPos.x,
 
 /* ---------------- input ---------------- */
 const keys = {}; let joy = { x: 0, y: 0 }, camYaw = Math.PI, camPitch = .3, drag = null, skip = false;
-addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'KeyE' && S.mode === 'world') act(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
+addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'KeyE' && S.mode === 'world') act(); if (e.code === 'KeyE' && S.mode === 'drive') driveAct(); if (e.code === 'KeyH' && S.mode === 'drive' && !e.repeat) honk(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
 addEventListener('keyup', e => { keys[e.code] = false; });
 const cv = $('#c');
 cv.addEventListener('pointerdown', e => { if (S.mode === 'world') { drag = { x: e.clientX, y: e.clientY, yaw: camYaw, pitch: camPitch }; cv.setPointerCapture(e.pointerId); } });
 cv.addEventListener('pointermove', e => { if (!drag) return; camYaw = drag.yaw - (e.clientX - drag.x) * .006; camPitch = clamp(drag.pitch + (e.clientY - drag.y) * .004, .12, .9); });
 cv.addEventListener('pointerup', () => { drag = null; });
-const jo = $('#joy'), knob = jo.querySelector('i');
-jo.addEventListener('pointerdown', e => { jo.setPointerCapture(e.pointerId); joyMove(e); });
-jo.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch') joyMove(e); });
-jo.addEventListener('pointerup', () => { joy = { x: 0, y: 0 }; knob.style.transform = ''; });
-function joyMove(e) { const r = jo.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), d = Math.min(1, Math.hypot(dx, dy) / (r.width / 2)), a = Math.atan2(dy, dx); joy = { x: Math.cos(a) * d, y: Math.sin(a) * d }; knob.style.transform = `translate(${joy.x * 38}px,${joy.y * 38}px)`; }
+for (const jo of [$('#joy'), $('#joy2')]) {
+  const knob = jo.querySelector('i');
+  const move = e => { const r = jo.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), d = Math.min(1, Math.hypot(dx, dy) / (r.width / 2)), a = Math.atan2(dy, dx); joy = { x: Math.cos(a) * d, y: Math.sin(a) * d }; knob.style.transform = `translate(${joy.x * 38}px,${joy.y * 38}px)`; };
+  jo.addEventListener('pointerdown', e => { jo.setPointerCapture(e.pointerId); move(e); });
+  jo.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch') move(e); });
+  jo.addEventListener('pointerup', () => { joy = { x: 0, y: 0 }; knob.style.transform = ''; });
+}
 $('#act').addEventListener('click', () => act());
 $('#skip').addEventListener('click', () => { skip = true; });
 $('#ride-skip').addEventListener('click', () => { skip = true; });
@@ -442,6 +446,9 @@ function walk(dt) {
 function openRoute() {
   S.mode = 'menu'; Audio_.sfx('panel_open', .5);
   const list = $('#route-list'); list.innerHTML = '';
+  const dv = document.createElement('button'); dv.type = 'button'; dv.className = 'drive-me';
+  dv.innerHTML = `<span class="ic" style="background:var(--grad);display:grid;place-items:center;font-size:22px">🚌</span><span class="tx"><b>سُق الباص بنفسك</b><small>تجوّل في المدينة وتوقّف عند أي محطة</small></span><span class="st">جديد</span>`;
+  dv.onclick = () => { Audio_.sfx('ui_click'); $('#route').classList.remove('on'); startDrive(); }; list.append(dv);
   RW.locs.forEach((l, i) => {
     const b = document.createElement('button'); b.type = 'button'; b.disabled = i === S.loc;
     if (l.kind === 'school') b.innerHTML = `<span class="ic" style="background-image:url(assets/img/logo-mark.webp)"></span><span class="tx"><b>المدرسة</b><small>نقطة الانطلاق</small></span><span class="st"></span>`;
@@ -456,14 +463,17 @@ $('#route-close').onclick = () => { Audio_.sfx('panel_close'); $('#route').class
 $('#route-region').onclick = () => { Audio_.sfx('ui_click'); $('#route').classList.remove('on'); showRegions(true); };
 
 async function cine(fn) { S.cine = true; skip = false; if (marker) marker.visible = false; let last = performance.now(); for (;;) { const now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now; RW.update(dt); if (fn(dt) === false || skip) break; renderer.render(RW.scene, camera); await frame(); } S.cine = false; if (marker) marker.visible = true; }
-async function rideTo(dest) {
+async function board() {
   S.mode = 'ride'; show('hud'); $('#hud').classList.add('cine'); $('#act').classList.remove('on');
-  const door = busDoor(), from = player.root.position.clone(), D = RW.locs[dest];
+  const door = busDoor(), from = player.root.position.clone();
   // board: the doors open, the student walks in
   Audio_.sfx('bus_door_open', .8);
   camera.position.set(door.x + 6, 2.6, 15); camera.lookAt(door.x, 1.4, 7.2);
   let k = 0; await cine(dt => { k += dt / 1.6; bus.userData.door(Math.min(1, k * 2)); const e = ease(Math.min(1, k)); player.root.position.lerpVectors(from, new THREE.Vector3(door.x, .2, door.z - .3), e); player.speed = 2.4; animatePlayer(player, dt, null, 'back'); return k < 1; });
   player.root.visible = false; bus.userData.door(0); Audio_.sfx('bus_door_close', .8); setTimeout(() => Audio_.sfx('bus_horn', .45), 900);
+}
+async function rideTo(dest) {
+  const D = RW.locs[dest]; await board();
   // the ride
   show('ride'); $('#ride-to').textContent = D.name;
   const x0 = LAYOUT.SCHOOL_X - 20, x1 = LAYOUT.FACT_X[2] + 20, pos = x => clamp((x - x0) / (x1 - x0), 0, 1) * 100;
@@ -490,16 +500,82 @@ async function rideTo(dest) {
   if (b > a && b - a < 900) await drive(a, b, 'full');
   else { await drive(a, a + 80, 'out'); if (!skip) { flash(); await wait(200); } await drive(b - 90, b, 'in'); }
   bus.position.x = b; skip = false; busV = 0; Audio_.sfx('bus_brake', .75);
-  // arrive: the air brakes hiss, the doors open, the student steps down
-  S.loc = dest; show('hud'); $('#hud').classList.add('cine'); updateHUD();
+  await alight(dest);
+}
+// arrive: the air brakes hiss, the doors open, the student steps down
+async function alight(dest) {
+  const D = RW.locs[dest]; let k = 0;
+  S.mode = 'ride'; S.loc = dest; show('hud'); $('#hud').classList.add('cine'); updateHUD();
   Audio_.music(REGIONS[S.region].music, { vol: .55 }); setTimeout(() => Audio_.sfx('bus_door_open', .8), 350);
   const d2 = busDoor(); player.root.visible = true; player.root.position.set(d2.x, .2, d2.z - .3);
   const to = new THREE.Vector3(d2.x - .4, .2, 9.6);
   camera.position.set(d2.x + 5, 2.6, 14.5); camera.lookAt(d2.x, 1.3, 8);
-  k = 0; await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(new THREE.Vector3(d2.x, .2, d2.z - .3), to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
+  await cine(dt => { k += dt / 1.5; bus.userData.door(Math.min(1, k * 2.5)); player.root.position.lerpVectors(new THREE.Vector3(d2.x, .2, d2.z - .3), to, ease(Math.min(1, k))); player.speed = 2.4; animatePlayer(player, dt, null, 'front'); return k < 1; });
   bus.userData.door(0); Audio_.sfx('bus_door_close', .6); player.speed = 0; player.root.position.copy(to);
   camYaw = .35; camPitch = .3; follow(0, true); justArrived = D.kind === 'factory'; $('#hud').classList.remove('cine'); S.mode = 'world'; skip = false;
   toast(D.kind === 'school' ? 'وصلت إلى المدرسة' : `وصلت إلى ${D.name} · اعبر ممر المشاة إلى البوابة`, 3200);
+}
+
+/* ---------------- driving the bus yourself ---------------- */
+const DV = { v: 0, yaw: 0, near: null, bump: 0 };
+const KMH = 3.6, VMAX = 16, VREV = -4;
+async function startDrive() {
+  await board();
+  DV.v = 0; DV.yaw = 0; DV.near = null; bus.rotation.y = 0;
+  S.mode = 'drive'; show('drive'); $('#hud').classList.remove('cine'); marker.visible = false; document.body.classList.add('driving');
+  const x0 = LAYOUT.SCHOOL_X - 20, x1 = LAYOUT.FACT_X[2] + 20; DV.pos = x => clamp((x - x0) / (x1 - x0), 0, 1) * 100;
+  $('#dv-stops').innerHTML = RW.locs.map(l => `<span style="left:${DV.pos(l.x)}%">${l.kind === 'school' ? 'المدرسة' : l.f.short}</span>`).join('');
+  Audio_.music('bus_trip', { vol: .4 });
+  toast(touch ? 'حرّك عصا التحكم: للأمام تسارع، للخلف فرامل، يمين ويسار للتوجيه' : 'W للتسارع · S للفرامل · A و D للتوجيه · توقّف عند أي محطة 🚏 لتنزل', 4200);
+}
+function honk() { Audio_.sfx('bus_horn', .6); }
+$('#dv-horn').addEventListener('click', honk);
+$('#dv-act').addEventListener('click', () => driveAct());
+function driveStep(dt) {
+  const bh = bus.userData;
+  const up = keys.KeyW || keys.ArrowUp || joy.y < -.35, down = keys.KeyS || keys.ArrowDown || joy.y > .35;
+  const steer = ((keys.KeyA || keys.ArrowLeft) ? 1 : 0) - ((keys.KeyD || keys.ArrowRight) ? 1 : 0) - (Math.abs(joy.x) > .15 ? joy.x : 0);
+  if (up) DV.v += (DV.v < 0 ? 8 : 3.2 * (1 - DV.v / (VMAX + 4))) * dt;
+  else if (down) { const was = DV.v; DV.v -= (DV.v > .3 ? 8 : 2) * dt; if (was > 9 && DV.v <= 9) Audio_.sfx('bus_brake', .35); }
+  else DV.v -= Math.sign(DV.v) * Math.min(Math.abs(DV.v), (.5 + Math.abs(DV.v) * .05) * dt);
+  DV.v = clamp(DV.v, VREV, VMAX);
+  // steering bites with speed; with the wheel straight the coach settles back along the road
+  const grip = clamp(Math.abs(DV.v) / 5, 0, 1) * (DV.v < 0 ? -1 : 1);
+  DV.yaw += steer * .75 * grip * dt; if (!steer) DV.yaw -= DV.yaw * Math.min(1, dt * 1.1); DV.yaw = clamp(DV.yaw, -.36, .36);
+  const ox = bus.position.x, oz = bus.position.z, halfW = .24 * 7.6;
+  let x = ox + Math.cos(DV.yaw) * DV.v * dt, z = oz - Math.sin(DV.yaw) * DV.v * dt;
+  // the eastbound carriageway, between the median and the curb
+  const zMin = 1.1 + halfW + .05, zMax = 7.55 - halfW + .1;
+  if (z < zMin || z > zMax) { z = clamp(z, zMin, zMax); DV.yaw *= .5; DV.v *= 1 - dt * 1.8; }
+  x = clamp(x, -630, 630); if (Math.abs(x) >= 630) DV.v = 0;
+  // cars in the inner lane: no driving through them
+  for (const c of life?.traffic || []) {
+    if (c.lane.dir < 0 || Math.abs(c.lane.z - z) > halfW + .95) continue;
+    if (Math.abs(c.x - x) < bh.halfLen - .15 + c.len / 2 && Math.sign(c.x - x) === Math.sign(DV.v || 1)) { x = ox; z = oz; if (Math.abs(DV.v) > 2 && DV.bump <= 0) { Audio_.sfx('factory_metal', .35); DV.bump = .8; } DV.v = Math.min(DV.v, c.v * .9); }
+  }
+  DV.bump -= dt;
+  bus.position.set(x, .02, z); bus.rotation.y = DV.yaw; busV = DV.v; bus.userData.roll((x - ox) / Math.max(.01, Math.cos(DV.yaw)) * Math.sign(Math.cos(DV.yaw)));
+  // chase camera
+  const fx = Math.cos(DV.yaw), fz = -Math.sin(DV.yaw);
+  const want = new THREE.Vector3(x - fx * 15, 6.4, z - fz * 15 + 1.2);
+  camera.position.lerp(want, Math.min(1, dt * 3)); camera.lookAt(x + fx * 9, 1.8, z + fz * 9);
+  sunAt(x, z);
+  // stops: slow down beside one to get off
+  let best = null; RW.locs.forEach((l, i) => { const d = Math.abs(x - l.busX); if (d < 9 && Math.abs(z - LAYOUT.LANE_Z) < 1.4 && (!best || d < best.d)) best = { l, i, d }; });
+  DV.near = best; const act = $('#dv-act'), name = best ? (best.l.kind === 'school' ? 'المدرسة' : best.l.f.short) : '';
+  act.classList.toggle('on', !!best); if (best) act.textContent = Math.abs(DV.v) < 1.2 ? `🚏 انزل عند ${name}` : `خفّف السرعة للتوقف عند ${name}`;
+  $('#dv-kmh').textContent = Math.round(Math.abs(DV.v) * KMH);
+  const ahead = RW.locs.filter(l => l.busX > x + 9).sort((a, b) => a.busX - b.busX)[0];
+  $('#dv-next').textContent = ahead ? `${ahead.kind === 'school' ? 'المدرسة' : ahead.f.short} · ${Math.round(ahead.busX - x)} م` : 'نهاية الطريق';
+  $('#dv-fill').style.width = DV.pos(x) + '%';
+}
+async function driveAct() {
+  const n = DV.near; if (S.mode !== 'drive' || !n || Math.abs(DV.v) > 1.2) return;
+  S.mode = 'ride'; show('hud'); $('#hud').classList.add('cine'); Audio_.sfx('bus_brake', .7);
+  // pull in neatly beside the stop
+  const x0 = bus.position.x, z0 = bus.position.z, y0 = DV.yaw; let k = 0;
+  await cine(dt => { k = Math.min(1, k + dt / 1.1); const e = ease(k), px = bus.position.x; bus.position.set(x0 + (n.l.busX - x0) * e, .02, z0 + (LAYOUT.LANE_Z - z0) * e); bus.rotation.y = y0 * (1 - e); bus.userData.roll(bus.position.x - px); busV = 0; return k < 1; });
+  bus.rotation.y = 0; DV.v = 0; document.body.classList.remove('driving'); await alight(n.i); marker.visible = true;
 }
 
 /* ---------------- factories ---------------- */
@@ -590,7 +666,12 @@ $('#fin-ok').onclick = () => { Audio_.sfx('ui_click'); show('hud'); S.mode = 'wo
 /* ---------------- loop ---------------- */
 function loop() {
   const dt = Math.min(.05, clock.getDelta()); updateEngine();
+  if (life && RW && (['world', 'intro', 'ride', 'drive'].includes(S.mode) || $('#route').classList.contains('on'))) {
+    const pr = player.root.position, onBus = S.mode === 'drive' || !player.root.visible, bh = bus.userData;
+    life.update(dt, onBus ? bus.position.x : pr.x, [{ x: bus.position.x, z: bus.position.z, halfLen: bh.halfLen, halfWid: .24 * 7.6 }, ...(player.root.visible ? [{ x: pr.x, z: pr.z, halfLen: .5, halfWid: .9, person: true }] : [])], camera.position);
+  }
   if (S.mode === 'world' && RW) { RW.update(dt); walk(dt); renderer.render(RW.scene, camera); }
+  else if (S.mode === 'drive' && RW) { RW.update(dt); driveStep(dt); renderer.render(RW.scene, camera); }
   else if (S.mode === 'factory' && IN) {
     IN.update(dt); orbit?.update();
     for (const { el, hz } of labels) { const v = hz.anchor.clone().project(camera); el.style.display = v.z < 1 ? '' : 'none'; el.style.left = (v.x * .5 + .5) * innerWidth + 'px'; el.style.top = (-v.y * .5 + .5) * innerHeight + 'px'; }
@@ -608,7 +689,7 @@ function loop() {
 loop();
 
 /* ---------------- test hooks for automated screenshots ---------------- */
-window.__game = { S, show, Audio_, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
+window.__game = { S, show, Audio_, startDrive, DV, get life() { return life; }, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; } };
 (async () => {
   const auto = Q.get('auto');
   if (!auto) { window.__ready = true; return; }
