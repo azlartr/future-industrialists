@@ -1212,7 +1212,7 @@ function loop() {
 loop();
 
 /* ---------------- test hooks for automated screenshots ---------------- */
-window.__game = { renderer, TV, TOUR, missionDone, S, show, Audio_, loadingScreen, get BAYS() { return BAYS; }, get NET() { return NET; }, routeBus, parkAt, drawMap, get signals() { return signals; }, startDrive, DV, get life() { return life; }, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; }, get fun() { return fun; }, get people() { return people; }, get near() { return near; } };
+window.__game = { renderer, TV, TOUR, missionDone, openQuiz, S, show, Audio_, loadingScreen, get BAYS() { return BAYS; }, get NET() { return NET; }, routeBus, parkAt, drawMap, get signals() { return signals; }, startDrive, DV, get life() { return life; }, startRegion, enterFactory, rideTo, act, camera, busDoor, L, get bus() { return bus; }, get RW() { return RW; }, get player() { return player; }, get IN() { return IN; }, get fun() { return fun; }, get people() { return people; }, get near() { return near; } };
 (async () => {
   const auto = Q.get('auto');
   if (!auto) { window.__ready = true; return; }
