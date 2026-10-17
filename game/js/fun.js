@@ -1,28 +1,29 @@
 import * as THREE from 'three';
+import { tx } from './i18n.js';
 
 /* Things to play with while walking the city: a football and a goal on the plaza, pigeons that scatter
    when the student runs at them, and glowing idea bulbs: walk into one and a problem from the city
    asks for an invention, which goes into the hackathon notebook. */
 export const IDEAS = {
   riyadh: [
-    { ic: '☀️', p: 'شمس الرياض حارّة على من ينتظر الباص.', o: ['مظلة بألواح شمسية تشغّل مروحة رذاذ', 'مقعد يبرّد نفسه بأنابيب ماء', 'شاشة تعرض وقت وصول الباص وحرارة الجو'] },
-    { ic: '🚦', p: 'السيارات تنتظر طويلاً عند الإشارات.', o: ['إشارة ذكية تعدّ السيارات بالكاميرا', 'تطبيق يقترح طريقاً أقل زحمة', 'مسارات خاصة لباصات أكثر'] },
-    { ic: '🧃', p: 'عبوات العصير الفارغة تملأ سلال المدرسة بعد الفسحة.', o: ['آلة تسترجع العبوات وتعطي نقاطاً', 'عبوة تُطوى وتصغر بعد الشرب', 'حاوية تفرز البلاستيك والكرتون وحدها'] }
+    { ic: '☀️', p: tx('شمس الرياض حارّة على من ينتظر الباص.', 'The Riyadh sun is hot on people waiting for the bus.'), o: [tx('مظلة بألواح شمسية تشغّل مروحة رذاذ', 'A shade with solar panels that runs a misting fan'), tx('مقعد يبرّد نفسه بأنابيب ماء', 'A bench that cools itself with water pipes'), tx('شاشة تعرض وقت وصول الباص وحرارة الجو', 'A screen showing bus arrival time and the heat')] },
+    { ic: '🚦', p: tx('السيارات تنتظر طويلاً عند الإشارات.', 'Cars wait a long time at traffic lights.'), o: [tx('إشارة ذكية تعدّ السيارات بالكاميرا', 'A smart light that counts cars with a camera'), tx('تطبيق يقترح طريقاً أقل زحمة', 'An app that suggests a less crowded road'), tx('مسارات خاصة لباصات أكثر', 'More bus-only lanes')] },
+    { ic: '🧃', p: tx('عبوات العصير الفارغة تملأ سلال المدرسة بعد الفسحة.', 'Empty juice boxes fill the school bins after break.'), o: [tx('آلة تسترجع العبوات وتعطي نقاطاً', 'A machine that takes back bottles and gives points'), tx('عبوة تُطوى وتصغر بعد الشرب', 'A pack that folds up small after you drink it'), tx('حاوية تفرز البلاستيك والكرتون وحدها', 'A bin that sorts plastic and cardboard by itself')] }
   ],
   makkah: [
-    { ic: '💦', p: 'هواء جدة رطب جداً.', o: ['جهاز يحوّل رطوبة الهواء إلى ماء شرب', 'مكيّف يبرّد بماء البحر', 'قماش يمتص العرق ويجف بسرعة'] },
-    { ic: '🚲', p: 'نركب السيارة حتى للمسافات القصيرة.', o: ['دراجات مشتركة بمحطات شمسية', 'ممرات مشي مظللة بالنخيل', 'سكوتر كهربائي يُشحن من الشمس'] },
-    { ic: '🥛', p: 'الحليب يحتاج تبريداً طوال الطريق إلى البقالة.', o: ['عبوة يتغير لونها إذا سخن الحليب', 'شاحنة تبريد تعمل بالطاقة الشمسية', 'ملصق ذكي يرسل حرارة العبوة للهاتف'] }
+    { ic: '💦', p: tx('هواء جدة رطب جداً.', 'Jeddah air is very humid.'), o: [tx('جهاز يحوّل رطوبة الهواء إلى ماء شرب', 'A device that turns humid air into drinking water'), tx('مكيّف يبرّد بماء البحر', 'An air conditioner that cools with sea water'), tx('قماش يمتص العرق ويجف بسرعة', 'Fabric that soaks up sweat and dries fast')] },
+    { ic: '🚲', p: tx('نركب السيارة حتى للمسافات القصيرة.', 'We drive cars even for short trips.'), o: [tx('دراجات مشتركة بمحطات شمسية', 'Shared bikes with solar charging stations'), tx('ممرات مشي مظللة بالنخيل', 'Walkways shaded by palm trees'), tx('سكوتر كهربائي يُشحن من الشمس', 'An electric scooter charged by the sun')] },
+    { ic: '🥛', p: tx('الحليب يحتاج تبريداً طوال الطريق إلى البقالة.', 'Milk needs cooling all the way to the shop.'), o: [tx('عبوة يتغير لونها إذا سخن الحليب', 'A carton that changes color if the milk gets warm'), tx('شاحنة تبريد تعمل بالطاقة الشمسية', 'A solar-powered cooling truck'), tx('ملصق ذكي يرسل حرارة العبوة للهاتف', 'A smart sticker that sends the carton temperature to your phone')] }
   ],
   qassim: [
-    { ic: '🌴', p: 'سعف النخيل اليابس يُرمى كل موسم.', o: ['ألواح خشبية مضغوطة من السعف', 'أثاث وسلال عصرية من السعف', 'سماد عضوي يعيد الحياة للتربة'] },
-    { ic: '💧', p: 'المزارع تستهلك ماءً كثيراً.', o: ['ري بالتنقيط تتحكم فيه حساسات', 'تطبيق يقيس رطوبة التربة', 'إعادة استخدام ماء غسيل التمور'] },
-    { ic: '🍬', p: 'الحلويات تفسد بسرعة في الرطوبة.', o: ['علبة بطبقة تمتص الرطوبة', 'تاريخ صلاحية يتغير لونه', 'تغليف قابل للأكل من عجينة التمر'] }
+    { ic: '🌴', p: tx('سعف النخيل اليابس يُرمى كل موسم.', 'Dry palm fronds are thrown away every season.'), o: [tx('ألواح خشبية مضغوطة من السعف', 'Pressed wood boards made from palm fronds'), tx('أثاث وسلال عصرية من السعف', 'Stylish furniture and baskets made from palm fronds'), tx('سماد عضوي يعيد الحياة للتربة', 'Compost that brings the soil back to life')] },
+    { ic: '💧', p: tx('المزارع تستهلك ماءً كثيراً.', 'Farms use a lot of water.'), o: [tx('ري بالتنقيط تتحكم فيه حساسات', 'Drip irrigation controlled by sensors'), tx('تطبيق يقيس رطوبة التربة', 'An app that measures soil moisture'), tx('إعادة استخدام ماء غسيل التمور', 'Reusing the water from washing dates')] },
+    { ic: '🍬', p: tx('الحلويات تفسد بسرعة في الرطوبة.', 'Sweets spoil quickly in humid air.'), o: [tx('علبة بطبقة تمتص الرطوبة', 'A box with a layer that soaks up moisture'), tx('تاريخ صلاحية يتغير لونه', 'An expiry date that changes color'), tx('تغليف قابل للأكل من عجينة التمر', 'Edible wrapping made from date paste')] }
   ],
   eastern: [
-    { ic: '🏖️', p: 'البلاستيك المستعمل يصل إلى الشاطئ.', o: ['روبوت صغير ينظف الشاطئ', 'خيوط طباعة ثلاثية الأبعاد من البلاستيك', 'مكافأة لكل من يعيد عبوة'] },
-    { ic: '⚓', p: 'الحاويات تنتظر طويلاً في الميناء.', o: ['ذكاء اصطناعي يرتّب الحاويات', 'رافعات ذاتية القيادة', 'تتبع كل حاوية لحظة بلحظة'] },
-    { ic: '🔥', p: 'الشعلة تحرق الغاز الزائد في المصفاة.', o: ['تحويل الغاز الزائد إلى كهرباء', 'حبس الكربون وصنع طوب منه', 'حساسات تكشف التسرب مبكراً'] }
+    { ic: '🏖️', p: tx('البلاستيك المستعمل يصل إلى الشاطئ.', 'Used plastic washes up on the beach.'), o: [tx('روبوت صغير ينظف الشاطئ', 'A small robot that cleans the beach'), tx('خيوط طباعة ثلاثية الأبعاد من البلاستيك', '3D printing thread made from plastic'), tx('مكافأة لكل من يعيد عبوة', 'A reward for everyone who returns a bottle')] },
+    { ic: '⚓', p: tx('الحاويات تنتظر طويلاً في الميناء.', 'Containers wait a long time at the port.'), o: [tx('ذكاء اصطناعي يرتّب الحاويات', 'AI that sorts the containers'), tx('رافعات ذاتية القيادة', 'Self-driving cranes'), tx('تتبع كل حاوية لحظة بلحظة', 'Live tracking for every container')] },
+    { ic: '🔥', p: tx('الشعلة تحرق الغاز الزائد في المصفاة.', 'The flare burns off extra gas at the refinery.'), o: [tx('تحويل الغاز الزائد إلى كهرباء', 'Turning extra gas into electricity'), tx('حبس الكربون وصنع طوب منه', 'Trapping carbon and making bricks from it'), tx('حساسات تكشف التسرب مبكراً', 'Sensors that catch leaks early')] }
   ]
 };
 

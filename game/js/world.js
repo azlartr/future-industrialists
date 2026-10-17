@@ -6,6 +6,7 @@ import { makePalm, makePalmField } from './palm.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { REGIONS } from './regions.js';
 import { C, WALL, PLACES, BAYS, BOUNDS, CITY, NET, placeFrame, toWorld, buildStreets, setCity, roadPoint, groundY } from './city.js';
+import { tx, fx } from './i18n.js';
 let EDGE = 250; // the south edge of the land: the corniche where there is sea
 
 /* One district per region, on that city's own street plan (city.js): the school and three factory
@@ -85,8 +86,8 @@ async function logoPanel(F, w, h, { bg = '#ffffff', pad = .1 } = {}) {
   } else {
     const s = H * .5; drawIcon(x, F.icon, W - H * .55, H / 2, s, F.color);
     x.fillStyle = BRAND.ink || '#1b2263'; x.textAlign = 'right'; x.direction = 'rtl'; x.textBaseline = 'middle';
-    let fs = H * .3; x.font = `700 ${fs}px "Readex Pro"`; while (x.measureText(F.name).width > W - H * 1.2 && fs > 20) { fs -= 4; x.font = `700 ${fs}px "Readex Pro"`; }
-    x.fillStyle = '#1b2263'; x.fillText(F.name, W - H * 1.05, H / 2);
+    let fs = H * .3; x.font = `700 ${fs}px "Readex Pro"`; while (x.measureText(fx(F, 'name')).width > W - H * 1.2 && fs > 20) { fs -= 4; x.font = `700 ${fs}px "Readex Pro"`; }
+    x.fillStyle = '#1b2263'; x.fillText(fx(F, 'name'), W - H * 1.05, H / 2);
     x.fillStyle = F.color; x.fillRect(0, H - 22, W, 22);
   }
   return toTex(c);
@@ -101,9 +102,9 @@ export function drawIcon(x, icon, cx, cy, s, color) {
 async function gateSign(F, region) {
   const W = 1400, H = 300, [c, x] = canvas(W, H); x.fillStyle = '#ffffff'; x.fillRect(0, 0, W, H); x.fillStyle = F.color; x.fillRect(0, H - 28, W, 28);
   x.textAlign = 'right'; x.direction = 'rtl'; let fs = 88; x.font = `700 ${fs}px "Readex Pro"`;
-  while (x.measureText(F.name).width > W - 420 && fs > 40) { fs -= 4; x.font = `700 ${fs}px "Readex Pro"`; }
-  x.fillStyle = '#1b2263'; x.fillText(F.name, W - 44, 140);
-  x.fillStyle = '#5a6380'; x.font = '400 50px "Readex Pro"'; x.fillText(`${REGIONS[region].sub}`, W - 44, 228);
+  while (x.measureText(fx(F, 'name')).width > W - 420 && fs > 40) { fs -= 4; x.font = `700 ${fs}px "Readex Pro"`; }
+  x.fillStyle = '#1b2263'; x.fillText(fx(F, 'name'), W - 44, 140);
+  x.fillStyle = '#5a6380'; x.font = '400 50px "Readex Pro"'; x.fillText(`${fx(REGIONS[region], 'sub')}`, W - 44, 228);
   if (F.logo) { const im = await loadImg(F.logo), r = Math.min(330 / im.width, 220 / im.height); x.drawImage(im, 40, (H - 28 - im.height * r) / 2, im.width * r, im.height * r); }
   else drawIcon(x, F.icon, 160, 136, 200, F.color);
   return toTex(c);
@@ -113,10 +114,10 @@ function soonSign(name) {
   x.fillStyle = grad(x, 0, 0, W, H, [[0, BRAND.navy], [.6, BRAND.blue], [1, BRAND.violet]]); x.fillRect(0, 0, W, H);
   network(x, W, H, { n: 26, link: 220, color: 'rgba(255,255,255,.16)', dot: 'rgba(255,255,255,.5)', lw: 2, seed: 3 });
   x.fillStyle = '#ffd36a'; x.beginPath(); x.roundRect(W / 2 - 170, 70, 340, 90, 45); x.fill();
-  x.fillStyle = '#1b2263'; x.font = '700 54px "Readex Pro"'; x.textAlign = 'center'; x.direction = 'rtl'; x.fillText('قريباً', W / 2, 132);
+  x.fillStyle = '#1b2263'; x.font = tx('700 54px "Readex Pro"', '700 44px "Readex Pro"'); x.textAlign = 'center'; x.direction = 'rtl'; x.fillText(tx('قريباً', 'Coming soon'), W / 2, 132);
   x.fillStyle = '#fff'; x.font = '700 86px "Readex Pro"'; x.fillText(name, W / 2, 300);
-  x.font = '400 52px "Readex Pro"'; x.fillStyle = 'rgba(255,255,255,.85)'; x.fillText('مصنع جديد سيفتح أبوابه لاحقاً', W / 2, 400);
-  x.font = '500 40px "Readex Pro"'; x.fillText('صناعيو المستقبل', W / 2, 520);
+  x.font = '400 52px "Readex Pro"'; x.fillStyle = 'rgba(255,255,255,.85)'; x.fillText(tx('مصنع جديد سيفتح أبوابه لاحقاً', 'A new factory will open its doors soon'), W / 2, 400);
+  x.font = '500 40px "Readex Pro"'; x.fillText(tx('صناعيو المستقبل', 'Future Industrialists'), W / 2, 520);
   return toTex(c);
 }
 async function fiAd() {
@@ -127,9 +128,9 @@ async function fiAd() {
   x.fillStyle = '#fff'; x.beginPath(); x.arc(W - 380, H / 2, 300, 0, 7); x.fill();
   const r = 440 / Math.max(logo.width, logo.height); x.drawImage(logo, W - 380 - logo.width * r / 2, H / 2 - logo.height * r / 2, logo.width * r, logo.height * r);
   x.fillStyle = '#fff'; x.textAlign = 'right'; x.direction = 'rtl';
-  x.font = '700 150px "Readex Pro"'; x.fillText('اكتشف مصانعنا', W - 760, 420);
-  x.font = '400 78px "Readex Pro"'; x.fillStyle = 'rgba(255,255,255,.85)'; x.fillText('جيل وطني يرى الصناعة من الداخل', W - 760, 560);
-  x.fillStyle = '#fff'; x.beginPath(); x.roundRect(170, 680, 640, 130, 65); x.fill(); x.fillStyle = BRAND.navy; x.font = '600 66px "Readex Pro"'; x.textAlign = 'center'; x.fillText('هاكثون 2026', 490, 770);
+  x.font = tx('700 150px "Readex Pro"', '700 100px "Readex Pro"'); x.fillText(tx('اكتشف مصانعنا', 'Discover our factories'), W - 760, 420);
+  x.font = tx('400 78px "Readex Pro"', '400 56px "Readex Pro"'); x.fillStyle = 'rgba(255,255,255,.85)'; x.fillText(tx('جيل وطني يرى الصناعة من الداخل', 'Our generation sees industry from within'), W - 760, 560);
+  x.fillStyle = '#fff'; x.beginPath(); x.roundRect(170, 680, 640, 130, 65); x.fill(); x.fillStyle = BRAND.navy; x.font = '600 66px "Readex Pro"'; x.textAlign = 'center'; x.fillText(tx('هاكثون 2026', 'Hackathon 2026'), 490, 770);
   return toTex(c);
 }
 async function posterTex(F) {
@@ -138,14 +139,14 @@ async function posterTex(F) {
   network(x, W, H, { n: 30, link: 160, color: 'rgba(255,255,255,.18)', dot: 'rgba(255,255,255,.5)', lw: 1.6, seed: 4 });
   const logo = await loadImg('assets/img/logo.webp'); x.fillStyle = '#fff'; x.beginPath(); x.arc(W / 2, 270, 165, 0, 7); x.fill();
   const r = 245 / Math.max(logo.width, logo.height); x.drawImage(logo, W / 2 - logo.width * r / 2, 270 - logo.height * r / 2, logo.width * r, logo.height * r);
-  x.fillStyle = '#fff'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 62px "Readex Pro"'; x.fillText('شارك في', W / 2, 560); x.fillText('الهاكثون', W / 2, 640);
-  x.font = '500 34px "Readex Pro"'; x.fillText('جوائز تصل إلى 200,000 ريال', W / 2, 730);
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 62px "Readex Pro"'; x.fillText(tx('شارك في', 'Join the'), W / 2, 560); x.fillText(tx('الهاكثون', 'Hackathon'), W / 2, 640);
+  x.font = tx('500 34px "Readex Pro"', '500 30px "Readex Pro"'); x.fillText(tx('جوائز تصل إلى 200,000 ريال', 'Prizes up to SAR 200,000'), W / 2, 730);
   x.font = '400 28px "Readex Pro"'; x.fillStyle = 'rgba(255,255,255,.8)'; x.fillText('futureindustrialist.org', W / 2, 820);
   return toTex(c);
 }
 function stopTag(region) {
   const [c, x] = canvas(768, 128); x.fillStyle = '#fff'; x.fillRect(0, 0, 768, 128); x.fillStyle = BRAND.violet; x.fillRect(0, 112, 768, 16);
-  x.fillStyle = BRAND.navy; x.font = '600 50px "Readex Pro"'; x.textAlign = 'center'; x.direction = 'rtl'; x.fillText(`محطة ${REGIONS[region].name} · المدينة الصناعية`, 384, 76);
+  x.fillStyle = BRAND.navy; x.font = tx('600 50px "Readex Pro"', '600 34px "Readex Pro"'); x.textAlign = 'center'; x.direction = 'rtl'; x.fillText(tx(`محطة ${fx(REGIONS[region], 'name')} · المدينة الصناعية`, `${fx(REGIONS[region], 'name')} Stop · Industrial City`), 384, 76);
   return toTex(c);
 }
 
@@ -330,8 +331,8 @@ async function compound(F, region, fr, anim) {
 }
 function schoolSign(region) {
   const W = 1400, H = 300, [c, x] = canvas(W, H); x.fillStyle = '#ffffff'; x.fillRect(0, 0, W, H); x.fillStyle = '#1e8a5a'; x.fillRect(0, H - 28, W, 28);
-  x.fillStyle = '#1b2263'; x.textAlign = 'right'; x.direction = 'rtl'; x.font = '700 92px "Readex Pro"'; x.fillText('المدرسة الثانوية', W - 44, 140);
-  x.fillStyle = '#5a6380'; x.font = '400 50px "Readex Pro"'; x.fillText(`${REGIONS[region].name} · نقطة انطلاق الرحلة`, W - 44, 228);
+  x.fillStyle = '#1b2263'; x.textAlign = 'right'; x.direction = 'rtl'; x.font = '700 92px "Readex Pro"'; x.fillText(tx('المدرسة الثانوية', 'Secondary School'), W - 44, 140);
+  x.fillStyle = '#5a6380'; x.font = '400 50px "Readex Pro"'; x.fillText(tx(`${fx(REGIONS[region], 'name')} · نقطة انطلاق الرحلة`, `${fx(REGIONS[region], 'name')} · Where the journey begins`), W - 44, 228);
   x.fillStyle = '#1e8a5a'; x.beginPath(); x.moveTo(170, 60); x.lineTo(290, 110); x.lineTo(170, 160); x.lineTo(50, 110); x.closePath(); x.fill(); x.fillRect(95, 120, 150, 70); x.fillRect(272, 112, 8, 80);
   return toTex(c);
 }
@@ -341,8 +342,8 @@ async function schoolBanner() {
   network(x, W, H, { n: 40, link: 220, color: 'rgba(255,255,255,.18)', dot: 'rgba(255,255,255,.55)', lw: 2, seed: 12 });
   const logo = await loadImg('assets/img/logo.webp'); x.fillStyle = '#fff'; x.beginPath(); x.arc(W - 260, H / 2, 200, 0, 7); x.fill();
   const r = 300 / Math.max(logo.width, logo.height); x.drawImage(logo, W - 260 - logo.width * r / 2, H / 2 - logo.height * r / 2, logo.width * r, logo.height * r);
-  x.fillStyle = '#fff'; x.textAlign = 'right'; x.direction = 'rtl'; x.font = '700 120px "Readex Pro"'; x.fillText('رحلة صناعيو المستقبل', W - 520, 230);
-  x.font = '400 70px "Readex Pro"'; x.fillStyle = 'rgba(255,255,255,.88)'; x.fillText('تنطلق من مدرستك إلى مصانع المملكة', W - 520, 360);
+  x.fillStyle = '#fff'; x.textAlign = 'right'; x.direction = 'rtl'; x.font = tx('700 120px "Readex Pro"', '700 80px "Readex Pro"'); x.fillText(tx('رحلة صناعيو المستقبل', 'Future Industrialists Journey'), W - 520, 230);
+  x.font = tx('400 70px "Readex Pro"', '400 60px "Readex Pro"'); x.fillStyle = 'rgba(255,255,255,.88)'; x.fillText(tx('تنطلق من مدرستك إلى مصانع المملكة', 'From your school to the Kingdom’s factories'), W - 520, 360);
   return toTex(c);
 }
 async function schoolCompound(region, fr, anim) {
@@ -370,7 +371,7 @@ async function schoolCompound(region, fr, anim) {
   for (const xx of [-4.2, 4.2]) g.add(box(.6, 4.8, .6, M.dark, xx, 2.4, 26));
   g.add(box(9, .5, .6, M.dark, 0, 4.95, 26));
   const st = schoolSign(region); const sg = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 1.6), new THREE.MeshStandardMaterial({ map: st, roughness: .4 })); sg.position.set(0, 6.1, 26.2); g.add(sg);
-  { const [c, x] = canvas(1400, 300); x.fillStyle = grad(x, 0, 0, 1400, 0, [[0, BRAND.navy], [.6, BRAND.blue], [1, BRAND.violet]]); x.fillRect(0, 0, 1400, 300); x.fillStyle = '#fff'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 96px "Readex Pro"'; x.fillText('رحلتك تبدأ من هنا 🚌', 700, 140); x.font = '500 54px "Readex Pro"'; x.fillText('باص صناعيو المستقبل بانتظارك عند البوابة', 700, 236); const sb = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 1.6), new THREE.MeshStandardMaterial({ map: toTex(c), roughness: .4, emissive: '#fff', emissiveMap: toTex(c), emissiveIntensity: .2 })); sb.rotation.y = Math.PI; sb.position.set(0, 6.1, 25.8); g.add(sb); }
+  { const [c, x] = canvas(1400, 300); x.fillStyle = grad(x, 0, 0, 1400, 0, [[0, BRAND.navy], [.6, BRAND.blue], [1, BRAND.violet]]); x.fillRect(0, 0, 1400, 300); x.fillStyle = '#fff'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = tx('700 96px "Readex Pro"', '700 84px "Readex Pro"'); x.fillText(tx('رحلتك تبدأ من هنا 🚌', 'Your journey starts here 🚌'), 700, 140); x.font = '500 54px "Readex Pro"'; x.fillText(tx('باص صناعيو المستقبل بانتظارك عند البوابة', 'Your bus is waiting for you at the gate'), 700, 236); const sb = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 1.6), new THREE.MeshStandardMaterial({ map: toTex(c), roughness: .4, emissive: '#fff', emissiveMap: toTex(c), emissiveIntensity: .2 })); sb.rotation.y = Math.PI; sb.position.set(0, 6.1, 25.8); g.add(sb); }
   g.add(box(7.8, 1.9, .3, M.dark, 0, 6.1, 26));
   return g;
 }
@@ -688,7 +689,7 @@ export async function buildRegion(renderer, key) {
   // streets, sidewalks, junctions, lights and palms
   const curbM = new THREE.MeshStandardMaterial({ color: '#cfccc4', roughness: .8 });
   const pavM = new THREE.MeshStandardMaterial({ ...pbr('concrete_pavers', [1, 1]), color: '#e2ddd3' });
-  const streets = await buildStreets(scene, { pave: pavM, curb: curbM, region: R.name });
+  const streets = await buildStreets(scene, { pave: pavM, curb: curbM, region: fx(R, 'name') });
   const colliders = streets.colliders, boxes = [], tall = [], pads = [], locs = [];
   const boxW = (p, lx0, lz0, lx1, lz1) => { const [ax, az] = toWorld(p, lx0, lz0), [bx, bz] = toWorld(p, lx1, lz1); boxes.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]); };
   const circW = (p, lx, lz, r) => { const [x, z] = toWorld(p, lx, lz); colliders.push([x, z, r]); };
@@ -699,7 +700,7 @@ export async function buildRegion(renderer, key) {
     if (p.kind === 'factory') {
       const F = R.factories[p.i]; scene.add(await compound(F, key, fr, anim));
       boxW(p, -23.5, -24.5, 23.5, 26.25); for (const lx of [-6.5, 6.5]) circW(p, lx, 27.4, .3); blocked.push(boxes[boxes.length - 1]);
-      locs.push({ kind: 'factory', id: p.id, f: F, place: p, x: p.x, side: p.side, name: F.name, bay: BAYS[p.id], gate: gateAt(p) });
+      locs.push({ kind: 'factory', id: p.id, f: F, place: p, x: p.x, side: p.side, name: fx(F, 'name'), bay: BAYS[p.id], gate: gateAt(p) });
     } else if (p.kind === 'school') {
       scene.add(await schoolCompound(key, fr, anim));
       boxW(p, -23.4, -13.4, 23.4, 1.3); boxW(p, -6.3, 1, 6.3, 2.3);
@@ -708,12 +709,12 @@ export async function buildRegion(renderer, key) {
       for (const bx of [12, 20]) boxW(p, bx - 1.2, 14.2, bx + 1.2, 14.8);
       { const [ax, az] = toWorld(p, -22, 4.5), [bx, bz] = toWorld(p, 22, 25.5); pads.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz), .055]); }
       { const [ax, az] = toWorld(p, -24, -14), [bx, bz] = toWorld(p, 24, 26.5); blocked.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]); }
-      locs.unshift({ kind: 'school', id: p.id, place: p, x: p.x, side: p.side, name: 'المدرسة', bay: BAYS[p.id], gate: gateAt(p), yard: toWorld(p, 0, 15) });
-    } else if (p.kind === 'soon') { scene.add(await soonCompound(R.soon[p.i], fr, anim)); boxW(p, -23.2, -16.2, 23.2, 26.2); blocked.push(boxes[boxes.length - 1]); }
+      locs.unshift({ kind: 'school', id: p.id, place: p, x: p.x, side: p.side, name: tx('المدرسة', 'School'), bay: BAYS[p.id], gate: gateAt(p), yard: toWorld(p, 0, 15) });
+    } else if (p.kind === 'soon') { scene.add(await soonCompound(fx(R, 'soon')[p.i], fr, anim)); boxW(p, -23.2, -16.2, 23.2, 26.2); blocked.push(boxes[boxes.length - 1]); }
     else if (p.kind === 'plaza') { await plaza(scene, p, { colliders, boxes, pads, anim }); blocked.push(pads[pads.length - 1].slice(0, 4)); }
   }
   locs.sort((a, b) => (a.kind === 'school' ? -1 : a.place.i) - (b.kind === 'school' ? -1 : b.place.i));
-  for (const l of locs) { const py = await pylon(l.f, l.kind === 'school' ? 'المدرسة الثانوية' : l.f.name), [px, pz] = toWorld(l.place, -9.5, 28.6); py.position.set(px, .2, pz); py.rotation.y = l.place.rot + Math.PI / 2; scene.add(py); colliders.push([px, pz, 1.1]); }
+  for (const l of locs) { const py = await pylon(l.f, l.kind === 'school' ? tx('المدرسة الثانوية', 'Secondary School') : tx(l.f.name, fx(l.f, 'short'))), [px, pz] = toWorld(l.place, -9.5, 28.6); py.position.set(px, .2, pz); py.rotation.y = l.place.rot + Math.PI / 2; scene.add(py); colliders.push([px, pz, 1.1]); }
   // the landmark on the roundabout
   const ringNode = NET.nodes.find(n => n.round);
   if (ringNode) { const lm = landmark(CITY.landmark, anim); lm.position.set(ringNode.x, .32, ringNode.z); lm.rotation.y = Math.PI / 5; lm.scale.setScalar({ bicycle: 1.35, pearl: 1.45 }[CITY.landmark] || 1); scene.add(lm); }

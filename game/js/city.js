@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { canvas, toTex, pbr, loadImg } from './tex.js';
 import { makePalmField } from './palm.js';
+import { tx } from './i18n.js';
 
 /* Each region's district has its own street plan, drawn from the real city: Riyadh's spokes and ring
    road round a central roundabout, Jeddah's winding corniche, Buraydah's long farm roads, the Eastern
@@ -360,12 +361,12 @@ async function stopTex() {
   let lx1 = 60;
   try { const lg = await loadImg('assets/img/logo_white.webp'), r = Math.min(220 / lg.height, 340 / lg.width); x.globalAlpha = .9; x.drawImage(lg, 50, 160 - lg.height * r / 2, lg.width * r, lg.height * r); x.globalAlpha = 1; lx1 = 50 + lg.width * r; } catch {}
   const cx0 = lx1 + 40, cw = 1000 - cx0, mid = cx0 + cw / 2, fit = (t, size, w, weight) => { let f = size; x.font = `${weight} ${f}px "Readex Pro"`; while (x.measureText(t).width > w && f > 30) { f -= 3; x.font = `${weight} ${f}px "Readex Pro"`; } };
-  x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = 'rtl'; fit('موقف باص المبادرة', 80, cw, 700); x.fillText('موقف باص المبادرة', mid, 128);
+  x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = 'rtl'; fit(tx('موقف باص المبادرة', 'Future Industrialists'), 80, cw, 700); x.fillText(tx('موقف باص المبادرة', 'Future Industrialists'), mid, 128);
   x.direction = 'ltr'; fit('BUS STOP', 64, cw * .8, 600); x.fillText('BUS STOP', mid, 222);
   return toTex(c);
 }
 function busWordTex() {
-  const [c, x] = canvas(512, 256); x.clearRect(0, 0, 512, 256); x.fillStyle = 'rgba(255,255,255,.92)'; x.textAlign = 'center'; x.font = '700 120px "Readex Pro"'; x.direction = 'rtl'; x.fillText('باص', 256, 120); x.direction = 'ltr'; x.font = '700 86px "Readex Pro"'; x.fillText('BUS', 256, 230);
+  const [c, x] = canvas(512, 256); x.clearRect(0, 0, 512, 256); x.fillStyle = 'rgba(255,255,255,.92)'; x.textAlign = 'center'; x.font = '700 120px "Readex Pro"'; x.direction = 'rtl'; x.fillText(tx('باص', ''), 256, 120); x.direction = 'ltr'; x.font = '700 86px "Readex Pro"'; x.fillText('BUS', 256, 230);
   return toTex(c);
 }
 /* a plane lying flat on the road, its local +x along heading h (radians, map angle), at height y */
@@ -456,7 +457,7 @@ export async function buildStreets(scene, { pave, curb, region }) {
   const palms = makePalmField(palmAt, { h: 7, shadows: true }); palms.position.y = .2; scene.add(palms);
   for (const [x, z] of palmAt) colliders.push([x, z, .5]);
   // street name plates at the signalled junctions
-  const plate = streetLabel(`شارع ${region}`, 'Industrial Avenue'), plM = new THREE.MeshStandardMaterial({ map: plate, roughness: .5 });
+  const plate = streetLabel(tx(`شارع ${region}`, `${region} Street`), 'Industrial Avenue'), plM = new THREE.MeshStandardMaterial({ map: plate, roughness: .5 });
   for (const n of NODES) if (n.signal) { const A = n.arms[0], B = n.arms[1 % n.arms.length], dir = A.u.clone().add(B.u).normalize(), x = n.x + dir.x * (n.trim + 3), z = n.z + dir.y * (n.trim + 3); if (onRoad(x, z, -.5)) continue; const g = new THREE.Group(); g.position.set(x, 0, z); g.add(new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, 3.6, 10), poleM).translateY(1.8)); const pl = new THREE.Mesh(new THREE.PlaneGeometry(2.2, .55), plM); pl.position.y = 3.3; pl.rotation.y = Math.atan2(dir.x, dir.y) + Math.PI / 2; g.add(pl); const back = pl.clone(); back.rotation.y += Math.PI; g.add(back); scene.add(g); colliders.push([x, z, .2]); }
   return { colliders, anim };
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { canvas, toTex, loadImg, BRAND, network, grad } from './tex.js';
+import { tx, fx } from './i18n.js';
 
 /* The graduation night: a round stage under sweeping spotlights, the initiative's logo on a giant
    screen, the four track badges flying in to circle the student, fireworks and confetti, and مِرشد
@@ -30,7 +31,7 @@ export async function buildFinale(renderer, { badges, name = '', track = '' }) {
   sx.textAlign = 'center'; sx.direction = 'rtl'; sx.textBaseline = 'alphabetic';
   let fs = 132; sx.font = `700 ${fs}px "Readex Pro"`; const nm = name || ''; while (sx.measureText(nm).width > 1700 && fs > 70) { fs -= 6; sx.font = `700 ${fs}px "Readex Pro"`; }
   sx.shadowColor = 'rgba(242,194,48,.55)'; sx.shadowBlur = 30; sx.fillStyle = '#ffd65a'; sx.fillText(nm, 1024, 855); sx.shadowBlur = 0;
-  sx.fillStyle = 'rgba(255,255,255,.82)'; sx.font = '500 54px "Readex Pro"'; sx.fillText(track ? `خرّيج مسار ${track} · دفعة 2026` : 'خرّيج رحلة صناعيو المستقبل · دفعة 2026', 1024, 950);
+  sx.fillStyle = 'rgba(255,255,255,.82)'; sx.font = '500 54px "Readex Pro"'; sx.fillText(track ? tx(`خرّيج مسار ${track} · دفعة 2026`, `Graduate of the ${track} track · Class of 2026`) : tx('خرّيج رحلة صناعيو المستقبل · دفعة 2026', 'Graduate of the Future Industrialists journey · Class of 2026'), 1024, 950);
   // a fine LED grid over everything
   sx.fillStyle = 'rgba(0,0,20,.16)'; for (let y = 0; y < 1024; y += 6) sx.fillRect(0, y, 2048, 2);
   const st = toTex(sc), screen = new THREE.Mesh(new THREE.PlaneGeometry(22, 11), new THREE.MeshStandardMaterial({ map: st, emissive: '#fff', emissiveMap: st, emissiveIntensity: .9, roughness: .6 })); screen.position.set(0, 8.5, -12); scene.add(screen);
@@ -91,15 +92,15 @@ export async function certificate({ name, char, factories, regions, points, gear
   x.strokeStyle = 'rgba(132,123,184,.55)'; x.lineWidth = 3; x.strokeRect(54, 54, W - 108, H - 108);
   x.save(); x.globalAlpha = .045; network(x, W, H, { n: 40, link: 220, color: '#2a3590', dot: '#2a3590', lw: 2, seed: 33 }); x.restore();
   try { const lg = await loadImg('assets/img/logo-mark.webp'), r = 130 / lg.height; x.drawImage(lg, W / 2 - lg.width * r / 2, 84, lg.width * r, 130); } catch {}
-  x.textAlign = 'center'; x.direction = 'rtl'; x.fillStyle = '#5a6390'; x.font = '500 38px "Readex Pro"'; x.fillText('شهادة إتمام رحلة', W / 2, 270);
-  x.fillStyle = '#1b2263'; x.font = '700 104px "Readex Pro"'; x.fillText('صناعيو المستقبل', W / 2, 380);
-  x.font = '500 36px "Readex Pro"'; x.fillStyle = '#5a6390'; x.fillText('تشهد مبادرة صناعيو المستقبل بأنّ', W / 2, 452);
+  x.textAlign = 'center'; x.direction = 'rtl'; x.fillStyle = '#5a6390'; x.font = '500 38px "Readex Pro"'; x.fillText(tx('شهادة إتمام رحلة', 'Certificate of completion'), W / 2, 270);
+  x.fillStyle = '#1b2263'; x.font = '700 104px "Readex Pro"'; x.fillText(tx('صناعيو المستقبل', 'Future Industrialists'), W / 2, 380);
+  x.font = '500 36px "Readex Pro"'; x.fillStyle = '#5a6390'; x.fillText(tx('تشهد مبادرة صناعيو المستقبل بأنّ', 'Future Industrialists certifies that'), W / 2, 452);
   let fs = 80; x.font = `700 ${fs}px "Readex Pro"`; while (x.measureText(name).width > 900 && fs > 44) { fs -= 4; x.font = `700 ${fs}px "Readex Pro"`; }
   x.fillStyle = BRAND.violet; x.fillText(name, W / 2, 548);
   x.strokeStyle = 'rgba(132,123,184,.6)'; x.lineWidth = 2; x.beginPath(); x.moveTo(W / 2 - 330, 578); x.lineTo(W / 2 + 330, 578); x.stroke();
   x.fillStyle = '#1b2263'; x.font = '500 34px "Readex Pro"';
-  x.fillText(`زار ${factories} مصنعاً في ${regions} مناطق، وتعرّف على خطوط الإنتاج ومعدات السلامة،`, W / 2, 640);
-  x.fillText(track ? `وأتمّ مهمات مسار ${track.name} بنجاح.` : 'وأنجز مهمات مسارات المكتشف والمبدع والفنان والسفير.', W / 2, 690);
+  x.fillText(tx(`زار ${factories} مصنعاً في ${regions} مناطق، وتعرّف على خطوط الإنتاج ومعدات السلامة،`, `Visited ${factories} factories in ${regions} regions, learning about production lines and safety gear,`), W / 2, 640);
+  x.fillText(track ? tx(`وأتمّ مهمات مسار ${fx(track, 'name')} بنجاح.`, `Completed the ${fx(track, 'name')} track missions.`) : tx('وأنجز مهمات مسارات المكتشف والمبدع والفنان والسفير.', 'Completed the missions of the Discoverer, Creator, Artist and Ambassador tracks.'), W / 2, 690);
   // the track logos, each with its name; the earned ones in full colour
   const bs = 112, gap = 70, bx0 = W / 2 - (badges.length * (bs + gap) - gap) / 2;
   for (let i = 0; i < badges.length; i++) {
@@ -110,10 +111,10 @@ export async function certificate({ name, char, factories, regions, points, gear
   }
   // numbers and the date
   x.font = '600 30px "Readex Pro"'; x.fillStyle = '#5a6390';
-  x.fillText(`${points.toLocaleString('en')} نقطة · ${gears} ${gears === 1 ? 'ترس ذهبي' : 'تروس ذهبية'}`, W / 2, 975);
+  x.fillText(`${points.toLocaleString('en')} ${tx('نقطة', 'points')} · ${gears} ${gears === 1 ? tx('ترس ذهبي', 'golden gear') : tx('تروس ذهبية', 'golden gears')}`, W / 2, 975);
   x.textAlign = 'right'; x.fillText(date, W - 110, 1040); x.textAlign = 'left'; x.direction = 'ltr'; x.fillText('Future Industrialists · futureindustrialist.org', 110, 1040);
   // the student's portrait in a seal
   try { const im = await loadImg(`assets/ui/${char}_front_cut.webp`); x.save(); x.beginPath(); x.arc(230, 470, 120, 0, 7); x.fillStyle = '#e8e6f6'; x.fill(); x.clip(); const r = 300 / im.height; x.drawImage(im, 230 - im.width * r / 2, 350, im.width * r, 300); x.restore(); x.strokeStyle = '#f2c230'; x.lineWidth = 8; x.beginPath(); x.arc(230, 470, 124, 0, 7); x.stroke(); } catch {}
-  x.save(); x.translate(W - 230, 470); x.fillStyle = '#f2c230'; for (let i = 0; i < 24; i++) { x.rotate(Math.PI / 12); x.beginPath(); x.moveTo(0, -118); x.lineTo(14, -100); x.lineTo(-14, -100); x.fill(); } x.beginPath(); x.arc(0, 0, 102, 0, 7); x.fill(); x.fillStyle = '#fff'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 34px "Readex Pro"'; x.fillText('معتمد', 0, -6); x.font = '500 22px "Readex Pro"'; x.fillText('2026', 0, 30); x.restore();
+  x.save(); x.translate(W - 230, 470); x.fillStyle = '#f2c230'; for (let i = 0; i < 24; i++) { x.rotate(Math.PI / 12); x.beginPath(); x.moveTo(0, -118); x.lineTo(14, -100); x.lineTo(-14, -100); x.fill(); } x.beginPath(); x.arc(0, 0, 102, 0, 7); x.fill(); x.fillStyle = '#fff'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 34px "Readex Pro"'; x.fillText(tx('معتمد', 'Certified'), 0, -6); x.font = '500 22px "Readex Pro"'; x.fillText('2026', 0, 30); x.restore();
   return c;
 }

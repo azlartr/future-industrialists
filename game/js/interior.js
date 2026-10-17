@@ -4,6 +4,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { canvas, toTex, loadImg, pbr, BRAND } from './tex.js';
 import { drawIcon } from './world.js';
 import { makePalmField } from './palm.js';
+import { EN, tx } from './i18n.js';
 
 /* A production hall dressed for each factory: its colours and logo on the walls, its products on
    the line and its own equipment. The Discoverer's safety hunt adds three hidden problems.
@@ -17,13 +18,13 @@ const std = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness:
 function signTex(lines, { bg = '#ffffff', fg = BRAND.navy, w = 1024, h = 512, size = 110, stripe } = {}) {
   const [c, x] = canvas(w, h); x.fillStyle = bg; x.fillRect(0, 0, w, h);
   if (stripe) { x.fillStyle = stripe; x.fillRect(0, h - 40, w, 40); }
-  x.fillStyle = fg; x.textAlign = 'center'; x.direction = 'rtl';
+  x.fillStyle = fg; x.textAlign = 'center'; x.direction = EN ? 'ltr' : 'rtl';
   lines.forEach((t, i) => { x.font = `${i ? 500 : 700} ${i ? size * .55 : size}px "Readex Pro"`; x.fillText(t, w / 2, h / 2 + (i - (lines.length - 1) / 2) * size * 1.15 + size * .35); });
   return toTex(c);
 }
 function exitTex() {
   const [c, x] = canvas(1024, 384); x.fillStyle = '#0f9d58'; x.fillRect(0, 0, 1024, 384);
-  x.fillStyle = '#fff'; x.font = '700 120px "Readex Pro"'; x.textAlign = 'right'; x.direction = 'rtl'; x.fillText('مخرج طوارئ', 980, 170);
+  x.fillStyle = '#fff'; x.font = '700 120px "Readex Pro"'; x.textAlign = 'right'; x.direction = EN ? 'ltr' : 'rtl'; x.fillText(tx('مخرج طوارئ', 'Emergency'), 980, 170);
   x.font = '600 90px "Readex Pro"'; x.direction = 'ltr'; x.fillText('EXIT', 980, 300);
   x.beginPath(); x.moveTo(90, 190); x.lineTo(260, 190); x.lineTo(260, 120); x.lineTo(380, 220); x.lineTo(260, 320); x.lineTo(260, 250); x.lineTo(90, 250); x.closePath(); x.fill();
   return toTex(c);
@@ -44,8 +45,8 @@ function labelTex(F, kind) {
   x.fillStyle = kind === 'milk' ? '#ffffff' : col; x.fillRect(0, 0, 512, 256);
   if (kind === 'milk') { x.fillStyle = col; x.fillRect(0, 170, 512, 86); x.fillStyle = '#e94b6a'; x.beginPath(); x.arc(110, 110, 50, 0, 7); x.fill(); }
   if (kind === 'juice') { for (let i = 0; i < 3; i++) { x.fillStyle = '#f39c12'; x.beginPath(); x.arc(90 + i * 60, 140, 42, 0, 7); x.fill(); } x.fillStyle = '#ffffff'; x.fillRect(0, 200, 512, 56); }
-  x.fillStyle = kind === 'milk' ? col : '#ffffff'; x.font = '700 64px "Readex Pro"'; x.textAlign = 'right'; x.direction = 'rtl'; x.fillText(F.short, 490, 100);
-  x.font = '500 34px "Readex Pro"'; x.fillText({ milk: 'حليب طازج', juice: 'عصير برتقال', bottle: 'منتج سعودي', water: 'مياه نقية' }[kind] || '', 490, 150);
+  x.fillStyle = kind === 'milk' ? col : '#ffffff'; x.font = '700 64px "Readex Pro"'; x.textAlign = 'right'; x.direction = EN ? 'ltr' : 'rtl'; x.fillText(F.short, 490, 100);
+  x.font = '500 34px "Readex Pro"'; x.fillText({ milk: tx('حليب طازج', 'Fresh milk'), juice: tx('عصير برتقال', 'Orange juice'), bottle: tx('منتج سعودي', 'Saudi product'), water: tx('مياه نقية', 'Pure water') }[kind] || '', 490, 150);
   return toTex(c);
 }
 
@@ -131,7 +132,7 @@ function muralTex(kind, F) {
   if (kind === 'dates' || kind === 'sweets') { const col = kind === 'dates' ? 'rgba(122,74,38,.35)' : 'rgba(201,74,120,.25)'; x.fillStyle = col; for (let i = 0; i < 2048 / 64; i++) { x.beginPath(); x.moveTo(i * 64, 512); x.lineTo(i * 64 + 32, 440); x.lineTo(i * 64 + 64, 512); x.fill(); x.beginPath(); x.moveTo(i * 64, 0); x.lineTo(i * 64 + 32, 72); x.lineTo(i * 64 + 64, 0); x.fill(); } }
   if (kind === 'containers') { const cc = ['#c0392b', '#2471a3', '#d68910', '#1e8449']; for (let i = 0; i < 18; i++) { x.fillStyle = cc[i % 4]; x.fillRect(60 + (i % 9) * 220, 120 + Math.floor(i / 9) * 150, 200, 120); } }
   x.globalAlpha = 1;
-  x.fillStyle = ['lab', 'steel', 'bottles'].includes(kind) ? '#ffffff' : '#1b2263'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 120px "Readex Pro"'; x.fillText(F.name, 1024, 300);
+  x.fillStyle = ['lab', 'steel', 'bottles'].includes(kind) ? '#ffffff' : '#1b2263'; x.textAlign = 'center'; x.direction = EN ? 'ltr' : 'rtl'; x.font = '700 120px "Readex Pro"'; x.fillText(F.name, 1024, 300);
   return toTex(c);
 }
 
@@ -223,16 +224,16 @@ const STYLE = {
 /* ---------------- safety hazards for the Discoverer's hunt ----------------
    Each one is built where it does not clash with the hall's machines, and most of them bite. */
 export const HAZARD_INFO = {
-  oil: { label: 'بقعة زيت على ممر المشاة', hint: 'انظر إلى ممر المشاة الأخضر… هل هو نظيف؟' },
-  exit: { label: 'مخرج الطوارئ مسدود بالصناديق', hint: 'تفقّد مخرج الطوارئ على الجدار الأيمن' },
-  panel: { label: 'لوحة كهرباء مفتوحة ومكشوفة', hint: 'هل كل الأبواب على الجدار الأيسر مغلقة؟' },
-  spark: { label: 'لحام بلا ستارة حماية', hint: 'من أين يتطاير الشرر نحو الممر؟' },
-  forklift: { label: 'رافعة شوكية متروكة في الممر وشوكتها مرفوعة', hint: 'هل الممر الأخضر خالٍ من المركبات؟' },
-  guard: { label: 'آلة تدور بلا غطاء حماية', hint: 'ابحث عن ترس يدور مكشوفاً قرب الممر' },
-  cable: { label: 'سلك كهرباء ممدود عبر الممر', hint: 'انتبه لما على أرض الممر… قد تتعثر!' },
-  stack: { label: 'صناديق مكدّسة ومائلة على وشك السقوط', hint: 'هل كل الصناديق مرصوصة بأمان؟' },
-  extinguisher: { label: 'طفاية الحريق مفقودة من مكانها', hint: 'تفقّد الجدار الأمامي: أين طفاية الحريق؟' },
-  leak: { label: 'تسرّب بخار من صمام مكسور', hint: 'استمع للصفير… من أين يخرج البخار؟' }
+  oil: { label: tx('بقعة زيت على ممر المشاة', 'Oil spill on the walkway'), hint: tx('انظر إلى ممر المشاة الأخضر… هل هو نظيف؟', 'Look at the green walkway… is it clean?') },
+  exit: { label: tx('مخرج الطوارئ مسدود بالصناديق', 'Emergency exit blocked by crates'), hint: tx('تفقّد مخرج الطوارئ على الجدار الأيمن', 'Check the emergency exit on the right wall') },
+  panel: { label: tx('لوحة كهرباء مفتوحة ومكشوفة', 'Electrical panel open and exposed'), hint: tx('هل كل الأبواب على الجدار الأيسر مغلقة؟', 'Are all the doors on the left wall shut?') },
+  spark: { label: tx('لحام بلا ستارة حماية', 'Welding with no safety screen'), hint: tx('من أين يتطاير الشرر نحو الممر؟', 'Where are sparks flying onto the walkway from?') },
+  forklift: { label: tx('رافعة شوكية متروكة في الممر وشوكتها مرفوعة', 'Forklift left in the walkway with its forks up'), hint: tx('هل الممر الأخضر خالٍ من المركبات؟', 'Is the green walkway free of vehicles?') },
+  guard: { label: tx('آلة تدور بلا غطاء حماية', 'Machine running with no guard'), hint: tx('ابحث عن ترس يدور مكشوفاً قرب الممر', 'Look for an exposed gear turning near the walkway') },
+  cable: { label: tx('سلك كهرباء ممدود عبر الممر', 'Electric cable stretched across the walkway'), hint: tx('انتبه لما على أرض الممر… قد تتعثر!', 'Watch the walkway floor… you could trip!') },
+  stack: { label: tx('صناديق مكدّسة ومائلة على وشك السقوط', 'Crates stacked and leaning, about to fall'), hint: tx('هل كل الصناديق مرصوصة بأمان؟', 'Are all the crates stacked safely?') },
+  extinguisher: { label: tx('طفاية الحريق مفقودة من مكانها', 'Fire extinguisher missing from its place'), hint: tx('تفقّد الجدار الأمامي: أين طفاية الحريق؟', 'Check the front wall: where is the fire extinguisher?') },
+  leak: { label: tx('تسرّب بخار من صمام مكسور', 'Steam leaking from a broken valve'), hint: tx('استمع للصفير… من أين يخرج البخار؟', 'Listen for the hiss… where is the steam coming from?') }
 };
 
 export async function buildInterior(renderer, F, M) {
@@ -276,9 +277,9 @@ export async function buildInterior(renderer, F, M) {
   // branding: logo board, safety sign, the initiative's roundel
   { const [c, x] = canvas(1024, 300); x.fillStyle = '#fff'; x.fillRect(0, 0, 1024, 300);
     if (F.logo) { const im = await loadImg(F.logo), r = Math.min(900 / im.width, 230 / im.height); x.drawImage(im, 512 - im.width * r / 2, 150 - im.height * r / 2, im.width * r, im.height * r); }
-    else { drawIcon(x, F.icon, 900, 150, 190, F.color); x.fillStyle = '#1b2263'; x.textAlign = 'right'; x.direction = 'rtl'; let fs = 92; x.font = `700 ${fs}px "Readex Pro"`; while (x.measureText(F.name).width > 720 && fs > 40) { fs -= 4; x.font = `700 ${fs}px "Readex Pro"`; } x.fillText(F.name, 790, 150 + fs * .35); }
+    else { drawIcon(x, F.icon, 900, 150, 190, F.color); x.fillStyle = '#1b2263'; x.textAlign = 'right'; x.direction = EN ? 'ltr' : 'rtl'; let fs = 92; x.font = `700 ${fs}px "Readex Pro"`; while (x.measureText(F.name).width > 720 && fs > 40) { fs -= 4; x.font = `700 ${fs}px "Readex Pro"`; } x.fillText(F.name, 790, 150 + fs * .35); }
     const b = new THREE.Mesh(new THREE.PlaneGeometry(7, 2), new THREE.MeshStandardMaterial({ map: toTex(c), roughness: .5 })); b.position.set(-14, 6.6, -D / 2 + .1); scene.add(b); }
-  const safe = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshStandardMaterial({ map: signTex(['السلامة أولاً', 'ارتدِ معدات الوقاية · حافظ على الممرات نظيفة'], { stripe: '#f2c230' }), roughness: .5 }));
+  const safe = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshStandardMaterial({ map: signTex([tx('السلامة أولاً', 'Safety first'), tx('ارتدِ معدات الوقاية · حافظ على الممرات نظيفة', 'Wear gear · keep aisles clear')], { stripe: '#f2c230' }), roughness: .5 }));
   safe.position.set(-W / 2 + .08, 5.2, -4); safe.rotation.y = Math.PI / 2; scene.add(safe);
   const fi = await loadImg('assets/img/logo.webp');
   { const [c, x] = canvas(512, 512); x.fillStyle = '#fff'; x.beginPath(); x.arc(256, 256, 250, 0, 7); x.fill(); const r = 380 / Math.max(fi.width, fi.height); x.drawImage(fi, 256 - fi.width * r / 2, 256 - fi.height * r / 2, fi.width * r, fi.height * r);
@@ -298,7 +299,7 @@ export async function buildInterior(renderer, F, M) {
   let lineX0 = -14, lineX1 = 14;
   const robots = [];
   const addRobot = (x, z, ry, col) => { const r = robotArm(col); r.base.position.set(x, 0, z); r.base.rotation.y = ry; scene.add(r.base); robots.push(r); circles.push([x, z, .7]); };
-  const screens = (names, xs = [-11, 10]) => { const scr = txt => { const [c, x] = canvas(512, 320); x.fillStyle = '#0d1b3a'; x.fillRect(0, 0, 512, 320); x.fillStyle = '#4fd1a5'; x.font = '600 44px "Readex Pro"'; x.textAlign = 'center'; x.direction = 'rtl'; x.fillText(txt, 256, 120); x.fillStyle = '#7fb2ff'; for (let i = 0; i < 6; i++) { const hh = 40 + (i * 23) % 120; x.fillRect(60 + i * 66, 290 - hh, 40, hh); } return toTex(c); };
+  const screens = (names, xs = [-11, 10]) => { const scr = txt => { const [c, x] = canvas(512, 320); x.fillStyle = '#0d1b3a'; x.fillRect(0, 0, 512, 320); x.fillStyle = '#4fd1a5'; x.font = '600 44px "Readex Pro"'; x.textAlign = 'center'; x.direction = EN ? 'ltr' : 'rtl'; x.fillText(txt, 256, 120); x.fillStyle = '#7fb2ff'; for (let i = 0; i < 6; i++) { const hh = 40 + (i * 23) % 120; x.fillRect(60 + i * 66, 290 - hh, 40, hh); } return toTex(c); };
     xs.forEach((x, i) => { scene.add(box(2.2, 1.8, 1.2, std('#dfe3e9', { metalness: .4, roughness: .4 }), x, .9, -3.2)); boxes.push([x - 1.15, -3.85, x + 1.15, -2.55]); const st = scr(names[i]); const sc = new THREE.Mesh(new THREE.PlaneGeometry(1.3, .8), new THREE.MeshStandardMaterial({ map: st, emissive: '#ffffff', emissiveMap: st, emissiveIntensity: .8 })); sc.position.set(x, 1.35, -2.59); scene.add(sc); }); };
   const steelM = std('#d7dbe1', { metalness: .95, roughness: .22 }), cbM = new THREE.MeshStandardMaterial({ map: T.cardboard, roughness: .8 });
   const tanks = (n, x0, z, r = 1.25, h = 3.6, mat = steelM) => { for (let i = 0; i < n; i++) { const tk = tank(r, h, mat, brand); tk.position.set(x0 + i * (r * 2 + .9), 0, z); scene.add(tk); circles.push([x0 + i * (r * 2 + .9), z, r + .15]); } };
@@ -311,14 +312,14 @@ export async function buildInterior(renderer, F, M) {
     anim.push(t => drops.children.forEach((d, i) => { const k = (t * 1.6 + i / 30) % 1; d.position.set(-1.3 + (i % 10) * .29, 1.95 - k * 1, -.3 + (i % 3) * .3); }));
     boxes.push([-16.2, -.9, -13, .9]); addBelt(-12.6, 14); lineX0 = -12; tanks(3, 4, -9.6); const pipe = cyl(.09, .09, 10.2, std('#c7ccd3', { metalness: .9, roughness: .25 }), 8.4, 5.4, -9.6, 12); pipe.rotation.z = Math.PI / 2; scene.add(pipe);
     const cf = cartonFiller(brand); cf.g.position.set(-3, 0, -2.6); scene.add(cf.g); boxes.push([-4.3, -3.6, -1.7, -1.6]); anim.push(t => { cf.inner.position.y = 1.7 + Math.sin(t * 4) * .3; });
-    addRobot(6, -1.8, 0, ST.robots); screens(['البسترة', 'فحص الجودة'], [-9, 11.5]); crateStack(-6, -10.6, 3);
+    addRobot(6, -1.8, 0, ST.robots); screens([tx('البسترة', 'Pasteurizing'), tx('فحص الجودة', 'Quality check')], [-9, 11.5]); crateStack(-6, -10.6, 3);
   } else if (P === 'bottles') {
     // a rotary filler, a labeller, red crates stacking up and a giant bottle by the logo
     addBelt(-14, 14); const rf = rotaryFiller('#2a0d06', '#d71a28'); rf.g.position.set(-6, 0, -3); scene.add(rf.g); circles.push([-6, -3, 1.5]); anim.push((t, dt) => { rf.spin.rotation.y = t * .8; });
     const lab = new THREE.Group(); lab.position.set(3, 0, -2.4); scene.add(lab); lab.add(box(2, 1.4, 1.2, std('#eef1f5', { metalness: .4 }), 0, .7, 0)); const roll = cyl(.35, .35, .3, std('#d71a28'), 0, 1.7, 0, 20); roll.rotation.x = Math.PI / 2; lab.add(roll); anim.push(t => { roll.rotation.y = t * 3; }); boxes.push([1.9, -3.1, 4.1, -1.7]);
     const crate = std('#c4151f', { roughness: .5 }); for (let i = 0; i < 4; i++) for (let k = 0; k < 4 - (i % 2); k++) scene.add(box(.7, .3, .5, crate, -16 + i * .8, .15 + k * .31, -10.8)); boxes.push([-16.5, -11.2, -12.9, -10.4]);
     const big = new THREE.Group(); big.position.set(8, 0, -10.5); scene.add(big); big.add(m(new THREE.LatheGeometry([[.001, 0], [.7, 0], [.75, .5], [.7, 2], [.4, 3.2], [.26, 4], [.28, 4.4], [.001, 4.4]].map(p => new THREE.Vector2(...p)), 32), new THREE.MeshPhysicalMaterial({ color: '#2a0d06', roughness: .05, clearcoat: 1 }))); big.add(cyl(.75, .75, .7, std('#d71a28'), 0, 1.3, 0, 32)); circles.push([8, -10.5, .9]);
-    addRobot(-1, 1.6, Math.PI, ST.robots); addRobot(10, -1.8, 0, ST.robots); screens(['التكربن', 'فحص الجودة'], [-12, 12]);
+    addRobot(-1, 1.6, Math.PI, ST.robots); addRobot(10, -1.8, 0, ST.robots); screens([tx('التكربن', 'Carbonating'), tx('فحص الجودة', 'Quality check')], [-12, 12]);
   } else if (P === 'lab') {
     // a clean room: the satellite on its assembly stand, a thermal-vacuum chamber, server racks
     const stand = new THREE.Group(); stand.position.set(-2, 0, -1); scene.add(stand); stand.add(cyl(1.6, 1.8, .4, std('#e9eef6', { metalness: .3 }), 0, .2, 0, 40)); stand.add(cyl(.3, .3, 1.2, steelM, 0, .9, 0, 16)); const sat = satellite(); sat.position.y = 2.4; stand.add(sat); circles.push([-2, -1, 2]);
@@ -335,12 +336,12 @@ export async function buildInterior(renderer, F, M) {
     gap = 3.4; for (let x = -14; x < 14; x += gap) { const u = new THREE.Group(); const ac = product(F, P, T); ac.position.y = 2.6; u.add(ac); u.add(cyl(.02, .02, .8, std('#2b2f37'), 0, 3.2, 0, 6)); u.position.set(x, 0, 0); scene.add(u); units.push(u); }
     for (let i = 0; i < 3; i++) { const bx = -6 + i * 5; const booth = new THREE.Group(); booth.position.set(bx, 0, -3.4); scene.add(booth); booth.add(box(2.6, 2.4, .08, std('#cfe6ff', { transparent: true, opacity: .3 }), 0, 1.2, .8)); booth.add(box(2.6, .2, 1.8, std('#2f6fd0'), 0, 2.5, 0)); const u = product(F, P, T); u.position.set(0, .8, 0); booth.add(u); boxes.push([bx - 1.35, -4.4, bx + 1.35, -2.5]); }
     const flash = new THREE.PointLight('#7fc8ff', 0, 6); flash.position.set(-11, 1.6, -1.6); scene.add(flash); anim.push(t => { flash.intensity = Math.random() < .25 ? 4 + Math.random() * 3 : 0; });
-    addRobot(-11, -1.6, 0, ST.robots); addRobot(11, -1.6, 0, ST.robots); crateStack(6, -10.8, 4); screens(['اختبار الضغط', 'فحص الجودة'], [-15, 15.6]);
+    addRobot(-11, -1.6, 0, ST.robots); addRobot(11, -1.6, 0, ST.robots); crateStack(6, -10.8, 4); screens([tx('اختبار الضغط', 'Pressure test'), tx('فحص الجودة', 'Quality check')], [-15, 15.6]);
   } else if (P === 'dairy') {
     // tall silos, pipes overhead, milk cartons on the belt, a tiled clean hall
     addBelt(-14, 14); tanks(4, -2, -9.8, 1.2, 5.2); for (let i = 0; i < 3; i++) { const p = cyl(.08, .08, 16, std('#c7ccd3', { metalness: .9 }), 4, 6.8 + i * .3, -7.6 - i * .4, 10); p.rotation.z = Math.PI / 2; scene.add(p); }
     const cf = cartonFiller(brand); cf.g.position.set(-8, 0, -2.6); scene.add(cf.g); boxes.push([-9.3, -3.6, -6.7, -1.6]); anim.push(t => { cf.inner.position.y = 1.7 + Math.sin(t * 4) * .3; });
-    addRobot(2, -1.8, 0, ST.robots); addRobot(9, 1.7, Math.PI, ST.robots); screens(['البسترة', 'التغليف'], [-13, 12]);
+    addRobot(2, -1.8, 0, ST.robots); addRobot(9, 1.7, Math.PI, ST.robots); screens([tx('البسترة', 'Pasteurizing'), tx('التغليف', 'Packing')], [-13, 12]);
   } else if (P === 'steel') {
     // the furnace glows, billets run red-hot along the rollers, the gantry crane moves over it all
     const fur = box(5, 4.2, 3.4, std('#3b3f46', { metalness: .6 }), -11, 2.1, -9.3); scene.add(fur); boxes.push([-13.6, -11.1, -8.4, -7.5]);
@@ -352,7 +353,7 @@ export async function buildInterior(renderer, F, M) {
     const coil = std('#5d6573', { metalness: .9, roughness: .3 }); for (let i = 0; i < 6; i++) { const c = m(new THREE.TorusGeometry(.7, .28, 12, 24), coil); c.position.set(4 + (i % 3) * 2, .98 + Math.floor(i / 3) * 1.1, -10.6); scene.add(c); } boxes.push([2.9, -11.4, 9.1, -9.8]);
     const sparks = new THREE.Group(); scene.add(sparks); const spM = new THREE.MeshBasicMaterial({ color: '#ffcf6a' }); for (let i = 0; i < 40; i++) sparks.add(new THREE.Mesh(new THREE.SphereGeometry(.03, 4, 3), spM));
     anim.push(t => sparks.children.forEach((s, i) => { const k = (t * 1.2 + i / 40) % 1; s.position.set(-11 + Math.sin(i * 3.3) * k * 2.4, 1.6 + k * 1.2 - k * k * 3, -7.4 + k * 1.6 + Math.cos(i) * .4); s.visible = k < .9; }));
-    addRobot(4, -1.8, 0, ST.robots); screens(['الدرفلة', 'التبريد'], [-4, 12]);
+    addRobot(4, -1.8, 0, ST.robots); screens([tx('الدرفلة', 'Rolling'), tx('التبريد', 'Cooling')], [-4, 12]);
   } else if (P === 'dates') {
     // sorting tables under wooden beams, crates and sacks, drying racks, potted palms
     addBelt(-12, 10); lineX0 = -12; lineX1 = 10;
@@ -360,7 +361,7 @@ export async function buildInterior(renderer, F, M) {
     const sk = sacks(9); sk.position.set(12, 0, -10.6); scene.add(sk); boxes.push([11.4, -11.2, 15, -10]);
     const rackM = std('#8a6a3a', { roughness: .7 }); for (const x of [-15, -11]) { for (const xx of [-1.3, 1.3]) for (const z of [-11.6, -10.4]) scene.add(box(.1, 4, .1, rackM, x + xx, 2, z)); for (const y of [.6, 1.6, 2.6, 3.6]) { scene.add(box(2.7, .06, 1.3, rackM, x, y, -11)); const dc = dateCrates(1); dc.position.set(x - .6, y - .12, -11); scene.add(dc); } boxes.push([x - 1.5, -11.8, x + 1.5, -10.2]); }
     const pts = [[-6, -11.2], [0, -11.2], [6, -11.2]]; const palms = makePalmField(pts, { h: 3.4, lite: true }); scene.add(palms); for (const [x, z] of pts) { scene.add(cyl(.55, .45, .7, std('#b07a4a'), x, .35, z, 18)); circles.push([x, z, .7]); }
-    screens(['الفرز', 'التعبئة'], [12.5, 7.5]);
+    screens([tx('الفرز', 'Sorting'), tx('التعبئة', 'Filling')], [12.5, 7.5]);
   } else if (P === 'water') {
     // filtration vessels, a blow-moulder turning preforms into bottles, the filling carousel, wrapped packs
     addBelt(-10, 14); lineX0 = -10;
@@ -368,14 +369,14 @@ export async function buildInterior(renderer, F, M) {
     const bm = new THREE.Group(); bm.position.set(-14, 0, 0); scene.add(bm); bm.add(box(3.4, 2.2, 1.8, std('#eef1f5', { metalness: .4 }), 0, 1.1, 0)); const win = new THREE.Mesh(new THREE.PlaneGeometry(2, .8), new THREE.MeshStandardMaterial({ color: '#000', emissive: '#ff9a4a', emissiveIntensity: .8 })); win.position.set(0, 1.4, .91); bm.add(win); boxes.push([-15.8, -.95, -12.2, .95]);
     const rf = rotaryFiller('#bfe8ff', '#1aa0c8'); rf.g.position.set(-3, 0, -3); scene.add(rf.g); circles.push([-3, -3, 1.5]); anim.push(t => { rf.spin.rotation.y = t * .9; });
     const packM = new THREE.MeshPhysicalMaterial({ color: '#bfe8ff', roughness: .1, transmission: 0, transparent: true, opacity: .8 }); for (let i = 0; i < 6; i++) for (let k = 0; k < 3; k++) scene.add(box(1, .45, .7, packM, 5 + i * 1.05, .23 + k * .46, -10.8)); boxes.push([4.4, -11.2, 11, -10.4]);
-    addRobot(5, -1.8, 0, ST.robots); screens(['التعقيم', 'التعبئة'], [10, 13.5]);
+    addRobot(5, -1.8, 0, ST.robots); screens([tx('التعقيم', 'Sterilizing'), tx('التعبئة', 'Filling')], [10, 13.5]);
   } else if (P === 'sweets') {
     // a tunnel oven glows, the mixer turns, trays of maamoul cool on racks, gift boxes wait
     addBelt(-14, 14); const ov = ovenTunnel(9); ov.g.position.set(2, 0, -3.3); scene.add(ov.g); boxes.push([-2.6, -4.3, 6.6, -2.3]); anim.push(t => { ov.glowM.emissiveIntensity = 1.6 + Math.sin(t * 3) * .3; });
     const mx = mixer(); mx.g.position.set(-11, 0, -3.4); scene.add(mx.g); boxes.push([-11.6, -4.6, -10.4, -2.3]); anim.push(t => { mx.hook.rotation.y = t * 3; });
     const trayM = std('#c9ced6', { metalness: .8 }), mm2 = std('#e9c46a', { roughness: .8 }); for (const x of [-15, -6]) { for (const xx of [-1, 1]) for (const z of [-11.4, -10.6]) scene.add(box(.08, 3.6, .08, trayM, x + xx, 1.8, z)); for (let y = .4; y < 3.4; y += .5) { scene.add(box(2, .04, .8, trayM, x, y, -11)); for (let k = 0; k < 6; k++) { const s = cyl(.12, .14, .08, mm2, x - .75 + k * .3, y + .06, -11, 12); scene.add(s); } } boxes.push([x - 1.2, -11.6, x + 1.2, -10.4]); }
     const giftM = std('#f3e7d3'), ribM = std('#c9a24a', { metalness: .8 }); for (let i = 0; i < 5; i++) { const gx = 8 + i * 1.1; scene.add(box(.9, .5, .7, giftM, gx, .25, -10.8), box(.92, .51, .1, ribM, gx, .25, -10.8)); } boxes.push([7.4, -11.3, 13.4, -10.3]);
-    screens(['التشكيل', 'التغليف'], [-15.5, 12]);
+    screens([tx('التشكيل', 'Blow molding'), tx('التغليف', 'Packing')], [-15.5, 12]);
   } else if (P === 'chem') {
     // tall columns to the roof, a pipe rack in the safety colours, drums and a control desk
     for (const [x, r] of [[-12, 1.1], [-8.6, .8], [6, 1.2], [10, .9]]) { const c = column(r, H - .3, std('#d5d8dc', { metalness: .6, roughness: .35 })); c.position.set(x, 0, -9.6); scene.add(c); circles.push([x, -9.6, r + .3]); }
@@ -460,7 +461,7 @@ export async function buildInterior(renderer, F, M) {
       hit('stack', 1.6, 3.4, 1.6, 12.6, 1.7, 2.4).fix = () => { safeStack = true; st.children.forEach((b, i) => { if (i > 2) b.visible = false; b.position.x = 0; b.rotation.y = 0; }); }; fx.stack = { x: 12.6, z: 3.1, r: 1.4 };
     } else if (k === 'extinguisher') {
       const brk = new THREE.Group(); brk.position.set(3, 0, 12.75); scene.add(brk); brk.add(box(.4, .05, .15, std('#2b2f37'), 0, .75, 0)); brk.add(box(.05, .6, .05, std('#2b2f37'), 0, 1.05, .05));
-      const [c, x] = canvas(256, 256); x.fillStyle = '#d7262f'; x.fillRect(0, 0, 256, 256); x.fillStyle = '#fff'; x.font = '700 46px "Readex Pro"'; x.textAlign = 'center'; x.direction = 'rtl'; x.fillText('طفاية', 128, 110); x.fillText('حريق', 128, 170);
+      const [c, x] = canvas(256, 256); x.fillStyle = '#d7262f'; x.fillRect(0, 0, 256, 256); x.fillStyle = '#fff'; x.font = `700 ${EN ? 36 : 46}px "Readex Pro"`; x.textAlign = 'center'; x.direction = EN ? 'ltr' : 'rtl'; x.fillText(tx('طفاية', 'Fire'), 128, 110); x.fillText(tx('حريق', 'Extinguisher'), 128, 170);
       const sg = new THREE.Mesh(new THREE.PlaneGeometry(.6, .6), new THREE.MeshStandardMaterial({ map: toTex(c) })); sg.position.set(0, 1.9, .02); sg.rotation.y = Math.PI; brk.add(sg);
       hit('extinguisher', 1.2, 2.2, 1, 3, 1.1, 12.2).fix = () => { brk.add(cyl(.17, .17, .6, std('#d7262f', { metalness: .4 }), 0, 1, -.05, 14)); };
     } else if (k === 'leak') {

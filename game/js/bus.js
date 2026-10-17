@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { canvas, toTex, loadImg, BRAND, network, grad } from './tex.js';
+import { tx } from './i18n.js';
 
 /* A modern touring coach in the initiative's livery: sculpted side profile with a sloping,
    wrap-around windscreen, frameless panoramic glazing, purple/blue swooshes, rabbit-ear mirrors.
@@ -61,15 +62,15 @@ async function livery(side) {
   // logo + name mid-body, logo towards the front, clear of the door
   const logo = await loadImg('assets/img/logo-mark.webp'), lh = 220, lw = lh * logo.width / logo.height;
   const front = cx(3.0);
-  x.direction = 'rtl'; x.font = '700 140px "Readex Pro"'; const nameW = x.measureText('صناعيو المستقبل').width;
+  x.direction = 'rtl'; x.font = '700 140px "Readex Pro"'; const nameW = x.measureText(tx('صناعيو المستقبل', 'Future Industrialists')).width;
   if (side > 0) {
     x.drawImage(logo, front - lw, 24, lw, lh);
-    x.fillStyle = BRAND.navy; x.textAlign = 'right'; x.fillText('صناعيو المستقبل', front - lw - 36, 170);
-    x.fillStyle = BRAND.blue; x.font = '600 52px "Readex Pro"'; x.direction = 'ltr'; x.textAlign = 'right'; x.fillText('FUTURE INDUSTRIALISTS · 2026', front - lw - 40, 242);
+    x.fillStyle = BRAND.navy; x.textAlign = 'right'; x.fillText(tx('صناعيو المستقبل', 'Future Industrialists'), front - lw - 36, 170);
+    x.fillStyle = BRAND.blue; x.font = '600 52px "Readex Pro"'; x.direction = 'ltr'; x.textAlign = 'right'; x.fillText(tx('FUTURE INDUSTRIALISTS · 2026', 'TOURING COACH · 2026'), front - lw - 40, 242);
   } else {
     x.drawImage(logo, front, 24, lw, lh);
-    x.fillStyle = BRAND.navy; x.textAlign = 'right'; x.fillText('صناعيو المستقبل', front + lw + 36 + nameW, 170);
-    x.fillStyle = BRAND.blue; x.font = '600 52px "Readex Pro"'; x.direction = 'ltr'; x.textAlign = 'left'; x.fillText('FUTURE INDUSTRIALISTS · 2026', front + lw + 40, 242);
+    x.fillStyle = BRAND.navy; x.textAlign = 'right'; x.fillText(tx('صناعيو المستقبل', 'Future Industrialists'), front + lw + 36 + nameW, 170);
+    x.fillStyle = BRAND.blue; x.font = '600 52px "Readex Pro"'; x.direction = 'ltr'; x.textAlign = 'left'; x.fillText(tx('FUTURE INDUSTRIALISTS · 2026', 'TOURING COACH · 2026'), front + lw + 40, 242);
   }
   // wheel arches: nothing painted over the wheels
   x.globalCompositeOperation = 'destination-out';
@@ -79,7 +80,7 @@ async function livery(side) {
 }
 function destSign() {
   const [c, x] = canvas(1024, 128); x.fillStyle = '#05060a'; x.fillRect(0, 0, 1024, 128);
-  x.fillStyle = '#ffb547'; x.shadowColor = '#ffb547'; x.shadowBlur = 14; x.font = '600 70px "Readex Pro"'; x.textAlign = 'center'; x.direction = 'rtl'; x.fillText('رحلة صناعيو المستقبل', 512, 90);
+  x.fillStyle = '#ffb547'; x.shadowColor = '#ffb547'; x.shadowBlur = 14; x.font = tx('600 70px "Readex Pro"', '600 56px "Readex Pro"'); x.textAlign = 'center'; x.direction = 'rtl'; x.fillText(tx('رحلة صناعيو المستقبل', 'Future Industrialists Tour'), 512, 90);
   return toTex(c);
 }
 function plate() {

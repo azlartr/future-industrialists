@@ -1,6 +1,7 @@
 /* Eleven factory mini-games, each with its own mechanic. They run in an overlay above the factory
    hall and resolve with { stars: 0..3, score }. stars 0 means the player may retry. */
 import { TRACKS } from './regions.js';
+import { EN, tx } from './i18n.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
@@ -73,7 +74,7 @@ function frame(F, { title, stat = '' }) {
   let root = $('#mg'); if (!root) { root = el('section', 'screen'); root.id = 'mg'; document.body.append(root); }
   root.innerHTML = ''; root.classList.add('on');
   const T = TRACKS[curTrack];
-  const top = el('div', 'mg-top glass', `<span class="chip" style="background:${T.color}">مسار ${T.name}</span><b>${title}</b><span class="stat">${stat}</span><button class="x" type="button" aria-label="خروج">✕</button>`);
+  const top = el('div', 'mg-top glass', `<span class="chip" style="background:${T.color}">${tx(`مسار ${T.name}`, `Track: ${T.name}`)}</span><b>${title}</b><span class="stat">${stat}</span><button class="x" type="button" aria-label="${tx('خروج', 'Exit')}">✕</button>`);
   const stage = el('div', 'mg-stage'); root.append(top, stage);
   return { root, stage, setStat: v => { $('.stat', top).textContent = v; }, onExit: f => { $('.x', top).onclick = f; } };
 }
@@ -87,7 +88,7 @@ function canvasIn(stage) {
 }
 function rafLoop(fn) { let on = true, last = null; const f = now => { if (!on) return; if (last === null) last = now; const dt = Math.max(0, Math.min(.05, (now - last) / 1000)) * (window.__TS || 1); last = now; fn(dt, now / 1000); requestAnimationFrame(f); }; requestAnimationFrame(f); return () => { on = false; }; }
 function rr(cx, x, y, w, h, r) { cx.beginPath(); cx.roundRect(x, y, w, h, r); }
-function txt(cx, s, x, y, size, color = '#fff', weight = 700, align = 'center') { cx.font = `${weight} ${size}px ${FONT}`; cx.fillStyle = color; cx.textAlign = align; cx.direction = /[\u0600-\u06FF]/.test(s) ? 'rtl' : 'ltr'; cx.textBaseline = 'middle'; cx.fillText(s, x, y); }
+function txt(cx, s, x, y, size, color = '#fff', weight = 700, align = 'center') { cx.font = `${weight} ${size}px ${FONT}`; cx.fillStyle = color; cx.textAlign = align; cx.direction = EN ? 'ltr' : /[\u0600-\u06FF]/.test(s) ? 'rtl' : 'ltr'; cx.textBaseline = 'middle'; cx.fillText(s, x, y); }
 
 /* ================= 1. the bottling line and the ambassador's ad (Coca-Cola, Ambassador) =================
    Part one: bottles run under the capping head; press as each one passes under it to seal it. A
@@ -165,13 +166,13 @@ function drawScene(cx, w, h, kind, t = 0) {
 }
 async function photo(F, A) {
   // like every mini-game: hand back { result, stop } right away so the close button works in both parts
-  const fr = frame(F, { title: 'خط التعبئة وإعلان السفير', stat: '⏱ 35' }), ctl = { stop() {} };
+  const fr = frame(F, { title: tx('خط التعبئة وإعلان السفير', 'Bottling line & ad'), stat: '⏱ 35' }), ctl = { stop() {} };
   return { result: photoRun(F, A, fr, ctl), stop: () => ctl.stop() };
 }
 async function photoRun(F, A, fr, ctl) {
   const { stage } = fr;
-  stage.append(el('div', 'mg-brief glass', 'اضغط <b>«أغلق»</b> أو المسافة عندما تكون العبوة تحت رأس الإغلاق تماماً. اترك العبوة <b>المشروخة</b> لذراع الرفض، والعبوة الذهبية نقاطها مضاعفة!'));
-  const C = canvasIn(stage), btn = el('button', 'btn mg-big', '⬇ أغلق العبوة'); stage.append(btn);
+  stage.append(el('div', 'mg-brief glass', tx('اضغط <b>«أغلق»</b> أو المسافة عندما تكون العبوة تحت رأس الإغلاق تماماً. اترك العبوة <b>المشروخة</b> لذراع الرفض، والعبوة الذهبية نقاطها مضاعفة!', 'Press <b>Cap the bottle</b> or Space when a bottle is right under the capping head. Leave <b>cracked</b> bottles for the reject arm. Golden bottles score double!')));
+  const C = canvasIn(stage), btn = el('button', 'btn mg-big', tx('⬇ أغلق العبوة', '⬇ Cap the bottle')); stage.append(btn);
   const logo = F.logo ? await img(F.logo) : null;
   const DUR = 35; let t = 0, spawn = .4, n = 0, score = 0, combo = 0, bestCombo = 0, capped = 0, missed = 0, wrongs = 0, rejected = 0, piston = 0, kick = 0, shake = 0, over = false;
   let bottles = [], fx = [], sparks = [];
@@ -180,11 +181,11 @@ async function photoRun(F, A, fr, ctl) {
   const press = () => {
     if (over || piston > 0) return; piston = .26; A.sfx('ui_click', .5);
     const L = layout(), cand = bottles.filter(b => !b.capped && !b.gone).sort((a, b) => Math.abs(a.x - L.capX) - Math.abs(b.x - L.capX))[0], d = cand ? Math.abs(cand.x - L.capX) : 1e9;
-    if (!cand || d > L.win * 2.2) { combo = 0; fx.push({ x: L.capX, y: L.base - 190 * L.s, s: 'فارغ!', c: '#ffd0d0', life: 1 }); return; }
-    if (cand.crack) { wrongs++; combo = 0; score = Math.max(0, score - 50); shake = .3; cand.gone = true; fx.push({ x: cand.x, y: L.base - 180 * L.s, s: 'مشروخة! −50', c: '#ff8a8a', life: 1.2 }); A.sfx('wrong', .6); for (let k = 0; k < 18; k++) sparks.push({ x: cand.x, y: L.base - 90 * L.s, vx: rand(-160, 160), vy: rand(-260, -60), life: .8, c: '#e9f2ff' }); return; }
+    if (!cand || d > L.win * 2.2) { combo = 0; fx.push({ x: L.capX, y: L.base - 190 * L.s, s: tx('فارغ!', 'Empty!'), c: '#ffd0d0', life: 1 }); return; }
+    if (cand.crack) { wrongs++; combo = 0; score = Math.max(0, score - 50); shake = .3; cand.gone = true; fx.push({ x: cand.x, y: L.base - 180 * L.s, s: tx('مشروخة! −50', 'Cracked! −50'), c: '#ff8a8a', life: 1.2 }); A.sfx('wrong', .6); for (let k = 0; k < 18; k++) sparks.push({ x: cand.x, y: L.base - 90 * L.s, vx: rand(-160, 160), vy: rand(-260, -60), life: .8, c: '#e9f2ff' }); return; }
     const perfect = d < L.win * .45, pts = (perfect ? 100 : 50) * (cand.gold ? 2 : 1) * (1 + Math.min(4, Math.floor(combo / 4)) * .25);
     cand.capped = true; cand.glint = 1; capped++; combo++; bestCombo = Math.max(bestCombo, combo); score += Math.round(pts);
-    fx.push({ x: cand.x, y: L.base - 185 * L.s, s: `${perfect ? 'مثالي' : 'جيد'} +${Math.round(pts)}`, c: perfect ? '#ffe28a' : '#ffffff', life: 1 });
+    fx.push({ x: cand.x, y: L.base - 185 * L.s, s: `${perfect ? tx('مثالي', 'Perfect') : tx('جيد', 'Good')} +${Math.round(pts)}`, c: perfect ? '#ffe28a' : '#ffffff', life: 1 });
     A.sfx(perfect ? 'task_done' : 'points', .45); if (cand.gold) A.sfx('level_up', .35);
   };
   btn.addEventListener('pointerdown', e => { e.preventDefault(); press(); });
@@ -198,8 +199,8 @@ async function photoRun(F, A, fr, ctl) {
     piston = Math.max(0, piston - dt); kick = Math.max(0, kick - dt); shake = Math.max(0, shake - dt);
     for (const b of bottles) {
       b.x += speed * dt; b.glint = Math.max(0, b.glint - dt * 2);
-      if (!b.capped && !b.crack && !b.counted && b.x > capX + L.win * 2.2) { b.counted = true; missed++; combo = 0; fx.push({ x: b.x, y: base - 180 * s, s: 'فاتتك', c: '#ffb0b0', life: .9 }); A.sfx('wrong', .25); }
-      if (b.crack && !b.gone && b.x > L.rejX) { b.gone = true; rejected++; kick = .3; fx.push({ x: L.rejX, y: base - 170 * s, s: 'رُفضت ✓', c: '#b8ffd0', life: 1 }); b.fly = { vx: 60, vy: -240 }; }
+      if (!b.capped && !b.crack && !b.counted && b.x > capX + L.win * 2.2) { b.counted = true; missed++; combo = 0; fx.push({ x: b.x, y: base - 180 * s, s: tx('فاتتك', 'Missed'), c: '#ffb0b0', life: .9 }); A.sfx('wrong', .25); }
+      if (b.crack && !b.gone && b.x > L.rejX) { b.gone = true; rejected++; kick = .3; fx.push({ x: L.rejX, y: base - 170 * s, s: tx('رُفضت ✓', 'Rejected ✓'), c: '#b8ffd0', life: 1 }); b.fly = { vx: 60, vy: -240 }; }
     }
     // the hall: brand red, soft lights, the logo watermark
     cx.save(); if (shake > 0) cx.translate(Math.sin(t * 90) * 5 * shake, 0);
@@ -229,14 +230,14 @@ async function photoRun(F, A, fr, ctl) {
     // the reject arm
     const kx = L.rejX - 40 * s + (kick > 0 ? Math.sin((1 - kick / .3) * Math.PI) * 40 * s : 0);
     cx.fillStyle = '#5a5f6a'; cx.fillRect(L.rejX - 90 * s, base - 70 * s, 50 * s, 30 * s); cx.fillStyle = '#f2c230'; cx.fillRect(kx - 10 * s, base - 64 * s, 30 * s, 18 * s);
-    txt(cx, 'رفض', L.rejX - 65 * s, base - 84 * s, 12 * s, '#ffd36a', 600);
+    txt(cx, tx('رفض', 'Reject'), L.rejX - 65 * s, base - 84 * s, 12 * s, '#ffd36a', 600);
     // sparks and labels
     for (const p of sparks) { p.vy += 700 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; cx.globalAlpha = Math.max(0, p.life); cx.fillStyle = p.c; cx.fillRect(p.x, p.y, 3, 3); } cx.globalAlpha = 1; sparks = sparks.filter(p => p.life > 0);
     for (const f of fx) { f.y -= 50 * dt; f.life -= dt; cx.globalAlpha = Math.max(0, Math.min(1, f.life * 2)); txt(cx, f.s, f.x, f.y, 20 * Math.max(.8, s), f.c); cx.globalAlpha = 1; } fx = fx.filter(f => f.life > 0);
     cx.restore();
     // score and streak
-    txt(cx, score.toLocaleString('en'), w - 24, 34, 28, '#fff', 700, 'right'); txt(cx, 'نقاط', w - 24, 60, 13, 'rgba(255,255,255,.75)', 500, 'right');
-    if (combo >= 3) txt(cx, `سلسلة ×${combo}`, 24, 34, 22, '#ffe28a', 700, 'left');
+    txt(cx, score.toLocaleString('en'), w - 24, 34, 28, '#fff', 700, 'right'); txt(cx, tx('نقاط', 'points'), w - 24, 60, 13, 'rgba(255,255,255,.75)', 500, 'right');
+    if (combo >= 3) txt(cx, tx(`سلسلة ×${combo}`, `Streak ×${combo}`), 24, 34, 22, '#ffe28a', 700, 'left');
     const tl = Math.max(0, left / DUR); cx.fillStyle = 'rgba(255,255,255,.2)'; rr(cx, w * .3, h - 18, w * .4, 6, 3); cx.fill(); cx.fillStyle = '#ffe28a'; rr(cx, w * .3, h - 18, w * .4 * tl, 6, 3); cx.fill();
     if (t >= DUR && !over) { over = true; resolve(); }
   });
@@ -245,10 +246,10 @@ async function photoRun(F, A, fr, ctl) {
   const lineQ = capped / Math.max(1, capped + missed + wrongs * 1.5);
   A.sfx('level_up', .5);
   // ---- part two: the ambassador's ad
-  const fit = await adStudio(stage, F, A, { product: 'bottles', stat: `خط التعبئة: ${capped} عبوة · أفضل سلسلة ×${bestCombo}`,
-    ask: 'حملة <b>صيفية منعشة</b> للشباب، تُعرض على لوحات الطرق في جدة.',
-    scenes: [['beach', 'شاطئ وقت الظهيرة', 1], ['night', 'صحراء في الليل', 0], ['office', 'مكتب رسمي', 0]],
-    lines: [['انتعش… الصيف أحلى معك', 1], ['جودة ثابتة منذ سنوات', 0], ['لحظة هدوء قبل النوم', 0]] });
+  const fit = await adStudio(stage, F, A, { product: 'bottles', stat: tx(`خط التعبئة: ${capped} عبوة · أفضل سلسلة ×${bestCombo}`, `Line: ${capped} bottles · best streak ×${bestCombo}`),
+    ask: tx('حملة <b>صيفية منعشة</b> للشباب، تُعرض على لوحات الطرق في جدة.', 'A <b>refreshing summer</b> campaign for young people, shown on billboards in Jeddah.'),
+    scenes: [['beach', tx('شاطئ وقت الظهيرة', 'Midday beach'), 1], ['night', tx('صحراء في الليل', 'Desert at night'), 0], ['office', tx('مكتب رسمي', 'Formal office'), 0]],
+    lines: [[tx('انتعش… الصيف أحلى معك', 'Refresh… summer is sweeter with you'), 1], [tx('جودة ثابتة منذ سنوات', 'Steady quality for years'), 0], [tx('لحظة هدوء قبل النوم', 'A calm moment before bed'), 0]] });
   const stars = Math.max(0, Math.min(3, (lineQ >= .8 ? 2 : lineQ >= .5 ? 1 : 0) + (fit === 2 ? 1 : 0)));
   return { stars, score };
 }
@@ -256,9 +257,9 @@ async function photoRun(F, A, fr, ctl) {
    student as the campaign's ambassador and can be saved. Resolves how many of the two choices fit (0..2). */
 /* the poster comes in three layouts; the student picks the one that suits the copy and the scene */
 const AD_DESIGNS = [
-  { name: 'كلاسيكي', hint: 'عنوان فوق، والمنتج أمامك' },
-  { name: 'شريط الماركة', hint: 'شريط بلون الشركة يحمل العبارة' },
-  { name: 'أنيق', hint: 'بطاقة بيضاء، والمنتج بالوسط' }
+  { name: tx('كلاسيكي', 'Classic'), hint: tx('عنوان فوق، والمنتج أمامك', 'Headline on top, product in front') },
+  { name: tx('شريط الماركة', 'Brand bar'), hint: tx('شريط بلون الشركة يحمل العبارة', 'A bar in the company color holds the slogan') },
+  { name: tx('أنيق', 'Elegant'), hint: tx('بطاقة بيضاء، والمنتج بالوسط', 'White card, product in the middle') }
 ];
 /* the copy at the largest size (down to min) that fits maxW; a line still too long is cut with an ellipsis */
 function fitText(px, text, maxW, size, min, weight = 700) {
@@ -269,58 +270,79 @@ function fitText(px, text, maxW, size, min, weight = 700) {
   return t;
 }
 /* the poster at 900×1200: the scene, the product, the copy, the logo, and the ambassador's line */
+/* the poster at 900×1200 in one of three layouts: the scene, the product, the copy, the logo, a campaign sticker and the ambassador */
 function drawPoster(design, sc, M, copy, F, A, logo, pose) {
   const P = document.createElement('canvas'); P.width = 900; P.height = 1200; const px = P.getContext('2d');
-  const brand = F.color || '#2a3590';
-  px.textAlign = 'center'; px.direction = 'rtl';
-  const card = (x, y, w, h, r) => { px.fillStyle = 'rgba(255,255,255,.94)'; px.beginPath(); px.roundRect(x, y, w, h, r); px.fill(); };
-  // the logo on a white card, centred on cx with its top at y; the company name stands in when there is no logo
+  const brand = F.color || '#2a3590', gold = '#ffd23f', ink = '#1b2263';
+  px.textAlign = 'center'; px.direction = EN ? 'ltr' : 'rtl';
+  const rr = (x, y, w, h, r) => { px.beginPath(); px.roundRect(x, y, w, h, r); };
+  // the logo on a white card; the company name stands in when there is no logo
   const logoAt = (cx, y, maxW, maxH) => {
-    if (logo) { const lh = Math.min(maxH, maxW * logo.height / logo.width), lw = lh * logo.width / logo.height; card(cx - lw / 2 - 22, y, lw + 44, lh + 28, 20); px.drawImage(logo, cx - lw / 2, y + 14, lw, lh); return; }
-    card(cx - 210, y, 420, 96, 20); px.fillStyle = brand; px.font = '700 46px "Readex Pro"'; px.fillText(F.name, cx, y + 64);
+    if (logo) { const lh = Math.min(maxH, maxW * logo.height / logo.width), lw = lh * logo.width / logo.height; px.fillStyle = 'rgba(255,255,255,.96)'; rr(cx - lw / 2 - 22, y, lw + 44, lh + 28, 20); px.fill(); px.drawImage(logo, cx - lw / 2, y + 14, lw, lh); return; }
+    px.fillStyle = 'rgba(255,255,255,.96)'; rr(cx - 210, y, 420, 96, 20); px.fill(); px.fillStyle = brand; px.font = '800 46px "Readex Pro"'; px.fillText(F.name, cx, y + 64);
   };
-  const shade = () => { const vg = px.createLinearGradient(0, 760, 0, 1200); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); px.fillStyle = vg; px.fillRect(0, 0, 900, 1200); };
+  // a round gold sticker with the campaign name, turned a little
+  const sticker = (cx, cy, r) => {
+    if (!M.title) return;
+    px.save(); px.translate(cx, cy); px.rotate(-.2);
+    const g = px.createLinearGradient(-r, -r, r, r); g.addColorStop(0, '#ffe27a'); g.addColorStop(1, '#f2b51e');
+    px.shadowColor = 'rgba(0,0,0,.35)'; px.shadowBlur = 24; px.shadowOffsetY = 8;
+    px.fillStyle = g; px.beginPath(); px.arc(0, 0, r, 0, 7); px.fill();
+    px.shadowColor = 'transparent'; px.shadowBlur = 0; px.shadowOffsetY = 0;
+    px.lineWidth = 5; px.strokeStyle = '#fff'; px.beginPath(); px.arc(0, 0, r - 10, 0, 7); px.stroke();
+    px.fillStyle = ink; px.fillText(fitText(px, M.title, r * 1.6, 44, 18, 900), 0, 15);
+    px.restore();
+  };
+  const topShade = () => { const g = px.createLinearGradient(0, 0, 0, 500); g.addColorStop(0, 'rgba(14,18,60,.82)'); g.addColorStop(1, 'rgba(14,18,60,0)'); px.fillStyle = g; px.fillRect(0, 0, 900, 500); };
+  const bottomShade = () => { const g = px.createLinearGradient(0, 760, 0, 1200); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); px.fillStyle = g; px.fillRect(0, 0, 900, 1200); };
+  // a soft light behind the product so it stands out from the scene
+  const glow = (cx, cy, r) => { const g = px.createRadialGradient(cx, cy, 0, cx, cy, r); g.addColorStop(0, 'rgba(255,255,255,.42)'); g.addColorStop(1, 'rgba(255,255,255,0)'); px.fillStyle = g; px.fillRect(cx - r, cy - r, 2 * r, 2 * r); };
+  const pic = (ph, bottom, right) => { if (!pose) return; const pw = ph * pose.width / pose.height; px.drawImage(pose, right - pw, bottom - ph, pw, ph); };
   if (design === 0) {
-    drawScene(px, 900, 1200, sc, 1.3); shade();
-    if (pose) { const ph = 820, pw = ph * pose.width / pose.height; px.drawImage(pose, 900 - pw - 10, 1200 - ph - 60, pw, ph); }
-    drawHero(px, M.product, 330, 1080);
-    px.fillStyle = '#fff'; px.shadowColor = 'rgba(0,0,0,.45)'; px.shadowBlur = 18; px.fillText(fitText(px, copy, 800, 80, 40), 450, 190); px.shadowBlur = 0;
-    logoAt(450, 250, 260, 140);
+    drawScene(px, 900, 1200, sc, 1.3); topShade(); bottomShade();
+    glow(360, 900, 330); pic(780, 1130, 900 - 14);
+    drawHero(px, M.product, 360, 1060);
+    px.fillStyle = '#fff'; px.shadowColor = 'rgba(0,0,0,.5)'; px.shadowBlur = 20; px.shadowOffsetY = 4; px.fillText(fitText(px, copy, 800, 92, 40, 800), 450, 218); px.shadowBlur = 0; px.shadowOffsetY = 0;
+    px.fillStyle = gold; rr(360, 246, 180, 12, 6); px.fill();
+    logoAt(150, 40, 170, 90); sticker(140, 470, 92);
   } else if (design === 1) {
-    drawScene(px, 900, 1200, sc, 1.3); shade();
-    if (pose) { const ph = 760, pw = ph * pose.width / pose.height; px.drawImage(pose, 900 - pw - 10, 1200 - ph - 60, pw, ph); }
-    // a band in the company's colour across the top, with a gold rule under it
-    px.fillStyle = brand; px.fillRect(0, 0, 900, 400); px.fillStyle = '#ffd23f'; px.fillRect(0, 400, 900, 12);
-    logoAt(450, 36, 230, 110);
-    px.fillStyle = '#fff'; px.fillText(fitText(px, copy, 800, 76, 40, 800), 450, 300);
-    drawHero(px, M.product, 360, 1040);
+    drawScene(px, 900, 1200, sc, 1.3); bottomShade();
+    // a slanted band in the company's colour with a gold edge; the copy sits on it
+    const bg = px.createLinearGradient(0, 0, 900, 0); bg.addColorStop(0, brand); bg.addColorStop(1, '#3c58a7');
+    px.fillStyle = bg; px.beginPath(); px.moveTo(0, 60); px.lineTo(900, 0); px.lineTo(900, 310); px.lineTo(0, 370); px.closePath(); px.fill();
+    px.fillStyle = gold; px.beginPath(); px.moveTo(0, 370); px.lineTo(900, 310); px.lineTo(900, 324); px.lineTo(0, 384); px.closePath(); px.fill();
+    glow(380, 860, 340); pic(760, 1130, 900 - 14);
+    drawHero(px, M.product, 380, 1050);
+    px.fillStyle = '#fff'; px.shadowColor = 'rgba(0,0,0,.3)'; px.shadowBlur = 12; px.shadowOffsetY = 3; px.fillText(fitText(px, copy, 800, 84, 40, 800), 450, 218); px.shadowBlur = 0; px.shadowOffsetY = 0;
+    logoAt(790, 18, 150, 80); sticker(150, 520, 90);
   } else {
-    // a white card on a faded scene, the copy in the company's colour, the product standing in the middle
-    drawScene(px, 900, 1200, sc, 1.3); px.fillStyle = 'rgba(255,255,255,.8)'; px.fillRect(0, 0, 900, 1200);
-    px.shadowColor = 'rgba(0,0,0,.18)'; px.shadowBlur = 40; px.shadowOffsetY = 16; px.fillStyle = '#fff'; px.beginPath(); px.roundRect(80, 90, 740, 1000, 40); px.fill(); px.shadowBlur = 0; px.shadowOffsetY = 0;
-    px.strokeStyle = brand; px.lineWidth = 6; px.beginPath(); px.roundRect(110, 120, 680, 940, 30); px.stroke();
+    // a white card on a faded scene, framed in the company's colour, the copy in that colour, the product in the middle
+    drawScene(px, 900, 1200, sc, 1.3); px.fillStyle = 'rgba(255,255,255,.82)'; px.fillRect(0, 0, 900, 1200);
+    px.shadowColor = 'rgba(0,0,0,.2)'; px.shadowBlur = 40; px.shadowOffsetY = 16; px.fillStyle = '#fff'; rr(80, 90, 740, 1000, 40); px.fill(); px.shadowBlur = 0; px.shadowOffsetY = 0;
+    px.strokeStyle = brand; px.lineWidth = 6; rr(110, 120, 680, 940, 30); px.stroke();
     logoAt(450, 150, 240, 120);
     px.fillStyle = brand; px.fillText(fitText(px, copy, 640, 84, 40, 800), 450, 480);
-    px.fillStyle = '#ffd23f'; px.fillRect(400, 520, 100, 8);
-    // a soft disc of the company's colour behind the product, so a white product still reads on the white card
-    px.globalAlpha = .12; px.fillStyle = brand; px.beginPath(); px.arc(450, 880, 330, 0, 7); px.fill(); px.globalAlpha = 1;
-    drawHero(px, M.product, 450, 1000);
+    px.fillStyle = gold; rr(400, 520, 100, 8, 4); px.fill();
+    glow(450, 880, 330); drawHero(px, M.product, 450, 1000);
+    sticker(730, 250, 84);
   }
-  // the ambassador's name, cut to fit the caption pill
-  px.fillStyle = 'rgba(255,255,255,.94)'; px.beginPath(); px.roundRect(30, 1126, 540, 54, 27); px.fill();
-  px.fillStyle = '#2a3590'; px.fillText(fitText(px, `سفير الحملة: ${A.name || ''} · صناعيو المستقبل`, 490, 26, 18, 600), 300, 1162);
+  // the ambassador's name in a brand-coloured pill, cut to fit
+  const cap = EN ? `Campaign ambassador: ${A.name || ''} · Future Industrialists` : `سفير الحملة: ${A.name || ''} · صناعيو المستقبل`;
+  const pg = px.createLinearGradient(30, 0, 570, 0); pg.addColorStop(0, brand); pg.addColorStop(1, '#3c58a7');
+  px.fillStyle = pg; rr(30, 1124, 540, 56, 28); px.fill();
+  px.fillStyle = '#fff'; px.fillText(fitText(px, cap, 490, 26, 18, 700), 300, 1162);
   return P;
 }
 async function adStudio(stage, F, A, M) {
   const logo = F.logo ? await img(F.logo) : null;
   const pose = await img(`assets/ui/${A.char || 'boy'}_pose_cut.webp`);
   const panel = el('div', 'panel glass');
-  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px"><b style="font-size:18px">استوديو الإعلان</b><span style="font-size:13px;color:var(--muted)">${M.stat || F.name}</span></div>
-    <div style="padding:10px 12px;border-radius:14px;background:#fff7e0;border:1px solid #f2d27a;font-size:14.5px;line-height:1.7;margin-bottom:12px">📋 <b>طلب العميل:</b> ${M.ask}</div>
-    <div style="font-weight:600;margin:4px 0 8px">١. اختر مكان التصوير</div><div id="ad-scene" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
-    <div style="font-weight:600;margin:12px 0 8px">٢. اختر عبارة الإعلان</div><div class="mg-row" id="ad-line"></div>
-    <div style="font-weight:600;margin:12px 0 8px">٣. اختر تصميم البوستر</div><div id="ad-design" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
-    <div class="mg-row" style="margin-top:14px"><button class="btn" id="ad-shoot" type="button" disabled>📸 صوّر الإعلان</button></div>`;
+  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px"><b style="font-size:18px">${tx('استوديو الإعلان', 'Ad studio')}</b><span style="font-size:13px;color:var(--muted)">${M.stat || F.name}</span></div>
+    <div style="padding:10px 12px;border-radius:14px;background:#fff7e0;border:1px solid #f2d27a;font-size:14.5px;line-height:1.7;margin-bottom:12px">📋 <b>${tx('طلب العميل:', 'Client brief:')}</b> ${M.ask}</div>
+    <div style="font-weight:600;margin:4px 0 8px">${tx('١. اختر مكان التصوير', '1. Pick a location')}</div><div id="ad-scene" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
+    <div style="font-weight:600;margin:12px 0 8px">${tx('٢. اختر عبارة الإعلان', '2. Pick a slogan')}</div><div class="mg-row" id="ad-line"></div>
+    <div style="font-weight:600;margin:12px 0 8px">${tx('٣. اختر تصميم البوستر', '3. Pick a poster design')}</div><div id="ad-design" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
+    <div class="mg-row" style="margin-top:14px"><button class="btn" id="ad-shoot" type="button" disabled>${tx('📸 صوّر الإعلان', '📸 Shoot the ad')}</button></div>`;
   stage.append(panel);
   const scenes = shuffle(M.scenes.slice()), lines = shuffle(M.lines.slice());
   let scene = null, line = null, design = null;
@@ -339,19 +361,41 @@ async function adStudio(stage, F, A, M) {
   panel.innerHTML = '';
   const show = el('div', '', ''); show.style.cssText = 'display:grid;gap:12px;justify-items:center';
   P.style.cssText = 'width:min(300px,62vw);height:auto;border-radius:16px;box-shadow:0 24px 50px -20px rgba(0,0,0,.6);animation:cardIn .6s cubic-bezier(.2,.8,.2,1)';
-  const verdict = fit === 2 ? '👍 العميل: هذا بالضبط ما طلبناه!' : !scene[1] ? '🤔 العميل: الإعلان جميل، لكن المكان لا يناسب فكرة الحملة.' : '🤔 العميل: المكان مناسب، لكن العبارة لا تناسب فكرة الحملة.';
-  const row = el('div', 'mg-row'), save = el('button', 'btn ghost', '⬇ حمّل إعلانك'), next = el('button', 'btn', 'متابعة');
+  const verdict = fit === 2 ? tx('👍 العميل: هذا بالضبط ما طلبناه!', '👍 Client: that is exactly what we asked for!') : !scene[1] ? tx('🤔 العميل: الإعلان جميل، لكن المكان لا يناسب فكرة الحملة.', '🤔 Client: nice ad, but the place does not fit the campaign idea.') : tx('🤔 العميل: المكان مناسب، لكن العبارة لا تناسب فكرة الحملة.', '🤔 Client: good place, but the slogan does not fit the campaign idea.');
+  const row = el('div', 'mg-row'), save = el('button', 'btn ghost', tx('⬇ حمّل إعلانك', '⬇ Save your ad')), next = el('button', 'btn', tx('متابعة', 'Continue'));
   save.onclick = () => { const a = document.createElement('a'); a.download = 'ad-future-industrialists.png'; a.href = P.toDataURL('image/png'); a.click(); A.sfx('ui_click'); };
   row.append(save, next); show.append(P, el('div', '', `<b style="font-size:15px">${verdict}</b>`), row); panel.append(show);
   A.sfx(fit === 2 ? 'task_done' : 'points', .6);
   await new Promise(r => next.onclick = r);
   return fit;
 }
+/* a split air-conditioner: a white body with a gloss, a navy louvre, a blue status light and air streaming down */
+function drawAC(px, x, base) {
+  px.save(); px.translate(x, base - 230); px.scale(1.15, 1.15);
+  const sh = px.createRadialGradient(0, 0, 10, 0, 0, 280); sh.addColorStop(0, 'rgba(10,14,50,.42)'); sh.addColorStop(1, 'rgba(10,14,50,0)');
+  px.save(); px.translate(0, 152); px.scale(1, .16); px.fillStyle = sh; px.beginPath(); px.arc(0, 0, 280, 0, 7); px.fill(); px.restore();
+  const body = px.createLinearGradient(0, -150, 0, 20); body.addColorStop(0, '#ffffff'); body.addColorStop(1, '#d6dfec');
+  px.fillStyle = body; px.beginPath(); px.roundRect(-230, -150, 460, 170, 42); px.fill();
+  px.strokeStyle = 'rgba(31,38,102,.16)'; px.lineWidth = 2; px.stroke();
+  px.fillStyle = 'rgba(255,255,255,.75)'; px.beginPath(); px.roundRect(-214, -140, 428, 24, 12); px.fill();
+  px.fillStyle = '#1f5fae'; px.font = '800 36px "Readex Pro"'; px.textAlign = 'left'; px.fillText('YORK', -196, -88);
+  px.fillStyle = '#4fd0ff'; px.shadowColor = '#4fd0ff'; px.shadowBlur = 16; px.beginPath(); px.arc(190, -92, 8, 0, 7); px.fill(); px.shadowBlur = 0;
+  const slot = px.createLinearGradient(0, -40, 0, 0); slot.addColorStop(0, '#2b3592'); slot.addColorStop(1, '#1b2263');
+  px.fillStyle = slot; px.beginPath(); px.roundRect(-200, -38, 400, 36, 16); px.fill();
+  px.fillStyle = 'rgba(196,211,239,.35)'; for (let k = 0; k < 9; k++) px.fillRect(-180 + k * 44, -26, 22, 4);
+  px.lineCap = 'round';
+  for (let k = 0; k < 5; k++) {
+    const fx = -160 + k * 80, g = px.createLinearGradient(0, 22, 0, 150);
+    g.addColorStop(0, 'rgba(127,208,255,.95)'); g.addColorStop(1, 'rgba(127,208,255,0)');
+    px.strokeStyle = g; px.lineWidth = 9; px.beginPath(); px.moveTo(fx, 22); px.bezierCurveTo(fx + (k % 2 ? 18 : -18), 60, fx + (k % 2 ? -18 : 18), 110, fx, 150); px.stroke();
+  }
+  px.restore();
+}
 /* the product at the front of the poster */
 function drawHero(px, product, x, base) {
   if (product === 'bottles') { for (const [bx, bs] of [[x - 130, 2.3], [x, 2.7], [x + 130, 2.3]]) drawBottle(px, bx, base, bs, { cap: true, t: 2 }); px.fillStyle = 'rgba(255,255,255,.75)'; for (let k = 0; k < 26; k++) { px.beginPath(); px.arc(x - 180 + (k * 53) % 380, base - 380 + (k * 97) % 330, 3 + k % 4, 0, 7); px.fill(); } return; }
-  if (product === 'ac') { px.save(); px.translate(x, base - 170); px.fillStyle = 'rgba(0,0,0,.25)'; px.beginPath(); px.ellipse(0, 190, 220, 24, 0, 0, 7); px.fill(); px.fillStyle = '#ffffff'; px.beginPath(); px.roundRect(-230, -60, 460, 160, 36); px.fill(); px.fillStyle = '#e3e8ef'; px.fillRect(-200, 60, 400, 18); px.fillStyle = '#1f5fae'; px.font = '700 34px "Readex Pro"'; px.textAlign = 'center'; px.fillText('YORK', 150, 10); px.fillStyle = '#7fd0ff'; for (let k = 0; k < 4; k++) { px.globalAlpha = .7 - k * .15; px.beginPath(); px.moveTo(-170 + k * 90, 110); px.quadraticCurveTo(-150 + k * 90, 170, -190 + k * 90, 230); px.lineWidth = 10; px.strokeStyle = '#a8e2ff'; px.stroke(); } px.globalAlpha = 1; px.restore(); return; }
-  if (product === 'dates') { px.save(); px.translate(x, base - 120); px.fillStyle = 'rgba(0,0,0,.25)'; px.beginPath(); px.ellipse(0, 130, 230, 26, 0, 0, 7); px.fill(); px.fillStyle = '#c9a13a'; px.beginPath(); px.roundRect(-220, -40, 440, 160, 18); px.fill(); px.fillStyle = '#f6e7b8'; px.fillRect(-220, -40, 440, 30); for (let k = 0; k < 7; k++) { px.save(); px.translate(-165 + k * 55, -50 + (k % 2) * 8); px.rotate(-.5 + (k % 3) * .3); drawDate(px, 26, 'good', k); px.restore(); } px.fillStyle = '#fff'; px.font = '700 44px "Readex Pro"'; px.textAlign = 'center'; px.direction = 'rtl'; px.fillText('الكريدا', 0, 80); px.restore(); return; }
+  if (product === 'ac') { drawAC(px, x, base); return; }
+  if (product === 'dates') { px.save(); px.translate(x, base - 120); px.fillStyle = 'rgba(0,0,0,.25)'; px.beginPath(); px.ellipse(0, 130, 230, 26, 0, 0, 7); px.fill(); px.fillStyle = '#c9a13a'; px.beginPath(); px.roundRect(-220, -40, 440, 160, 18); px.fill(); px.fillStyle = '#f6e7b8'; px.fillRect(-220, -40, 440, 30); for (let k = 0; k < 7; k++) { px.save(); px.translate(-165 + k * 55, -50 + (k % 2) * 8); px.rotate(-.5 + (k % 3) * .3); drawDate(px, 26, 'good', k); px.restore(); } px.fillStyle = '#fff'; px.font = '700 44px "Readex Pro"'; px.textAlign = 'center'; px.direction = EN ? 'ltr' : 'rtl'; px.fillText(tx('الكريدا', 'Al Kareeda'), 0, 80); px.restore(); return; }
   if (product === 'water') { px.save(); px.translate(x, base - 230); const g = px.createLinearGradient(0, -200, 0, 200); g.addColorStop(0, '#bfe9ff'); g.addColorStop(1, '#1f86c9'); px.fillStyle = g; px.beginPath(); px.moveTo(0, -210); px.bezierCurveTo(60, -110, 170, -10, 170, 70); px.bezierCurveTo(170, 170, 90, 220, 0, 220); px.bezierCurveTo(-90, 220, -170, 170, -170, 70); px.bezierCurveTo(-170, -10, -60, -110, 0, -210); px.fill(); px.fillStyle = 'rgba(255,255,255,.55)'; px.beginPath(); px.ellipse(-70, 40, 26, 70, -.3, 0, 7); px.fill(); px.restore(); }
 }
 
@@ -367,7 +411,7 @@ async function ad(F, A, M) {
    The scenes of the journey come shuffled: put them in order, then choose the title. The strip is
    drawn as a page the student can save, signed with their name. */
 async function story(F, A, M) {
-  const fr = frame(F, { title: M.title, stat: 'أخطاء: 0' }), { stage } = fr;
+  const fr = frame(F, { title: M.title, stat: tx('أخطاء: 0', 'Mistakes: 0') }), { stage } = fr;
   stage.append(el('div', 'mg-brief glass', M.brief));
   const [tA, tB] = M.tint || ['#fff4e0', '#e08a1e'];
   const wrap = el('div', 'panel glass'); wrap.style.cssText = `display:grid;gap:12px;flex:1;min-height:0;overflow:auto;background:linear-gradient(160deg,${tA},#ffffff)`; stage.append(wrap);
@@ -379,26 +423,26 @@ async function story(F, A, M) {
     shuffle(M.panels.map((p, i) => ({ p, i }))).forEach(({ p, i }) => {
       const b = el('button', 'opt step', `<i>${p[0]}</i><span>${p[1]}</span>`); b.style.maxWidth = '260px';
       b.onclick = async () => {
-        if (i !== next) { mistakes++; fr.setStat(`أخطاء: ${mistakes}`); b.classList.add('bad', 'shake'); A.sfx('wrong', .4); setTimeout(() => b.classList.remove('bad', 'shake'), 450); return; }
+        if (i !== next) { mistakes++; fr.setStat(tx(`أخطاء: ${mistakes}`, `Mistakes: ${mistakes}`)); b.classList.add('bad', 'shake'); A.sfx('wrong', .4); setTimeout(() => b.classList.remove('bad', 'shake'), 450); return; }
         const f = frames[i]; f.style.border = `2px solid ${tB}`; f.style.background = `linear-gradient(180deg,#fff,${tA})`; f.innerHTML = `<span style="font-size:clamp(30px,5vw,46px);line-height:1">${p[0]}</span><span>${p[1]}</span>`; f.animate([{ transform: 'scale(.8)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 300, easing: 'ease-out' });
         b.remove(); next++; A.sfx('task_done', .45);
         if (next < M.panels.length) return;
         // all in order: now the title
-        await wait(500); pool.innerHTML = `<div style="width:100%;text-align:center;font-weight:700;color:#1b2263;margin-bottom:4px">اختر عنواناً لقصتك المصوّرة</div>`;
+        await wait(500); pool.innerHTML = `<div style="width:100%;text-align:center;font-weight:700;color:#1b2263;margin-bottom:4px">${tx('اختر عنواناً لقصتك المصوّرة', 'Pick a title for your comic')}</div>`;
         let cap = null; await new Promise(r => shuffle(M.captions.slice()).forEach(c => { const o = el('button', 'opt', c[0]); o.onclick = () => { cap = c; A.sfx('ui_click'); r(); }; pool.append(o); }));
         // the page
         const P = document.createElement('canvas'); P.width = 1200; P.height = 900; const px = P.getContext('2d');
         px.fillStyle = tA; px.fillRect(0, 0, 1200, 900); px.fillStyle = tB; px.fillRect(0, 0, 1200, 120);
-        px.fillStyle = '#fff'; px.textAlign = 'center'; px.direction = 'rtl'; px.font = '700 52px "Readex Pro"'; px.fillText(cap[0], 600, 80);
+        px.fillStyle = '#fff'; px.textAlign = 'center'; px.direction = EN ? 'ltr' : 'rtl'; px.font = '700 52px "Readex Pro"'; px.fillText(cap[0], 600, 80);
         M.panels.forEach((p, k) => { const c = k % 3, r = Math.floor(k / 3), x = 1200 - 60 - (c + 1) * 360 + 10, y = 160 + r * 350; px.fillStyle = '#fff'; px.beginPath(); px.roundRect(x, y, 340, 320, 22); px.fill(); px.strokeStyle = '#1b2263'; px.lineWidth = 5; px.stroke();
-          px.font = '120px serif'; px.textAlign = 'center'; px.direction = 'ltr'; px.fillText(p[0], x + 170, y + 170); px.fillStyle = '#1b2263'; px.direction = 'rtl'; px.font = '600 26px "Readex Pro"'; px.fillText(p[1], x + 170, y + 270, 310); px.fillStyle = tB; px.beginPath(); px.arc(x + 300, y + 40, 22, 0, 7); px.fill(); px.fillStyle = '#fff'; px.font = '700 24px "Readex Pro"'; px.fillText(String(k + 1), x + 300, y + 49); });
-        px.fillStyle = '#5a6390'; px.font = '500 24px "Readex Pro"'; px.textAlign = 'center'; px.fillText(`قصة مصوّرة بقلم ${A.name || ''} · ${F.name} · صناعيو المستقبل`, 600, 880);
+          px.font = '120px serif'; px.textAlign = 'center'; px.direction = 'ltr'; px.fillText(p[0], x + 170, y + 170); px.fillStyle = '#1b2263'; px.direction = EN ? 'ltr' : 'rtl'; px.font = '600 26px "Readex Pro"'; px.fillText(p[1], x + 170, y + 270, 310); px.fillStyle = tB; px.beginPath(); px.arc(x + 300, y + 40, 22, 0, 7); px.fill(); px.fillStyle = '#fff'; px.font = '700 24px "Readex Pro"'; px.fillText(String(k + 1), x + 300, y + 49); });
+        px.fillStyle = '#5a6390'; px.font = '500 24px "Readex Pro"'; px.textAlign = 'center'; px.fillText(tx(`قصة مصوّرة بقلم ${A.name || ''} · ${F.name} · صناعيو المستقبل`, `Comic by ${A.name || ''} · ${F.name} · Future Industrialists`), 600, 880);
         const ok = cap[1] === 1, stars = (mistakes <= 1 ? 2 : mistakes <= 3 ? 1 : 0) + (ok ? 1 : 0);
         wrap.innerHTML = ''; const show = el('div'); show.style.cssText = 'display:grid;gap:12px;justify-items:center';
         P.style.cssText = 'width:min(520px,92%);height:auto;border-radius:16px;box-shadow:0 24px 50px -20px rgba(0,0,0,.5)';
-        const row = el('div', 'mg-row'), save = el('button', 'btn ghost', '⬇ حمّل قصتك'), go = el('button', 'btn', 'متابعة');
+        const row = el('div', 'mg-row'), save = el('button', 'btn ghost', tx('⬇ حمّل قصتك', '⬇ Save your comic')), go = el('button', 'btn', tx('متابعة', 'Continue'));
         save.onclick = () => { const a = document.createElement('a'); a.download = 'story-future-industrialists.png'; a.href = P.toDataURL('image/png'); a.click(); A.sfx('ui_click'); };
-        row.append(save, go); show.append(P, el('div', '', `<b style="font-size:15px">${ok ? '👍 عنوان رائع يحكي القصة كلها!' : '🤔 القصة مرتبة، لكن العنوان لا يعبّر عنها تماماً.'}</b>`), row); wrap.append(show);
+        row.append(save, go); show.append(P, el('div', '', `<b style="font-size:15px">${ok ? tx('👍 عنوان رائع يحكي القصة كلها!', '👍 A great title for the whole story!') : tx('🤔 القصة مرتبة، لكن العنوان لا يعبّر عنها تماماً.', '🤔 The story is in order, but the title does not quite fit it.')}</b>`), row); wrap.append(show);
         A.sfx(stars >= 2 ? 'level_up' : 'points', .6);
         go.onclick = () => res({ stars, score: mistakes });
       };
@@ -410,9 +454,9 @@ async function story(F, A, M) {
 
 /* ================= 2. circuit: rotate tiles to power three satellites (KACST, Creative) ================= */
 async function circuit(F, A, M) {
-  const fr = frame(F, { title: M.title, stat: 'حركات: 0' }), { stage } = fr;
+  const fr = frame(F, { title: M.title, stat: tx('حركات: 0', 'Moves: 0') }), { stage } = fr;
   const TG = M.targets || ['🛰️', '🛰️', '🛰️'], SRC = M.src || '⚡', BG = M.bg || ['#0b1433', '#1d2c6b'];
-  stage.append(el('div', 'mg-brief glass', `اضغط على أي قطعة لتدويرها. ${M.brief.replace(/^دوّر القطع /, '')} ${TG.join(' ')}`));
+  stage.append(el('div', 'mg-brief glass', tx(`اضغط على أي قطعة لتدويرها. ${M.brief.replace(/^دوّر القطع /, '')} ${TG.join(' ')}`, `Tap any piece to rotate it. ${M.brief.replace(/^دوّر القطع /, '')} ${TG.join(' ')}`)));
   const C = canvasIn(stage), N = 5;
   // bits: 1 up, 2 right, 4 down, 8 left
   const D = [[0, -1, 1, 4], [1, 0, 2, 8], [0, 1, 4, 1], [-1, 0, 8, 2]];
@@ -451,7 +495,7 @@ async function circuit(F, A, M) {
     C.cv.addEventListener('pointerdown', async e => {
       if (won) return; const [mx, my] = C.pt(e), { s, ox, oy } = layout(), x = Math.floor((mx - ox) / s), y = Math.floor((my - oy) / s);
       if (x < 0 || y < 0 || x >= N || y >= N) return;
-      grid[y][x] = rot(grid[y][x]); anim[`${x},${y}`] = 1; moves++; fr.setStat(`حركات: ${moves}`); A.sfx('ui_click', .5);
+      grid[y][x] = rot(grid[y][x]); anim[`${x},${y}`] = 1; moves++; fr.setStat(tx(`حركات: ${moves}`, `Moves: ${moves}`)); A.sfx('ui_click', .5);
       if (targetOn(powered()).every(Boolean)) { won = true; A.sfx('level_up', .6); await wait(1300); stop(); C.off(); res({ stars: moves <= minMoves + 6 ? 3 : moves <= minMoves + 16 ? 2 : 1, score: moves }); }
     });
   });
@@ -484,9 +528,9 @@ function drawUnit(cx, kind, ux, uy, uw, uh, t, prog, F) {
 /* ================= 3. pressure: hold to keep the gauge in the green (YORK, Discoverer) ================= */
 async function pressure(F, A, M) {
   const fr = frame(F, { title: M.title, stat: '0%' }), { stage } = fr;
-  const HINT = M.hint || ['خفّف الضغط', 'زد الضغط', 'ضغط مثالي ✓'], BG = M.bg || ['#eef3fa', '#cfdbea'], ink = M.dark ? '#e8ecff' : '#1b2263', unit = M.unit || 'PSI', scale = M.scale || (v => Math.round(v * 3.5));
-  stage.append(el('div', 'mg-brief glass', `${M.brief} اضغط مطوّلاً ثم ارفع إصبعك لتخفّف.`));
-  const C = canvasIn(stage), btn = el('button', 'btn mg-big', M.hold || '⬆️ اضغط مطوّلاً للضغط'); stage.append(btn);
+  const HINT = M.hint || [tx('خفّف الضغط', 'Ease off'), tx('زد الضغط', 'Push harder'), tx('ضغط مثالي ✓', 'Just right ✓')], BG = M.bg || ['#eef3fa', '#cfdbea'], ink = M.dark ? '#e8ecff' : '#1b2263', unit = M.unit || 'PSI', scale = M.scale || (v => Math.round(v * 3.5));
+  stage.append(el('div', 'mg-brief glass', tx(`${M.brief} اضغط مطوّلاً ثم ارفع إصبعك لتخفّف.`, `${M.brief} Hold to press, then let go to ease off.`)));
+  const C = canvasIn(stage), btn = el('button', 'btn mg-big', M.hold || tx('⬆️ اضغط مطوّلاً للضغط', '⬆️ Hold to press')); stage.append(btn);
   let p = 20, v = 0, hold = false, prog = 0, t = 0, gust = 0, zone = 62, done = false;
   const set = on => { hold = on; btn.style.transform = on ? 'scale(.97)' : ''; };
   const up = () => set(false); btn.addEventListener('pointerdown', e => { e.preventDefault(); set(true); }); addEventListener('pointerup', up); btn.addEventListener('pointerleave', up);
@@ -516,7 +560,7 @@ async function pressure(F, A, M) {
     const uw = tall ? Math.min(w * .5, 170) : Math.min(w * .2, 170), uh = uw * .75, ux = tall ? w / 2 - uw / 2 : w * .14, uy = tall ? h * .07 : h * .3;
     drawUnit(cx, M.thing || 'ac', ux, uy, uw, uh, t, prog, F);
     rr(cx, ux, uy + uh + 16, uw, 12, 6); cx.fillStyle = M.dark ? '#2a3566' : '#dfe5ee'; cx.fill(); rr(cx, ux, uy + uh + 16, uw * prog, 12, 6); cx.fillStyle = '#2fb36d'; cx.fill();
-    txt(cx, `${Math.round(t)} ث`, ux + uw / 2, uy + uh + 46, 15, M.dark ? '#aab3e0' : '#5a6390', 600);
+    txt(cx, tx(`${Math.round(t)} ث`, `${Math.round(t)} s`), ux + uw / 2, uy + uh + 46, 15, M.dark ? '#aab3e0' : '#5a6390', 600);
     if (p >= 99.5) { v = -60; A.sfx('wrong', .4); }
     if (prog >= 1) { done = true; A.sfx('level_up', .6); setTimeout(() => { cleanup(); resolve({ stars: t <= 16 ? 3 : t <= 26 ? 2 : 1, score: Math.round(t) }); }, 900); }
     if (t > 45 && !done) { done = true; cleanup(); resolve({ stars: 0, score: 0 }); }
@@ -557,7 +601,7 @@ function drawPack(cx, w, h, S, M) {
     else { cx.fillStyle = c1; cx.beginPath(); cx.ellipse(0, 60, 120, 48, 0, 0, 7); cx.fill(); cx.fillStyle = c2; cx.beginPath(); cx.ellipse(0, 52, 104, 36, 0, 0, 7); cx.fill(); }
     // dates inside or on top
     const n = S.shape === 'tray' ? 9 : 5; for (let k = 0; k < n; k++) { const x = (k - (n - 1) / 2) * (S.shape === 'tray' ? 22 : 30), y = S.shape === 'tray' ? 44 + (k % 2) * 12 : S.shape === 'tin' ? -26 : -30; cx.save(); cx.translate(x, y); cx.rotate(-.4 + (k % 3) * .3); drawDate(cx, 10, 'good', k); if (S.flavor === 'almond') { cx.fillStyle = '#f2dcb0'; cx.beginPath(); cx.ellipse(0, -4, 6, 3, 0, 0, 7); cx.fill(); } if (S.flavor === 'choco') { cx.fillStyle = '#5a3216'; cx.beginPath(); cx.ellipse(2, 0, 13, 8, 0, 0, 7); cx.fill(); } cx.restore(); }
-    txt(cx, M.brand, 0, S.shape === 'tray' ? 120 : 50, 24, S.color === 'white' ? '#7a5a2a' : '#fff'); txt(cx, big ? '1 كغ' : '250 غ', 0, S.shape === 'tray' ? 146 : 82, 14, S.color === 'white' ? '#7a5a2a' : '#fff', 600);
+    txt(cx, M.brand, 0, S.shape === 'tray' ? 120 : 50, 24, S.color === 'white' ? '#7a5a2a' : '#fff'); txt(cx, big ? tx('1 كغ', '1 kg') : tx('250 غ', '250 g'), 0, S.shape === 'tray' ? 146 : 82, 14, S.color === 'white' ? '#7a5a2a' : '#fff', 600);
     cx.restore(); return;
   }
   // drinks: juice and milk
@@ -566,13 +610,13 @@ function drawPack(cx, w, h, S, M) {
   else { cx.fillStyle = c1; cx.beginPath(); cx.moveTo(-70, 110); cx.quadraticCurveTo(-80, 0, -60, -100); cx.lineTo(60, -100); cx.quadraticCurveTo(80, 0, 70, 110); cx.closePath(); cx.fill(); cx.fillStyle = '#fff'; cx.fillRect(14, -125, 16, 30); cx.fillStyle = c2; rr(cx, -50, -30, 100, 90, 14); cx.fill(); }
   emoji(FLAVOR_ICON[S.flavor] || '🥛', 0, S.shape === 'carton' ? -20 : 25, 52);
   txt(cx, M.brand, 0, S.shape === 'carton' ? 55 : S.shape === 'bottle' ? 58 : 80, 20, S.shape === 'carton' ? '#fff' : '#1b2263');
-  txt(cx, big ? '1 لتر' : '200 مل', 0, S.shape === 'carton' ? 88 : 98, 13, S.shape === 'carton' ? '#fff' : '#5a6390', 600);
+  txt(cx, big ? tx('1 لتر', '1 L') : tx('200 مل', '200 ml'), 0, S.shape === 'carton' ? 88 : 98, 13, S.shape === 'carton' ? '#fff' : '#5a6390', 600);
   cx.restore();
 }
 async function design(F, A, M) {
   const fr = frame(F, { title: M.title, stat: '' }), { stage } = fr;
   const B = M.briefs[Math.random() * M.briefs.length | 0];
-  stage.append(el('div', 'mg-brief glass', `📋 طلب العميل: ${B.text}`));
+  stage.append(el('div', 'mg-brief glass', tx(`📋 طلب العميل: ${B.text}`, `📋 Client brief: ${B.text}`)));
   const wrap = el('div', 'panel glass'); wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px;align-items:center;flex:1;min-height:0;overflow:auto';
   const pv = el('canvas'); pv.style.cssText = 'width:100%;height:100%;min-height:220px;border-radius:16px;background:radial-gradient(circle at 50% 40%,#fff,#e8eef8)';
   const opts = el('div'); opts.style.cssText = 'display:grid;gap:10px';
@@ -580,7 +624,7 @@ async function design(F, A, M) {
   if (innerWidth < 640) wrap.style.gridTemplateColumns = '1fr';
   const S = Object.fromEntries(M.groups.map(([k, , list]) => [k, list[0][0]]));
   for (const [k, label, list] of M.groups) { const row = el('div'); row.innerHTML = `<small style="color:var(--muted);font-weight:600">${label}</small>`; const r = el('div', 'mg-row'); r.style.justifyContent = 'flex-start'; r.style.marginTop = '6px'; list.forEach(([v, l]) => { const b = el('button', 'opt' + (S[k] === v ? ' sel' : ''), l); b.onclick = () => { S[k] = v; [...r.children].forEach(c => c.classList.toggle('sel', c === b)); A.sfx('ui_click', .5); draw(); }; r.append(b); }); row.append(r); opts.append(row); }
-  const go = el('button', 'btn', 'اعرض التصميم على لجنة التحكيم ✨'); go.style.cssText = 'position:sticky;bottom:0;z-index:2;box-shadow:0 -10px 24px -10px rgba(255,255,255,.9),0 12px 26px -10px rgba(42,53,144,.8)'; opts.append(go);
+  const go = el('button', 'btn', tx('اعرض التصميم على لجنة التحكيم ✨', 'Show the judges ✨')); go.style.cssText = 'position:sticky;bottom:0;z-index:2;box-shadow:0 -10px 24px -10px rgba(255,255,255,.9),0 12px 26px -10px rgba(42,53,144,.8)'; opts.append(go);
   opts.querySelectorAll('.mg-row').forEach(r => { r.style.gap = '6px'; }); opts.style.gap = '6px';
   function draw() { const r = pv.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1); pv.width = r.width * d; pv.height = r.height * d; const cx = pv.getContext('2d'); cx.setTransform(d, 0, 0, d, 0, 0); drawPack(cx, r.width, r.height, S, M); }
   requestAnimationFrame(draw); addEventListener('resize', draw);
@@ -590,10 +634,10 @@ async function design(F, A, M) {
       // what the brief asks for is judged; a colour that suits the flavour also counts when the brief names no colour
       const names = Object.fromEntries(M.groups.map(([k, l]) => [k, l])), keys = M.groups.map(([k]) => k).filter(k => k in B.ans || (k === 'color' && M.match[B.ans.flavor]));
       let ok = 0;
-      const lines = keys.map(k => { const want = k in B.ans ? B.ans[k] : M.match[B.ans.flavor], good = S[k] === want || (k === 'color' && !('color' in B.ans) && M.match[S.flavor] === S.color && S.flavor === B.ans.flavor); if (good) ok++; return `<div class="judge"><i>${good ? '👍' : '🤔'}</i><span><b>${names[k]}:</b> ${good ? 'مناسب تماماً لطلب العميل' : 'يحتاج مراجعة حتى يناسب طلب العميل'}</span></div>`; });
+      const lines = keys.map(k => { const want = k in B.ans ? B.ans[k] : M.match[B.ans.flavor], good = S[k] === want || (k === 'color' && !('color' in B.ans) && M.match[S.flavor] === S.color && S.flavor === B.ans.flavor); if (good) ok++; return `<div class="judge"><i>${good ? '👍' : '🤔'}</i><span><b>${names[k]}:</b> ${good ? tx('مناسب تماماً لطلب العميل', 'Matches the client brief') : tx('يحتاج مراجعة حتى يناسب طلب العميل', 'Needs another look to match the brief')}</span></div>`; });
       const q = ok / keys.length, stars = q === 1 ? 3 : q >= .7 ? 2 : q >= .45 ? 1 : 0;
       const snap = pv.toDataURL('image/png');
-      wrap.innerHTML = `<div style="grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px;align-items:center"><img src="${snap}" alt="" style="width:100%;border-radius:14px;background:#fff"><div><b style="font-size:18px">رأي لجنة التحكيم</b><div style="margin-top:8px">${lines.join('')}</div><div style="margin-top:10px;font-size:22px;text-align:center">${stars ? '⭐'.repeat(stars) : 'حاول مرة أخرى'}</div></div></div>`;
+      wrap.innerHTML = `<div style="grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px;align-items:center"><img src="${snap}" alt="" style="width:100%;border-radius:14px;background:#fff"><div><b style="font-size:18px">${tx('رأي لجنة التحكيم', 'The judges say')}</b><div style="margin-top:8px">${lines.join('')}</div><div style="margin-top:10px;font-size:22px;text-align:center">${stars ? '⭐'.repeat(stars) : tx('حاول مرة أخرى', 'Try again')}</div></div></div>`;
       A.sfx(stars >= 2 ? 'level_up' : 'points', .6); await wait(2800); res({ stars, score: ok });
     };
   });
@@ -610,7 +654,7 @@ function drawBlock(cx, kind, x, y, w, h, i = 1) {
 }
 async function crane(F, A, M) {
   const fr = frame(F, { title: M.title, stat: '0 / 8' }), { stage } = fr, KIND = M.block || 'steel', BGc = M.bg || ['#2b3445', '#5a6272'];
-  stage.append(el('div', 'mg-brief glass', `${M.brief} اضغط على الشاشة لإفلات القطعة المتأرجحة، والجزء الزائد يُقص!`));
+  stage.append(el('div', 'mg-brief glass', tx(`${M.brief} اضغط على الشاشة لإفلات القطعة المتأرجحة، والجزء الزائد يُقص!`, `${M.brief} Tap the screen to drop the swinging piece. Any extra part is cut off!`)));
   const C = canvasIn(stage); const GOAL = 8;
   let tower = [], cur = null, falling = null, cut = [], t = 0, camY = 0, over = false, ratios = [], sparks = [];
   const BH = 26;
@@ -693,7 +737,7 @@ function drawMilk(cx, R, kind) {
   cx.fillStyle = 'rgba(0,0,0,.18)'; cx.beginPath(); cx.ellipse(0, h * .52, w * .7, R * .18, 0, 0, 7); cx.fill();
   cx.fillStyle = '#ffffff'; cx.beginPath(); cx.moveTo(-w / 2, h * .5); cx.lineTo(-w / 2, -h * .2); cx.lineTo(0, -h * .42); cx.lineTo(w / 2, -h * .2); cx.lineTo(w / 2, h * .5); cx.closePath(); cx.fill();
   cx.fillStyle = '#e4e9f1'; cx.fillRect(-w * .1, -h * .5, w * .2, h * .1);
-  if (kind !== 'nolabel') { cx.fillStyle = '#1c4fa0'; cx.fillRect(-w / 2, h * .08, w, h * .3); cx.fillStyle = '#fff'; cx.font = `700 ${R * .36}px ${FONT}`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('🥛', 0, -h * .05); txt(cx, 'سدافكو', 0, h * .23, R * .3, '#fff'); }
+  if (kind !== 'nolabel') { cx.fillStyle = '#1c4fa0'; cx.fillRect(-w / 2, h * .08, w, h * .3); cx.fillStyle = '#fff'; cx.font = `700 ${R * .36}px ${FONT}`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('🥛', 0, -h * .05); txt(cx, tx('سدافكو', 'Sadafco'), 0, h * .23, R * .3, '#fff'); }
   if (kind === 'dent') { cx.fillStyle = 'rgba(40,50,80,.35)'; cx.beginPath(); cx.ellipse(w * .2, -h * .02, w * .22, h * .14, .3, 0, 7); cx.fill(); cx.strokeStyle = 'rgba(40,50,80,.55)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(w / 2, -h * .2); cx.quadraticCurveTo(w * .1, -h * .02, w / 2, h * .2); cx.stroke(); }
   if (kind === 'leak') { cx.fillStyle = '#f4f8ff'; cx.beginPath(); cx.ellipse(w * .1, h * .56, w * .7, R * .16, 0, 0, 7); cx.fill(); cx.strokeStyle = '#c9d4e6'; cx.lineWidth = 1.5; cx.stroke(); for (const dx of [-.15, .2]) { cx.fillStyle = '#ffffff'; cx.beginPath(); cx.ellipse(w * dx, h * .4, R * .08, R * .14, 0, 0, 7); cx.fill(); cx.strokeStyle = '#c9d4e6'; cx.stroke(); } }
   cx.strokeStyle = 'rgba(0,0,0,.18)'; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(-w / 2, h * .5); cx.lineTo(-w / 2, -h * .2); cx.lineTo(0, -h * .42); cx.lineTo(w / 2, -h * .2); cx.lineTo(w / 2, h * .5); cx.closePath(); cx.stroke();
@@ -711,7 +755,7 @@ function drawBox(cx, R, kind, seed) {
 }
 async function sort(F, A, M) {
   const fr = frame(F, { title: M.title, stat: '⏱ 40' }), { stage } = fr, KIND = M.item || 'date', DEF = Object.keys(M.defects), BG = M.bg || ['#f6ead6', '#e2c9a2'];
-  stage.append(el('div', 'mg-brief glass', M.brief.replace(/: اضغط/, ':<br>اضغط') + ' لا تضغط على السليمة!'));
+  stage.append(el('div', 'mg-brief glass', M.brief.replace(/: اضغط/, ':<br>اضغط') + tx(' لا تضغط على السليمة!', ' Do not tap the good ones!')));
   const upright = KIND === 'bottle' || KIND === 'milk';
   const C = canvasIn(stage); let items = [], t = 0, spawnT = 0, good = 0, missed = 0, wrong = 0, removed = 0, total = 0, over = false, fx = [];
   const DUR = 40; let resolve; const result = new Promise(r => resolve = r);
@@ -737,13 +781,13 @@ async function sort(F, A, M) {
     items = items.filter(i => i.x < bx + 40 && !i.gone);
     for (const f of fx) { f.y -= 40 * dt; f.life -= dt; cx.globalAlpha = Math.max(0, f.life); txt(cx, f.s, f.x, f.y, 26, f.c); cx.globalAlpha = 1; }
     fx = fx.filter(f => f.life > 0);
-    txt(cx, `أُبعدت: ${removed}  ·  فاتتك: ${missed}  ·  أخطاء: ${wrong}`, w / 2, h * .88, 15, '#3d3328', 600);
+    txt(cx, tx(`أُبعدت: ${removed}  ·  فاتتك: ${missed}  ·  أخطاء: ${wrong}`, `Removed: ${removed}  ·  Missed: ${missed}  ·  Mistakes: ${wrong}`), w / 2, h * .88, 15, '#3d3328', 600);
     if (t >= DUR && !over) { over = true; stop(); C.off(); const acc = total ? removed / total : 1, pen = wrong * .08; const q = acc - pen; A.sfx(q > .6 ? 'level_up' : 'points', .6); resolve({ stars: q >= .85 ? 3 : q >= .65 ? 2 : q >= .4 ? 1 : 0, score: removed }); }
   });
   C.cv.addEventListener('pointerdown', e => {
     const [mx, my] = C.pt(e), R = size(); const hit = items.find(i => !i.gone && Math.abs(i.x - mx) < R * (KIND === 'container' ? 2.2 : 1.6) && Math.abs(i.y - my) < R * (upright ? 2.2 : 1.6));
     if (!hit) return;
-    if (hit.kind === 'good') { wrong++; fx.push({ x: hit.x, y: hit.y - 40, s: 'سليمة!', c: '#e0464f', life: 1 }); A.sfx('wrong', .4); }
+    if (hit.kind === 'good') { wrong++; fx.push({ x: hit.x, y: hit.y - 40, s: tx('سليمة!', 'Good one!'), c: '#e0464f', life: 1 }); A.sfx('wrong', .4); }
     else { hit.gone = true; removed++; fx.push({ x: hit.x, y: hit.y - 40, s: `${M.defects[hit.kind]} ✓`, c: '#2fb36d', life: 1 }); A.sfx('points', .45); }
   });
   return { result, stop: () => { stop(); C.off(); } };
@@ -772,8 +816,8 @@ function drawShipLoad(cx, w, h, level, target, slide, t, loading) {
 /* ================= 7. fill: stop the water exactly at the line (Naqi, Creative) ================= */
 async function fill(F, A, M) {
   const fr = frame(F, { title: M.title, stat: '1 / 6' }), { stage } = fr, LQ = M.liquid || ['#6ec6f2', '#2a8fd0'], BG = M.bg || ['#e8f6fd', '#bfe3f5'];
-  stage.append(el('div', 'mg-brief glass', M.ship ? `${M.brief} انتبه: الرافعة تُنزل حاوية أخيرة بعد التوقف!` : `${M.brief.replace(/تماماً\.?$/, '')}<b>تماماً</b>. انتبه: ${M.word || 'السائل'} يستمر قليلاً بعد التوقف!`));
-  const C = canvasIn(stage), btn = el('button', 'btn mg-big', `${M.icon || '💧'} اضغط مطوّلاً ${M.ship ? 'للتحميل' : 'للتعبئة'}`); stage.append(btn);
+  stage.append(el('div', 'mg-brief glass', M.ship ? tx(`${M.brief} انتبه: الرافعة تُنزل حاوية أخيرة بعد التوقف!`, `${M.brief} Careful: the crane lowers one last container after you stop!`) : tx(`${M.brief.replace(/تماماً\.?$/, '')}<b>تماماً</b>. انتبه: ${M.word || 'السائل'} يستمر قليلاً بعد التوقف!`, `${M.brief} <b>Careful:</b> ${M.word || 'the liquid'} keeps flowing a bit after you stop!`)));
+  const C = canvasIn(stage), btn = el('button', 'btn mg-big', tx(`${M.icon || '💧'} اضغط مطوّلاً ${M.ship ? 'للتحميل' : 'للتعبئة'}`, `${M.icon || '💧'} Hold to ${M.ship ? 'load' : 'fill'}`)); stage.append(btn);
   const N = 6; let i = 0, level = 0, target = rand(.6, .85), hold = false, lag = 0, scores = [], t = 0, state = 'fill', msg = '', msgT = 0, slide = 0;
   const set = on => { if (state !== 'fill') return; if (!on && hold) { lag = .14; } hold = on; };
   btn.addEventListener('pointerdown', e => { e.preventDefault(); set(true); }); const up = () => set(false); addEventListener('pointerup', up);
@@ -782,7 +826,7 @@ async function fill(F, A, M) {
   let resolve; const result = new Promise(r => resolve = r);
   const judge = () => {
     state = 'judge'; const d = Math.abs(level - target), sc = level > .99 ? 0 : d < .02 ? 100 : d < .05 ? 75 : d < .1 ? 45 : 0;
-    scores.push(sc); msg = sc === 100 ? 'مثالي! 🎯' : sc >= 75 ? 'ممتاز' : sc >= 45 ? 'مقبول' : level > .99 ? 'فاضت العبوة!' : 'بعيد عن الخط'; msgT = 1.3; A.sfx(sc >= 75 ? 'task_done' : sc ? 'points' : 'wrong', .55);
+    scores.push(sc); msg = sc === 100 ? tx('مثالي! 🎯', 'Perfect! 🎯') : sc >= 75 ? tx('ممتاز', 'Great') : sc >= 45 ? tx('مقبول', 'Fair') : level > .99 ? tx('فاضت العبوة!', 'Overflowed!') : tx('بعيد عن الخط', 'Off the line'); msgT = 1.3; A.sfx(sc >= 75 ? 'task_done' : sc ? 'points' : 'wrong', .55);
     setTimeout(() => { i++; if (i >= N) { cleanup(); const avg = scores.reduce((a, b) => a + b) / N; A.sfx('level_up', .6); resolve({ stars: avg >= 80 ? 3 : avg >= 55 ? 2 : avg >= 30 ? 1 : 0, score: Math.round(avg) }); return; } slide = 1; level = 0; target = rand(.55, .88); state = 'fill'; fr.setStat(`${i + 1} / ${N}`); }, 1300);
   };
   const stop = rafLoop(dt => {
@@ -814,7 +858,7 @@ async function fill(F, A, M) {
 
 /* ================= 8. pattern: rebuild the gift box from memory (Tozeen, Artist) ================= */
 async function pattern(F, A, M) {
-  const fr = frame(F, { title: M.title, stat: 'الجولة 1 / 2' }), { stage } = fr;
+  const fr = frame(F, { title: M.title, stat: tx('الجولة 1 / 2', 'Round 1 / 2') }), { stage } = fr;
   const brief = el('div', 'mg-brief glass', M.brief); stage.append(brief);
   const SW = M.items.map(([bg, name]) => [null, bg, name]), rad = M.square ? '14%' : '50%';
   const box = el('div', 'panel glass'); box.style.cssText = `display:grid;place-items:center;gap:14px;background:${M.box || 'linear-gradient(160deg,#fbf3e4,#efe0c4)'}`; stage.append(box);
@@ -824,38 +868,38 @@ async function pattern(F, A, M) {
     box.innerHTML = ''; const grid = el('div', 'grid'); grid.style.gridTemplateColumns = `repeat(${cols},minmax(0,1fr))`; grid.style.width = `min(${cols * 118}px,100%)`;
     const cells = pat.map((k, i) => { const c = el('div', 'cell'); c.innerHTML = `<div class="sweet" style="background:${SW[k][1]};border-radius:${rad}"></div>`; grid.append(c); return c; });
     box.append(grid);
-    for (let s = 4; s > 0; s--) { brief.innerHTML = `احفظ الترتيب… <b>${s}</b>`; A.sfx('ui_hover', .4); await wait(1000); }
-    cells.forEach(c => c.innerHTML = ''); brief.innerHTML = 'اختر نوع الحلوى من الأسفل ثم اضغط على مكانها في العلبة.';
+    for (let s = 4; s > 0; s--) { brief.innerHTML = tx(`احفظ الترتيب… <b>${s}</b>`, `Memorize the pattern… <b>${s}</b>`); A.sfx('ui_hover', .4); await wait(1000); }
+    cells.forEach(c => c.innerHTML = ''); brief.innerHTML = tx('اختر نوع الحلوى من الأسفل ثم اضغط على مكانها في العلبة.', 'Pick a sweet from below, then tap its spot in the box.');
     const pal = el('div', 'pal'); let sel = 0;
     SW.slice(0, kinds).forEach(([c, bg, name], k) => { const b = el('button', k === 0 ? 'sel' : '', `<div class="sweet" style="background:${bg};border-radius:${rad}"></div><small style="display:block;font-size:10.5px;margin-top:2px;color:var(--navy)">${name}</small>`); b.title = name; b.onclick = () => { sel = k; [...pal.children].forEach(x => x.classList.toggle('sel', x === b)); A.sfx('ui_click', .4); }; pal.append(b); });
     cells.forEach((c, i) => c.onclick = () => { mine[i] = sel; c.innerHTML = `<div class="sweet" style="background:${SW[sel][1]};border-radius:${rad}"></div>`; A.sfx('pin_drop', .4); });
-    const ok = el('button', 'btn', 'تحقق من العلبة ✓'); box.append(pal, ok);
+    const ok = el('button', 'btn', tx('تحقق من العلبة ✓', 'Check the box ✓')); box.append(pal, ok);
     await new Promise(r => ok.onclick = r);
     let good = 0; cells.forEach((c, i) => { const g = mine[i] === pat[i]; if (g) good++; c.classList.add(g ? 'good' : 'bad'); if (!g) c.innerHTML = `<div class="sweet" style="background:${SW[pat[i]][1]};border-radius:${rad};opacity:.5"></div>`; });
     total += n; right += good; A.sfx(good === n ? 'level_up' : good > n / 2 ? 'task_done' : 'wrong', .6);
-    brief.innerHTML = `أصبت ${good} من ${n}`; ok.remove(); pal.remove(); await wait(1800);
+    brief.innerHTML = tx(`أصبت ${good} من ${n}`, `${good} of ${n} right`); ok.remove(); pal.remove(); await wait(1800);
   };
-  const result = (async () => { await round(3, 3, 3); fr.setStat('الجولة 2 / 2'); await round(4, 3, 4); const q = right / total; return { stars: q >= .9 ? 3 : q >= .7 ? 2 : q >= .45 ? 1 : 0, score: right }; })();
+  const result = (async () => { await round(3, 3, 3); fr.setStat(tx('الجولة 2 / 2', 'Round 2 / 2')); await round(4, 3, 4); const q = right / total; return { stars: q >= .9 ? 3 : q >= .7 ? 2 : q >= .45 ? 1 : 0, score: right }; })();
   return { result, stop: () => {} };
 }
 
 /* ================= 9. memory: match the safety equipment (Petrochemicals, Discoverer) ================= */
 async function memory(F, A) {
-  const fr = frame(F, { title: F.title, stat: 'محاولات: 0' }), { stage } = fr;
-  stage.append(el('div', 'mg-brief glass', 'اقلب بطاقتين في كل مرة وطابق أدوات الوقاية المتشابهة.'));
-  const ITEMS = [['⛑️', 'خوذة'], ['🥽', 'نظارة واقية'], ['🧤', 'قفازات'], ['🦺', 'سترة عاكسة'], ['🧯', 'طفاية حريق'], ['🎧', 'واقي الأذن']];
+  const fr = frame(F, { title: F.title, stat: tx('محاولات: 0', 'Tries: 0') }), { stage } = fr;
+  stage.append(el('div', 'mg-brief glass', tx('اقلب بطاقتين في كل مرة وطابق أدوات الوقاية المتشابهة.', 'Flip two cards at a time and match the pairs of safety gear.')));
+  const ITEMS = [['⛑️', tx('خوذة', 'Hard hat')], ['🥽', tx('نظارة واقية', 'Goggles')], ['🧤', tx('قفازات', 'Gloves')], ['🦺', tx('سترة عاكسة', 'Hi-vis vest')], ['🧯', tx('طفاية حريق', 'Fire extinguisher')], ['🎧', tx('واقي الأذن', 'Ear muffs')]];
   const deck = shuffle([...ITEMS, ...ITEMS].map((it, i) => ({ it, i })));
   const grid = el('div', 'grid'); grid.style.cssText = `grid-template-columns:repeat(${innerWidth < 640 ? 4 : 6},minmax(0,1fr));width:min(820px,100%);max-height:100%`;
   stage.append(grid);
   let open = [], tries = 0, found = 0, lock = false;
   const result = new Promise(res => {
     deck.forEach(d => {
-      const c = el('div', 'card3', `<div class="in"><div class="f">؟</div><div class="b"><i>${d.it[0]}</i><small>${d.it[1]}</small></div></div>`);
+      const c = el('div', 'card3', `<div class="in"><div class="f">${tx('؟', '?')}</div><div class="b"><i>${d.it[0]}</i><small>${d.it[1]}</small></div></div>`);
       c.onclick = async () => {
         if (lock || c.classList.contains('flip') || c.classList.contains('done')) return;
         c.classList.add('flip'); A.sfx('ui_click', .4); open.push([c, d]);
         if (open.length === 2) {
-          lock = true; tries++; fr.setStat(`محاولات: ${tries}`); const [[c1, d1], [c2, d2]] = open; open = [];
+          lock = true; tries++; fr.setStat(tx(`محاولات: ${tries}`, `Tries: ${tries}`)); const [[c1, d1], [c2, d2]] = open; open = [];
           if (d1.it === d2.it) { await wait(350); c1.classList.add('done'); c2.classList.add('done'); found++; A.sfx('task_done', .5); if (found === ITEMS.length) { A.sfx('level_up', .6); await wait(900); res({ stars: tries <= 9 ? 3 : tries <= 13 ? 2 : 1, score: tries }); } }
           else { await wait(800); c1.classList.remove('flip'); c2.classList.remove('flip'); A.sfx('wrong', .3); }
           lock = false;
@@ -869,8 +913,8 @@ async function memory(F, A) {
 
 /* ================= 10. order: desalination steps in sequence (Desalination, Creative) ================= */
 async function order(F, A, M) {
-  const fr = frame(F, { title: M.title, stat: 'أخطاء: 0' }), { stage } = fr;
-  stage.append(el('div', 'mg-brief glass', `${M.brief} اضغط على المحطات واحدة واحدة بالترتيب.`));
+  const fr = frame(F, { title: M.title, stat: tx('أخطاء: 0', 'Mistakes: 0') }), { stage } = fr;
+  stage.append(el('div', 'mg-brief glass', tx(`${M.brief} اضغط على المحطات واحدة واحدة بالترتيب.`, `${M.brief} Tap the stations one by one, in order.`)));
   const STEPS = M.steps;
   const wrap = el('div', 'panel glass'); wrap.style.cssText = `display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;background:${M.bg || 'rgba(18,30,80,.55)'};color:#fff;flex:1;min-height:0;overflow:auto`;
   const slots = el('div', 'grid'), pool = el('div', 'grid'); wrap.append(slots, pool); stage.append(wrap);
@@ -881,7 +925,7 @@ async function order(F, A, M) {
       const b = el('button', 'opt step', `<i>${s[0]}</i><span>${s[1]}</span>`);
       b.onclick = async () => {
         if (i === next) { slotEls[i].classList.add('ok'); slotEls[i].innerHTML = `<em>${i + 1}</em><span>${s[0]} ${s[1]}</span>`; b.remove(); next++; A.sfx('task_done', .45); if (next === STEPS.length) { A.sfx('level_up', .6); await wait(1100); res({ stars: mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1, score: mistakes }); } }
-        else { mistakes++; fr.setStat(`أخطاء: ${mistakes}`); b.classList.add('bad', 'shake'); A.sfx('wrong', .4); setTimeout(() => b.classList.remove('bad', 'shake'), 450); }
+        else { mistakes++; fr.setStat(tx(`أخطاء: ${mistakes}`, `Mistakes: ${mistakes}`)); b.classList.add('bad', 'shake'); A.sfx('wrong', .4); setTimeout(() => b.classList.remove('bad', 'shake'), 450); }
       };
       pool.append(b);
     });

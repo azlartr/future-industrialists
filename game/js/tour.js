@@ -4,6 +4,7 @@ import { canvas, toTex, BRAND } from './tex.js';
 import { TRACKS } from './regions.js';
 import { TOUR } from './content.js';
 import { makePalmField } from './palm.js';
+import { EN, tx, T as bi } from './i18n.js';
 
 /* The walk-through inside a factory hall. The student comes in at the front-left door into a small
    gear room (lockers), steps through the safety gate onto the production floor, reads three
@@ -16,7 +17,7 @@ function screenTex(title, sub, n, color) {
   const [c, x] = canvas(512, 352); x.fillStyle = '#0d1b3a'; x.fillRect(0, 0, 512, 352);
   const g = x.createLinearGradient(0, 0, 512, 0); g.addColorStop(0, color); g.addColorStop(1, '#847bb8'); x.fillStyle = g; x.fillRect(0, 0, 512, 10);
   x.fillStyle = color; x.beginPath(); x.arc(256, 112, 62, 0, 7); x.fill(); x.fillStyle = '#fff'; x.font = '700 72px "Readex Pro"'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(n, 256, 116);
-  x.direction = 'rtl'; x.font = '700 44px "Readex Pro"'; x.fillText(title, 256, 226); x.font = '500 28px "Readex Pro"'; x.fillStyle = '#9fb3e8'; x.fillText(sub, 256, 290);
+  x.direction = EN ? 'ltr' : 'rtl'; x.font = '700 44px "Readex Pro"'; x.fillText(title, 256, 226); x.font = '500 28px "Readex Pro"'; x.fillStyle = '#9fb3e8'; x.fillText(sub, 256, 290);
   return toTex(c);
 }
 /* every factory presents its facts in its own way: the kiosk's shape, the screen's look, and the card
@@ -32,7 +33,7 @@ export const FSTYLE = {
 /* the kiosk's screen, drawn in the factory's theme */
 function themedScreen(theme, title, n, icon, color) {
   const [c, x] = canvas(512, 352), W = 512, H = 352;
-  const head = (fg, sub) => { x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = 'rtl'; x.fillStyle = fg; let fs = 46; x.font = `700 ${fs}px "Readex Pro"`; while (x.measureText(title).width > 440 && fs > 26) { fs -= 2; x.font = `700 ${fs}px "Readex Pro"`; } x.fillText(title, W / 2, 262); x.font = '500 26px "Readex Pro"'; x.fillStyle = sub; x.fillText('اقرأ المعلومة', W / 2, 314); };
+  const head = (fg, sub) => { x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = EN ? 'ltr' : 'rtl'; x.fillStyle = fg; let fs = 46; x.font = `700 ${fs}px "Readex Pro"`; while (x.measureText(title).width > 440 && fs > 26) { fs -= 2; x.font = `700 ${fs}px "Readex Pro"`; } x.fillText(title, W / 2, 262); x.font = '500 26px "Readex Pro"'; x.fillStyle = sub; x.fillText(tx('اقرأ المعلومة', 'Read the fact'), W / 2, 314); };
   const emo = (ex, ey, size) => { x.font = `${size}px "Segoe UI Emoji","Noto Color Emoji",sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = 'ltr'; x.fillText(icon, ex, ey); };
   if (theme === 'comic') {
     x.fillStyle = '#fffaf0'; x.fillRect(0, 0, W, H); x.fillStyle = color + '33'; for (let i = 0; i < W; i += 16) for (let j = 0; j < H; j += 16) { x.beginPath(); x.arc(i + (j % 32 ? 8 : 0), j, 3, 0, 7); x.fill(); }
@@ -85,7 +86,7 @@ function corrug(col) { const [c, x] = canvas(256, 64); x.fillStyle = col; x.fill
 function signTex(lines, bg = '#f2c230', fg = '#1b2263') {
   const [c, x] = canvas(1024, 192); x.fillStyle = bg; x.fillRect(0, 0, 1024, 192);
   for (let i = -2; i < 22; i++) { x.fillStyle = i % 2 ? '#1b2263' : bg; x.beginPath(); x.moveTo(i * 52, 192); x.lineTo(i * 52 + 26, 172); x.lineTo(i * 52 + 52, 172); x.lineTo(i * 52 + 26, 192); x.fill(); }
-  x.fillStyle = fg; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 64px "Readex Pro"'; x.fillText(lines[0], 512, 84); if (lines[1]) { x.font = '500 38px "Readex Pro"'; x.fillText(lines[1], 512, 142); }
+  x.fillStyle = fg; x.textAlign = 'center'; x.direction = EN ? 'ltr' : 'rtl'; x.font = '700 64px "Readex Pro"'; x.fillText(lines[0], 512, 84); if (lines[1]) { x.font = '500 38px "Readex Pro"'; x.fillText(lines[1], 512, 142); }
   return toTex(c);
 }
 function iconTex(glyph, color) {
@@ -108,7 +109,7 @@ export function addTour(IN, F, M) {
   const frameM = std('#2b3038', { metalness: .6, roughness: .35 }), brand = std(F.color), white = std('#f2f4f7');
   // the door the student comes in by, on the front wall
   scene.add(box(2.6, 3, .2, frameM, -16, 1.5, 12.88)); scene.add(box(2.2, 2.7, .1, new THREE.MeshStandardMaterial({ color: '#9fc3e0', metalness: .3, roughness: .1 }), -16, 1.35, 12.8));
-  { const ex = new THREE.Mesh(new THREE.PlaneGeometry(1.3, .45), new THREE.MeshStandardMaterial({ map: signTex(['مدخل الزوار', 'VISITORS'], '#0f9d58', '#fff'), emissive: '#fff', emissiveIntensity: .2 })); ex.position.set(-16, 3.4, 12.7); ex.rotation.y = Math.PI; scene.add(ex); }
+  { const ex = new THREE.Mesh(new THREE.PlaneGeometry(1.3, .45), new THREE.MeshStandardMaterial({ map: signTex([tx('مدخل الزوار', 'Visitor entrance'), 'VISITORS'], '#0f9d58', '#fff'), emissive: '#fff', emissiveIntensity: .2 })); ex.position.set(-16, 3.4, 12.7); ex.rotation.y = Math.PI; scene.add(ex); }
   // the gear room: glass partition with a safety gate onto the floor
   const part = [[-15.95, 8.5, 7.9, .1], [-12, 9, .1, 1], [-12, 12.15, .1, 1.5]];
   for (const [x, z, w, d] of part) { scene.add(mk(new THREE.BoxGeometry(w, 2.4, d), glassM, x, 1.2, z, false)); scene.add(box(w + .06, .08, d + .06, frameM, x, 2.42, z)); }
@@ -116,7 +117,7 @@ export function addTour(IN, F, M) {
   const gate = [new THREE.Group(), new THREE.Group()], stripeT = (() => { const [c, x] = canvas(64, 256); for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#1b2263' : '#f2c230'; x.fillRect(0, i * 32, 64, 32); } return toTex(c); })();
   gate.forEach((g, i) => { g.position.set(-12, 0, i ? 11.4 : 9.4); scene.add(g); const leaf = mk(new THREE.BoxGeometry(.08, 1.1, 1), new THREE.MeshStandardMaterial({ map: stripeT, roughness: .5 }), 0, .7, i ? -.5 : .5); g.add(leaf); });
   const gateBox = [-12.15, 9.4, -11.85, 11.4]; IN.boxes.push(gateBox);
-  const banner = new THREE.Mesh(new THREE.PlaneGeometry(4, .75), new THREE.MeshStandardMaterial({ map: signTex(['منطقة الإنتاج', 'الدخول بمعدات الوقاية فقط']), roughness: .5 })); banner.position.set(-11.9, 3.35, 10.4); banner.rotation.y = Math.PI / 2; scene.add(banner);
+  const banner = new THREE.Mesh(new THREE.PlaneGeometry(4, .75), new THREE.MeshStandardMaterial({ map: signTex([tx('منطقة الإنتاج', 'Production area'), tx('الدخول بمعدات الوقاية فقط', 'Enter with safety gear only')]), roughness: .5 })); banner.position.set(-11.9, 3.35, 10.4); banner.rotation.y = Math.PI / 2; scene.add(banner);
   const lockerM = std(F.color, { metalness: .5, roughness: .35 }), ventM = std('#1e2430');
   for (let i = 0; i < 6; i++) { const x = -18.6 + i * .95; scene.add(box(.9, 2.1, .55, lockerM, x, 1.05, 12.45)); for (let k = 0; k < 3; k++) scene.add(box(.5, .03, .02, ventM, x, 1.75 - k * .07, 12.16)); scene.add(box(.04, .22, .04, white, x + .3, 1.1, 12.16)); }
   IN.boxes.push([-19.9, 12.1, -13.6, 12.9]);
@@ -124,7 +125,7 @@ export function addTour(IN, F, M) {
   // information kiosks along the green walkway
   const kiosks = C.facts.map((f, i) => {
     const x = -8 + i * 10, z = 6.95;
-    const g = kioskModel(FS.kiosk, F.color, themedScreen(FS.theme, f.t.ar, String(i + 1), FS.ic[i], FS.theme === 'poster' ? F.color : T.color), anim); g.position.set(x, 0, z); scene.add(g);
+    const g = kioskModel(FS.kiosk, F.color, themedScreen(FS.theme, bi(f.t), String(i + 1), FS.ic[i], FS.theme === 'poster' ? F.color : T.color), anim); g.position.set(x, 0, z); scene.add(g);
     g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     IN.circles.push([x, z, FS.kiosk === 'container' ? 1 : .6]);
     return { x, z: z - 1.2, i };
@@ -132,14 +133,14 @@ export function addTour(IN, F, M) {
   // the mission terminal at the far end of the walkway
   const term = new THREE.Group(); term.position.set(16.2, 0, 4.7); term.rotation.y = -Math.PI / 2; scene.add(term);
   term.add(mk(new RoundedBoxGeometry(1.5, 1.05, .8, 3, .08), white, 0, .53, 0)); term.add(box(1.6, .08, .9, brand, 0, 1.08, 0));
-  const tt = screenTex(M.title, 'ابدأ المهمة', '★', T.color), tscr = new THREE.Mesh(new THREE.PlaneGeometry(1.4, .95), new THREE.MeshStandardMaterial({ map: tt, emissive: '#fff', emissiveMap: tt, emissiveIntensity: .8 }));
+  const tt = screenTex(M.title, tx('ابدأ المهمة', 'Start the mission'), '★', T.color), tscr = new THREE.Mesh(new THREE.PlaneGeometry(1.4, .95), new THREE.MeshStandardMaterial({ map: tt, emissive: '#fff', emissiveMap: tt, emissiveIntensity: .8 }));
   tscr.position.set(0, 1.75, -.15); tscr.rotation.x = -.15; term.add(tscr); term.add(box(1.5, 1.05, .06, frameM, 0, 1.75, -.2));
   IN.boxes.push([15.7, 3.9, 16.7, 5.5]);
   // the supervisor's booth at the back right
   const booth = new THREE.Group(); scene.add(booth);
   booth.add(mk(new THREE.BoxGeometry(5.8, 2.6, .1), glassM, 17, 1.3, -8.6, false)); booth.add(mk(new THREE.BoxGeometry(.1, 2.6, 3.4), glassM, 14.1, 1.3, -11.2, false));
   booth.add(box(5.9, .12, 4.4, frameM, 17, 2.66, -10.75)); booth.add(box(1.6, .9, .7, std('#b07a4a'), 15, .45, -10)); booth.add(box(.6, .5, .05, frameM, 15, 1.2, -10.2));
-  const bs = new THREE.Mesh(new THREE.PlaneGeometry(3, .55), new THREE.MeshStandardMaterial({ map: signTex(['مكتب المشرف', 'SUPERVISOR'], '#ffffff', '#1b2263'), roughness: .5 })); bs.position.set(17, 3.05, -8.54); scene.add(bs);
+  const bs = new THREE.Mesh(new THREE.PlaneGeometry(3, .55), new THREE.MeshStandardMaterial({ map: signTex([tx('مكتب المشرف', 'Supervisor booth'), 'SUPERVISOR'], '#ffffff', '#1b2263'), roughness: .5 })); bs.position.set(17, 3.05, -8.54); scene.add(bs);
   IN.boxes.push([14, -12.9, 19.9, -8.5]);
   // the golden gear on a crate: one jump up
   const crateM = std('#c69c64', { roughness: .8 }); scene.add(box(1.3, .72, 1.3, crateM, -18, .36, -7.4)); scene.add(box(1, .5, 1, crateM, -16.6, .25, -7.5));

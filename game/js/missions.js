@@ -1,3 +1,5 @@
+import { tx } from './i18n.js';
+
 /* What the student does in each factory depends on the track they chose at the start. Each track has
    three kinds of mission, and every region holds one of each, themed on what that factory makes:
      المكتشف  (discoverer)  hazard hunt on the floor · quality control on the line · a machine test
@@ -8,173 +10,173 @@
 const M = {
   /* ---------------- Riyadh ---------------- */
   rabie: {
-    discoverer: { game: 'hazard', title: 'مخاطر السلامة', brief: 'تجوّل في خط العصائر وابحث عن 3 أشياء تهدد سلامة العاملين، وبلّغ عنها.', hazards: ['oil', 'exit', 'panel'] },
-    creative: { game: 'fill', title: 'تعبئة العصير', brief: 'اضغط مطوّلاً لتعبئة كل عبوة عصير، وارفع إصبعك عندما يصل العصير إلى الخط الأحمر تماماً.',
-      liquid: ['#ffc15e', '#f08a1c'], label: 'الربيع', cap: '#0b7a35', bg: ['#fff4e0', '#ffe0b0'], word: 'العصير', icon: '🧃' },
-    artist: { game: 'design', title: 'صمّم عبوة العصير', brief: 'صمّم عبوة عصير جديدة تناسب طلب العميل، ثم اعرضها على لجنة التحكيم.', product: 'juice', brand: 'الربيع',
-      groups: [['shape', 'الشكل', [['carton', 'كرتون'], ['bottle', 'زجاجة'], ['pouch', 'كيس بماصّة']]], ['color', 'اللون', [['orange', '🟠 برتقالي'], ['red', '🔴 أحمر'], ['green', '🟢 أخضر'], ['yellow', '🟡 أصفر']]], ['flavor', 'النكهة', [['orange', '🍊 برتقال'], ['apple', '🍏 تفاح'], ['mango', '🥭 مانجو'], ['berry', '🍓 توت']]], ['size', 'الحجم', [['small', '200 مل'], ['big', '1 لتر']]]],
+    discoverer: { game: 'hazard', title: tx('مخاطر السلامة', 'Safety Hazards'), brief: tx('تجوّل في خط العصائر وابحث عن 3 أشياء تهدد سلامة العاملين، وبلّغ عنها.', 'Walk the juice line and report 3 things that threaten workers\' safety.'), hazards: ['oil', 'exit', 'panel'] },
+    creative: { game: 'fill', title: tx('تعبئة العصير', 'Juice Filling'), brief: tx('اضغط مطوّلاً لتعبئة كل عبوة عصير، وارفع إصبعك عندما يصل العصير إلى الخط الأحمر تماماً.', 'Press and hold to fill each juice pack. Lift your finger when the juice reaches the red line exactly.'),
+      liquid: ['#ffc15e', '#f08a1c'], label: tx('الربيع', 'Al Rabie'), cap: '#0b7a35', bg: ['#fff4e0', '#ffe0b0'], word: tx('العصير', 'Juice'), icon: '🧃' },
+    artist: { game: 'design', title: tx('صمّم عبوة العصير', 'Design the Juice Pack'), brief: tx('صمّم عبوة عصير جديدة تناسب طلب العميل، ثم اعرضها على لجنة التحكيم.', 'Design a new juice pack that fits the client\'s request, then show it to the judges.'), product: 'juice', brand: tx('الربيع', 'Al Rabie'),
+      groups: [['shape', tx('الشكل', 'Shape'), [['carton', tx('كرتون', 'Carton')], ['bottle', tx('زجاجة', 'Bottle')], ['pouch', tx('كيس بماصّة', 'Pouch with straw')]]], ['color', tx('اللون', 'Color'), [['orange', tx('🟠 برتقالي', '🟠 Orange')], ['red', tx('🔴 أحمر', '🔴 Red')], ['green', tx('🟢 أخضر', '🟢 Green')], ['yellow', tx('🟡 أصفر', '🟡 Yellow')]]], ['flavor', tx('النكهة', 'Flavor'), [['orange', tx('🍊 برتقال', '🍊 Orange')], ['apple', tx('🍏 تفاح', '🍏 Apple')], ['mango', tx('🥭 مانجو', '🥭 Mango')], ['berry', tx('🍓 توت', '🍓 Berry')]]], ['size', tx('الحجم', 'Size'), [['small', tx('200 مل', '200 ml')], ['big', tx('1 لتر', '1 L')]]]],
       match: { orange: 'orange', apple: 'green', mango: 'yellow', berry: 'red' },
       briefs: [
-        { text: 'عصير <b>مانجو</b> للأطفال في <b>كيس صغير بماصّة</b> يناسب الحقيبة المدرسية.', ans: { shape: 'pouch', flavor: 'mango', size: 'small' } },
-        { text: 'عصير <b>برتقال</b> للعائلة على الفطور، في <b>كرتون كبير</b>.', ans: { shape: 'carton', flavor: 'orange', size: 'big' } },
-        { text: 'عصير <b>تفاح</b> منعش للرياضيين في <b>زجاجة صغيرة</b> سهلة الإغلاق.', ans: { shape: 'bottle', flavor: 'apple', size: 'small' } }
+        { text: tx('عصير <b>مانجو</b> للأطفال في <b>كيس صغير بماصّة</b> يناسب الحقيبة المدرسية.', 'Mango juice for kids in a <b>small pouch with straw</b> that fits a school bag.'), ans: { shape: 'pouch', flavor: 'mango', size: 'small' } },
+        { text: tx('عصير <b>برتقال</b> للعائلة على الفطور، في <b>كرتون كبير</b>.', '<b>Orange</b> juice for the family at breakfast, in a <b>big carton</b>.'), ans: { shape: 'carton', flavor: 'orange', size: 'big' } },
+        { text: tx('عصير <b>تفاح</b> منعش للرياضيين في <b>زجاجة صغيرة</b> سهلة الإغلاق.', 'Refreshing <b>apple</b> juice for athletes in a <b>small bottle</b> that is easy to close.'), ans: { shape: 'bottle', flavor: 'apple', size: 'small' } }
       ] },
-    ambassador: { game: 'story', title: 'قصة العصير', brief: 'رتّب مشاهد رحلة العصير من المزرعة حتى حقيبة الطالب، ثم اختر عنواناً لقصتك المصوّرة.',
-      panels: [['🍊', 'الفواكه تنضج في المزرعة'], ['🚚', 'تصل إلى المصنع وتُفحص عيّنة منها'], ['🔥', 'يُبستَر العصير ثم يُبرَّد بسرعة'], ['📦', 'يُعبّأ في عبوات معقّمة'], ['🛒', 'يصل إلى رفوف البقالة'], ['🎒', 'ينتعش به طالب في الفسحة']],
-      captions: [['من المزرعة إلى حقيبتك المدرسية', 1], ['عصير في دقيقة واحدة', 0], ['أسرار المطبخ', 0]], tint: ['#fff3dc', '#f08a1c'] }
+    ambassador: { game: 'story', title: tx('قصة العصير', 'Juice Story'), brief: tx('رتّب مشاهد رحلة العصير من المزرعة حتى حقيبة الطالب، ثم اختر عنواناً لقصتك المصوّرة.', 'Put the juice trip in order, from the farm to a school bag, then pick a title for your comic.'),
+      panels: [['🍊', tx('الفواكه تنضج في المزرعة', 'Fruit ripens on the farm')], ['🚚', tx('تصل إلى المصنع وتُفحص عيّنة منها', 'It reaches the factory and a sample is tested')], ['🔥', tx('يُبستَر العصير ثم يُبرَّد بسرعة', 'The juice is pasteurized, then quickly chilled')], ['📦', tx('يُعبّأ في عبوات معقّمة', 'Packed into sterile containers')], ['🛒', tx('يصل إلى رفوف البقالة', 'Reaches grocery shelves')], ['🎒', tx('ينتعش به طالب في الفسحة', 'A student enjoys it at recess')]],
+      captions: [[tx('من المزرعة إلى حقيبتك المدرسية', 'From the farm to your school bag'), 1], [tx('عصير في دقيقة واحدة', 'Juice in one minute'), 0], [tx('أسرار المطبخ', 'Kitchen Secrets'), 0]], tint: ['#fff3dc', '#f08a1c'] }
   },
   coca: {
-    discoverer: { game: 'sort', title: 'فحص الجودة', brief: 'العبوات تمر أمامك على الخط: اضغط على كل عبوة معيبة (بلا غطاء، ناقصة التعبئة، أو مشروخة) قبل أن تصل للتغليف.', item: 'bottle', box: 'كوكاكولا', boxColor: '#c4151f',
-      defects: { nocap: 'بلا غطاء', low: 'ناقصة', crack: 'مشروخة' }, bg: ['#ffe9e9', '#f4c9c9'] },
-    creative: { game: 'order', title: 'رتّب خط التعبئة', brief: 'رتّب محطات خط التعبئة بالترتيب الصحيح، من الماء حتى العبوة الجاهزة للشحن.',
-      steps: [['💧', 'تنقية المياه ومعالجتها'], ['🧪', 'خلط الشراب المركّز بالماء'], ['🫧', 'إضافة الغاز (التكربن)'], ['🍾', 'تعبئة العبوات'], ['🔩', 'الإغلاق بالأغطية'], ['📦', 'الملصق والتغليف']], bg: 'rgba(120,10,20,.55)' },
-    artist: { game: 'pattern', title: 'ثلاجة العرض', brief: 'احفظ ترتيب العبوات في ثلاجة العرض، ثم رتّبها بنفس الشكل من الذاكرة.', box: 'linear-gradient(160deg,#f6f8fb,#dfe5ee)',
-      items: [['radial-gradient(circle at 35% 30%,#ff6a6a,#b3121c)', 'كلاسيك'], ['radial-gradient(circle at 35% 30%,#7d7f86,#1d1e22)', 'زيرو'], ['radial-gradient(circle at 35% 30%,#ffd27a,#e0820e)', 'برتقال'], ['radial-gradient(circle at 35% 30%,#c6f08a,#4f9a1c)', 'ليمون']] },
-    ambassador: { game: 'photo', title: 'صوّر الإعلان', brief: 'أنت مصوّر الحملة: أغلق العبوات على خط التعبئة، ثم اختر مكان التصوير وعبارة الإعلان.' }
+    discoverer: { game: 'sort', title: tx('فحص الجودة', 'Quality Check'), brief: tx('العبوات تمر أمامك على الخط: اضغط على كل عبوة معيبة (بلا غطاء، ناقصة التعبئة، أو مشروخة) قبل أن تصل للتغليف.', 'Bottles pass by on the line. Tap each faulty one (no cap, underfilled, or cracked) before it reaches packing.'), item: 'bottle', box: tx('كوكاكولا', 'Coca-Cola'), boxColor: '#c4151f',
+      defects: { nocap: tx('بلا غطاء', 'No cap'), low: tx('ناقصة', 'Underfilled'), crack: tx('مشروخة', 'Cracked') }, bg: ['#ffe9e9', '#f4c9c9'] },
+    creative: { game: 'order', title: tx('رتّب خط التعبئة', 'Arrange the Filling Line'), brief: tx('رتّب محطات خط التعبئة بالترتيب الصحيح، من الماء حتى العبوة الجاهزة للشحن.', 'Put the filling line stations in order, from water to a packed bottle ready to ship.'),
+      steps: [['💧', tx('تنقية المياه ومعالجتها', 'Purify and treat the water')], ['🧪', tx('خلط الشراب المركّز بالماء', 'Mix the concentrate syrup with water')], ['🫧', tx('إضافة الغاز (التكربن)', 'Add gas (carbonation)')], ['🍾', tx('تعبئة العبوات', 'Fill the bottles')], ['🔩', tx('الإغلاق بالأغطية', 'Capping')], ['📦', tx('الملصق والتغليف', 'Label and packing')]], bg: 'rgba(120,10,20,.55)' },
+    artist: { game: 'pattern', title: tx('ثلاجة العرض', 'Display Fridge'), brief: tx('احفظ ترتيب العبوات في ثلاجة العرض، ثم رتّبها بنفس الشكل من الذاكرة.', 'Memorize the bottle order in the display fridge, then rebuild it from memory.'), box: 'linear-gradient(160deg,#f6f8fb,#dfe5ee)',
+      items: [['radial-gradient(circle at 35% 30%,#ff6a6a,#b3121c)', tx('كلاسيك', 'Classic')], ['radial-gradient(circle at 35% 30%,#7d7f86,#1d1e22)', tx('زيرو', 'Zero')], ['radial-gradient(circle at 35% 30%,#ffd27a,#e0820e)', tx('برتقال', 'Orange')], ['radial-gradient(circle at 35% 30%,#c6f08a,#4f9a1c)', tx('ليمون', 'Lemon')]] },
+    ambassador: { game: 'photo', title: tx('صوّر الإعلان', 'Shoot the Ad'), brief: tx('أنت مصوّر الحملة: أغلق العبوات على خط التعبئة، ثم اختر مكان التصوير وعبارة الإعلان.', 'You are the campaign photographer: close the bottles on the filling line, then choose the shoot location and the ad slogan.') }
   },
   kacst: {
-    discoverer: { game: 'pressure', title: 'اختبار القمر الصناعي', brief: 'القمر الصناعي داخل غرفة اختبار الفضاء: أبقِ حرارة الغرفة في المنطقة الخضراء حتى يكتمل الاختبار.',
-      unit: '°C', scale: v => Math.round(v * 2.4 - 120), hint: ['برّد الغرفة', 'سخّن الغرفة', 'حرارة مثالية ✓'], hold: '🔥 اضغط مطوّلاً للتسخين', thing: 'sat', bg: ['#0b1433', '#1d2c6b'], dark: true },
-    creative: { game: 'circuit', title: 'وصّل الدائرة', brief: 'دوّر القطع لتوصل الطاقة من المصدر إلى الأقمار الصناعية الثلاثة.', targets: ['🛰️', '🛰️', '🛰️'], src: '⚡', bg: ['#0b1433', '#1d2c6b'], stars: true },
-    artist: { game: 'crane', title: 'برج الصاروخ', brief: 'ابنِ مجسّماً فنياً لصاروخ من أجزاء النماذج المتبقية: أفلت كل جزء فوق الذي تحته بدقة.', block: 'rocket', bg: ['#0b1433', '#28407f'] },
-    ambassador: { game: 'quiz', title: 'تحدي العلوم', brief: 'أجب بسرعة عن أسئلة العلوم والتقنية لتكون سفيراً لكاكست.',
-      q: [['ما وظيفة القمر الصناعي للاتصالات؟', ['نقل الإشارات بين الأماكن البعيدة', 'إنتاج الكهرباء للمدن', 'تحلية مياه البحر', 'صناعة الأمطار']],
-        ['لماذا تُختبر الأقمار الصناعية في غرف خاصة قبل الإطلاق؟', ['لتتحمّل برد الفضاء وحرّه', 'لتلوينها', 'لتخفيف وزنها', 'لتنظيفها فقط']],
-        ['ما الذي يزوّد القمر الصناعي بالطاقة في الفضاء؟', ['الألواح الشمسية', 'محرك ديزل', 'بطارية سيارة', 'الرياح']],
-        ['ماذا تعني "الغرفة النظيفة" في المختبر؟', ['غرفة يُتحكّم في غبارها وهوائها بدقة', 'غرفة تُنظّف مرة كل يوم', 'غرفة بلا نوافذ فقط', 'غرفة للتخزين']],
-        ['ما المسار الذي يبحث عن حلول لتحديات المصنع في الهاكثون؟', ['المكتشف', 'الفنان', 'السفير', 'لا يوجد']],
-        ['أي من هذه أداة يستخدمها المهندس لقياس الحرارة؟', ['الحسّاس الحراري', 'المسطرة', 'المطرقة', 'الفرشاة']],
-        ['لماذا يرتدي العاملون في المختبر معطفاً خاصاً؟', ['لحماية التجارب والأجهزة من الغبار والشعر', 'للزينة', 'للتدفئة فقط', 'لأنه أرخص']],
-        ['إلى كم تصل جوائز هاكثون صناعيو المستقبل؟', ['200,000 ريال', '5,000 ريال', '500 ريال', '20 مليون ريال']]] }
+    discoverer: { game: 'pressure', title: tx('اختبار القمر الصناعي', 'Satellite Test'), brief: tx('القمر الصناعي داخل غرفة اختبار الفضاء: أبقِ حرارة الغرفة في المنطقة الخضراء حتى يكتمل الاختبار.', 'The satellite is inside the space test chamber. Keep the room temperature in the green zone until the test is done.'),
+      unit: '°C', scale: v => Math.round(v * 2.4 - 120), hint: [tx('برّد الغرفة', 'Cool the room'), tx('سخّن الغرفة', 'Heat the room'), tx('حرارة مثالية ✓', 'Perfect temperature ✓')], hold: tx('🔥 اضغط مطوّلاً للتسخين', '🔥 Press and hold to heat'), thing: 'sat', bg: ['#0b1433', '#1d2c6b'], dark: true },
+    creative: { game: 'circuit', title: tx('وصّل الدائرة', 'Connect the Circuit'), brief: tx('دوّر القطع لتوصل الطاقة من المصدر إلى الأقمار الصناعية الثلاثة.', 'Rotate the pieces to send power from the source to the three satellites.'), targets: ['🛰️', '🛰️', '🛰️'], src: '⚡', bg: ['#0b1433', '#1d2c6b'], stars: true },
+    artist: { game: 'crane', title: tx('برج الصاروخ', 'Rocket Tower'), brief: tx('ابنِ مجسّماً فنياً لصاروخ من أجزاء النماذج المتبقية: أفلت كل جزء فوق الذي تحته بدقة.', 'Build an art model of a rocket from leftover model parts: drop each part precisely on top of the one below it.'), block: 'rocket', bg: ['#0b1433', '#28407f'] },
+    ambassador: { game: 'quiz', title: tx('تحدي العلوم', 'Science Challenge'), brief: tx('أجب بسرعة عن أسئلة العلوم والتقنية لتكون سفيراً لكاكست.', 'Answer science and tech questions fast to become a KACST ambassador.'),
+      q: [[tx('ما وظيفة القمر الصناعي للاتصالات؟', 'What is a communications satellite for?'), [tx('نقل الإشارات بين الأماكن البعيدة', 'Carrying signals between distant places'), tx('إنتاج الكهرباء للمدن', 'Producing electricity for cities'), tx('تحلية مياه البحر', 'Desalinating seawater'), tx('صناعة الأمطار', 'Making rain')]],
+        [tx('لماذا تُختبر الأقمار الصناعية في غرف خاصة قبل الإطلاق؟', 'Why are satellites tested in special rooms before launch?'), [tx('لتتحمّل برد الفضاء وحرّه', 'To withstand the cold and heat of space'), tx('لتلوينها', 'To paint them'), tx('لتخفيف وزنها', 'To make them lighter'), tx('لتنظيفها فقط', 'Just to clean them')]],
+        [tx('ما الذي يزوّد القمر الصناعي بالطاقة في الفضاء؟', 'What powers a satellite in space?'), [tx('الألواح الشمسية', 'Solar panels'), tx('محرك ديزل', 'Diesel engine'), tx('بطارية سيارة', 'Car battery'), tx('الرياح', 'Wind')]],
+        [tx('ماذا تعني "الغرفة النظيفة" في المختبر؟', 'What does "clean room" mean in a lab?'), [tx('غرفة يُتحكّم في غبارها وهوائها بدقة', 'A room where dust and air are tightly controlled'), tx('غرفة تُنظّف مرة كل يوم', 'A room cleaned once a day'), tx('غرفة بلا نوافذ فقط', 'Just a room with no windows'), tx('غرفة للتخزين', 'A storage room')]],
+        [tx('ما المسار الذي يبحث عن حلول لتحديات المصنع في الهاكثون؟', 'Which track looks for solutions to factory challenges at the hackathon?'), [tx('المكتشف', 'Discoverer'), tx('الفنان', 'Artist'), tx('السفير', 'Ambassador'), tx('لا يوجد', 'None')]],
+        [tx('أي من هذه أداة يستخدمها المهندس لقياس الحرارة؟', 'Which of these tools does an engineer use to measure heat?'), [tx('الحسّاس الحراري', 'Thermal sensor'), tx('المسطرة', 'Ruler'), tx('المطرقة', 'Hammer'), tx('الفرشاة', 'Brush')]],
+        [tx('لماذا يرتدي العاملون في المختبر معطفاً خاصاً؟', 'Why do lab workers wear a special coat?'), [tx('لحماية التجارب والأجهزة من الغبار والشعر', 'To protect experiments and devices from dust and hair'), tx('للزينة', 'For decoration'), tx('للتدفئة فقط', 'Just for warmth'), tx('لأنه أرخص', 'Because it is cheaper')]],
+        [tx('إلى كم تصل جوائز هاكثون صناعيو المستقبل؟', 'Up to how much do the Future Industrialists Hackathon prizes go?'), [tx('200,000 ريال', '200,000 SAR'), tx('5,000 ريال', '5,000 SAR'), tx('500 ريال', '500 SAR'), tx('20 مليون ريال', '20 million SAR')]]] }
   },
   /* ---------------- Makkah (Jeddah) ---------------- */
   york: {
-    discoverer: { game: 'pressure', title: 'اختبار الضغط', brief: 'اضغط مطوّلاً لتشغيل الضاغط وأبقِ مؤشر الضغط في المنطقة الخضراء حتى يكتمل الاختبار.', unit: 'PSI', scale: v => Math.round(v * 3.5), hint: ['خفّف الضغط', 'زد الضغط', 'ضغط مثالي ✓'], hold: '⬆️ اضغط مطوّلاً للضغط', thing: 'ac', bg: ['#eef3fa', '#cfdbea'] },
-    creative: { game: 'order', title: 'خط تجميع المكيّف', brief: 'رتّب محطات تجميع المكيّف بالترتيب الصحيح، من الصفيحة المعدنية حتى الشحن.',
-      steps: [['🔩', 'تشكيل الهيكل المعدني'], ['🌀', 'تركيب الضاغط والمروحة'], ['🔧', 'لحام أنابيب النحاس'], ['💨', 'تعبئة غاز التبريد'], ['🧪', 'اختبار الضغط والتسريب'], ['📦', 'التغليف والشحن']], bg: 'rgba(20,50,100,.55)' },
-    artist: { game: 'pattern', title: 'جدار صالة العرض', brief: 'احفظ ترتيب ألوان المكيّفات على جدار صالة العرض، ثم أعد ترتيبها من الذاكرة.', box: 'linear-gradient(160deg,#eef2f8,#d5dce8)', square: true,
-      items: [['linear-gradient(180deg,#ffffff,#d9dee6)', 'أبيض'], ['linear-gradient(180deg,#cfd5de,#8e97a5)', 'فضي'], ['linear-gradient(180deg,#4a4f58,#16181c)', 'أسود'], ['linear-gradient(180deg,#f3d58a,#c79a3a)', 'ذهبي']] },
-    ambassador: { game: 'ad', title: 'حملة الصيف', brief: 'اصنع إعلان صيف لمكيّفات يورك: اختر المكان والعبارة التي تناسب طلب العميل.', product: 'ac',
-      ask: 'حملة <b>صيفية</b> لمكيّفات يورك: الجو <b>حار جداً</b> في الخارج، والبيت <b>بارد ومريح</b>.',
-      scenes: [['heat', 'مدينة تحت شمس الظهيرة', 1], ['snow', 'جبال مثلجة', 0], ['night', 'صحراء في الليل', 0]],
-      lines: [['برودة تريحك مهما اشتدّ الحر', 1], ['أسرع سيارة في المدينة', 0], ['دفء الشتاء في بيتك', 0]] }
+    discoverer: { game: 'pressure', title: tx('اختبار الضغط', 'Pressure Test'), brief: tx('اضغط مطوّلاً لتشغيل الضاغط وأبقِ مؤشر الضغط في المنطقة الخضراء حتى يكتمل الاختبار.', 'Press and hold to run the compressor. Keep the pressure gauge in the green zone until the test is done.'), unit: 'PSI', scale: v => Math.round(v * 3.5), hint: [tx('خفّف الضغط', 'Reduce pressure'), tx('زد الضغط', 'Increase pressure'), tx('ضغط مثالي ✓', 'Perfect pressure ✓')], hold: tx('⬆️ اضغط مطوّلاً للضغط', '⬆️ Press and hold to pressurize'), thing: 'ac', bg: ['#eef3fa', '#cfdbea'] },
+    creative: { game: 'order', title: tx('خط تجميع المكيّف', 'AC Assembly Line'), brief: tx('رتّب محطات تجميع المكيّف بالترتيب الصحيح، من الصفيحة المعدنية حتى الشحن.', 'Put the AC assembly stations in order, from metal sheet to shipping.'),
+      steps: [['🔩', tx('تشكيل الهيكل المعدني', 'Shape the metal frame')], ['🌀', tx('تركيب الضاغط والمروحة', 'Install the compressor and fan')], ['🔧', tx('لحام أنابيب النحاس', 'Weld the copper pipes')], ['💨', tx('تعبئة غاز التبريد', 'Fill the coolant gas')], ['🧪', tx('اختبار الضغط والتسريب', 'Test pressure and leaks')], ['📦', tx('التغليف والشحن', 'Packing and shipping')]], bg: 'rgba(20,50,100,.55)' },
+    artist: { game: 'pattern', title: tx('جدار صالة العرض', 'Showroom Wall'), brief: tx('احفظ ترتيب ألوان المكيّفات على جدار صالة العرض، ثم أعد ترتيبها من الذاكرة.', 'Memorize the order of the AC colors on the showroom wall, then rebuild it from memory.'), box: 'linear-gradient(160deg,#eef2f8,#d5dce8)', square: true,
+      items: [['linear-gradient(180deg,#ffffff,#d9dee6)', tx('أبيض', 'White')], ['linear-gradient(180deg,#cfd5de,#8e97a5)', tx('فضي', 'Silver')], ['linear-gradient(180deg,#4a4f58,#16181c)', tx('أسود', 'Black')], ['linear-gradient(180deg,#f3d58a,#c79a3a)', tx('ذهبي', 'Gold')]] },
+    ambassador: { game: 'ad', title: tx('حملة الصيف', 'Summer Campaign'), brief: tx('اصنع إعلان صيف لمكيّفات يورك: اختر المكان والعبارة التي تناسب طلب العميل.', 'Make a summer ad for York air conditioners: choose the setting and slogan that fit the client\'s request.'), product: 'ac',
+      ask: tx('حملة <b>صيفية</b> لمكيّفات يورك: الجو <b>حار جداً</b> في الخارج، والبيت <b>بارد ومريح</b>.', 'A <b>summer</b> campaign for York air conditioners: it is <b>very hot</b> outside, and home is <b>cool and cozy</b>.'),
+      scenes: [['heat', tx('مدينة تحت شمس الظهيرة', 'City under the midday sun'), 1], ['snow', tx('جبال مثلجة', 'Snowy mountains'), 0], ['night', tx('صحراء في الليل', 'Desert at night'), 0]],
+      lines: [[tx('برودة تريحك مهما اشتدّ الحر', 'A chill that relaxes you no matter how hot it gets'), 1], [tx('أسرع سيارة في المدينة', 'The fastest car in town'), 0], [tx('دفء الشتاء في بيتك', 'Winter warmth in your home'), 0]] }
   },
   sadafco: {
-    discoverer: { game: 'sort', title: 'فحص العبوات', brief: 'عبوات الحليب تمر على الخط: اضغط على كل عبوة معيبة (منبعجة، تسرّب، أو بلا ملصق) قبل أن تصل للصندوق.', item: 'milk', box: 'سدافكو', boxColor: '#1c4fa0',
-      defects: { dent: 'منبعجة', leak: 'تسرّب', nolabel: 'بلا ملصق' }, bg: ['#eaf2ff', '#cddcf5'] },
-    creative: { game: 'fill', title: 'تعبئة الحليب', brief: 'اضغط مطوّلاً لتعبئة كل عبوة حليب، وارفع إصبعك عندما يصل الحليب إلى الخط الأحمر تماماً.',
-      liquid: ['#ffffff', '#e4eaf2'], label: 'سدافكو', cap: '#1c4fa0', bg: ['#9fbbe0', '#5f86bf'], word: 'الحليب', icon: '🥛' },
-    artist: { game: 'design', title: 'صمّم العبوة', brief: 'صمّم عبوة حليب جديدة تناسب طلب العميل، ثم اعرضها على لجنة التحكيم.', product: 'milk', brand: 'سدافكو',
-      groups: [['shape', 'الشكل', [['carton', 'كرتون'], ['bottle', 'زجاجة'], ['pouch', 'عبوة صغيرة']]], ['color', 'اللون', [['blue', '🔵 أزرق'], ['pink', '🩷 وردي'], ['brown', '🟤 بني'], ['yellow', '🟡 أصفر']]], ['flavor', 'النكهة', [['plain', 'سادة'], ['strawberry', '🍓 فراولة'], ['choco', '🍫 شوكولاتة'], ['banana', '🍌 موز']]], ['size', 'الحجم', [['small', '200 مل'], ['big', '1 لتر']]]],
+    discoverer: { game: 'sort', title: tx('فحص العبوات', 'Pack Check'), brief: tx('عبوات الحليب تمر على الخط: اضغط على كل عبوة معيبة (منبعجة، تسرّب، أو بلا ملصق) قبل أن تصل للصندوق.', 'Milk packs pass along the line. Tap each faulty one (dented, leaking, or without a label) before it reaches the box.'), item: 'milk', box: tx('سدافكو', 'Sadafco'), boxColor: '#1c4fa0',
+      defects: { dent: tx('منبعجة', 'Dented'), leak: tx('تسرّب', 'Leaking'), nolabel: tx('بلا ملصق', 'No label') }, bg: ['#eaf2ff', '#cddcf5'] },
+    creative: { game: 'fill', title: tx('تعبئة الحليب', 'Milk Filling'), brief: tx('اضغط مطوّلاً لتعبئة كل عبوة حليب، وارفع إصبعك عندما يصل الحليب إلى الخط الأحمر تماماً.', 'Press and hold to fill each milk pack. Lift your finger when the milk reaches the red line exactly.'),
+      liquid: ['#ffffff', '#e4eaf2'], label: tx('سدافكو', 'Sadafco'), cap: '#1c4fa0', bg: ['#9fbbe0', '#5f86bf'], word: tx('الحليب', 'Milk'), icon: '🥛' },
+    artist: { game: 'design', title: tx('صمّم العبوة', 'Design the Pack'), brief: tx('صمّم عبوة حليب جديدة تناسب طلب العميل، ثم اعرضها على لجنة التحكيم.', 'Design a new milk pack that fits the client\'s request, then show it to the judges.'), product: 'milk', brand: tx('سدافكو', 'Sadafco'),
+      groups: [['shape', tx('الشكل', 'Shape'), [['carton', tx('كرتون', 'Carton')], ['bottle', tx('زجاجة', 'Bottle')], ['pouch', tx('عبوة صغيرة', 'Small pack')]]], ['color', tx('اللون', 'Color'), [['blue', tx('🔵 أزرق', '🔵 Blue')], ['pink', tx('🩷 وردي', '🩷 Pink')], ['brown', tx('🟤 بني', '🟤 Brown')], ['yellow', tx('🟡 أصفر', '🟡 Yellow')]]], ['flavor', tx('النكهة', 'Flavor'), [['plain', tx('سادة', 'Plain')], ['strawberry', tx('🍓 فراولة', '🍓 Strawberry')], ['choco', tx('🍫 شوكولاتة', '🍫 Chocolate')], ['banana', tx('🍌 موز', '🍌 Banana')]]], ['size', tx('الحجم', 'Size'), [['small', tx('200 مل', '200 ml')], ['big', tx('1 لتر', '1 L')]]]],
       match: { plain: 'blue', strawberry: 'pink', choco: 'brown', banana: 'yellow' },
       briefs: [
-        { text: 'عبوة حليب <b>بنكهة الفراولة</b> للأطفال، <b>صغيرة</b> وسهلة الحمل في الحقيبة المدرسية.', ans: { shape: 'pouch', flavor: 'strawberry', size: 'small' } },
-        { text: 'عبوة حليب <b>بالشوكولاتة</b> للعائلة، <b>كبيرة</b> وتحفظ في الثلاجة.', ans: { shape: 'carton', flavor: 'choco', size: 'big' } },
-        { text: 'حليب <b>بالموز</b> للرياضيين، في <b>زجاجة</b> عملية <b>صغيرة</b>.', ans: { shape: 'bottle', flavor: 'banana', size: 'small' } }
+        { text: tx('عبوة حليب <b>بنكهة الفراولة</b> للأطفال، <b>صغيرة</b> وسهلة الحمل في الحقيبة المدرسية.', '<b>Strawberry</b>-flavored milk pack for kids, <b>small</b> and easy to carry in a school bag.'), ans: { shape: 'pouch', flavor: 'strawberry', size: 'small' } },
+        { text: tx('عبوة حليب <b>بالشوكولاتة</b> للعائلة، <b>كبيرة</b> وتحفظ في الثلاجة.', 'A <b>chocolate</b> milk pack for the family, <b>big</b> and kept in the fridge.'), ans: { shape: 'carton', flavor: 'choco', size: 'big' } },
+        { text: tx('حليب <b>بالموز</b> للرياضيين، في <b>زجاجة</b> عملية <b>صغيرة</b>.', '<b>Banana</b> milk for athletes, in a <b>small</b> practical <b>bottle</b>.'), ans: { shape: 'bottle', flavor: 'banana', size: 'small' } }
       ] },
-    ambassador: { game: 'story', title: 'رحلة الحليب', brief: 'رتّب مشاهد رحلة الحليب من المزرعة حتى ثلاجة بيتك، ثم اختر عنواناً لقصتك المصوّرة.',
-      panels: [['🐄', 'الأبقار في المزرعة'], ['🚛', 'صهريج مبرّد ينقل الحليب'], ['🧪', 'المختبر يفحص كل دفعة'], ['🔥', 'البسترة تقتل الميكروبات'], ['🥛', 'التعبئة في عبوات نظيفة'], ['🏠', 'في ثلاجة بيتك صباحاً']],
-      captions: [['رحلة الحليب الطازج إلى فطورك', 1], ['الحليب يأتي من الثلاجة', 0], ['قصة مكيّف', 0]], tint: ['#eaf2ff', '#1c4fa0'] }
+    ambassador: { game: 'story', title: tx('رحلة الحليب', 'Milk Journey'), brief: tx('رتّب مشاهد رحلة الحليب من المزرعة حتى ثلاجة بيتك، ثم اختر عنواناً لقصتك المصوّرة.', 'Put the milk journey in order, from the farm to your home fridge, then pick a title for your comic.'),
+      panels: [['🐄', tx('الأبقار في المزرعة', 'Cows on the farm')], ['🚛', tx('صهريج مبرّد ينقل الحليب', 'A chilled tanker carries the milk')], ['🧪', tx('المختبر يفحص كل دفعة', 'The lab tests every batch')], ['🔥', tx('البسترة تقتل الميكروبات', 'Pasteurization kills germs')], ['🥛', tx('التعبئة في عبوات نظيفة', 'Filling into clean packs')], ['🏠', tx('في ثلاجة بيتك صباحاً', 'In your home fridge in the morning')]],
+      captions: [[tx('رحلة الحليب الطازج إلى فطورك', 'The fresh milk trip to your breakfast'), 1], [tx('الحليب يأتي من الثلاجة', 'Milk comes from the fridge'), 0], [tx('قصة مكيّف', 'An AC Story'), 0]], tint: ['#eaf2ff', '#1c4fa0'] }
   },
   yamamah: {
-    discoverer: { game: 'hazard', title: 'مخاطر مصنع الحديد', brief: 'مصنع الحديد مكان حار وثقيل: ابحث عن 3 أشياء تهدد سلامة العاملين وبلّغ عنها.', hazards: ['spark', 'forklift', 'guard'] },
-    creative: { game: 'circuit', title: 'شغّل خط الدرفلة', brief: 'دوّر القطع لتوصل الكهرباء إلى الفرن والدرفلة والرافعة.', targets: ['🔥', '⚙️', '🏗️'], src: '⚡', bg: ['#1c1f26', '#3a2e24'] },
-    artist: { game: 'crane', title: 'منحوتة الحديد', brief: 'استخدم الرافعة لترص قضبان الحديد المتبقية فوق بعضها وتبني منحوتة فنية عالية.', block: 'steel', bg: ['#2b3445', '#5a6272'] },
-    ambassador: { game: 'quiz', title: 'تحدي الحديد', brief: 'أجب بسرعة عن أسئلة صناعة الحديد لتكون سفيراً لليمامة.',
-      q: [['من أين يأتي كثير من الحديد الذي يُعاد تصنيعه؟', ['الخردة المعدنية', 'الرمل', 'الماء', 'الخشب']],
-        ['ما وظيفة الفرن الكهربائي في مصنع الحديد؟', ['صهر الحديد', 'تبريد القضبان', 'طلاء القضبان', 'تغليف المنتجات']],
-        ['ماذا تفعل آلة الدرفلة؟', ['تحوّل الحديد الساخن إلى قضبان', 'تقطع الخشب', 'تعبّئ الحليب', 'تحلّي الماء']],
-        ['أين تُستخدم قضبان حديد التسليح؟', ['في الخرسانة لتقوية المباني والجسور', 'في صناعة الملابس', 'في الطعام', 'في الحلويات']],
-        ['لماذا يرتدي العامل قرب الفرن ملابس مقاومة للحرارة؟', ['لحمايته من الحرارة والشرر', 'لأنها أجمل', 'لتخفيف وزنه', 'لا داعي لها']],
-        ['ما فائدة إعادة تدوير الحديد؟', ['توفير الموارد والطاقة', 'زيادة النفايات', 'تلويث الهواء', 'لا فائدة']],
-        ['أي مسار يحوّل مخلفات المصانع إلى أعمال فنية؟', ['الفنان', 'المكتشف', 'السفير', 'المبدع']],
-        ['ما الذي يحمي العينين من الشرر؟', ['النظارة الواقية', 'القبعة', 'الحذاء', 'الساعة']]] }
+    discoverer: { game: 'hazard', title: tx('مخاطر مصنع الحديد', 'Steel Factory Hazards'), brief: tx('مصنع الحديد مكان حار وثقيل: ابحث عن 3 أشياء تهدد سلامة العاملين وبلّغ عنها.', 'The steel factory is hot and heavy. Find 3 things that threaten workers\' safety and report them.'), hazards: ['spark', 'forklift', 'guard'] },
+    creative: { game: 'circuit', title: tx('شغّل خط الدرفلة', 'Run the Rolling Line'), brief: tx('دوّر القطع لتوصل الكهرباء إلى الفرن والدرفلة والرافعة.', 'Rotate the pieces to send power to the furnace, the rolling mill, and the crane.'), targets: ['🔥', '⚙️', '🏗️'], src: '⚡', bg: ['#1c1f26', '#3a2e24'] },
+    artist: { game: 'crane', title: tx('منحوتة الحديد', 'Steel Sculpture'), brief: tx('استخدم الرافعة لترص قضبان الحديد المتبقية فوق بعضها وتبني منحوتة فنية عالية.', 'Use the crane to stack the leftover steel bars and build a tall art sculpture.'), block: 'steel', bg: ['#2b3445', '#5a6272'] },
+    ambassador: { game: 'quiz', title: tx('تحدي الحديد', 'Steel Challenge'), brief: tx('أجب بسرعة عن أسئلة صناعة الحديد لتكون سفيراً لليمامة.', 'Answer steel-making questions fast to become a Yamamah ambassador.'),
+      q: [[tx('من أين يأتي كثير من الحديد الذي يُعاد تصنيعه؟', 'Where does much of the recycled steel come from?'), [tx('الخردة المعدنية', 'Scrap metal'), tx('الرمل', 'Sand'), tx('الماء', 'Water'), tx('الخشب', 'Wood')]],
+        [tx('ما وظيفة الفرن الكهربائي في مصنع الحديد؟', 'What is the electric furnace for in a steel factory?'), [tx('صهر الحديد', 'Melting steel'), tx('تبريد القضبان', 'Cooling the bars'), tx('طلاء القضبان', 'Painting the bars'), tx('تغليف المنتجات', 'Packing products')]],
+        [tx('ماذا تفعل آلة الدرفلة؟', 'What does a rolling machine do?'), [tx('تحوّل الحديد الساخن إلى قضبان', 'Turns hot steel into bars'), tx('تقطع الخشب', 'Cuts wood'), tx('تعبّئ الحليب', 'Fills milk'), tx('تحلّي الماء', 'Sweetens water')]],
+        [tx('أين تُستخدم قضبان حديد التسليح؟', 'Where are rebar steel bars used?'), [tx('في الخرسانة لتقوية المباني والجسور', 'In concrete to strengthen buildings and bridges'), tx('في صناعة الملابس', 'In making clothes'), tx('في الطعام', 'In food'), tx('في الحلويات', 'In sweets')]],
+        [tx('لماذا يرتدي العامل قرب الفرن ملابس مقاومة للحرارة؟', 'Why does a worker near the furnace wear heat-resistant clothing?'), [tx('لحمايته من الحرارة والشرر', 'To protect against heat and sparks'), tx('لأنها أجمل', 'Because they look nicer'), tx('لتخفيف وزنه', 'To reduce weight'), tx('لا داعي لها', 'There is no need for them')]],
+        [tx('ما فائدة إعادة تدوير الحديد؟', 'What is the benefit of recycling steel?'), [tx('توفير الموارد والطاقة', 'Saving resources and energy'), tx('زيادة النفايات', 'Creating more waste'), tx('تلويث الهواء', 'Polluting the air'), tx('لا فائدة', 'No benefit')]],
+        [tx('أي مسار يحوّل مخلفات المصانع إلى أعمال فنية؟', 'Which track turns factory waste into art?'), [tx('الفنان', 'Artist'), tx('المكتشف', 'Discoverer'), tx('السفير', 'Ambassador'), tx('المبدع', 'Creative')]],
+        [tx('ما الذي يحمي العينين من الشرر؟', 'What protects the eyes from sparks?'), [tx('النظارة الواقية', 'Safety glasses'), tx('القبعة', 'Hat'), tx('الحذاء', 'Shoes'), tx('الساعة', 'Watch')]]] }
   },
   /* ---------------- Qassim (Buraydah) ---------------- */
   kareeda: {
-    discoverer: { game: 'sort', title: 'فرز التمور', brief: 'التمور تمر على خط الفرز: اضغط على كل تمرة تالفة (مشقوقة، معفّنة، أو ذابلة) قبل أن تصل إلى العلبة.', item: 'date', box: 'الكريدا', boxColor: '#7a5a2a',
-      defects: { crack: 'مشقوقة', mold: 'معفّنة', dry: 'ذابلة' }, bg: ['#f6ead6', '#e2c9a2'] },
-    creative: { game: 'order', title: 'رحلة التمرة', brief: 'رتّب مراحل تجهيز التمور بالترتيب الصحيح، من النخلة حتى العلبة.',
-      steps: [['🌴', 'حصاد التمور من النخيل'], ['🚚', 'الاستلام والفحص الأولي'], ['💦', 'الغسيل والتعقيم'], ['🔍', 'الفرز حسب الجودة والحجم'], ['☀️', 'التجفيف والإنضاج'], ['📦', 'التعبئة في العلب']], bg: 'rgba(90,60,20,.6)' },
-    artist: { game: 'design', title: 'صمّم علبة التمر', brief: 'صمّم علبة تمر تناسب طلب العميل، ثم اعرضها على لجنة التحكيم.', product: 'dates', brand: 'الكريدا',
-      groups: [['shape', 'الشكل', [['box', 'علبة مربعة'], ['tin', 'علبة دائرية'], ['tray', 'صينية مفتوحة']]], ['color', 'اللون', [['gold', '🟡 ذهبي'], ['green', '🟢 أخضر'], ['brown', '🟤 بني'], ['white', '⚪ أبيض']]], ['flavor', 'الحشوة', [['plain', 'تمر سكري'], ['almond', '🌰 محشو باللوز'], ['choco', '🍫 بالشوكولاتة']]], ['size', 'الحجم', [['small', '250 غ'], ['big', '1 كغ']]]],
+    discoverer: { game: 'sort', title: tx('فرز التمور', 'Date Sorting'), brief: tx('التمور تمر على خط الفرز: اضغط على كل تمرة تالفة (مشقوقة، معفّنة، أو ذابلة) قبل أن تصل إلى العلبة.', 'Dates pass along the sorting line. Tap each bad date (split, moldy, or shriveled) before it reaches the box.'), item: 'date', box: tx('الكريدا', 'Al Kareeda'), boxColor: '#7a5a2a',
+      defects: { crack: tx('مشقوقة', 'Split'), mold: tx('معفّنة', 'Moldy'), dry: tx('ذابلة', 'Shriveled') }, bg: ['#f6ead6', '#e2c9a2'] },
+    creative: { game: 'order', title: tx('رحلة التمرة', 'Journey of a Date'), brief: tx('رتّب مراحل تجهيز التمور بالترتيب الصحيح، من النخلة حتى العلبة.', 'Put the date processing steps in order, from the palm tree to the box.'),
+      steps: [['🌴', tx('حصاد التمور من النخيل', 'Harvesting dates from palms')], ['🚚', tx('الاستلام والفحص الأولي', 'Receiving and first inspection')], ['💦', tx('الغسيل والتعقيم', 'Washing and sterilizing')], ['🔍', tx('الفرز حسب الجودة والحجم', 'Sorting by quality and size')], ['☀️', tx('التجفيف والإنضاج', 'Drying and ripening')], ['📦', tx('التعبئة في العلب', 'Packing into boxes')]], bg: 'rgba(90,60,20,.6)' },
+    artist: { game: 'design', title: tx('صمّم علبة التمر', 'Design the Date Box'), brief: tx('صمّم علبة تمر تناسب طلب العميل، ثم اعرضها على لجنة التحكيم.', 'Design a date box that fits the client\'s request, then show it to the judges.'), product: 'dates', brand: tx('الكريدا', 'Al Kareeda'),
+      groups: [['shape', tx('الشكل', 'Shape'), [['box', tx('علبة مربعة', 'Square box')], ['tin', tx('علبة دائرية', 'Round tin')], ['tray', tx('صينية مفتوحة', 'Open tray')]]], ['color', tx('اللون', 'Color'), [['gold', tx('🟡 ذهبي', '🟡 Gold')], ['green', tx('🟢 أخضر', '🟢 Green')], ['brown', tx('🟤 بني', '🟤 Brown')], ['white', tx('⚪ أبيض', '⚪ White')]]], ['flavor', tx('الحشوة', 'Filling'), [['plain', tx('تمر سكري', 'Plain dates')], ['almond', tx('🌰 محشو باللوز', '🌰 Almond-stuffed')], ['choco', tx('🍫 بالشوكولاتة', '🍫 Chocolate')]]], ['size', tx('الحجم', 'Size'), [['small', tx('250 غ', '250 g')], ['big', tx('1 كغ', '1 kg')]]]],
       match: {},
       briefs: [
-        { text: 'هدية <b>فاخرة</b> لرمضان: علبة <b>ذهبية</b> <b>كبيرة</b> فيها تمر <b>محشو باللوز</b>.', ans: { color: 'gold', flavor: 'almond', size: 'big' } },
-        { text: 'وجبة خفيفة للأطفال: تمر <b>بالشوكولاتة</b> في علبة <b>صغيرة دائرية</b>.', ans: { shape: 'tin', flavor: 'choco', size: 'small' } },
-        { text: 'تمر <b>سكري</b> للعائلة كل يوم: <b>صينية مفتوحة كبيرة</b> بلون <b>بني</b> طبيعي.', ans: { shape: 'tray', color: 'brown', flavor: 'plain', size: 'big' } }
+        { text: tx('هدية <b>فاخرة</b> لرمضان: علبة <b>ذهبية</b> <b>كبيرة</b> فيها تمر <b>محشو باللوز</b>.', 'A <b>luxury</b> Ramadan gift: a <b>big gold</b> box of <b>almond-stuffed</b> dates.'), ans: { color: 'gold', flavor: 'almond', size: 'big' } },
+        { text: tx('وجبة خفيفة للأطفال: تمر <b>بالشوكولاتة</b> في علبة <b>صغيرة دائرية</b>.', 'A kids\' snack: <b>chocolate</b> dates in a <b>small round</b> tin.'), ans: { shape: 'tin', flavor: 'choco', size: 'small' } },
+        { text: tx('تمر <b>سكري</b> للعائلة كل يوم: <b>صينية مفتوحة كبيرة</b> بلون <b>بني</b> طبيعي.', '<b>Plain</b> dates for the family every day: a <b>big open tray</b> in natural <b>brown</b>.'), ans: { shape: 'tray', color: 'brown', flavor: 'plain', size: 'big' } }
       ] },
-    ambassador: { game: 'ad', title: 'إعلان رمضان', brief: 'اصنع إعلان رمضان لتمور الكريدا: اختر المكان والعبارة التي تناسب طلب العميل.', product: 'dates',
-      ask: 'حملة <b>رمضان</b> لعلب تمور الكريدا: <b>سفرة الإفطار</b> واجتماع العائلة.',
-      scenes: [['ramadan', 'سفرة إفطار تحت الفوانيس', 1], ['beach', 'شاطئ وقت الظهيرة', 0], ['office', 'مكتب رسمي', 0]],
-      lines: [['تمر الكريدا… بركة سفرتك في رمضان', 1], ['أسرع إنترنت في المملكة', 0], ['انتعش بعد التمرين', 0]] }
+    ambassador: { game: 'ad', title: tx('إعلان رمضان', 'Ramadan Ad'), brief: tx('اصنع إعلان رمضان لتمور الكريدا: اختر المكان والعبارة التي تناسب طلب العميل.', 'Make a Ramadan ad for Al Kareeda dates: choose the setting and slogan that fit the client\'s request.'), product: 'dates',
+      ask: tx('حملة <b>رمضان</b> لعلب تمور الكريدا: <b>سفرة الإفطار</b> واجتماع العائلة.', 'A <b>Ramadan</b> campaign for Al Kareeda date boxes: the <b>iftar table</b> and family gatherings.'),
+      scenes: [['ramadan', tx('سفرة إفطار تحت الفوانيس', 'Iftar table under the lanterns'), 1], ['beach', tx('شاطئ وقت الظهيرة', 'Beach at midday'), 0], ['office', tx('مكتب رسمي', 'Formal office'), 0]],
+      lines: [[tx('تمر الكريدا… بركة سفرتك في رمضان', 'Al Kareeda dates… a blessing for your Ramadan table'), 1], [tx('أسرع إنترنت في المملكة', 'The fastest internet in the Kingdom'), 0], [tx('انتعش بعد التمرين', 'Refresh after exercise'), 0]] }
   },
   naqi: {
-    discoverer: { game: 'pressure', title: 'اختبار السدادة', brief: 'اختبر قوة سدادة العبوة: أبقِ الضغط داخلها في المنطقة الخضراء حتى يكتمل الاختبار.', unit: 'bar', scale: v => (v / 20).toFixed(1), hint: ['خفّف الضغط', 'زد الضغط', 'السدادة محكمة ✓'], hold: '⬆️ اضغط مطوّلاً للضغط', thing: 'bottle', bg: ['#e8f6fd', '#bfe3f5'] },
-    creative: { game: 'fill', title: 'تعبئة دقيقة', brief: 'اضغط مطوّلاً لتعبئة كل عبوة، وارفع إصبعك عندما يصل الماء إلى الخط تماماً.',
-      liquid: ['#6ec6f2', '#2a8fd0'], label: 'نقي', cap: '#1aa0c8', bg: ['#e8f6fd', '#bfe3f5'], word: 'الماء', icon: '💧' },
-    artist: { game: 'crane', title: 'هرم العبوات', brief: 'ابنِ مجسّماً فنياً من صناديق العبوات المتبقية: أفلت كل صندوق فوق الذي تحته بدقة.', block: 'pack', bg: ['#cfeefc', '#7cc8ea'] },
-    ambassador: { game: 'quiz', title: 'تحدي الماء', brief: 'أجب بسرعة عن أسئلة الماء وصناعته لتكون سفيراً لنقي.',
-      q: [['لماذا تُعقّم عبوات الماء قبل تعبئتها؟', ['لتبقى المياه نظيفة وآمنة', 'لتصبح أثقل', 'لتغيير لونها', 'لا داعي لذلك']],
-        ['ما وظيفة الفلاتر في مصنع المياه؟', ['إزالة الشوائب', 'إضافة اللون', 'تسخين الماء', 'زيادة الملح']],
-        ['أين تُحفظ عبوات الماء الأفضل؟', ['مكان بارد بعيد عن الشمس', 'تحت الشمس', 'قرب الفرن', 'في السيارة صيفاً']],
-        ['ما المادة التي تُصنع منها أغلب عبوات الماء؟', ['البلاستيك', 'الحديد', 'الورق', 'الزجاج الملوّن']],
-        ['ماذا نفعل بالعبوة الفارغة؟', ['نضعها في حاوية إعادة التدوير', 'نرميها في الشارع', 'نحرقها', 'ندفنها']],
-        ['كم تقريباً يحتاج الإنسان من الماء يومياً؟', ['لترين تقريباً', 'كوباً واحداً', 'عشرين لتراً', 'لا يحتاج']],
-        ['لماذا يُكتب تاريخ الإنتاج على العبوة؟', ['ليعرف المستهلك عمر المنتج', 'للزينة', 'ليصبح أغلى', 'لا سبب']],
-        ['أي مسار يصنع محتوى تسويقياً عن المصنع ومنتجاته؟', ['السفير', 'المبدع', 'المكتشف', 'الفنان']]] }
+    discoverer: { game: 'pressure', title: tx('اختبار السدادة', 'Cap Test'), brief: tx('اختبر قوة سدادة العبوة: أبقِ الضغط داخلها في المنطقة الخضراء حتى يكتمل الاختبار.', 'Test the strength of the bottle cap. Keep the pressure inside in the green zone until the test is done.'), unit: 'bar', scale: v => (v / 20).toFixed(1), hint: [tx('خفّف الضغط', 'Reduce pressure'), tx('زد الضغط', 'Increase pressure'), tx('السدادة محكمة ✓', 'Cap is sealed ✓')], hold: tx('⬆️ اضغط مطوّلاً للضغط', '⬆️ Press and hold to pressurize'), thing: 'bottle', bg: ['#e8f6fd', '#bfe3f5'] },
+    creative: { game: 'fill', title: tx('تعبئة دقيقة', 'Precise Filling'), brief: tx('اضغط مطوّلاً لتعبئة كل عبوة، وارفع إصبعك عندما يصل الماء إلى الخط تماماً.', 'Press and hold to fill each bottle. Lift your finger when the water reaches the line exactly.'),
+      liquid: ['#6ec6f2', '#2a8fd0'], label: tx('نقي', 'Naqi'), cap: '#1aa0c8', bg: ['#e8f6fd', '#bfe3f5'], word: tx('الماء', 'Water'), icon: '💧' },
+    artist: { game: 'crane', title: tx('هرم العبوات', 'Bottle Pyramid'), brief: tx('ابنِ مجسّماً فنياً من صناديق العبوات المتبقية: أفلت كل صندوق فوق الذي تحته بدقة.', 'Build an art model from leftover bottle crates: drop each crate precisely on top of the one below it.'), block: 'pack', bg: ['#cfeefc', '#7cc8ea'] },
+    ambassador: { game: 'quiz', title: tx('تحدي الماء', 'Water Challenge'), brief: tx('أجب بسرعة عن أسئلة الماء وصناعته لتكون سفيراً لنقي.', 'Answer water and bottling questions fast to become a Naqi ambassador.'),
+      q: [[tx('لماذا تُعقّم عبوات الماء قبل تعبئتها؟', 'Why are water bottles sterilized before filling?'), [tx('لتبقى المياه نظيفة وآمنة', 'To keep the water clean and safe'), tx('لتصبح أثقل', 'To make them heavier'), tx('لتغيير لونها', 'To change their color'), tx('لا داعي لذلك', 'No need for that')]],
+        [tx('ما وظيفة الفلاتر في مصنع المياه؟', 'What are filters for in a water plant?'), [tx('إزالة الشوائب', 'Removing impurities'), tx('إضافة اللون', 'Adding color'), tx('تسخين الماء', 'Heating the water'), tx('زيادة الملح', 'Adding salt')]],
+        [tx('أين تُحفظ عبوات الماء الأفضل؟', 'Where is the best place to store water bottles?'), [tx('مكان بارد بعيد عن الشمس', 'A cool place away from the sun'), tx('تحت الشمس', 'In the sun'), tx('قرب الفرن', 'Near the oven'), tx('في السيارة صيفاً', 'In a car in summer')]],
+        [tx('ما المادة التي تُصنع منها أغلب عبوات الماء؟', 'What material are most water bottles made of?'), [tx('البلاستيك', 'Plastic'), tx('الحديد', 'Iron'), tx('الورق', 'Paper'), tx('الزجاج الملوّن', 'Colored glass')]],
+        [tx('ماذا نفعل بالعبوة الفارغة؟', 'What should we do with an empty bottle?'), [tx('نضعها في حاوية إعادة التدوير', 'Put it in a recycling bin'), tx('نرميها في الشارع', 'Throw it in the street'), tx('نحرقها', 'Burn it'), tx('ندفنها', 'Bury it')]],
+        [tx('كم تقريباً يحتاج الإنسان من الماء يومياً؟', 'About how much water does a person need each day?'), [tx('لترين تقريباً', 'About 2 liters'), tx('كوباً واحداً', 'One cup'), tx('عشرين لتراً', 'About 20 liters'), tx('لا يحتاج', 'None needed')]],
+        [tx('لماذا يُكتب تاريخ الإنتاج على العبوة؟', 'Why is the production date written on the bottle?'), [tx('ليعرف المستهلك عمر المنتج', 'So customers know how fresh the product is'), tx('للزينة', 'For decoration'), tx('ليصبح أغلى', 'To make it more expensive'), tx('لا سبب', 'No reason')]],
+        [tx('أي مسار يصنع محتوى تسويقياً عن المصنع ومنتجاته؟', 'Which track makes marketing content about the factory and its products?'), [tx('السفير', 'Ambassador'), tx('المبدع', 'Creative'), tx('المكتشف', 'Discoverer'), tx('الفنان', 'Artist')]]] }
   },
   tozeen: {
-    discoverer: { game: 'hazard', title: 'مخاطر المخبز', brief: 'تجوّل في خط الحلويات وابحث عن 3 أشياء تهدد سلامة العاملين، وبلّغ عنها.', hazards: ['cable', 'stack', 'extinguisher'] },
-    creative: { game: 'circuit', title: 'شغّل المخبز', brief: 'دوّر القطع لتوصل الكهرباء إلى العجّانة والفرن وآلة التغليف.', targets: ['🥣', '🔥', '🎁'], src: '⚡', bg: ['#3a2416', '#6b4428'] },
-    artist: { game: 'pattern', title: 'علبة الهدايا', brief: 'احفظ تصميم علبة الحلويات، ثم رتّبها بنفس الشكل من الذاكرة.', box: 'linear-gradient(160deg,#fbf3e4,#efe0c4)',
-      items: [['radial-gradient(circle at 35% 30%,#a8703e,#5a3216)', 'شوكولاتة'], ['radial-gradient(circle at 35% 30%,#f7e2a1,#c79a3a)', 'معمول'], ['radial-gradient(circle at 35% 30%,#c98a4e,#7a4416)', 'تمر محشو'], ['radial-gradient(circle at 35% 30%,#ffb3cf,#c33a6c)', 'كعكة']] },
-    ambassador: { game: 'story', title: 'قصة المعمول', brief: 'رتّب مشاهد رحلة المعمول من المكوّنات حتى ضيافة العيد، ثم اختر عنواناً لقصتك المصوّرة.',
-      panels: [['🌾', 'الطحين والسمن وعجينة التمر'], ['🥣', 'العجن في العجّانة الكبيرة'], ['🫓', 'التشكيل بالقوالب المنقوشة'], ['🔥', 'الخَبز في الفرن'], ['🎁', 'التغليف في علب الهدايا'], ['☕', 'ضيافة العيد مع القهوة']],
-      captions: [['من العجّانة إلى ضيافة العيد', 1], ['كيف نصنع الحديد', 0], ['المعمول لا يحتاج فرناً', 0]], tint: ['#fbf3e4', '#8a6a3a'] }
+    discoverer: { game: 'hazard', title: tx('مخاطر المخبز', 'Bakery Hazards'), brief: tx('تجوّل في خط الحلويات وابحث عن 3 أشياء تهدد سلامة العاملين، وبلّغ عنها.', 'Walk the sweets line and report 3 things that threaten workers\' safety.'), hazards: ['cable', 'stack', 'extinguisher'] },
+    creative: { game: 'circuit', title: tx('شغّل المخبز', 'Run the Bakery'), brief: tx('دوّر القطع لتوصل الكهرباء إلى العجّانة والفرن وآلة التغليف.', 'Rotate the pieces to send power to the mixer, the oven, and the packing machine.'), targets: ['🥣', '🔥', '🎁'], src: '⚡', bg: ['#3a2416', '#6b4428'] },
+    artist: { game: 'pattern', title: tx('علبة الهدايا', 'Gift Box'), brief: tx('احفظ تصميم علبة الحلويات، ثم رتّبها بنفس الشكل من الذاكرة.', 'Memorize the sweets box design, then rebuild it from memory.'), box: 'linear-gradient(160deg,#fbf3e4,#efe0c4)',
+      items: [['radial-gradient(circle at 35% 30%,#a8703e,#5a3216)', tx('شوكولاتة', 'Chocolate')], ['radial-gradient(circle at 35% 30%,#f7e2a1,#c79a3a)', tx('معمول', 'Maamoul')], ['radial-gradient(circle at 35% 30%,#c98a4e,#7a4416)', tx('تمر محشو', 'Stuffed dates')], ['radial-gradient(circle at 35% 30%,#ffb3cf,#c33a6c)', tx('كعكة', 'Cake')]] },
+    ambassador: { game: 'story', title: tx('قصة المعمول', 'Maamoul Story'), brief: tx('رتّب مشاهد رحلة المعمول من المكوّنات حتى ضيافة العيد، ثم اختر عنواناً لقصتك المصوّرة.', 'Put the maamoul journey in order, from ingredients to Eid hospitality, then pick a title for your comic.'),
+      panels: [['🌾', tx('الطحين والسمن وعجينة التمر', 'Flour, ghee, and date paste')], ['🥣', tx('العجن في العجّانة الكبيرة', 'Kneading in the big mixer')], ['🫓', tx('التشكيل بالقوالب المنقوشة', 'Shaping with carved molds')], ['🔥', tx('الخَبز في الفرن', 'Baking in the oven')], ['🎁', tx('التغليف في علب الهدايا', 'Packing in gift boxes')], ['☕', tx('ضيافة العيد مع القهوة', 'Eid hospitality with coffee')]],
+      captions: [[tx('من العجّانة إلى ضيافة العيد', 'From the mixer to Eid hospitality'), 1], [tx('كيف نصنع الحديد', 'How do we make steel?'), 0], [tx('المعمول لا يحتاج فرناً', 'Maamoul needs no oven'), 0]], tint: ['#fbf3e4', '#8a6a3a'] }
   },
   /* ---------------- Eastern Province ---------------- */
   petro: {
-    discoverer: { game: 'hazard', title: 'مخاطر المجمّع', brief: 'تجوّل في وحدة الإنتاج وابحث عن 3 أشياء تهدد سلامة العاملين، وبلّغ عنها.', hazards: ['leak', 'panel', 'extinguisher'] },
-    creative: { game: 'circuit', title: 'شغّل الوحدات', brief: 'دوّر القطع لتوصل الكهرباء إلى المضخة والمفاعل وغرفة التحكم.', targets: ['🛢️', '⚗️', '🖥️'], src: '⚡', bg: ['#1d2430', '#3a4656'] },
-    artist: { game: 'pattern', title: 'ألوان الأنابيب', brief: 'لكل أنبوب لون يدل على ما يجري فيه. احفظ ترتيب الألوان على اللوحة ثم أعده من الذاكرة.', box: 'linear-gradient(160deg,#e9edf2,#ccd3dc)',
-      items: [['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#f2c230 30%)', 'غاز'], ['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#2fb36d 30%)', 'ماء'], ['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#e0464f 30%)', 'ماء الإطفاء'], ['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#3f8fe0 30%)', 'هواء']] },
-    ambassador: { game: 'story', title: 'من النفط إلى منتجاتك', brief: 'رتّب مشاهد رحلة النفط حتى يصير منتجات تستخدمها كل يوم، ثم اختر عنواناً لقصتك المصوّرة.',
-      panels: [['🛢️', 'النفط والغاز من باطن الأرض'], ['🏭', 'التكرير والتكسير في المصفاة'], ['⚗️', 'صناعة الحبيبات البلاستيكية'], ['🧴', 'تشكيل العبوات والأدوات'], ['🚚', 'التوزيع على المصانع والمتاجر'], ['♻️', 'إعادة التدوير بعد الاستخدام']],
-      captions: [['رحلة قطرة النفط إلى بيتك', 1], ['النفط يُشرب', 0], ['قصة التمر', 0]], tint: ['#fff4e0', '#e08a1e'] }
+    discoverer: { game: 'hazard', title: tx('مخاطر المجمّع', 'Complex Hazards'), brief: tx('تجوّل في وحدة الإنتاج وابحث عن 3 أشياء تهدد سلامة العاملين، وبلّغ عنها.', 'Walk through the production unit and report 3 things that threaten workers\' safety.'), hazards: ['leak', 'panel', 'extinguisher'] },
+    creative: { game: 'circuit', title: tx('شغّل الوحدات', 'Run the Units'), brief: tx('دوّر القطع لتوصل الكهرباء إلى المضخة والمفاعل وغرفة التحكم.', 'Rotate the pieces to send power to the pump, the reactor, and the control room.'), targets: ['🛢️', '⚗️', '🖥️'], src: '⚡', bg: ['#1d2430', '#3a4656'] },
+    artist: { game: 'pattern', title: tx('ألوان الأنابيب', 'Pipe Colors'), brief: tx('لكل أنبوب لون يدل على ما يجري فيه. احفظ ترتيب الألوان على اللوحة ثم أعده من الذاكرة.', 'Each pipe has a color that shows what flows through it. Memorize the color order on the board, then rebuild it from memory.'), box: 'linear-gradient(160deg,#e9edf2,#ccd3dc)',
+      items: [['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#f2c230 30%)', tx('غاز', 'Gas')], ['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#2fb36d 30%)', tx('ماء', 'Water')], ['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#e0464f 30%)', tx('ماء الإطفاء', 'Firefighting water')], ['radial-gradient(circle at 50% 50%,#2b2f37 0 28%,#3f8fe0 30%)', tx('هواء', 'Air')]] },
+    ambassador: { game: 'story', title: tx('من النفط إلى منتجاتك', 'From Oil to Your Products'), brief: tx('رتّب مشاهد رحلة النفط حتى يصير منتجات تستخدمها كل يوم، ثم اختر عنواناً لقصتك المصوّرة.', 'Put the oil journey in order until it becomes products you use every day, then pick a title for your comic.'),
+      panels: [['🛢️', tx('النفط والغاز من باطن الأرض', 'Oil and gas from underground')], ['🏭', tx('التكرير والتكسير في المصفاة', 'Refining and cracking at the refinery')], ['⚗️', tx('صناعة الحبيبات البلاستيكية', 'Making plastic pellets')], ['🧴', tx('تشكيل العبوات والأدوات', 'Molding containers and tools')], ['🚚', tx('التوزيع على المصانع والمتاجر', 'Delivery to factories and stores')], ['♻️', tx('إعادة التدوير بعد الاستخدام', 'Recycling after use')]],
+      captions: [[tx('رحلة قطرة النفط إلى بيتك', 'The journey of an oil drop to your home'), 1], [tx('النفط يُشرب', 'Oil is drunk'), 0], [tx('قصة التمر', 'The Dates Story'), 0]], tint: ['#fff4e0', '#e08a1e'] }
   },
   desal: {
-    discoverer: { game: 'pressure', title: 'ضغط الأغشية', brief: 'التناضح العكسي يحتاج ضغطاً دقيقاً: أبقِ الضغط على الأغشية في المنطقة الخضراء حتى يكتمل الاختبار.', unit: 'bar', scale: v => Math.round(v * .8), hint: ['خفّف الضغط', 'زد الضغط', 'ضغط مثالي ✓'], hold: '⬆️ اضغط مطوّلاً للضغط', thing: 'membrane', bg: ['#e4f3fb', '#b5daf0'] },
-    creative: { game: 'order', title: 'مراحل التحلية', brief: 'رتّب مراحل تحويل مياه البحر إلى مياه شرب بالترتيب الصحيح.',
-      steps: [['🌊', 'سحب مياه البحر'], ['🧽', 'الترشيح الأولي وإزالة الشوائب'], ['🔬', 'التناضح العكسي: فصل الأملاح'], ['🧪', 'إضافة المعادن المفيدة'], ['✅', 'فحص جودة المياه'], ['🏙️', 'ضخ المياه إلى المدن']], bg: 'rgba(18,30,80,.55)' },
-    artist: { game: 'crane', title: 'برج الأغشية', brief: 'ابنِ مجسّماً فنياً من أنابيب الأغشية القديمة: أفلت كل أنبوب فوق الذي تحته بدقة.', block: 'tube', bg: ['#cfe6f4', '#6aa9d0'] },
-    ambassador: { game: 'ad', title: 'حملة ترشيد الماء', brief: 'اصنع إعلان توعية بقيمة الماء المحلّى: اختر المكان والعبارة المناسبة.', product: 'water',
-      ask: 'حملة <b>توعية</b>: كل قطرة ماء في بيتك قطعت رحلة طويلة من <b>البحر</b> عبر محطة التحلية.',
-      scenes: [['sea', 'البحر ومحطة التحلية', 1], ['snow', 'جبال مثلجة', 0], ['night', 'صحراء في الليل', 0]],
-      lines: [['كل قطرة قطعت رحلة طويلة… حافظ عليها', 1], ['استخدم الماء بلا حساب', 0], ['أقوى حديد في المدينة', 0]] }
+    discoverer: { game: 'pressure', title: tx('ضغط الأغشية', 'Membrane Pressure'), brief: tx('التناضح العكسي يحتاج ضغطاً دقيقاً: أبقِ الضغط على الأغشية في المنطقة الخضراء حتى يكتمل الاختبار.', 'Reverse osmosis needs precise pressure. Keep the pressure on the membranes in the green zone until the test is done.'), unit: 'bar', scale: v => Math.round(v * .8), hint: [tx('خفّف الضغط', 'Reduce pressure'), tx('زد الضغط', 'Increase pressure'), tx('ضغط مثالي ✓', 'Perfect pressure ✓')], hold: tx('⬆️ اضغط مطوّلاً للضغط', '⬆️ Press and hold to pressurize'), thing: 'membrane', bg: ['#e4f3fb', '#b5daf0'] },
+    creative: { game: 'order', title: tx('مراحل التحلية', 'Desalination Steps'), brief: tx('رتّب مراحل تحويل مياه البحر إلى مياه شرب بالترتيب الصحيح.', 'Put the steps for turning seawater into drinking water in order.'),
+      steps: [['🌊', tx('سحب مياه البحر', 'Drawing in seawater')], ['🧽', tx('الترشيح الأولي وإزالة الشوائب', 'Initial filtering and removing impurities')], ['🔬', tx('التناضح العكسي: فصل الأملاح', 'Reverse osmosis: separating salts')], ['🧪', tx('إضافة المعادن المفيدة', 'Adding helpful minerals')], ['✅', tx('فحص جودة المياه', 'Water quality check')], ['🏙️', tx('ضخ المياه إلى المدن', 'Pumping water to cities')]], bg: 'rgba(18,30,80,.55)' },
+    artist: { game: 'crane', title: tx('برج الأغشية', 'Membrane Tower'), brief: tx('ابنِ مجسّماً فنياً من أنابيب الأغشية القديمة: أفلت كل أنبوب فوق الذي تحته بدقة.', 'Build an art model from old membrane tubes: drop each tube precisely on top of the one below it.'), block: 'tube', bg: ['#cfe6f4', '#6aa9d0'] },
+    ambassador: { game: 'ad', title: tx('حملة ترشيد الماء', 'Water Saving Campaign'), brief: tx('اصنع إعلان توعية بقيمة الماء المحلّى: اختر المكان والعبارة المناسبة.', 'Make an awareness ad about the value of desalinated water: choose the setting and a fitting slogan.'), product: 'water',
+      ask: tx('حملة <b>توعية</b>: كل قطرة ماء في بيتك قطعت رحلة طويلة من <b>البحر</b> عبر محطة التحلية.', 'An <b>awareness</b> campaign: every drop of water in your home traveled far from the <b>sea</b> through a desalination plant.'),
+      scenes: [['sea', tx('البحر ومحطة التحلية', 'The sea and the desalination plant'), 1], ['snow', tx('جبال مثلجة', 'Snowy mountains'), 0], ['night', tx('صحراء في الليل', 'Desert at night'), 0]],
+      lines: [[tx('كل قطرة قطعت رحلة طويلة… حافظ عليها', 'Every drop traveled far… save it'), 1], [tx('استخدم الماء بلا حساب', 'Use water without limits'), 0], [tx('أقوى حديد في المدينة', 'The strongest steel in town'), 0]] }
   },
   port: {
-    discoverer: { game: 'sort', title: 'فحص الحاويات', brief: 'الحاويات تمر أمامك إلى السفينة: اضغط على كل حاوية فيها مشكلة (منبعجة، صدئة، أو بابها مفتوح) قبل أن تُحمّل.', item: 'container', box: 'السفينة', boxColor: '#24496e',
-      defects: { dent: 'منبعجة', rust: 'صدئة', open: 'بابها مفتوح' }, bg: ['#e4eef7', '#b9cfe2'] },
-    creative: { game: 'fill', title: 'حمولة السفينة', brief: 'اضغط مطوّلاً لتحميل الحاويات على السفينة، وتوقّف عندما يصل الماء إلى خط الحمولة الأحمر على بدنها.',
-      ship: true, label: 'الميناء', bg: ['#dceefa', '#9fcbe8'], word: 'الحمولة', icon: '🚢' },
-    artist: { game: 'design', title: 'لوّن الحاوية', brief: 'صمّم شكل حاويات شركة شحن جديدة حسب طلب العميل، ثم اعرضها على لجنة التحكيم.', product: 'container', brand: 'الميناء',
-      groups: [['shape', 'الحجم', [['20', '20 قدماً'], ['40', '40 قدماً']]], ['color', 'اللون', [['green', '🟢 أخضر'], ['blue', '🔵 أزرق'], ['orange', '🟠 برتقالي'], ['red', '🔴 أحمر']]], ['flavor', 'الرسمة', [['plain', 'سادة'], ['stripe', 'خط عريض'], ['wave', 'موجة'], ['palm', '🌴 نخلة']]], ['size', 'الشعار', [['small', 'صغير'], ['big', 'كبير']]]],
+    discoverer: { game: 'sort', title: tx('فحص الحاويات', 'Container Check'), brief: tx('الحاويات تمر أمامك إلى السفينة: اضغط على كل حاوية فيها مشكلة (منبعجة، صدئة، أو بابها مفتوح) قبل أن تُحمّل.', 'Containers pass by on the way to the ship. Tap each container with a problem (dented, rusty, or door open) before it is loaded.'), item: 'container', box: tx('السفينة', 'Ship'), boxColor: '#24496e',
+      defects: { dent: tx('منبعجة', 'Dented'), rust: tx('صدئة', 'Rusty'), open: tx('بابها مفتوح', 'Door open') }, bg: ['#e4eef7', '#b9cfe2'] },
+    creative: { game: 'fill', title: tx('حمولة السفينة', 'Ship Cargo'), brief: tx('اضغط مطوّلاً لتحميل الحاويات على السفينة، وتوقّف عندما يصل الماء إلى خط الحمولة الأحمر على بدنها.', 'Press and hold to load containers onto the ship. Stop when the water reaches the red load line on its hull.'),
+      ship: true, label: tx('الميناء', 'Port'), bg: ['#dceefa', '#9fcbe8'], word: tx('الحمولة', 'Cargo'), icon: '🚢' },
+    artist: { game: 'design', title: tx('لوّن الحاوية', 'Color the Container'), brief: tx('صمّم شكل حاويات شركة شحن جديدة حسب طلب العميل، ثم اعرضها على لجنة التحكيم.', 'Design the look of a new shipping company\'s containers to fit the client\'s request, then show them to the judges.'), product: 'container', brand: tx('الميناء', 'Port'),
+      groups: [['shape', tx('الحجم', 'Size'), [['20', tx('20 قدماً', '20 ft')], ['40', tx('40 قدماً', '40 ft')]]], ['color', tx('اللون', 'Color'), [['green', tx('🟢 أخضر', '🟢 Green')], ['blue', tx('🔵 أزرق', '🔵 Blue')], ['orange', tx('🟠 برتقالي', '🟠 Orange')], ['red', tx('🔴 أحمر', '🔴 Red')]]], ['flavor', tx('الرسمة', 'Pattern'), [['plain', tx('سادة', 'Plain')], ['stripe', tx('خط عريض', 'Wide stripe')], ['wave', tx('موجة', 'Wave')], ['palm', tx('🌴 نخلة', '🌴 Palm')]]], ['size', tx('الشعار', 'Logo'), [['small', tx('صغير', 'Small')], ['big', tx('كبير', 'Big')]]]],
       match: {},
       briefs: [
-        { text: 'شركة شحن <b>خضراء</b> صديقة للبيئة تريد <b>شعاراً كبيراً</b> ورسمة <b>نخلة</b> على حاويات <b>40 قدماً</b>.', ans: { shape: '40', color: 'green', flavor: 'palm', size: 'big' } },
-        { text: 'شركة بحرية تريد حاويات <b>زرقاء</b> برسمة <b>موجة</b> وحجم <b>20 قدماً</b>.', ans: { shape: '20', color: 'blue', flavor: 'wave' } },
-        { text: 'حاويات <b>برتقالية</b> <b>سادة</b> بحجم <b>40 قدماً</b> وشعار <b>صغير</b> أنيق.', ans: { shape: '40', color: 'orange', flavor: 'plain', size: 'small' } }
+        { text: tx('شركة شحن <b>خضراء</b> صديقة للبيئة تريد <b>شعاراً كبيراً</b> ورسمة <b>نخلة</b> على حاويات <b>40 قدماً</b>.', 'An eco-friendly <b>green</b> shipping company wants a <b>big logo</b> and a <b>palm</b> pattern on <b>40 ft</b> containers.'), ans: { shape: '40', color: 'green', flavor: 'palm', size: 'big' } },
+        { text: tx('شركة بحرية تريد حاويات <b>زرقاء</b> برسمة <b>موجة</b> وحجم <b>20 قدماً</b>.', 'A sea shipping company wants <b>blue</b> containers with a <b>wave</b> pattern, <b>20 ft</b> in size.'), ans: { shape: '20', color: 'blue', flavor: 'wave' } },
+        { text: tx('حاويات <b>برتقالية</b> <b>سادة</b> بحجم <b>40 قدماً</b> وشعار <b>صغير</b> أنيق.', '<b>Orange</b>, <b>plain</b> containers, <b>40 ft</b> in size, with a neat <b>small</b> logo.'), ans: { shape: '40', color: 'orange', flavor: 'plain', size: 'small' } }
       ] },
-    ambassador: { game: 'quiz', title: 'تحدي السفير', brief: 'أجب عن أسئلة الصناعة والمبادرة بسرعة لتصبح سفيراً لصناعيو المستقبل.',
-      q: [['كم عدد مسارات هاكثون صناعيو المستقبل؟', ['4 مسارات', 'مساران', '6 مسارات', '10 مسارات']],
-        ['أي مسار يبحث عن حلول لتحديات المصنع؟', ['المكتشف', 'الفنان', 'السفير', 'المبدع']],
-        ['أي مسار يحوّل مخلفات المصانع إلى أعمال فنية؟', ['الفنان', 'المكتشف', 'السفير', 'المبدع']],
-        ['أي مسار يصنع محتوى تسويقياً عن المصنع ومنتجاته؟', ['السفير', 'المبدع', 'المكتشف', 'الفنان']],
-        ['ما وظيفة الرافعة الجسرية في الميناء؟', ['تحميل الحاويات وتنزيلها', 'تحلية المياه', 'توليد الكهرباء', 'إطفاء الحرائق']],
-        ['لماذا نرتدي الخوذة داخل المصنع؟', ['لحماية الرأس من الإصابات', 'لأنها جزء من الزي فقط', 'لتدفئة الرأس', 'للزينة']],
-        ['إلى كم تصل جوائز هاكثون صناعيو المستقبل؟', ['200,000 ريال', '5,000 ريال', '500 ريال', '20,000,000 ريال']],
-        ['أي من هذه منتجات صناعة البتروكيماويات؟', ['البلاستيك', 'التمر', 'الحليب', 'القمح']]] }
+    ambassador: { game: 'quiz', title: tx('تحدي السفير', 'Ambassador Challenge'), brief: tx('أجب عن أسئلة الصناعة والمبادرة بسرعة لتصبح سفيراً لصناعيو المستقبل.', 'Answer industry and initiative questions fast to become an ambassador for Future Industrialists.'),
+      q: [[tx('كم عدد مسارات هاكثون صناعيو المستقبل؟', 'How many tracks does the Future Industrialists Hackathon have?'), [tx('4 مسارات', '4 tracks'), tx('مساران', '2 tracks'), tx('6 مسارات', '6 tracks'), tx('10 مسارات', '10 tracks')]],
+        [tx('أي مسار يبحث عن حلول لتحديات المصنع؟', 'Which track looks for solutions to factory challenges?'), [tx('المكتشف', 'Discoverer'), tx('الفنان', 'Artist'), tx('السفير', 'Ambassador'), tx('المبدع', 'Creative')]],
+        [tx('أي مسار يحوّل مخلفات المصانع إلى أعمال فنية؟', 'Which track turns factory waste into art?'), [tx('الفنان', 'Artist'), tx('المكتشف', 'Discoverer'), tx('السفير', 'Ambassador'), tx('المبدع', 'Creative')]],
+        [tx('أي مسار يصنع محتوى تسويقياً عن المصنع ومنتجاته؟', 'Which track makes marketing content about the factory and its products?'), [tx('السفير', 'Ambassador'), tx('المبدع', 'Creative'), tx('المكتشف', 'Discoverer'), tx('الفنان', 'Artist')]],
+        [tx('ما وظيفة الرافعة الجسرية في الميناء؟', 'What does a gantry crane do at a port?'), [tx('تحميل الحاويات وتنزيلها', 'Loading and unloading containers'), tx('تحلية المياه', 'Desalinating water'), tx('توليد الكهرباء', 'Generating electricity'), tx('إطفاء الحرائق', 'Putting out fires')]],
+        [tx('لماذا نرتدي الخوذة داخل المصنع؟', 'Why do we wear a helmet inside the factory?'), [tx('لحماية الرأس من الإصابات', 'To protect the head from injuries'), tx('لأنها جزء من الزي فقط', 'Because it is only part of the uniform'), tx('لتدفئة الرأس', 'To keep the head warm'), tx('للزينة', 'For decoration')]],
+        [tx('إلى كم تصل جوائز هاكثون صناعيو المستقبل؟', 'Up to how much do the Future Industrialists Hackathon prizes go?'), [tx('200,000 ريال', '200,000 SAR'), tx('5,000 ريال', '5,000 SAR'), tx('500 ريال', '500 SAR'), tx('20,000,000 ريال', '20,000,000 SAR')]],
+        [tx('أي من هذه منتجات صناعة البتروكيماويات؟', 'Which of these is a petrochemical product?'), [tx('البلاستيك', 'Plastic'), tx('التمر', 'Dates'), tx('الحليب', 'Milk'), tx('القمح', 'Wheat')]]] }
   }
 };
 
