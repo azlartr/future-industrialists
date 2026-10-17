@@ -501,7 +501,43 @@ section,#trip{scroll-margin-top:136px}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
-.game-banner-sec{padding-block:clamp(20px,3vw,40px)}.game-banner{display:block;max-width:1200px;margin-inline:auto;border-radius:22px;overflow:hidden;box-shadow:0 22px 48px -22px rgba(27,34,99,.55);transition:transform .35s ease,box-shadow .35s ease}.game-banner img{display:block;width:100%;height:auto}.game-banner:hover{transform:translateY(-3px);box-shadow:0 28px 56px -22px rgba(27,34,99,.6)}.game-banner:focus-visible{outline:3px solid var(--lav);outline-offset:4px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+.gb-sec{margin:0}
+.gb{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:540px;padding:100px clamp(24px,7vw,120px) 64px;overflow:hidden;color:#fff;text-decoration:none;background:#1b2263 url(img/game-city.webp) 62% 45%/cover no-repeat}
+.gb::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(27,34,99,.95) 0%,rgba(27,34,99,.78) 42%,rgba(27,34,99,.12) 88%)}
+html[dir="rtl"] .gb::before{background:linear-gradient(270deg,rgba(27,34,99,.95) 0%,rgba(27,34,99,.78) 42%,rgba(27,34,99,.12) 88%)}
+.gb-logo{position:absolute;top:14px;right:24px;width:72px;z-index:3;opacity:.95}
+.gb-kid{position:absolute;bottom:0;z-index:2;height:min(470px,78%);pointer-events:none;animation:gbFloat 6s ease-in-out infinite}
+.gb-kid img{display:block;height:100%;width:auto}
+html[dir="rtl"] .gb-kid.a{left:4%}html[dir="rtl"] .gb-kid.b{left:21%;animation-delay:-3s}
+html[dir="ltr"] .gb-kid.a{right:4%}html[dir="ltr"] .gb-kid.b{right:21%;animation-delay:-3s}
+.gb-copy{position:relative;z-index:2;display:flex;flex-direction:column;gap:16px;max-width:600px}
+.gb-tag{align-self:flex-start;padding:6px 16px;border-radius:999px;background:rgba(255,210,63,.16);border:1px solid rgba(255,210,63,.55);color:#ffd23f;font-size:15px;font-weight:700}
+.gb-title{font-size:clamp(36px,4.8vw,62px);font-weight:800;line-height:1.15;text-shadow:0 8px 28px rgba(10,14,50,.35)}
+.gb-sub{font-size:clamp(17px,1.7vw,21px);line-height:1.7;color:#dfe7fb;max-width:540px}
+.gb-badges{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+.gb-badges span{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:72px}
+.gb-badges img{width:64px;height:64px;filter:drop-shadow(0 8px 16px rgba(10,14,50,.4))}
+.gb-badges b{font-size:14px;font-weight:600;color:#eef2ff}
+.gb-cta{align-self:flex-start;margin-top:10px;display:inline-flex;align-items:center;gap:12px;padding:16px 32px;border-radius:999px;background:linear-gradient(135deg,#ffe27a,#f2b51e);color:#1b2263;font-size:20px;font-weight:800;box-shadow:0 16px 34px -12px rgba(242,181,30,.75);transition:transform .25s ease,box-shadow .25s ease}
+.gb-cta svg{width:24px;height:24px;flex:none}
+html[dir="rtl"] .gb-cta svg{transform:scaleX(-1)}
+.gb:hover .gb-cta,.gb:focus-visible .gb-cta{transform:translateY(-3px);box-shadow:0 22px 40px -14px rgba(242,181,30,.85)}
+.gb:focus-visible{outline:3px solid #ffd23f;outline-offset:-6px}
+@keyframes gbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.gb-kid{animation:none}.gb-cta{transition:none}}
+@media (max-width:760px){
+  .gb{min-height:700px;justify-content:flex-start;padding:80px 22px 0}
+  .gb::before{background:linear-gradient(180deg,rgba(27,34,99,.9) 0%,rgba(27,34,99,.84) 55%,rgba(27,34,99,.97) 100%)}
+  .gb-logo{top:18px;right:18px;width:64px}
+  .gb-copy{gap:12px;max-width:none}
+  .gb-title{font-size:34px}
+  .gb-sub{font-size:16px}
+  .gb-badges{gap:10px}.gb-badges img{width:52px;height:52px}.gb-badges span{min-width:64px}.gb-badges b{font-size:12px}
+  .gb-cta{align-self:stretch;justify-content:center;font-size:18px;padding:15px 24px}
+  .gb-kid{height:220px;bottom:-4px}
+  html[dir="rtl"] .gb-kid.a{left:-6%}html[dir="rtl"] .gb-kid.b{left:30%}
+  html[dir="ltr"] .gb-kid.a{right:-6%}html[dir="ltr"] .gb-kid.b{right:30%}
+}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
 </head>
 <body>
 
@@ -608,7 +644,20 @@ section,#trip{scroll-margin-top:136px}
 </section>
 
 <!-- About -->
-<section class="sec game-banner-sec" aria-label="العب رحلة صناعيو المستقبل الآن"><a class="game-banner" href="https://azlartr.github.io/future-industrialists/game/" target="_blank" rel="noopener" lang="ar"><img src="img/game-banner-ar.webp" alt="العب رحلة صناعيو المستقبل الآن" width="1600" height="560" loading="lazy"><span class="sr-only">ابدأ الرحلة</span></a></section>
+<section class="gb-sec" aria-label="اللعبة التفاعلية: رحلة صناعيو المستقبل">
+<a class="gb" href="https://azlartr.github.io/future-industrialists/game/" target="_blank" rel="noopener" aria-label="العب رحلة صناعيو المستقبل الآن">
+  <img class="gb-logo" src="img/game-logo-white.webp" alt="">
+  <span class="gb-kid a" aria-hidden="true"><img src="img/game-boy.webp" alt=""></span>
+  <span class="gb-kid b" aria-hidden="true"><img src="img/game-girl.webp" alt=""></span>
+  <span class="gb-copy">
+    <span class="gb-tag">اللعبة التفاعلية</span>
+    <span class="gb-title">رحلة صناعيو المستقبل</span>
+    <span class="gb-sub">زُر المصانع، أنجز المهمات، واحصل على شهادتك</span>
+    <span class="gb-badges"><span><img src="img/game-badge-discoverer.webp" alt=""><b>المكتشف</b></span><span><img src="img/game-badge-creative.webp" alt=""><b>المبدع</b></span><span><img src="img/game-badge-artist.webp" alt=""><b>الفنان</b></span><span><img src="img/game-badge-ambassador.webp" alt=""><b>السفير</b></span></span>
+    <span class="gb-cta">ابدأ الرحلة<svg viewBox="0 0 24 24" fill="none" stroke="#1b2263" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+  </span>
+</a>
+</section>
 <section class="sec" id="about">
   <div class="wrap about-grid">
     <div class="about-copy reveal">
