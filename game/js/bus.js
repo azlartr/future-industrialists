@@ -85,7 +85,7 @@ function destSign() {
 }
 function plate() {
   const [c, x] = canvas(256, 128); x.fillStyle = '#fff'; x.fillRect(0, 0, 256, 128); x.strokeStyle = '#111'; x.lineWidth = 6; x.strokeRect(3, 3, 250, 122);
-  x.fillStyle = '#111'; x.font = '600 44px "Readex Pro"'; x.textAlign = 'center'; x.fillText('٢٠٢٦ ص م', 100, 56); x.fillText('2026 FIA', 100, 112); x.fillStyle = '#0a6b3a'; x.fillRect(200, 6, 50, 116);
+  x.fillStyle = '#111'; x.font = '600 44px "Readex Pro"'; x.textAlign = 'center'; x.fillText('2026 ص م', 100, 56); x.fillText('2026 FIA', 100, 112); x.fillStyle = '#0a6b3a'; x.fillRect(200, 6, 50, 116);
   return toTex(c);
 }
 function wheel(side, tyreM, rimM, darkM) {

@@ -339,9 +339,9 @@ async function adStudio(stage, F, A, M) {
   const panel = el('div', 'panel glass');
   panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px"><b style="font-size:18px">${tx('استوديو الإعلان', 'Ad studio')}</b><span style="font-size:13px;color:var(--muted)">${M.stat || F.name}</span></div>
     <div style="padding:10px 12px;border-radius:14px;background:#fff7e0;border:1px solid #f2d27a;font-size:14.5px;line-height:1.7;margin-bottom:12px">📋 <b>${tx('طلب العميل:', 'Client brief:')}</b> ${M.ask}</div>
-    <div style="font-weight:600;margin:4px 0 8px">${tx('١. اختر مكان التصوير', '1. Pick a location')}</div><div id="ad-scene" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
-    <div style="font-weight:600;margin:12px 0 8px">${tx('٢. اختر عبارة الإعلان', '2. Pick a slogan')}</div><div class="mg-row" id="ad-line"></div>
-    <div style="font-weight:600;margin:12px 0 8px">${tx('٣. اختر تصميم البوستر', '3. Pick a poster design')}</div><div id="ad-design" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
+    <div style="font-weight:600;margin:4px 0 8px">${tx('1. اختر مكان التصوير', '1. Pick a location')}</div><div id="ad-scene" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
+    <div style="font-weight:600;margin:12px 0 8px">${tx('2. اختر عبارة الإعلان', '2. Pick a slogan')}</div><div class="mg-row" id="ad-line"></div>
+    <div style="font-weight:600;margin:12px 0 8px">${tx('3. اختر تصميم البوستر', '3. Pick a poster design')}</div><div id="ad-design" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
     <div class="mg-row" style="margin-top:14px"><button class="btn" id="ad-shoot" type="button" disabled>${tx('📸 صوّر الإعلان', '📸 Shoot the ad')}</button></div>`;
   stage.append(panel);
   const scenes = shuffle(M.scenes.slice()), lines = shuffle(M.lines.slice());
