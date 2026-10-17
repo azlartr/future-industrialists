@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:20.892Z",
+        "updatedAt": "2026-10-17T23:10:22.078Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1244,7 +1244,7 @@
             "id": "region-partner-makkah:تمر",
             "name": "تمر",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
-            "scale": 100
+            "scale": 90
           },
           {
             "id": "region-partner-makkah:سدافكو",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:39.946Z",
+      "updatedAt": "2026-10-17T23:10:43.381Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
