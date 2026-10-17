@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:24.753Z",
+        "updatedAt": "2026-10-17T23:10:26.125Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1226,7 +1226,7 @@
             "id": "region-partner-makkah:يورك",
             "name": "يورك",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
-            "scale": 100
+            "scale": 85
           },
           {
             "id": "region-partner-makkah:مواد الاعمار",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:51.314Z",
+      "updatedAt": "2026-10-17T23:10:55.680Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
