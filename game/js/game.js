@@ -4,6 +4,7 @@ import { buildRegion } from './world.js';
 import { C, WALL, BAYS, NET, BOUNDS, routeBus, polyAt, groundY, onRoad } from './city.js';
 import { makeBus, makeBusGLB } from './bus.js';
 import { buildInterior } from './interior.js';
+import { missionFor } from './missions.js';
 import { runMiniGame } from './games.js';
 import { REGIONS, ORDER, TRACKS, ALL } from './regions.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -13,7 +14,7 @@ import { Ambient } from './fx.js';
 import { makeLife } from './life.js';
 import { makeSignals } from './signals.js';
 import { makeRobot } from './robot.js';
-import { addTour, GEAR_GEO, GEAR_MAT } from './tour.js';
+import { addTour, GEAR_GEO, GEAR_MAT, FSTYLE } from './tour.js';
 const CITY_GEARS = [[-110, -85.5, 1.2], [-90, 33, 1.2], [-175, 105, 1.2], [82, -17, 1.2], [175, -40, 1.2], [65, 60, 1.75]];
 import { TOUR, PPE, PPE_ICON } from './content.js';
 import { buildFinale, certificate } from './finale.js';
@@ -81,7 +82,7 @@ const Audio_ = {
   },
   ui() { const d = this.decks[this.cur]; document.body.classList.toggle('playing', !!d && !d.a.paused && this.running && this.musicVol > 0); $('#snd-wave').style.display = this.musicVol > 0 || this.sfxVol > 0 ? '' : 'none'; }
 };
-const A = { sfx: (n, v) => Audio_.sfx(n, v), get char() { return S.char; }, get name() { return nameOf(S.char); } };
+const A = { sfx: (n, v) => Audio_.sfx(n, v), get char() { return S.char; }, get name() { return fullName(); } };
 /* the coach's diesel engine, synthesized live: it loops without a seam and its pitch follows the bus */
 const Engine = {
   on: false,
@@ -132,15 +133,23 @@ $('#mute-all').addEventListener('click', () => { const on = Audio_.musicVol > 0 
 
 /* ---------------- state ---------------- */
 const saved = store.get('save', {});
-const S = { robot: store.get('robot', true), char: saved.char || 'boy', done: saved.done || {}, xp: saved.xp || 0, gears: saved.gears || {}, facts: saved.facts || {}, quiz: saved.quiz || {}, region: null, loc: 0, mode: 'menu', cine: false };
-const nameOf = c => c === 'boy' ? 'فهد' : 'سارة';
-const persist = () => store.set('save', { char: S.char, done: S.done, xp: S.xp, gears: S.gears, facts: S.facts, quiz: S.quiz });
+const S = { robot: store.get('robot', true), char: saved.char || 'boy', name: saved.name || '', track: saved.track || null, done: saved.done || {}, xp: saved.xp || 0, gears: saved.gears || {}, facts: saved.facts || {}, quiz: saved.quiz || {}, region: null, loc: 0, mode: 'menu', cine: false };
+// the student's own name: the first word in speech and on the HUD, the full name on the pass and the certificate
+const fullName = () => S.name.trim() || (S.char === 'boy' ? 'فهد' : 'سارة');
+const nameOf = () => fullName().split(/\s+/)[0];
+const persist = () => store.set('save', { char: S.char, name: S.name, track: S.track, done: S.done, xp: S.xp, gears: S.gears, facts: S.facts, quiz: S.quiz });
+/* progress is kept per track ("creative:rabie" → stars), so the same factory can be visited again on another track */
+const trackOf = () => S.track || 'discoverer';
+const MS = F => missionFor(F, trackOf());
+const dk = (fid, t = trackOf()) => `${t}:${fid}`;
+const best = (fid, t) => S.done[dk(fid, t)] || 0;
+for (const k of Object.keys(S.done)) if (!k.includes(':')) { const f = ALL.find(x => x.id === k); if (f) S.done[`${f.track}:${k}`] = Math.max(S.done[`${f.track}:${k}`] || 0, S.done[k]); delete S.done[k]; }
 const points = () => Object.values(S.done).reduce((a, s) => a + s * 100, 0) + S.xp;
-const doneCount = () => Object.values(S.done).filter(s => s > 0).length;
-const badgeSet = () => new Set(ALL.filter(f => S.done[f.id] > 0).map(f => f.track));
-const regionDone = r => REGIONS[r].factories.filter(f => S.done[f.id] > 0).length;
+const doneCount = t => ALL.filter(f => best(f.id, t) > 0).length;
+const badgeSet = () => new Set(Object.keys(TRACKS).filter(t => ALL.some(f => best(f.id, t) > 0)));
+const regionDone = r => REGIONS[r].factories.filter(f => best(f.id) > 0).length;
 
-function show(id) { $$('.screen').forEach(s => { if (s.id !== 'mg') s.classList.toggle('on', s.id === id); }); $('#home').hidden = !['hud', 'mhud', 'ride', 'drive'].includes(id); }
+function show(id) { $$('.screen').forEach(s => { if (s.id !== 'mg') s.classList.toggle('on', s.id === id); }); $('#home').hidden = !['hud', 'mhud', 'ride', 'drive'].includes(id); $('#cam').hidden = !['hud', 'drive'].includes(id); }
 function toast(t, ms = 2600) { const e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('on'), ms); }
 const flash = () => { const f = $('#flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); };
 $$('button').forEach(b => b.addEventListener('pointerenter', () => !touch && Audio_.sfx('ui_hover', .25)));
@@ -173,18 +182,41 @@ addEventListener('deviceorientation', e => { if (e.gamma == null) return; par.x 
 $('#start').addEventListener('click', () => { Audio_.sfx('panel_open'); $('#title').classList.add('leave'); setTimeout(flash, 380); setTimeout(() => { tFx.stop(); show('pick'); pickFx.start(); }, 760); });
 const pickFx = new Ambient($('#pick-fx'), { motes: 30, net: 20, netArea: [0, 0, 1, 1], color: '200,190,255', mouse: true });
 const regFx = new Ambient($('#reg-fx'), { motes: 30, net: 20, netArea: [0, 0, 1, 1], color: '200,190,255', mouse: true });
+const nameFx = new Ambient($('#name-fx'), { motes: 30, net: 20, netArea: [0, 0, 1, 1], color: '200,190,255', mouse: true });
+const trkFx = new Ambient($('#trk-fx'), { motes: 30, net: 20, netArea: [0, 0, 1, 1], color: '200,190,255', mouse: true });
+const FX = { pick: pickFx, namecard: nameFx, tracks: trkFx, regions: regFx };
+/* the four tracks: the choice decides every factory's mission */
+function showTracks() {
+  $('#track-list').innerHTML = Object.entries(TRACKS).map(([k, t]) => { const n = doneCount(k); return `<button class="tcard${S.track === k ? ' sel' : ''}" type="button" data-t="${k}" style="--c:${t.color}">${n ? `<span class="done">${n}/12</span>` : ''}<img src="${t.badge}" alt=""><b>${t.name}</b><p>${t.desc}</p><ul class="tm">${t.missions.map(([i, n]) => `<li><i>${i}</i>${n}</li>`).join('')}</ul><span class="sk">${t.skills.map(x => `<i>${x}</i>`).join('')}</span></button>`; }).join('');
+  $$('#track-list .tcard').forEach(b => { b.addEventListener('pointerenter', () => !touch && Audio_.sfx('ui_hover', .25)); b.addEventListener('click', () => { Audio_.sfx('task_done', .5); $$('#track-list .tcard').forEach(x => x.classList.toggle('sel', x === b)); S.track = b.dataset.t; persist(); setTimeout(() => showRegions(), 420); }); });
+  show('tracks'); trkFx.start();
+}
 $$('[data-back]').forEach(b => b.addEventListener('click', () => {
   Audio_.sfx('panel_close'); const to = b.dataset.back;
   if (b.id === 'reg-back' && RW) { show('hud'); S.mode = 'world'; return; }
-  if (to === 'title') showTitle(); else { show(to); (to === 'pick' ? pickFx : regFx).start(); }
+  if (to === 'title') showTitle(); else if (to === 'namecard') showNameCard(); else if (to === 'tracks') showTracks(); else { show(to); FX[to]?.start(); }
 }));
 $$('.pcard').forEach(b => b.addEventListener('click', () => {
   Audio_.sfx('task_done', .5); $$('.pcard').forEach(x => x.classList.toggle('sel', x === b));
   S.char = b.dataset.c; persist();
-  setTimeout(() => showRegions(), 420);
+  setTimeout(() => showNameCard(), 420);
 }));
+/* the participant's card: the full name is asked once and kept for the certificate */
+function showNameCard() {
+  $('#id-photo').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`;
+  const inp = $('#id-name'); inp.value = S.name; inp.placeholder = S.char === 'boy' ? 'مثال: فهد عبدالله القحطاني' : 'مثال: سارة محمد العتيبي'; inp.classList.remove('bad'); $('#id-err').textContent = '';
+  show('namecard'); nameFx.start(); if (!touch) setTimeout(() => inp.focus(), 500);
+}
+$('#id-form').addEventListener('submit', e => {
+  e.preventDefault(); const inp = $('#id-name'), v = inp.value.replace(/\s+/g, ' ').trim();
+  const bad = v.length < 3 ? 'اكتب اسمك الكامل كما تريده على الشهادة' : !/^[\p{L}\p{M} .'-]+$/u.test(v) ? 'استخدم الحروف فقط في الاسم' : v.split(' ').length < 2 ? 'اكتب اسمك واسم العائلة على الأقل' : '';
+  if (bad) { inp.classList.remove('bad'); void inp.offsetWidth; inp.classList.add('bad'); $('#id-err').textContent = bad; Audio_.sfx('wrong', .4); return; }
+  S.name = v; persist(); inp.blur(); Audio_.sfx('task_done', .5); setTimeout(() => showTracks(), 250);
+});
+$('#id-name').addEventListener('input', () => { $('#id-name').classList.remove('bad'); $('#id-err').textContent = ''; });
 function showRegions(travel = false) {
   $('#reg-title').textContent = travel ? 'إلى أي منطقة تسافر؟' : 'إلى أين تتجه الرحلة؟';
+  { const T = TRACKS[trackOf()]; $('#reg-sub').innerHTML = `<span class="trk-chip" style="--c:${T.color}"><img src="${T.badge}" alt="">مسار ${T.name}</span> في كل منطقة مدرسة تنطلق منها، وثلاثة مصانع بمهام مسارك`; }
   $$('.rcard').forEach(c => { const r = c.dataset.r, n = regionDone(r); c.querySelector('.tag').textContent = n === 3 ? 'مكتملة ✓' : `${n} / 3`; c.classList.toggle('cur', r === S.region); });
   show('regions'); regFx.start();
 }
@@ -207,7 +239,7 @@ let RW = null, bus = null, player = null, marker = null, orbit = null, IN = null
 const dolls = {};
 
 /* ---------------- loading screen ---------------- */
-const TIPS = ['في كل مصنع لعبة مختلفة حسب مساره: المكتشف، المبدع، الفنان، والسفير.', 'اجمع الشارات الأربع لتصبح من صناعيو المستقبل.', 'جوائز هاكثون صناعيو المستقبل تصل إلى 200,000 ريال.', 'انتبه لعلامات السلامة داخل المصنع… قد تكون جزءاً من مهمتك!', 'زيارة المصانع تكشف لك كيف تُصنع الأشياء التي تستخدمها كل يوم.'];
+const TIPS = ['مسارك يحدد مهمتك في كل مصنع: المكتشف يفحص، المبدع يبتكر، الفنان يصمم، والسفير يروّج.', 'اجمع الشارات الأربع لتصبح من صناعيو المستقبل.', 'جوائز هاكثون صناعيو المستقبل تصل إلى 200,000 ريال.', 'انتبه لعلامات السلامة داخل المصنع… قد تكون جزءاً من مهمتك!', 'زيارة المصانع تكشف لك كيف تُصنع الأشياء التي تستخدمها كل يوم.'];
 const ldFx = new Ambient($('#ld-fx'), { motes: touch ? 30 : 50, net: 12, netArea: [0, .02, 1, .3] });
 const prog = { v: 0 }; THREE.DefaultLoadingManager.onProgress = (u, a, b) => { prog.v = Math.max(prog.v, a / b); };
 /* the loading screen is a boarding pass: a ticket for a trip between regions, a visitor's pass for a factory.
@@ -222,7 +254,7 @@ async function loadingScreen({ img, kicker, title, sub, from = 'البيت', to 
   show('loading'); prog.v = 0; $('#ld-bg').style.backgroundImage = `url(${img})`; $('#ld-kicker').textContent = kicker; $('#ld-title').textContent = title; $('#ld-sub').textContent = sub;
   const trip = kind === 'trip', no = 100 + (Math.random() * 899 | 0);
   $('#tk-kind').textContent = trip ? 'تذكرة رحلة · باص المبادرة' : 'تصريح زيارة المصنع'; $('#tk-no').textContent = `FI-${no}`;
-  $('#tk-from').textContent = from; $('#tk-to').textContent = to; $('#tk-name').textContent = nameOf(S.char); $('#tk-av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`;
+  $('#tk-from').textContent = from; $('#tk-to').textContent = to; $('#tk-name').textContent = fullName(); $('#tk-av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`;
   $('#tk-m2k').textContent = trip ? 'الوجهة' : 'المسار'; $('#tk-m2').textContent = meta2 || to;
   $('#tk-m3k').textContent = trip ? 'البوابة' : 'الوردية'; $('#tk-m3').textContent = trip ? String(1 + no % 6) : 'صباحية';
   $('#tk-m4k').textContent = trip ? 'المقعد' : 'الخوذة'; $('#tk-m4').textContent = trip ? `${String(1 + no % 14).padStart(2, '0')}${'ABCD'[no % 4]}` : 'صفراء';
@@ -356,7 +388,7 @@ const angTo = (a, b) => Math.atan2(Math.sin(b - a), Math.cos(b - a));
 
 /* ---------------- input ---------------- */
 const keys = {}; let joy = { x: 0, y: 0 }, camYaw = Math.PI, camPitch = .3, drag = null, skip = false;
-addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'Space' && (S.mode === 'world' || S.mode === 'tour') && !talkQ.busy) { e.preventDefault(); if (!e.repeat) jumpReq = true; } if (e.code === 'KeyE' && (S.mode === 'world' || S.mode === 'tour') && !talkQ.busy) act(); if (e.code === 'KeyE' && S.mode === 'drive') driveAct(); if (e.code === 'KeyH' && S.mode === 'drive' && !e.repeat) honk(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
+addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'Space' && (S.mode === 'world' || S.mode === 'tour') && !talkQ.busy) { e.preventDefault(); if (!e.repeat) jumpReq = true; } if (e.code === 'KeyE' && (S.mode === 'world' || S.mode === 'tour') && !talkQ.busy) act(); if (e.code === 'KeyE' && S.mode === 'drive') driveAct(); if (e.code === 'KeyH' && S.mode === 'drive' && !e.repeat) honk(); if (e.code === 'KeyC' && !e.repeat && ['world', 'tour', 'drive'].includes(S.mode) && !talkQ.busy) cycleCam(); if (['Space', 'Enter', 'Escape'].includes(e.code) && S.cine) skip = true; });
 addEventListener('keyup', e => { keys[e.code] = false; });
 const cv = $('#c');
 cv.addEventListener('pointerdown', e => { if (S.mode === 'world' || S.mode === 'tour') { drag = { x: e.clientX, y: e.clientY, yaw: camYaw, pitch: camPitch }; cv.setPointerCapture(e.pointerId); } });
@@ -399,7 +431,7 @@ function drawMap(cv, { route = null, target = null } = {}) {
   if (route) { x.strokeStyle = '#847bb8'; x.lineWidth = 2.5; x.setLineDash([4, 3]); x.beginPath(); route.pts.forEach((q, i) => { const [a1, b1] = P(q.x, q.y); i ? x.lineTo(a1, b1) : x.moveTo(a1, b1); }); x.stroke(); x.setLineDash([]); }
   x.font = `600 ${W > 240 ? 10 : 9}px "Readex Pro"`; x.textAlign = 'center'; x.direction = 'rtl';
   for (const l of RW.locs) {
-    const [a1, b1] = P(l.gate.x, l.gate.z), col = l.kind === 'school' ? '#1e8a5a' : S.done[l.f.id] ? '#2fb36d' : TRACKS[l.f.track].color;
+    const [a1, b1] = P(l.gate.x, l.gate.z), col = l.kind === 'school' ? '#1e8a5a' : best(l.f.id) ? '#2fb36d' : TRACKS[trackOf()].color;
     x.fillStyle = col; x.beginPath(); x.arc(a1, b1, 4, 0, 7); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 1.5; x.stroke();
     // names only where they help: the school and wherever the student is headed
     if (l.kind === 'school' || (target && Math.hypot(target.x - l.gate.x, target.z - l.gate.z) < 20) || W > 300) { const lab = l.kind === 'school' ? 'المدرسة' : l.f.short, ly = b1 + (l.side > 0 ? 14 : -8); x.lineWidth = 3; x.strokeStyle = 'rgba(255,255,255,.9)'; x.strokeText(lab, a1, ly); x.fillStyle = '#1b2263'; x.fillText(lab, a1, ly); }
@@ -411,30 +443,30 @@ function drawMap(cv, { route = null, target = null } = {}) {
 const HUD = { target: null, mapT: 0 };
 function updateHUD() {
   $('#st-pts').textContent = points().toLocaleString('en'); $('#st-fac').textContent = `${doneCount()}/12`; $('#st-bdg').textContent = `${badgeSet().size}/4`;
-  $('#av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`; $('#who-name').textContent = nameOf(S.char); $('#who-region').textContent = `${REGIONS[S.region]?.name || ''} · ⚙ ${Object.keys(S.gears).length}`;
+  $('#av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`; $('#who-name').textContent = nameOf(); $('#who-region').textContent = `${REGIONS[S.region]?.name || ''} · ⚙ ${Object.keys(S.gears).length}`;
   if (!RW) return;
   // mission card
   const loc = L(), chip = $('#m-chip'), step = `${REGIONS[S.region].name} · ${regionDone(S.region)}/3 مصانع`;
   if (loc.kind === 'school') { chip.textContent = 'نقطة الانطلاق'; chip.style.background = ''; $('#m-title').textContent = 'اركب باص صناعيو المستقبل'; $('#m-text').textContent = 'باص المبادرة واقف عند بوابة المدرسة مباشرة. امشِ إلى بابه واركب.'; $('#m-reward').textContent = ''; }
-  else if (!S.done[loc.f.id]) { const T = TRACKS[loc.f.track]; chip.textContent = `مسار ${T.name}`; chip.style.background = T.color; $('#m-title').textContent = `ادخل ${loc.f.name}`; $('#m-text').textContent = `البوابة أمامك على نفس الرصيف. مهمتك: ${loc.f.title}.`; $('#m-reward').textContent = 'حتى +300 نقطة'; }
-  else { chip.textContent = 'أُنجزت ✓'; chip.style.background = '#2fb36d'; $('#m-title').textContent = 'ارجع إلى الباص'; $('#m-text').textContent = regionDone(S.region) === 3 ? 'أنجزت مصانع هذه المنطقة كلها! اركب الباص وسافر إلى منطقة أخرى.' : 'أنجزت مهمة هذا المصنع. اركب الباص إلى المصنع التالي.'; $('#m-reward').textContent = '⭐'.repeat(S.done[loc.f.id]); }
+  else if (!best(loc.f.id)) { const T = TRACKS[trackOf()]; chip.textContent = `مسار ${T.name}`; chip.style.background = T.color; $('#m-title').textContent = `ادخل ${loc.f.name}`; $('#m-text').textContent = `البوابة أمامك على نفس الرصيف. مهمتك: ${MS(loc.f).title}.`; $('#m-reward').textContent = 'حتى +300 نقطة'; }
+  else { chip.textContent = 'أُنجزت ✓'; chip.style.background = '#2fb36d'; $('#m-title').textContent = 'ارجع إلى الباص'; $('#m-text').textContent = regionDone(S.region) === 3 ? 'أنجزت مصانع هذه المنطقة كلها! اركب الباص وسافر إلى منطقة أخرى.' : 'أنجزت مهمة هذا المصنع. اركب الباص إلى المصنع التالي.'; $('#m-reward').textContent = '⭐'.repeat(best(loc.f.id)); }
   $('#m-step').textContent = step;
   // where to go: the gate of an unfinished factory where the coach stands, otherwise the coach's door
-  const toGate = loc.kind === 'factory' && !S.done[loc.f.id] && S.bay === loc.bay.id, t = toGate ? loc.gate : busDoor();
+  const toGate = loc.kind === 'factory' && !best(loc.f.id) && S.bay === loc.bay.id, t = toGate ? loc.gate : busDoor();
   marker.position.set(t.x, .22, t.z); HUD.target = t;
-  marker.userData.ring.material.color.set(toGate ? TRACKS[loc.f.track].color : '#847bb8');
+  marker.userData.ring.material.color.set(toGate ? TRACKS[trackOf()].color : '#847bb8');
 }
 
 /* ---------------- the trip journal: every region, every factory, what was learned and found ---------------- */
 function openJournal() {
   Audio_.sfx('panel_open', .5);
-  $('#jr-av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`; $('#jr-title').textContent = `دفتر رحلة ${nameOf(S.char)}`;
-  $('#jr-sub').textContent = `${points().toLocaleString('en')} نقطة · ${doneCount()}/12 مصانع · ⚙ ${Object.keys(S.gears).length} تروس ذهبية`;
+  $('#jr-av').style.backgroundImage = `url(assets/ui/${S.char}_front_cut.webp)`; $('#jr-title').textContent = `دفتر رحلة ${fullName()}`;
+  $('#jr-sub').textContent = `مسار ${TRACKS[trackOf()].name} · ${points().toLocaleString('en')} نقطة · ${doneCount()}/12 مصانع · ⚙ ${Object.keys(S.gears).length} تروس ذهبية`;
   $('#jr-badges').innerHTML = Object.entries(TRACKS).map(([k, t]) => `<div class="${badgeSet().has(k) ? '' : 'off'}"><img src="${t.badge}" alt="">${t.name}</div>`).join('');
   $('#jr-regions').innerHTML = ORDER.map(r => {
     const R = REGIONS[r], cg = CITY_GEARS.filter((_, i) => S.gears[`city-${r}-${i}`]).length;
     return `<div class="jr-reg"><div><b>${R.name}</b><small>${regionDone(r)}/3 مصانع · ⚙ ${cg}/${CITY_GEARS.length} في المدينة</small></div>` + R.factories.map(f => {
-      const st = S.done[f.id] || 0, q = S.quiz[f.id] || 0;
+      const st = best(f.id), q = S.quiz[f.id] || 0;
       return `<div class="jr-f">${f.logo ? `<img src="${f.logo}" alt="">` : `<i class="dot" style="background:${f.color}"></i>`}<span>${f.name}</span><span class="st">${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span><span class="chips"><i class="${(S.facts[f.id] || 0) === 3 ? 'ok' : ''}">📖 ${S.facts[f.id] || 0}/3</i><i class="${q >= 2 ? 'ok' : ''}">✓ ${q}/3</i><i class="${S.gears[f.id] ? 'ok' : ''}">⚙ ${S.gears[f.id] ? '✓' : '—'}</i></span><span class="stamp ${q >= 2 ? 'on' : ''}" title="ختم المصنع">${q >= 2 ? '✓' : ''}</span></div>`;
     }).join('') + '</div>';
   }).join('');
@@ -465,7 +497,7 @@ async function enterRegion() {
   }
   $('#hud').classList.remove('cine'); S.cine = false; S.mode = 'world'; skip = false; follow(0, true);
   robo?.place(new THREE.Vector3(yx - .2, 0, py - sc.side * 1.6), .2);
-  if (!seen.robot && S.robot) { seen.robot = 1; store.set('seen', seen); S.mode = 'menu'; await say(`أهلاً ${nameOf(S.char)}! أنا مِرشد، مرشدك في الرحلة. باص المبادرة واقف عند بوابة المدرسة، وفي كل مصنع مهمة وترس ذهبي مخبّأ. (تقدر تخفيني من الإعدادات ⚙)`, { wait: true }); S.mode = 'world'; }
+  if (!seen.robot && S.robot) { seen.robot = 1; store.set('seen', seen); S.mode = 'menu'; await say(`أهلاً ${nameOf()}! أنا مِرشد، مرشدك في الرحلة. باص المبادرة واقف عند بوابة المدرسة، وفي كل مصنع مهمة وترس ذهبي مخبّأ. (تقدر تخفيني من الإعدادات ⚙)`, { wait: true }); S.mode = 'world'; }
   await howto('world', 'كيف تلعب؟', touch ? [['🕹️', 'حرّك الشخصية بعصا التحكم أسفل الشاشة'], ['👆', 'اسحب على الشاشة لتدوير الكاميرا'], ['🚌', 'باص المبادرة يقف عند بوابة كل مكان، فلا تقطع الشارع لتركبه'], ['🗺️', 'الخريطة في الأعلى تريك الباص والمصانع ووجهتك']] :
     [['⌨️', 'تحرّك بالأسهم أو W A S D · Shift للجري · Space للقفز'], ['🖱️', 'اسحب بالفأرة لتدوير الكاميرا'], ['🚌', 'باص المبادرة يقف عند بوابة كل مكان، فلا تقطع الشارع لتركبه'], ['🗺️', 'الخريطة في الأعلى تريك الباص والمصانع ووجهتك · E للتفاعل']]);
   toast(`مرحباً بك في ${REGIONS[S.region].name}! باص المبادرة بانتظارك عند بوابة المدرسة 🚌`, 3400);
@@ -483,8 +515,8 @@ function sunAt(x, z) {
 let near = null, nearGate = -1, stepT = 0, justArrived = false, jumpReq = false;
 // the camera slides in when a palm trunk or a lamp post would come between it and the student,
 // and rises over the roof when the coach is in the way; indoors it stays inside the hall
-function camClear(tgt, dist, circles) {
-  const dx = Math.sin(camYaw) * Math.cos(camPitch), dz = Math.cos(camYaw) * Math.cos(camPitch), close = circles.filter(([cx, cz]) => Math.abs(cx - tgt.x) < 10 && Math.abs(cz - tgt.z) < 10);
+function camClear(tgt, dist, circles, pitch = camPitch) {
+  const dx = Math.sin(camYaw) * Math.cos(pitch), dz = Math.cos(camYaw) * Math.cos(pitch), close = circles.filter(([cx, cz]) => Math.abs(cx - tgt.x) < 10 && Math.abs(cz - tgt.z) < 10);
   for (let i = 1; i <= 16; i++) {
     const d = dist * i / 16, x = tgt.x + dx * d, z = tgt.z + dz * d;
     if (close.some(([cx, cz, cr]) => Math.hypot(x - cx, z - cz) < cr + .45)) return Math.max(1.6, d - .5);
@@ -497,16 +529,37 @@ function busInWay(tgt, want) {
   return false;
 }
 const worldSpace = () => ({ world: true, boxes: RW.boxes, circles: RW.colliders, bounds: BOUNDS, height: x => x, solid: (x, z) => inBus(x, z, .3) || (life?.traffic || []).some(c => inBox(x, z, c.x, c.z, c.yaw, c.len / 2, 1, .3, true)) });
+/* four ways to watch: close behind, far behind, from above, and through the student's own eyes.
+   The same button switches the driving view: chase, far chase, from above, and the driver's seat. */
+const CAMS = [{ k: 'near', t: '🎥 الكاميرا: قريبة' }, { k: 'far', t: '🔭 الكاميرا: بعيدة' }, { k: 'top', t: '🛰️ الكاميرا: من فوق' }, { k: 'eye', t: '👀 الكاميرا: بعيونك' }];
+const DCAMS = ['🎥 خلف الباص', '🔭 بعيدة', '🛰️ من فوق', '🚌 مقعد السائق'];
+let camMode = 0;
+function cycleCam() {
+  camMode = (camMode + 1) % CAMS.length; Audio_.sfx('ui_click', .5); $('#cam').dataset.m = CAMS[camMode].k;
+  toast(S.mode === 'drive' ? DCAMS[camMode] : CAMS[camMode].t + (camMode === 3 ? ' · اسحب لتلتفت' : ''), 1600);
+  if (S.mode === 'world' || S.mode === 'tour') follow(0, true);
+}
+$('#cam').addEventListener('click', cycleCam);
 let camDist = 6, camLift = 0;
 function follow(dt, snap = false, sp = null) {
   sp ||= S.mode === 'tour' && IN ? tourSpace() : worldSpace();
-  const r = player.root, tgt = new THREE.Vector3(r.position.x, r.position.y + 1.25, r.position.z), full = player.hero ? (touch ? 5.8 : 5.2) : (touch ? 6.6 : 6);
-  let want0 = camClear(tgt, full, sp.circles);
-  if (sp.indoor) { const b = sp.bounds, dx = Math.sin(camYaw), dz = Math.cos(camYaw); for (let d = want0; d > 1.6; d -= .25) { const x = tgt.x + dx * d * Math.cos(camPitch), z = tgt.z + dz * d * Math.cos(camPitch); if (x > b.x0 - .2 && x < b.x1 + .2 && z > b.z0 - .2 && z < b.z1 + .2) { want0 = d; break; } want0 = d; } }
+  const r = player.root, mode = CAMS[camMode].k;
+  if (mode === 'eye') {
+    // eye height, looking where the student walks; drag left and right to turn, up and down to look
+    const eye = new THREE.Vector3(r.position.x, r.position.y + (player.jy || 0) + (player.hero ? 1.42 : 1.3), r.position.z), el = -(camPitch - .3) * 1.4;
+    const look = eye.clone().add(new THREE.Vector3(-Math.sin(camYaw) * Math.cos(el), Math.sin(el), -Math.cos(camYaw) * Math.cos(el)).multiplyScalar(8));
+    eye.addScaledVector(new THREE.Vector3(-Math.sin(camYaw), 0, -Math.cos(camYaw)), .12);
+    if (snap) camera.position.copy(eye); else camera.position.lerp(eye, Math.min(1, dt * 14)); camera.lookAt(look); return;
+  }
+  const pitch = mode === 'top' ? 1.16 : mode === 'far' ? Math.min(.95, camPitch + .14) : camPitch;
+  const tgt = new THREE.Vector3(r.position.x, r.position.y + 1.25, r.position.z), base = player.hero ? (touch ? 5.8 : 5.2) : (touch ? 6.6 : 6);
+  const full = base * (mode === 'far' ? 2 : mode === 'top' ? (sp.indoor ? 1.5 : 3.2) : 1);
+  let want0 = mode === 'top' ? full : camClear(tgt, full, sp.circles, pitch);
+  if (sp.indoor) { const b = sp.bounds, dx = Math.sin(camYaw), dz = Math.cos(camYaw); for (let d = want0; d > 1.6; d -= .25) { const x = tgt.x + dx * d * Math.cos(pitch), z = tgt.z + dz * d * Math.cos(pitch); if (x > b.x0 - .2 && x < b.x1 + .2 && z > b.z0 - .2 && z < b.z1 + .2 && tgt.y + Math.sin(pitch) * d < 8.2) { want0 = d; break; } want0 = d; } }
   camDist = snap || want0 < camDist ? want0 : camDist + (want0 - camDist) * Math.min(1, dt * 2.5); const dist = camDist;
-  const want = new THREE.Vector3(tgt.x + Math.sin(camYaw) * Math.cos(camPitch) * dist, tgt.y + Math.sin(camPitch) * dist, tgt.z + Math.cos(camYaw) * Math.cos(camPitch) * dist);
+  const want = new THREE.Vector3(tgt.x + Math.sin(camYaw) * Math.cos(pitch) * dist, tgt.y + Math.sin(pitch) * dist, tgt.z + Math.cos(camYaw) * Math.cos(pitch) * dist);
   // the coach in the way: lift a little and swing round to the open side, unless the player is steering the view
-  const blocked = sp.world && busInWay(tgt, want), lift = blocked ? Math.max(0, 7 - want.y) : 0; camLift = snap ? lift : camLift + (lift - camLift) * Math.min(1, dt * 4); want.y += camLift;
+  const blocked = sp.world && mode !== 'top' && busInWay(tgt, want), lift = blocked ? Math.max(0, 7 - want.y) : 0; camLift = snap ? lift : camLift + (lift - camLift) * Math.min(1, dt * 4); want.y += camLift;
   if (blocked && !drag) { const ax = bus.position.x - r.position.x, az = bus.position.z - r.position.z, goal = Math.atan2(-ax, -az); camYaw += angTo(camYaw, goal) * Math.min(1, dt * 2.2); }
   if (snap) camera.position.copy(want); else camera.position.lerp(want, Math.min(1, dt * 6)); camera.lookAt(tgt);
 }
@@ -563,7 +616,7 @@ function walk(dt) {
   if (dBus > 4) justArrived = false;
   near = nearGate >= 0 && (dBus >= 2.8 || justArrived || gd < dBus) ? 'gate' : dBus < 2.8 && !justArrived ? 'bus' : null;
   const btn = $('#act'); btn.classList.toggle('on', !!near);
-  if (near) { const t = near === 'gate' ? (S.done[RW.locs[nearGate].f.id] ? '🔁 زُر المصنع مرة أخرى' : `ادخل ${RW.locs[nearGate].f.short}`) : '🚌 اركب الباص'; if (btn.textContent !== t) btn.textContent = t; }
+  if (near) { const t = near === 'gate' ? (best(RW.locs[nearGate].f.id) ? '🔁 زُر المصنع مرة أخرى' : `ادخل ${RW.locs[nearGate].f.short}`) : '🚌 اركب الباص'; if (btn.textContent !== t) btn.textContent = t; }
   const t = performance.now() / 1000; marker.userData.arrow.position.y = 3.2 + Math.sin(t * 2.4) * .25; marker.userData.arrow.rotation.y = t;
   if ((HUD.mapT -= dt) <= 0) { HUD.mapT = .1; drawMap($('#mini-cv'), { target: HUD.target }); }
   // gears: spin, and collect the one you walk (or jump) into
@@ -587,7 +640,7 @@ function openRoute() {
   RW.locs.forEach((l, i) => {
     const b = document.createElement('button'), here = l.bay.id === S.bay; b.type = 'button'; b.disabled = here;
     if (l.kind === 'school') b.innerHTML = `<span class="ic" style="background-image:url(assets/img/logo-mark.webp)"></span><span class="tx"><b>المدرسة</b><small>نقطة الانطلاق</small></span><span class="st"></span>`;
-    else { const st = S.done[l.f.id] || 0; b.innerHTML = `<span class="ic" style="${l.f.logo ? `background-image:url(${l.f.logo})` : `background:${l.f.color}`}"></span><span class="tx"><b>${l.f.name}</b><small>مسار ${TRACKS[l.f.track].name} · ${l.f.title}</small></span><span class="st">${st ? '★'.repeat(st) + '☆'.repeat(3 - st) : 'جديد'}</span>`; }
+    else { const st = best(l.f.id); b.innerHTML = `<span class="ic" style="${l.f.logo ? `background-image:url(${l.f.logo})` : `background:${l.f.color}`}"></span><span class="tx"><b>${l.f.name}</b><small>مسار ${TRACKS[trackOf()].name} · ${MS(l.f).title}</small></span><span class="st">${st ? '★'.repeat(st) + '☆'.repeat(3 - st) : 'جديد'}</span>`; }
     if (here) b.querySelector('small').textContent = 'الباص هنا الآن';
     b.onclick = () => { Audio_.sfx('ui_click'); $('#route').classList.remove('on'); rideTo(i); };
     list.append(b);
@@ -689,7 +742,10 @@ function chaseCam(x, z, yaw, dt) {
     if (cr < .45) continue; const t = -((cx - x) * fx + (cz - z) * fz); if (t < 3 || t > want + 1) continue;
     const lat = Math.abs((cx - x) * fz - (cz - z) * fx); if (lat < 2.2) want = Math.max(7, t - 2);
   }
+  if (camMode === 1) want = Math.max(want, 11) * 1.7;
   chaseD += (want - chaseD) * Math.min(1, dt * (want < chaseD ? 6 : 1.5));
+  if (camMode === 2) { camera.position.lerp(new THREE.Vector3(x - fx * 8, 46, z - fz * 8), Math.min(1, dt * 3)); camera.lookAt(x + fx * 6, 0, z + fz * 6); return; }
+  if (camMode === 3) { const h = bus.userData.halfLen; camera.position.set(x + fx * (h - .9), 2.75, z + fz * (h - .9)); camera.lookAt(x + fx * 30, 1.2, z + fz * 30); return; }
   camera.position.lerp(new THREE.Vector3(x - fx * chaseD, 3 + chaseD * .23, z - fz * chaseD), Math.min(1, dt * 3)); camera.lookAt(x + fx * 9, 1.8, z + fz * 9);
 }
 function honk() { Audio_.sfx('bus_horn', .6); }
@@ -745,7 +801,7 @@ function driveStep(dt) {
   DV.near = best; const btn = $('#dv-act'), name = best ? (best.l.kind === 'school' ? 'المدرسة' : best.l.f.short) : '';
   btn.classList.toggle('on', !!best); if (best) { const t = Math.abs(DV.v) < 1.2 ? `🚏 انزل عند ${name}` : `خفّف السرعة للتوقف عند ${name}`; if (btn.textContent !== t) btn.textContent = t; }
   $('#dv-kmh').textContent = Math.round(Math.abs(DV.v) * KMH);
-  const goal = RW.locs.filter(l => l.kind === 'factory' && !S.done[l.f.id])[0] || RW.locs[0];
+  const goal = RW.locs.filter(l => l.kind === 'factory' && !best(l.f.id))[0] || RW.locs[0];
   $('#dv-next').textContent = `${goal.kind === 'school' ? 'المدرسة' : goal.f.short} · ${Math.round(Math.hypot(goal.bay.x - x, goal.bay.z - z))} م`;
   if ((HUD.mapT -= dt) <= 0) { HUD.mapT = .1; drawMap($('#dv-map'), { target: goal.bay }); }
 }
@@ -798,18 +854,17 @@ function guide(dt, lead = null, floorY = 0) {
 }
 
 /* ---------------- factories: a walk-through visit ---------------- */
-const TV = { F: null, tour: null, ppe: false, facts: new Set(), mission: null, quiz: null, gear: false, busy: false, hz: false, hzT: 0, hints: 0, next: null };
+const TV = { F: null, M: null, tour: null, ppe: false, facts: new Set(), mission: null, quiz: null, gear: false, busy: false, hz: false, hzT: 0, hints: 0, next: null };
 async function enterFactory(F) {
   if (S.mode !== 'world') return;
-  S.mode = 'loading'; curF = F; Audio_.sfx('panel_open');
-  IN = await loadingScreen({ img: REGIONS[S.region].img, kicker: 'زيارة المصنع', title: F.short, sub: `${F.name} · مسار ${TRACKS[F.track].name}`, from: 'البوابة', to: 'خط الإنتاج', kind: 'pass', meta2: TRACKS[F.track].name, min: 1700,
-    tips: [F.brief, 'ارتدِ معدات الوقاية، اقرأ المحطات الثلاث، أنجز المهمة، ثم اختبار المشرف.', 'في كل مصنع ترس ذهبي مخبّأ… ابحث عنه!'],
-    task: async () => { const I = await buildInterior(renderer, F); I.tour = addTour(I, F); if (renderer.compileAsync) await renderer.compileAsync(I.scene, camera).catch(() => {}); return I; } });
+  S.mode = 'loading'; curF = F; Audio_.sfx('panel_open'); const M = MS(F), T = TRACKS[trackOf()];
+  IN = await loadingScreen({ img: REGIONS[S.region].img, kicker: 'زيارة المصنع', title: F.short, sub: `${F.name} · مسار ${T.name}`, from: 'البوابة', to: 'خط الإنتاج', kind: 'pass', meta2: T.name, min: 1700,
+    tips: [M.brief, 'ارتدِ معدات الوقاية، اقرأ المحطات الثلاث، أنجز المهمة، ثم اختبار المشرف.', 'في كل مصنع ترس ذهبي مخبّأ… ابحث عنه!'],
+    task: async () => { const I = await buildInterior(renderer, F, M); I.tour = addTour(I, F, M); if (renderer.compileAsync) await renderer.compileAsync(I.scene, camera).catch(() => {}); return I; } });
   await startTour(F);
 }
 async function startTour(F) {
-  const T = TRACKS[F.track];
-  Object.assign(TV, { F, tour: IN.tour, ppe: false, facts: new Set(), mission: null, quiz: null, gear: !!S.gears[F.id], busy: true, hz: false, hints: 0 });
+  Object.assign(TV, { F, M: MS(F), bit: {}, cd: {}, tour: IN.tour, ppe: false, facts: new Set(), mission: null, quiz: null, gear: !!S.gears[F.id], busy: true, hz: false, hints: 0 });
   if (TV.gear) TV.tour.gear.visible = false;
   RW.scene.remove(player.root); IN.scene.add(player.root); player.root.visible = true; player.root.position.copy(TV.tour.spawn); player.root.position.y = 0; player.speed = 0;
   // facing the lockers, the camera outside the glass of the gear room
@@ -825,9 +880,9 @@ const tourSpace = () => ({ indoor: true, boxes: IN.boxes, circles: IN.circles, b
   height: (x, z, feet) => { let h = 0; for (const [x0, z0, x1, z1, hh] of TV.tour.platforms) if (x >= x0 && x <= x1 && z >= z0 && z <= z1 && feet >= hh - .35) h = Math.max(h, hh); return h; },
   solid: (x, z, feet) => TV.tour.platforms.some(([x0, z0, x1, z1, hh]) => x > x0 - .25 && x < x1 + .25 && z > z0 - .25 && z < z1 + .25 && feet < hh - .35) });
 function renderTour() {
-  const F = TV.F, T = TRACKS[F.track], C = TOUR[F.id];
-  $('#tc-logo').src = F.logo || 'assets/img/logo-mark.webp'; $('#tc-name').textContent = F.name; $('#tc-track').textContent = `مسار ${T.name} · ${F.title}`;
-  const steps = [['ppe', '🦺', 'معدات الوقاية', TV.ppe, ''], ['facts', '📖', 'محطات المعلومات', TV.facts.size === 3, `${TV.facts.size}/3`], ['mission', '★', `المهمة: ${F.title}`, TV.mission != null, TV.mission != null ? '⭐'.repeat(TV.mission) : ''], ['quiz', '✓', 'اختبار المشرف', TV.quiz != null, TV.quiz != null ? `${TV.quiz}/3` : ''], ['gear', '⚙', 'الترس الذهبي (سرّي)', TV.gear, '']];
+  const F = TV.F, T = TRACKS[TV.M.track], C = TOUR[F.id];
+  $('#tc-logo').src = F.logo || 'assets/img/logo-mark.webp'; $('#tc-name').textContent = F.name; $('#tc-track').textContent = `مسار ${T.name} · ${TV.M.title}`;
+  const steps = [['ppe', '🦺', 'معدات الوقاية', TV.ppe, ''], ['facts', '📖', 'محطات المعلومات', TV.facts.size === 3, `${TV.facts.size}/3`], ['mission', '★', `المهمة: ${TV.M.title}`, TV.mission != null, TV.mission != null ? '⭐'.repeat(TV.mission) : ''], ['quiz', '✓', 'اختبار المشرف', TV.quiz != null, TV.quiz != null ? `${TV.quiz}/3` : ''], ['gear', '⚙', 'الترس الذهبي (سرّي)', TV.gear, '']];
   const now = !TV.ppe ? 'ppe' : TV.mission == null ? (TV.facts.size < 3 ? 'facts' : 'mission') : TV.quiz == null ? 'quiz' : '';
   $('#tc-list').innerHTML = steps.map(([k, i, t, ok, v]) => `<li class="${ok ? 'ok' : k === now ? 'now' : ''}"><em>${ok ? '✓' : i}</em><span>${t}</span><small>${v}</small></li>`).join('');
   // the marker over the next place to go
@@ -870,23 +925,30 @@ function tourStep(dt) {
     }
   }
   const btn = $('#act'); btn.classList.toggle('on', !!tnear && !TV.busy && !talkQ.busy); if (tnear && btn.textContent !== tnear.t) btn.textContent = tnear.t;
-  if (TV.hz) { TV.hzT += dt; if (TV.hzT > 30) { TV.hzT = 0; const left = IN.hazards.find(h => !h.found); if (left) { TV.hints++; say('تلميح: ' + ({ oil: 'انظر إلى ممر المشاة الأخضر… هل هو نظيف؟', exit: 'تفقّد مخرج الطوارئ على الجدار الأيمن', panel: 'هل كل الأبواب على الجدار الأيسر مغلقة؟' })[left.key], { wait: false }); } } }
+  if (TV.hz) { TV.hzT += dt; if (TV.hzT > 30) { TV.hzT = 0; const left = IN.hazards.find(h => !h.found); if (left) { TV.hints++; say('تلميح: ' + left.hint, { wait: false }); } } }
 }
 /* the safety mission's hazards are real: oil makes you slip, the open panel throws sparks and pushes you back */
 function hazardsBite(dt, r) {
   TV.slipT = Math.max(0, (TV.slipT || 0) - dt); TV.shake = Math.max(0, (TV.shake || 0) - dt);
   const h = player.hero; if (h) h.model.rotation.z = TV.slipT > 0 ? Math.sin(TV.slipT * 28) * .35 * TV.slipT : 0;
   if (TV.shake > 0) camera.position.add(new THREE.Vector3((Math.random() - .5) * TV.shake * .5, (Math.random() - .5) * TV.shake * .3, (Math.random() - .5) * TV.shake * .5));
-  if (TV.F.game !== 'hazard') return;
+  if (TV.M.game !== 'hazard' || !IN.fx) return;
   const push = (cx, cz, to) => { let dx = r.x - cx, dz = r.z - cz; const L = Math.hypot(dx, dz) || 1; r.x = cx + dx / L * to; r.z = cz + dz / L * to; player.speed = 0; };
-  const oil = IN.hazards.find(z => z.key === 'oil'), pnl = IN.hazards.find(z => z.key === 'panel');
-  if (oil && TV.slipT <= 0 && Math.hypot(r.x - 6.5, r.z - 4.8) < 1.2) {
-    push(6.5, 4.8, 2.2); TV.slipT = 1.1; TV.shake = .5; Audio_.sfx('wrong', .55); setTimeout(() => Audio_.sfx('land', .7), 250);
-    if (!TV.saidOil) { TV.saidOil = 1; say(oil.found ? 'انتبه! الزيت ما زال هنا حتى يُنظّف.' : '⚠️ كدت تنزلق! بقعة زيت على ممر المشاة… هذا خطر حقيقي على العمال.'); }
-  }
-  if (pnl && Math.hypot(r.x + 19.1, r.z - 6) < 2.4) {
-    push(-19.1, 6, 3); TV.shake = .7; flash(); Audio_.sfx('factory_metal', .7); Audio_.sfx('wrong', .5);
-    if (!TV.saidPanel) { TV.saidPanel = 1; say('⚡ ابتعد! لوحة الكهرباء مفتوحة والأسلاك مكشوفة. لا تلمسها أبداً.'); }
+  TV.bit ||= {}; TV.cd ||= {};
+  for (const [k, f] of Object.entries(IN.fx)) {
+    const d = f.line ? Math.abs(r.x - f.x) : Math.hypot(r.x - f.x, r.z - f.z), near = f.line ? d < f.r && Math.abs(r.z - f.z) < 2.6 : d < f.r;
+    if (!near || (TV.cd[k] || 0) > performance.now()) continue;
+    const found = IN.hazards.find(h => h.key === k)?.found; TV.cd[k] = performance.now() + 2500;
+    if (k === 'oil' || k === 'cable') {
+      // a slip or a trip: the student staggers back the way they came
+      if (TV.slipT > 0) continue;
+      if (k === 'cable') { r.x += Math.sign(r.x - f.x || 1) * 1.4; player.speed = 0; } else push(f.x, f.z, f.r + 1);
+      TV.slipT = 1.1; TV.shake = .5; Audio_.sfx('wrong', .55); setTimeout(() => Audio_.sfx('land', .7), 250);
+      if (!TV.bit[k]) { TV.bit[k] = 1; say(k === 'oil' ? (found ? 'انتبه! الزيت ما زال هنا حتى يُنظّف.' : '⚠️ كدت تنزلق! بقعة زيت على ممر المشاة… هذا خطر حقيقي على العمال.') : (found ? 'السلك ما زال هنا… انتبه لخطواتك.' : '⚠️ تعثّرت بسلك ممدود عبر الممر! هذا خطر على كل من يمشي هنا.')); }
+    } else {
+      push(f.x, f.z, f.r + .6); TV.shake = .6; Audio_.sfx(k === 'panel' || k === 'spark' ? 'factory_metal' : 'wrong', .6); if (k === 'panel' || k === 'spark') flash();
+      if (!TV.bit[k]) { TV.bit[k] = 1; say({ panel: '⚡ ابتعد! لوحة الكهرباء مفتوحة والأسلاك مكشوفة. لا تلمسها أبداً.', spark: '🔥 الشرر يتطاير على الممر! اللحام يحتاج ستارة تحمي المارّين.', guard: '⚙️ ابتعد! الترس يدور مكشوفاً… قد يسحب اليد أو الملابس.', stack: '📦 الصناديق تهتز فوقك! التكديس المائل قد يسقط على أحد.', leak: '💨 البخار حار جداً! صمام مكسور يسرّب البخار على الممر.' }[k] || '⚠️ خطر!'); }
+    }
   }
 }
 async function tourAct() {
@@ -944,8 +1006,9 @@ function equip(list) {
 function unequip() { headGear?.parent?.remove(headGear); headGear = null; }
 /* ---- information kiosks ---- */
 function openFact(i) {
-  const f = TOUR[TV.F.id].facts[i], T = TRACKS[TV.F.track], ov = $('#fact'), isNew = !TV.facts.has(i);
-  $('#fact-n').textContent = i + 1; $('#fact-n').style.background = T.color; $('#fact-t').textContent = f.t.ar; $('#fact-b').textContent = f.b.ar;
+  const f = TOUR[TV.F.id].facts[i], T = TRACKS[TV.M.track], ov = $('#fact'), isNew = !TV.facts.has(i);
+  const FS = FSTYLE[TV.F.id] || FSTYLE.rabie; ov.className = `ovl th-${FS.theme}`; ov.style.setProperty('--fc', TV.F.color);
+  $('#fact-n').textContent = i + 1; $('#fact-n').style.background = T.color; $('#fact-ic').textContent = FS.ic[i]; $('#fact-t').textContent = f.t.ar; $('#fact-b').textContent = f.b.ar;
   ov.classList.add('on'); Audio_.sfx('panel_open', .5);
   return new Promise(res => { $('#fact-ok').onclick = async () => {
     ov.classList.remove('on'); Audio_.sfx('ui_click');
@@ -955,27 +1018,40 @@ function openFact(i) {
 }
 /* ---- the factory's mission ---- */
 async function startMission() {
-  const F = TV.F, T = TRACKS[F.track];
-  if (F.game === 'hazard') {
+  const F = TV.F, M = TV.M, T = TRACKS[M.track];
+  if (M.game === 'hazard') {
     IN.hazards.forEach(h => { h.found = false; }); TV.hz = true; TV.hzT = 0; TV.hints = 0; TV.hzStart = performance.now();
-    say(`مهمتك: ${F.brief}`, { ms: 6000 }); say('عندما تقف قرب الخطر اضغط «بلّغ». وانتبه على نفسك!');
+    say(`مهمتك: ${M.brief}`, { ms: 6000 }); say('عندما تقف قرب الخطر اضغط «بلّغ». وانتبه على نفسك!');
     return;
   }
   if (TV.facts.size < 3) await say('تقدر تبدأ الآن، لكن معلومات المحطات ستفيدك كثيراً في اختبار المشرف!', { wait: false });
-  S.mode = 'minigame'; show('none'); document.body.classList.remove('in-tour'); $('#talk').hidden = true; Audio_.music(F.game === 'quiz' || F.game === 'memory' ? 'factory_2' : 'factory_1', { vol: .5 });
-  await howto('f-' + F.id, `مسار ${T.name}: ${F.title}`, [['🎯', F.brief], ['⭐', 'كلما كان أداؤك أدق حصلت على نجوم أكثر (حتى 3 نجوم)'], ['✕', 'تقدر تخرج من اللعبة بأي وقت من زر الإغلاق']]);
-  const out = await runMiniGame(F, A);
+  S.mode = 'minigame'; show('none'); document.body.classList.remove('in-tour'); $('#talk').hidden = true; Audio_.music(M.game === 'quiz' || M.game === 'story' ? 'factory_2' : 'factory_1', { vol: .5 });
+  await howto(`f-${M.track}-${F.id}`, `مسار ${T.name}: ${M.title}`, [['🎯', M.brief], ['⭐', 'كلما كان أداؤك أدق حصلت على نجوم أكثر (حتى 3 نجوم)'], ['✕', 'تقدر تخرج من اللعبة بأي وقت من زر الإغلاق']]);
+  const out = await runMiniGame(F, A, M);
   S.mode = 'tour'; show('hud'); document.body.classList.add('in-tour'); follow(0, true, tourSpace()); Audio_.music('factory_1', { vol: .42 });
   if (out.exit) return say('رجعنا إلى المصنع. تقدر تبدأ المهمة متى ما أردت.', { wait: false });
-  missionDone(out.stars);
+  await missionDone(out.stars);
+}
+/* a small two-way question card; resolves with the chosen value */
+function choice(title, text, opts) {
+  const ov = $('#ask'); $('#ask-t').textContent = title; $('#ask-b').textContent = text;
+  $('#ask-row').innerHTML = opts.map(([t], i) => `<button class="btn${i ? ' ghost' : ''}" type="button" data-i="${i}">${t}</button>`).join('');
+  ov.classList.add('on'); Audio_.sfx('panel_open', .5);
+  return new Promise(res => { $('#ask-row').onclick = e => { const b = e.target.closest('button'); if (!b) return; Audio_.sfx('ui_click'); ov.classList.remove('on'); res(opts[+b.dataset.i][1]); }; });
 }
 async function missionDone(stars) {
   const was = TV.mission; TV.mission = Math.max(TV.mission ?? 0, stars); renderTour();
   Audio_.sfx(stars ? 'level_up' : 'wrong', .6);
+  // straight on to the supervisor, or later from the office at the back of the hall
+  if (stars && TV.quiz == null) {
+    const go = await choice(`${'⭐'.repeat(stars)} ${stars === 3 ? 'أداء مذهل!' : 'أحسنت!'}`, 'أنجزت مهمة المصنع. آخر خطوة: ثلاثة أسئلة من مشرف المصنع عمّا تعلّمته في المحطات.', [['📝 اختبار المشرف الآن', true], ['لاحقاً', false]]);
+    if (go) return openQuiz();
+    return say('مكتب المشرف خلف المصنع، اتبع السهم متى ما كنت جاهزاً.', { wait: false });
+  }
   say(stars ? `${'⭐'.repeat(stars)} ${stars === 3 ? 'أداء مذهل!' : 'أحسنت!'} ${was == null ? 'آخر خطوة: اختبار المشرف في المكتب خلف المصنع.' : ''}` : 'لم تكتمل المهمة. جرّب مرة أخرى من الشاشة.');
 }
 async function reportHazard(h) {
-  h.found = true; Audio_.sfx('task_done'); Audio_.sfx('points', .5); TV.hzT = 0;
+  h.found = true; IN.fixHazard?.(h.key); Audio_.sfx('task_done'); Audio_.sfx('points', .5); TV.hzT = 0;
   const n = IN.hazards.filter(x => x.found).length; renderTour();
   await say(`✓ ${h.label} — أحسنت ملاحظتك! (${n}/${IN.hazards.length})`, { wait: false });
   if (n === IN.hazards.length) { TV.hz = false; const secs = (performance.now() - TV.hzStart) / 1000; await wait(900); await missionDone(TV.hints === 0 && secs < 120 ? 3 : TV.hints <= 1 ? 2 : 1); }
@@ -1006,8 +1082,8 @@ async function finishTour() {
 }
 
 async function showResult(F, stars) {
-  S.mode = 'result'; const T = TRACKS[F.track], before = badgeSet().has(F.track), prevBest = S.done[F.id] || 0;
-  if (stars > prevBest) { S.done[F.id] = stars; persist(); }
+  S.mode = 'result'; const T = TRACKS[trackOf()], before = badgeSet().has(trackOf()), prevBest = best(F.id);
+  if (stars > prevBest) { S.done[dk(F.id)] = stars; persist(); }
   const gained = Math.max(0, stars - prevBest) * 100, newBadge = stars > 0 && !before;
   $('#done-badge').src = T.badge; $('#done-badge').style.filter = stars ? '' : 'grayscale(1) opacity(.5)';
   $('#done-title').textContent = stars ? (stars === 3 ? 'أداء مذهل!' : 'أحسنت!') : 'حاول مرة أخرى';
@@ -1037,15 +1113,15 @@ function leaveAnyFactory() { unequip(); $('#talk').hidden = true; document.body.
 let FIN = null;
 async function finale() {
   S.mode = 'finale'; Audio_.music('theme_song', { vol: .75 }); $('#talk').hidden = true;
-  const badges = Object.entries(TRACKS).map(([k, t]) => ({ src: t.badge, on: badgeSet().has(k) }));
-  FIN = await buildFinale(renderer, { badges }); FIN.camK = 0; $('#final').classList.remove('cert');
+  const badges = Object.entries(TRACKS).map(([k, t]) => ({ src: t.badge, on: badgeSet().has(k), name: t.name, color: t.color, main: k === trackOf() }));
+  FIN = await buildFinale(renderer, { badges, name: fullName(), track: TRACKS[trackOf()].name }); FIN.camK = 0; $('#final').classList.remove('cert');
   // the student on the podium, مِرشد beside, everyone facing the camera
   player.root.parent?.remove(player.root); FIN.scene.add(player.root); player.root.visible = true; player.root.position.copy(FIN.podium); faceHero(0); player.speed = 0;
   if (robo) { robo.group.parent?.remove(robo.group); FIN.scene.add(robo.group); robo.place(new THREE.Vector3(1.6, 0, .6), 1.5); robo.look = null; robo.wave(30); }
   show('final'); $('#fin-cert').classList.remove('on');
-  $('#fin-h').textContent = `مبروك يا ${nameOf(S.char)}!`;
+  $('#fin-h').textContent = `مبروك يا ${nameOf()}!`;
   $('#fin-text').textContent = `زرت ${doneCount()} مصنعاً في 4 مناطق، وجمعت ${badgeSet().size} شارات و${Object.keys(S.gears).length} تروس ذهبية. أنت الآن من صناعيو المستقبل.`;
-  const cert = await certificate({ name: nameOf(S.char), char: S.char, factories: doneCount(), regions: 4, points: points(), gears: Object.keys(S.gears).length, badges, date: new Date().toLocaleDateString('ar-SA-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' }) });
+  const cert = await certificate({ name: fullName(), char: S.char, factories: doneCount(), regions: 4, points: points(), gears: Object.keys(S.gears).length, badges, track: TRACKS[trackOf()], date: new Date().toLocaleDateString('ar-SA-u-ca-gregory-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' }) });
   $('#fin-img').src = cert.toDataURL('image/png');
   $('#fin-dl').onclick = () => { const a = document.createElement('a'); a.download = 'future-industrialist-certificate.png'; a.href = $('#fin-img').src; a.click(); Audio_.sfx('ui_click'); };
   setTimeout(() => { if (S.mode === 'finale') { $('#fin-cert').classList.add('on'); $('#final').classList.add('cert'); Audio_.sfx('level_up', .5); } }, 7000);
@@ -1066,6 +1142,7 @@ $('#fin-ok').onclick = () => {
 function loop() {
   const dt = Math.min(.05, clock.getDelta()) * TS; updateEngine();
   if (robo) robo.group.visible = S.robot && (!!player?.root.visible || S.mode === 'finale');
+  if (player?.hero) { const fp = camMode === 3 && (S.mode === 'world' || S.mode === 'tour'); player.hero.model.visible = !fp; if (player.blob) player.blob.visible = !fp; }
   if (life && RW && (['world', 'intro', 'ride', 'drive'].includes(S.mode) || $('#route').classList.contains('on'))) {
     const pr = player.root.position, bh = bus.userData;
     if (S.mode !== 'ride' && S.mode !== 'drive') busPrio = null;
@@ -1074,7 +1151,7 @@ function loop() {
   }
   if (S.mode === 'world' && RW) { RW.update(dt); walk(dt); renderer.render(RW.scene, camera); }
   else if (S.mode === 'drive' && RW) { RW.update(dt); driveStep(dt); renderer.render(RW.scene, camera); }
-  else if (S.mode === 'tour' && IN) { tourStep(dt); renderer.render(IN.scene, camera); }
+  else if (S.mode === 'tour' && IN) { tourStep(dt); if (window.__cam) { camera.position.set(...window.__cam.p); camera.lookAt(...window.__cam.l); } renderer.render(IN.scene, camera); }
   else if (S.mode === 'finale' && FIN) { finaleStep(dt); renderer.render(FIN.scene, camera); }
   else if ((S.mode === 'minigame' || S.mode === 'result') && IN) {
     IN.update(dt); const t = performance.now() / 1000; camera.position.set(Math.sin(t * .08) * 14, 6 + Math.sin(t * .13), 12 + Math.cos(t * .08) * 4); camera.lookAt(0, 1.2, -2);
@@ -1090,10 +1167,10 @@ window.__game = { renderer, TV, TOUR, missionDone, S, show, Audio_, loadingScree
 (async () => {
   const auto = Q.get('auto');
   if (!auto) { window.__ready = true; return; }
-  $('#splash').classList.remove('on'); spFx.stop(); S.char = Q.get('c') || S.char;
+  $('#splash').classList.remove('on'); spFx.stop(); S.char = Q.get('c') || S.char; if (Q.get('track')) S.track = Q.get('track'); if (Q.get('name')) S.name = Q.get('name');
   if (auto === 'title') { showTitle(); }
-  else if (auto === 'finale') { skip = true; await startRegion('riyadh'); while (S.mode !== 'world') { skip = true; await wait(100); } for (const f of ALL) S.done[f.id] = 3; await finale(); }
-  else if (auto === 'mg') { const F = ALL.find(f => f.id === Q.get('id')); show('none'); runMiniGame(F, A); }
+  else if (auto === 'finale') { skip = true; await startRegion('riyadh'); while (S.mode !== 'world') { skip = true; await wait(100); } S.track ||= 'creative'; for (const f of ALL) S.done[dk(f.id)] = 3; await finale(); }
+  else if (auto === 'mg') { const F = ALL.find(f => f.id === Q.get('id')); show('none'); runMiniGame(F, A, MS(F)).then(r => { window.__mgResult = r; }); }
   else {
     const F = Q.get('id') ? ALL.find(f => f.id === Q.get('id')) : null, r = F ? F.region : Q.get('r') || 'riyadh';
     skip = true; await startRegion(r);

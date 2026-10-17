@@ -174,8 +174,12 @@ async function stopTex() {
   const [c, x] = canvas(1024, 320); x.clearRect(0, 0, 1024, 320);
   x.fillStyle = 'rgba(132,123,184,.6)'; x.fillRect(0, 0, 1024, 320);
   x.strokeStyle = '#f2c230'; x.lineWidth = 14; x.setLineDash([46, 26]); x.strokeRect(10, 10, 1004, 300); x.setLineDash([]);
-  try { const lg = await loadImg('assets/img/logo_white.webp'), r = 250 / lg.height; x.globalAlpha = .9; x.drawImage(lg, 60, 35, lg.width * r, 250); x.globalAlpha = 1; } catch {}
-  x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.direction = 'rtl'; x.font = '700 86px "Readex Pro"'; x.fillText('موقف باص المبادرة', 620, 150); x.font = '600 60px "Readex Pro"'; x.direction = 'ltr'; x.fillText('BUS STOP', 620, 245);
+  // the logo on the left, the words in the space to its right, each sized to fit its column
+  let lx1 = 60;
+  try { const lg = await loadImg('assets/img/logo_white.webp'), r = Math.min(220 / lg.height, 340 / lg.width); x.globalAlpha = .9; x.drawImage(lg, 50, 160 - lg.height * r / 2, lg.width * r, lg.height * r); x.globalAlpha = 1; lx1 = 50 + lg.width * r; } catch {}
+  const cx0 = lx1 + 40, cw = 1000 - cx0, mid = cx0 + cw / 2, fit = (t, size, w, weight) => { let f = size; x.font = `${weight} ${f}px "Readex Pro"`; while (x.measureText(t).width > w && f > 30) { f -= 3; x.font = `${weight} ${f}px "Readex Pro"`; } };
+  x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = 'rtl'; fit('موقف باص المبادرة', 80, cw, 700); x.fillText('موقف باص المبادرة', mid, 128);
+  x.direction = 'ltr'; fit('BUS STOP', 64, cw * .8, 600); x.fillText('BUS STOP', mid, 222);
   return toTex(c);
 }
 function busWordTex() {

@@ -1,10 +1,14 @@
 /* Game content: four regions, three playable factories each, each factory with its own mini-game.
    Eastern Province factories use generic names: no factory partners were listed for that region. */
 export const TRACKS = {
-  discoverer: { name: 'المكتشف', badge: 'assets/ui/badge_discoverer.webp', color: '#3f8fe0' },
-  creative: { name: 'المبدع', badge: 'assets/ui/badge_creative.webp', color: '#5cc7a8' },
-  artist: { name: 'الفنان', badge: 'assets/ui/badge_artist.webp', color: '#8a5bd6' },
-  ambassador: { name: 'السفير', badge: 'assets/ui/badge_ambassador.webp', color: '#2bb3a0' }
+  discoverer: { missions: [['🔍', 'صيد المخاطر'], ['✅', 'فحص الجودة'], ['🧪', 'اختبار الآلات']], name: 'المكتشف', badge: 'assets/ui/badge_discoverer.webp', color: '#3f8fe0', verb: 'اكتشف',
+    desc: 'عينك لا تفوّت شيئاً: تفحص السلامة والجودة على خطوط الإنتاج وتختبر الآلات قبل أن تخطئ.', skills: ['السلامة', 'الجودة', 'الاختبار'] },
+  creative: { missions: [['🏭', 'بناء خط الإنتاج'], ['⚡', 'توصيل الطاقة'], ['🎯', 'التعبئة الدقيقة']], name: 'المبدع', badge: 'assets/ui/badge_creative.webp', color: '#5cc7a8', verb: 'ابتكر',
+    desc: 'تحب أن تعرف كيف تعمل الأشياء: تبني خط الإنتاج، توصل الطاقة للآلات، وتضبط الدقة.', skills: ['الهندسة', 'الطاقة', 'الدقة'] },
+  artist: { missions: [['🎨', 'تصميم العبوة'], ['🧩', 'تنسيق العرض'], ['🗿', 'منحوتة فنية']], name: 'الفنان', badge: 'assets/ui/badge_artist.webp', color: '#8a5bd6', verb: 'صمّم',
+    desc: 'ترى الجمال في كل منتج: تصمم العبوات وتنسّق الألوان وتصنع من المواد أعمالاً فنية.', skills: ['التصميم', 'الألوان', 'الإبداع'] },
+  ambassador: { missions: [['📸', 'حملة إعلانية'], ['📖', 'قصة مصوّرة'], ['🏆', 'تحدٍّ سريع']], name: 'السفير', badge: 'assets/ui/badge_ambassador.webp', color: '#2bb3a0', verb: 'روّج',
+    desc: 'صوت الصناعة الوطنية: تصنع الإعلانات وتحكي قصة المنتج وتعرّف الناس بالمصانع.', skills: ['الإعلان', 'القصة', 'التواصل'] }
 };
 
 export const ORDER = ['riyadh', 'makkah', 'qassim', 'eastern'];

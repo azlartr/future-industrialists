@@ -211,6 +211,7 @@ body.in-tour .tour-card{display:block}
 .ppe-grid button.sel{border-color:var(--violet);background:#efeafd}
 .ppe-grid button.sel::after{content:"✓";position:absolute;top:6px;left:8px;width:20px;height:20px;border-radius:50%;background:var(--violet);color:#fff;font-size:12px;display:grid;place-items:center}
 .ppe-grid button.good{border-color:#2fb36d;background:#e6f7ee}.ppe-grid button.bad{border-color:#e0464f;background:#fdecee}
+.ask{width:min(440px,calc(100% - 24px))!important;text-align:center}.ask h3{font-size:26px!important}.ask .row{justify-content:center!important}
 .ovl .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .ovl .note{font-size:13.5px;color:var(--muted);line-height:1.6;flex:1;min-width:160px}
 .fact-n{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;font-weight:700;margin-bottom:10px;box-shadow:0 10px 24px -10px rgba(16,22,70,.6)}
@@ -245,6 +246,68 @@ body.in-tour .tour-card{display:block}
 .jr-f .stamp{flex:none;width:30px;height:30px;border-radius:50%;border:2px dashed #c9cde6;display:grid;place-items:center;font-size:14px;color:#c9cde6}.jr-f .stamp.on{border:2px solid #2fb36d;color:#2fb36d;background:#e6f7ee;transform:rotate(-12deg)}
 @media (max-width:560px){.jr-f .chips{display:none}}
 
+
+/* the participant's card: the full name goes on the certificate */
+.idcard{position:absolute;left:50%;top:50%;translate:-50% -46%;width:min(620px,calc(100% - 28px));border-radius:26px;overflow:hidden;background:#fbfaff;color:var(--navy);box-shadow:0 40px 80px -30px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.4);animation:cardin .7s cubic-bezier(.2,.7,.2,1) both}
+.id-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:var(--grad)}
+.id-top img{height:34px}.id-top span{color:#fff;font-weight:600;font-size:14px;padding:4px 12px;border:1px solid rgba(255,255,255,.5);border-radius:999px}
+.id-body{display:flex;gap:18px;padding:20px;align-items:center}
+.id-photo{flex:none;width:118px;height:148px;border-radius:18px;background:#e8e6f6 center 12%/150% auto no-repeat;box-shadow:inset 0 0 0 3px #f2c230}
+.id-fields{flex:1;min-width:0;display:grid;gap:6px}
+.id-fields label{font-size:13.5px;color:var(--muted);font-weight:600}
+.id-fields input{width:100%;font:inherit;font-size:22px;font-weight:700;color:var(--navy);padding:12px 14px;border-radius:14px;border:2px solid #d8dbef;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.id-fields input:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(132,123,184,.2)}
+.id-fields input.bad{border-color:#e0464f;animation:shake .4s}
+.id-fields small{min-height:18px;color:#e0464f;font-size:13px}
+.id-meta{display:flex;gap:18px;font-size:12px;color:var(--muted)}.id-meta b{display:block;color:var(--navy);font-size:14px}
+.id-strip{height:10px;background:repeating-linear-gradient(90deg,#2a3590 0 22px,#847bb8 22px 44px,#f2c230 44px 66px)}
+@keyframes shake{25%{translate:-6px 0}75%{translate:6px 0}}
+@media (max-width:560px){.id-body{flex-direction:column;align-items:stretch;padding:16px}.id-photo{width:92px;height:112px;align-self:center}.id-fields input{font-size:19px}.idcard{top:46%}}
+@media (max-height:520px){.idcard{top:52%}.id-photo{height:100px;width:84px}.panel-screen#namecard .sub{display:none}}
+
+/* the four tracks, each a tall card with its badge */
+.tracks{position:absolute;inset:132px 16px 104px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;max-width:1180px;margin:auto}
+.tcard{--c:#847bb8;position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:18px 16px 16px;border-radius:26px;border:2px solid rgba(255,255,255,.16);color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 38%,transparent),rgba(255,255,255,.04) 70%);overflow:hidden;animation:cardin .7s cubic-bezier(.2,.7,.2,1) both;transition:transform .3s,border-color .3s,box-shadow .3s}
+.tcard:nth-child(2){animation-delay:.07s}.tcard:nth-child(3){animation-delay:.14s}.tcard:nth-child(4){animation-delay:.21s}
+.tcard::before{content:"";position:absolute;inset:-40% -20% auto;height:70%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 70%,transparent),transparent);opacity:.55;pointer-events:none}
+.tcard img{position:relative;width:min(132px,64%);aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 14px 20px rgba(0,0,0,.4));animation:idle3 4s ease-in-out infinite}
+.tcard:nth-child(2) img{animation-delay:-1s}.tcard:nth-child(3) img{animation-delay:-2s}.tcard:nth-child(4) img{animation-delay:-3s}
+@keyframes idle3{50%{transform:translateY(-6px) rotate(-2deg)}}
+.tcard b{position:relative;font-size:24px}
+.tcard p{position:relative;margin:0;font-size:14px;line-height:1.75;opacity:.9}
+.tcard .tm{position:relative;list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px;width:100%}.tcard .tm li{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.1);font-size:13.5px;font-weight:600;text-align:start}.tcard .tm i{font-style:normal;font-size:18px}
+@media (max-width:900px){.tcard .sk{display:none!important}.tcard .tm{gap:4px;margin-top:2px}.tcard .tm li{padding:4px 6px;font-size:11.5px;gap:5px;border-radius:9px}.tcard .tm i{font-size:14px}}
+.tcard .sk{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:auto}
+.tcard .sk i{font-style:normal;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}
+.tcard .done{position:absolute;top:12px;left:12px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fff;color:var(--navy)}
+.tcard:hover,.tcard.sel{transform:translateY(-6px);border-color:#fff;box-shadow:0 24px 50px -24px var(--c)}
+.tcard.sel{animation:selpop .5s ease}
+@media (max-width:900px){.tracks{grid-template-columns:repeat(2,minmax(0,1fr));overflow:auto;inset:118px 12px 96px;align-content:start}.tcard{padding:12px 10px}.tcard img{width:78px}.tcard p{font-size:12.5px;line-height:1.6}.tcard b{font-size:19px}}
+@media (max-width:420px){.tcard p{display:none}.tcard .sk{margin-top:4px}}
+
+/* each factory's fact card has its own look */
+.fact-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.fact-ic{font-size:54px;line-height:1;filter:drop-shadow(0 8px 10px rgba(0,0,0,.18));animation:icpop .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes icpop{from{transform:scale(.3) rotate(-20deg);opacity:0}}
+#fact.th-comic .card{background:#fffaf0;border:4px solid #1b2263;box-shadow:8px 8px 0 #1b2263;border-radius:18px;background-image:radial-gradient(rgba(240,138,28,.16) 2.5px,transparent 3px);background-size:14px 14px}
+#fact.th-comic .fact-n{border-radius:0;clip-path:polygon(50% 0,61% 32%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 32%);width:72px;height:72px}
+#fact.th-comic h3{font-weight:900;font-size:26px}
+#fact.th-poster .card{background:linear-gradient(160deg,var(--fc,#d71a28),#5e0911);color:#fff;border:0}
+#fact.th-poster .fact-n{background:#fff!important;color:var(--fc,#d71a28);font-size:34px;width:70px;height:70px}
+#fact.th-poster .fact-b{color:#fff}#fact.th-poster .fact-saved{background:rgba(255,255,255,.18);color:#fff}
+#fact.th-holo .card{background:linear-gradient(180deg,rgba(6,17,43,.94),rgba(13,27,58,.94));color:#d9f7ff;border:1px solid rgba(79,227,255,.5);box-shadow:0 0 40px rgba(79,227,255,.25),inset 0 0 30px rgba(79,227,255,.08);background-image:repeating-linear-gradient(0deg,rgba(79,227,255,.05) 0 2px,transparent 2px 5px);animation:holo .5s steps(6) both}
+@keyframes holo{0%{clip-path:inset(0 0 100% 0);filter:hue-rotate(40deg)}100%{clip-path:inset(0)}}
+#fact.th-holo .fact-n{background:transparent!important;border:3px solid #4fe3ff;color:#4fe3ff;box-shadow:0 0 18px rgba(79,227,255,.6)}
+#fact.th-holo h3{color:#bff5ff;letter-spacing:.02em}#fact.th-holo .fact-b{color:#d9f7ff}#fact.th-holo .fact-saved{background:rgba(79,227,255,.14);color:#4fe3ff}
+#fact.th-blueprint .card{background:#123f7a;color:#fff;border:2px dashed rgba(255,255,255,.6);background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:22px 22px}
+#fact.th-blueprint .fact-n{background:transparent!important;border:3px solid #fff;border-radius:12px}
+#fact.th-blueprint .fact-b{color:#e6f0ff}#fact.th-blueprint .fact-saved{background:rgba(255,255,255,.14);color:#fff}
+#fact.th-notebook .card{background:#fbf6ea;color:#4a3216;border:0;border-radius:6px;transform:rotate(-.6deg);background-image:linear-gradient(rgba(80,120,200,.18) 1px,transparent 1px);background-size:100% 32px;box-shadow:0 30px 60px -20px rgba(0,0,0,.45)}
+#fact.th-notebook .card::before{content:"";position:absolute;top:-10px;left:50%;width:120px;height:26px;translate:-50% 0;background:rgba(242,194,48,.75);transform:rotate(-3deg)}
+#fact.th-notebook .card{position:relative;overflow:visible}#fact.th-notebook .fact-n{border-radius:50%;background:transparent!important;border:3px solid #8a6a3a;color:#8a6a3a}
+#fact.th-drop .card{background:linear-gradient(180deg,#e6f6ff,#bfe6fa);color:#0d3a5c;border:0;border-radius:32px}
+#fact.th-drop .fact-n{border-radius:50% 50% 50% 0;transform:rotate(-45deg)}#fact.th-drop .fact-n::first-line{}
+.trk-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 12px 3px 4px;margin-inline-end:6px;border-radius:999px;background:color-mix(in srgb,var(--c) 55%,transparent);border:1px solid rgba(255,255,255,.35);font-weight:700;color:#fff;vertical-align:middle}.trk-chip img{width:24px;height:24px}
 /* character + region screens come alive */
 .panel-screen{background:radial-gradient(120% 90% at 50% 0%,#3c58a7 0%,#232c78 55%,#141a4f 100%)}
 .panel-screen canvas.amb{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -461,6 +524,7 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
 
 <div class="corner">
   <button class="icon-btn glass" id="snd" type="button" aria-label="الصوت"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path id="snd-wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span class="eq"><i></i><i></i><i></i></span></button>
+  <button class="icon-btn glass" id="cam" type="button" aria-label="وضع الكاميرا" data-m="near" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.6"/></svg></button>
   <button class="icon-btn glass" id="home" type="button" aria-label="القائمة الرئيسية" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
 </div>
 <div class="settings glass" id="settings" hidden>
@@ -508,17 +572,45 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
   <div class="bottom-bar"><button class="btn ghost" type="button" data-back="title">رجوع</button></div>
 </section>
 
+<section class="screen panel-screen" id="namecard">
+  <canvas class="amb" id="name-fx"></canvas>
+  <h2>سجّل اسمك</h2>
+  <p class="sub">هذه بطاقتك في الرحلة، وسيُكتب اسمك الكامل على شهادة صناعيو المستقبل</p>
+  <form class="idcard" id="id-form" autocomplete="off">
+    <div class="id-top"><img src="assets/img/logo_white.webp" alt=""><span>بطاقة مشارك</span></div>
+    <div class="id-body">
+      <div class="id-photo" id="id-photo"></div>
+      <div class="id-fields">
+        <label for="id-name">الاسم الكامل</label>
+        <input id="id-name" type="text" maxlength="40" placeholder="مثال: فهد عبدالله القحطاني" enterkeyhint="done" required>
+        <small id="id-err"></small>
+        <div class="id-meta"><span>المبادرة<b>صناعيو المستقبل</b></span><span>الرحلة<b>2026</b></span></div>
+      </div>
+    </div>
+    <div class="id-strip"></div>
+  </form>
+  <div class="bottom-bar"><button class="btn ghost" type="button" data-back="pick">رجوع</button><button class="btn" type="submit" form="id-form" id="id-ok">متابعة</button></div>
+</section>
+
+<section class="screen panel-screen" id="tracks">
+  <canvas class="amb" id="trk-fx"></canvas>
+  <h2>اختر مسارك</h2>
+  <p class="sub">مسارك يحدد مهمتك في كل مصنع: في كل منطقة ثلاثة مصانع بمهام من مسارك</p>
+  <div class="tracks" id="track-list"></div>
+  <div class="bottom-bar"><button class="btn ghost" type="button" data-back="namecard">رجوع</button></div>
+</section>
+
 <section class="screen panel-screen" id="regions">
   <canvas class="amb" id="reg-fx"></canvas>
   <h2 id="reg-title">إلى أين تتجه الرحلة؟</h2>
-  <p class="sub">في كل منطقة مدرسة تنطلق منها، وثلاثة مصانع بمهام مختلفة</p>
+  <p class="sub" id="reg-sub">في كل منطقة مدرسة تنطلق منها، وثلاثة مصانع بمهام مسارك</p>
   <div class="regions">
     <button class="rcard" type="button" data-r="riyadh" style="background-image:url(assets/ui/load_riyadh.webp)"><span class="tag">0 / 3</span><b>الرياض</b><small>الربيع · كوكاكولا · كاكست</small></button>
     <button class="rcard" type="button" data-r="makkah" style="background-image:url(assets/ui/load_jeddah.webp)"><span class="tag">0 / 3</span><b>مكة المكرمة</b><small>يورك · سدافكو · اليمامة</small></button>
     <button class="rcard" type="button" data-r="qassim" style="background-image:url(assets/ui/load_qassim.webp)"><span class="tag">0 / 3</span><b>القصيم</b><small>الكريدا · نقي · توزين</small></button>
     <button class="rcard" type="button" data-r="eastern" style="background-image:url(assets/ui/load_eastern.webp)"><span class="tag">0 / 3</span><b>الشرقية</b><small>البتروكيماويات · التحلية · الميناء</small></button>
   </div>
-  <div class="bottom-bar"><button class="btn ghost" type="button" data-back="pick" id="reg-back">رجوع</button></div>
+  <div class="bottom-bar"><button class="btn ghost" type="button" data-back="tracks" id="reg-back">رجوع</button></div>
 </section>
 
 <section class="screen" id="loading">
@@ -597,7 +689,8 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
 <div class="talk glass" id="talk" hidden><div class="t-av"><svg viewBox="0 0 64 64" aria-hidden="true"><line x1="32" y1="6" x2="32" y2="14" stroke="#1b2263" stroke-width="2.5"/><circle cx="32" cy="6" r="4" fill="#f2c230"/><rect x="8" y="14" width="48" height="36" rx="13" fill="#fff" stroke="#c9cde6" stroke-width="2"/><rect x="13" y="21" width="38" height="22" rx="8" fill="#0c1030"/><rect x="21" y="26" width="6" height="10" rx="3" fill="#6ff3ff"/><rect x="37" y="26" width="6" height="10" rx="3" fill="#6ff3ff"/><path d="M28 39q4 3 8 0" stroke="#6ff3ff" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="3" y="26" width="6" height="12" rx="3" fill="#847bb8"/><rect x="55" y="26" width="6" height="12" rx="3" fill="#847bb8"/></svg></div><div class="t-body"><b>مِرشد <small id="t-role">مرشدك في الرحلة</small></b><p id="t-text"></p></div><span class="t-next" id="t-next">اضغط للمتابعة ◂</span></div>
 <section class="ovl" id="ppe"><div class="card glass"><h3>خزانة معدات الوقاية</h3><p class="sub" id="ppe-sub"></p><div class="ppe-grid" id="ppe-grid"></div><div class="row"><span class="note" id="ppe-note">اختر 3 معدات</span><button class="btn" id="ppe-ok" type="button" disabled>ارتدِ المعدات</button></div></div></section>
 <section class="ovl" id="journal"><div class="card glass jr"><div class="jr-head"><span class="av" id="jr-av"></span><div><h3 id="jr-title">دفتر الرحلة</h3><small id="jr-sub"></small></div><button class="jr-x" id="jr-x" type="button" aria-label="إغلاق">✕</button></div><div class="jr-badges" id="jr-badges"></div><div id="jr-regions"></div></div></section>
-<section class="ovl" id="fact"><div class="card glass"><div class="fact-n" id="fact-n">1</div><h3 id="fact-t"></h3><p class="fact-b" id="fact-b"></p><div class="row"><span class="fact-saved">✓ حُفظت في دفتر الرحلة</span><button class="btn" id="fact-ok" type="button">تم</button></div></div></section>
+<section class="ovl" id="fact"><div class="card glass"><div class="fact-top"><div class="fact-n" id="fact-n">1</div><div class="fact-ic" id="fact-ic"></div></div><h3 id="fact-t"></h3><p class="fact-b" id="fact-b"></p><div class="row"><span class="fact-saved">✓ حُفظت في دفتر الرحلة</span><button class="btn" id="fact-ok" type="button">تم</button></div></div></section>
+<section class="ovl" id="ask"><div class="card glass ask"><h3 id="ask-t"></h3><p class="sub" id="ask-b"></p><div class="row" id="ask-row"></div></div></section>
 <section class="ovl" id="quiz"><div class="card glass"><h3>اختبار المشرف</h3><p class="sub" id="quiz-sub">ثلاثة أسئلة مما تعلّمته في المصنع</p><div class="quiz-dots" id="quiz-dots"><i></i><i></i><i></i></div><p class="quiz-q" id="quiz-q"></p><div class="quiz-opts" id="quiz-opts"></div></div></section>
 <div class="toast glass" id="toast"></div>
 
