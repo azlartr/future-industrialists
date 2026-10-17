@@ -6,7 +6,7 @@ import { makePalm, makePalmField } from './palm.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { REGIONS } from './regions.js';
 import { C, WALL, PLACES, BAYS, BOUNDS, CITY, NET, placeFrame, toWorld, buildStreets, setCity, roadPoint, groundY } from './city.js';
-import { tx, fx } from './i18n.js';
+import { tx, fx, EN } from './i18n.js';
 let EDGE = 250; // the south edge of the land: the corniche where there is sea
 
 /* One district per region, on that city's own street plan (city.js): the school and three factory
@@ -230,6 +230,23 @@ function flame() {
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: toTex(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); return s;
 }
 
+/* the front of each factory building, facing its yard (local z) */
+const facadeZ = P => P === 'lab' ? 8.2 : P === 'chem' ? 11.1 : P === 'containers' ? 10.6 : P === 'membranes' ? 10.1 : 10.06;
+/* a point given in a factory's own frame, in world coordinates */
+const localW = (fr, lx, lz) => ({ x: fr.x + lx * Math.cos(fr.rot) + lz * Math.sin(fr.rot), z: fr.z - lx * Math.sin(fr.rot) + lz * Math.cos(fr.rot) });
+/* the sign that says where the entrance is, drawn for the gate's side of the yard */
+function entranceTex(arrow) {
+  const [c, x] = canvas(1024, 256); x.fillStyle = grad(x, 0, 0, 1024, 0, [[0, BRAND.navy], [1, BRAND.blue]]); x.fillRect(0, 0, 1024, 256);
+  x.strokeStyle = '#ffd23f'; x.lineWidth = 8; x.strokeRect(8, 8, 1008, 240);
+  if (arrow) {
+    // a gold arrow at the right edge, pointing right (toward the gate, seen from the street)
+    const cx = 910, cy = 128; x.fillStyle = '#ffd23f'; x.beginPath();
+    x.moveTo(cx - 70, cy - 22); x.lineTo(cx, cy - 22); x.lineTo(cx, cy - 56); x.lineTo(cx + 62, cy); x.lineTo(cx, cy + 56); x.lineTo(cx, cy + 22); x.lineTo(cx - 70, cy + 22); x.closePath(); x.fill();
+  }
+  x.fillStyle = '#fff'; x.font = '800 84px "Readex Pro"'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.direction = EN ? 'ltr' : 'rtl';
+  x.fillText(tx('دخول المصنع من هنا', 'Factory entrance this way'), arrow ? 430 : 512, 132);
+  return toTex(c);
+}
 async function compound(F, region, fr, anim) {
   const M = mats(), g = new THREE.Group(); g.position.set(fr.x, 0, fr.z); g.rotation.y = fr.rot;
   const brand = col(F.color);
@@ -310,15 +327,27 @@ async function compound(F, region, fr, anim) {
   // ---- facade logo sign
   const lw = 11, lh = F.logo ? 11 * (F.logo.includes('kareeda') ? 1.3 : .5) : 3.4;
   const panelT = await logoPanel(F, lw, Math.min(lh, 8));
-  const front = P === 'lab' ? 8.2 : P === 'chem' ? 11.1 : P === 'containers' ? 10.6 : P === 'membranes' ? 10.1 : 10.06;
+  const front = facadeZ(P);
   const sx = P === 'chem' ? -6 : P === 'containers' ? -12 : 7, sy = P === 'chem' || P === 'containers' ? 4.5 : P === 'lab' ? 8.5 : 7;
   const sp = new THREE.Mesh(new THREE.PlaneGeometry(P === 'chem' || P === 'containers' ? 11 : lw, P === 'chem' || P === 'containers' ? 3.4 : Math.min(lh, 8)), new THREE.MeshStandardMaterial({ map: panelT, roughness: .35, emissive: '#ffffff', emissiveMap: panelT, emissiveIntensity: .12 }));
   sp.position.set(sx, sy, front + .05); g.add(sp);
+  // ---- the entrance: a doorway in the yard side, a gold light over it, a canopy and a sign above
+  const doorM = new THREE.MeshStandardMaterial({ color: '#16204f', roughness: .35, metalness: .3 }), goldM = new THREE.MeshStandardMaterial({ color: '#ffd23f', emissive: '#ffd23f', emissiveIntensity: .9 });
+  g.add(box(3.4, 3, .3, M.dark, 0, 1.5, front + .02), box(2.6, 2.5, .3, doorM, 0, 1.25, front + .1), box(3.2, .14, .4, goldM, 0, 2.75, front + .2));
+  g.add(box(6.8, .3, 2, brand, 0, 3.4, front + 1), box(.25, 3.2, .25, M.dark, -3.2, 1.6, front + 1.6), box(.25, 3.2, .25, M.dark, 3.2, 1.6, front + 1.6));
+  const plainTex = entranceTex(false);
+  const es = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 1.4), new THREE.MeshStandardMaterial({ map: plainTex, emissive: '#ffffff', emissiveMap: plainTex, emissiveIntensity: .15, roughness: .4 }));
+  es.position.set(0, 4.25, front + 2.02); g.add(es);
   // ---- wall with a gate opening at local x = 0
   g.add(tbox(19, 2.2, .4, M.wall, -13.5, 1.1, 26, 1.6), tbox(19, 2.2, .4, M.wall, 13.5, 1.1, 26, 1.6));
   g.add(tbox(.4, 2.2, 50.4, M.wall, -23.2, 1.1, .9, 1.6), tbox(.4, 2.2, 50.4, M.wall, 23.2, 1.1, .9, 1.6), tbox(46.8, 2.2, .4, M.wall, 0, 1.1, -24.2, 1.6));
   for (const xx of [-4.2, 4.2]) g.add(box(.6, 4.8, .6, M.dark, xx, 2.4, 26));
   g.add(box(9, .5, .6, M.dark, 0, 4.95, 26));
+  // a standing sign on the street side of the wall, pointing at the gate
+  g.add(cyl(.08, .1, 3.2, M.stainless, -9.5, 1.6, 28.4, 12));
+  const arrowTex = entranceTex(true);
+  const ds = new THREE.Mesh(new THREE.PlaneGeometry(4.8, 1.2), new THREE.MeshStandardMaterial({ map: arrowTex, emissive: '#ffffff', emissiveMap: arrowTex, emissiveIntensity: .18, roughness: .4 }));
+  ds.position.set(-9.5, 3.5, 28.42); g.add(ds);
   const gt = await gateSign(F, region);
   const gs = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 1.6), new THREE.MeshStandardMaterial({ map: gt, roughness: .4, emissive: '#ffffff', emissiveMap: gt, emissiveIntensity: .12 })); gs.position.set(0, 6.1, 26.2); g.add(gs); const gsb = gs.clone(); gsb.rotation.y = Math.PI; gsb.position.z = 25.8; g.add(gsb);
   g.add(box(7.8, 1.9, .3, M.dark, 0, 6.1, 26));
@@ -700,7 +729,7 @@ export async function buildRegion(renderer, key) {
     if (p.kind === 'factory') {
       const F = R.factories[p.i]; scene.add(await compound(F, key, fr, anim));
       boxW(p, -23.5, -24.5, 23.5, 26.25); for (const lx of [-6.5, 6.5]) circW(p, lx, 27.4, .3); blocked.push(boxes[boxes.length - 1]);
-      locs.push({ kind: 'factory', id: p.id, f: F, place: p, x: p.x, side: p.side, name: fx(F, 'name'), bay: BAYS[p.id], gate: gateAt(p) });
+      locs.push({ kind: 'factory', id: p.id, f: F, place: p, x: p.x, side: p.side, name: fx(F, 'name'), bay: BAYS[p.id], gate: gateAt(p), door: localW(fr, 0, facadeZ(F.product) + 1.6) });
     } else if (p.kind === 'school') {
       scene.add(await schoolCompound(key, fr, anim));
       boxW(p, -23.4, -13.4, 23.4, 1.3); boxW(p, -6.3, 1, 6.3, 2.3);

@@ -136,7 +136,10 @@ vm.addEventListener('input', () => { Audio_.setMusic(vm.value / 100); paintR(vm,
 vs.addEventListener('input', () => { Audio_.setSfx(vs.value / 100); paintR(vs, '#vs-out'); });
 vs.addEventListener('change', () => Audio_.sfx('ui_click'));
 $('#robot-on').checked = store.get('robot', true);
-$('#robot-on').addEventListener('change', e => { S.robot = e.target.checked; store.set('robot', S.robot); Audio_.sfx('ui_click'); if (!S.robot) { talkQ.q.length = 0; talkQ.cur = null; if (!talkQ.busy) $('#talk').hidden = true; } else robo?.wave(1.5); });
+const syncGuide = on => { const g = $('#guide'); g.classList.toggle('off', !on); g.setAttribute('aria-pressed', String(on)); };
+syncGuide(store.get('robot', true));
+$('#guide').addEventListener('click', () => { $('#robot-on').checked = !S.robot; $('#robot-on').dispatchEvent(new Event('change')); });
+$('#robot-on').addEventListener('change', e => { S.robot = e.target.checked; store.set('robot', S.robot); syncGuide(S.robot); Audio_.sfx('ui_click'); if (!S.robot) { talkQ.q.length = 0; talkQ.cur = null; if (!talkQ.busy) $('#talk').hidden = true; } else robo?.wave(1.5); });
 $('#lang-btn').textContent = tx('English', 'العربية');
 $('#lang-btn').addEventListener('click', () => setLanguage(EN ? 'ar' : 'en'));
 $('#mute-all').addEventListener('click', () => { const on = Audio_.musicVol > 0 || Audio_.sfxVol > 0; vm.value = vs.value = on ? 0 : 80; vm.dispatchEvent(new Event('input')); vs.dispatchEvent(new Event('input')); });
@@ -663,7 +666,7 @@ function walk(dt) {
   guide(dt, HUD.target, r.position.y);
   // interactions: a factory gate, or the coach's door, whichever is nearer
   const door = busDoor(), dBus = Math.hypot(r.position.x - door.x, r.position.z - door.z);
-  let gd = 2.6; nearGate = -1; RW.locs.forEach((l, i) => { if (l.kind !== 'factory') return; const d = Math.hypot(r.position.x - l.gate.x, r.position.z - l.gate.z); if (d < gd) { gd = d; nearGate = i; } });
+  let gd = 2.6; nearGate = -1; RW.locs.forEach((l, i) => { if (l.kind !== 'factory') return; const d = Math.hypot(r.position.x - l.door.x, r.position.z - l.door.z); if (d < gd) { gd = d; nearGate = i; } });
   if (dBus > 4) justArrived = false;
   fun?.update(dt, r.position, player.speed, player.yaw ?? 0, () => { S.xp += 30; persist(); updateHUD(); Audio_.sfx('level_up', .6); flash(); toast(tx('⚽ هدف! +30 نقطة', '⚽ Goal! +30 points'), 2000); });
   nearBulb = fun?.nearBulb(r.position) || null;

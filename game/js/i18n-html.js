@@ -2,6 +2,7 @@
  * Each key is the trimmed text of one text node (or one placeholder/aria-label/title/alt value).
  * Values keep the source boundary spaces so text next to <kbd> keys does not run together. */
 export const HTML_EN = {
+  'المرشد': 'Guide',
   'رحلة صناعيو المستقبل': 'Future Industrialists: The Trip',
   'الصوت': 'Sound',
   'وضع الكاميرا': 'Camera mode',

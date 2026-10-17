@@ -24,6 +24,9 @@ h1,h2,h3{line-height:1.35}
 .btn:active{scale:.97}
 .btn.ghost{background:rgba(255,255,255,.88);color:var(--navy);box-shadow:0 8px 20px -10px rgba(0,0,0,.4)}
 .icon-btn{width:46px;height:46px;border-radius:14px;border:0;display:grid;place-items:center;color:var(--navy)}
+#guide .slash{display:none}
+#guide.off{opacity:.55}
+#guide.off .slash{display:block}
 
 /* title */
 /* splash: unlocks audio with the first tap */
@@ -369,6 +372,8 @@ body.touch.in-tour .tour-card{top:calc(max(12px,env(safe-area-inset-top)) + 70px
 body.touch .tour-card .tc-head{margin:0}body.touch .tour-card .tc-head>div{display:none}body.touch .tour-card .tc-head img{width:34px;height:34px}
 body.touch .tour-card ul{flex:1}body.touch .tour-card li{display:none}body.touch .tour-card li.now{display:flex}
 body.touch .talk{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 150px)}
+/* while the guide's bubble is up, the action prompt sits above it instead of under it */
+body.touch:has(#talk:not([hidden])) #hud .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 300px)}
 #hud .hint{left:16px;transform:none;max-width:calc(100% - 380px);flex-wrap:wrap;white-space:normal;line-height:1.9;row-gap:2px}
 @media (max-width:900px){#hud .hint{display:none}}
 .toast{position:fixed;z-index:40;top:90px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);box-sizing:border-box;padding:10px 18px;font-weight:600;line-height:1.6;text-align:center;display:none}
@@ -519,13 +524,13 @@ body.driving .toast{top:auto;bottom:calc(max(16px,env(safe-area-inset-bottom)) +
 body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 150px)}
 /* phones: the three corner buttons, the notebook chip and the counters share one row */
 @media (max-width:760px){
-  .corner{gap:6px}
-  .corner .icon-btn{width:40px;height:40px;border-radius:12px}
-  .h-top{left:154px;gap:6px}
-  .stats div{min-width:42px;padding:4px 4px}
+  .corner{gap:5px}
+  .corner .icon-btn{width:36px;height:36px;border-radius:11px}
+  .h-top{left:184px;gap:6px}
+  .stats div{min-width:38px;padding:4px 4px}
   .stats b{font-size:15px}
 }
-@media (max-width:380px){.stats div{min-width:38px;padding:4px 3px}.stats b{font-size:14px}}
+@media (max-width:380px){.stats div{min-width:34px;padding:4px 2px}.stats b{font-size:14px}}
 </style>
 <script type="importmap">{"imports":{"three":"./lib/three.module.min.js","three/addons/":"./lib/jsm/"}}</script>
 </head>
@@ -535,6 +540,7 @@ body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 15
 <div class="corner">
   <button class="icon-btn glass" id="snd" type="button" aria-label="الصوت"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path id="snd-wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span class="eq"><i></i><i></i><i></i></span></button>
   <button class="icon-btn glass" id="cam" type="button" aria-label="وضع الكاميرا" data-m="near" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.6"/></svg></button>
+  <button class="icon-btn glass" id="guide" type="button" aria-label="المرشد" title="المرشد" aria-pressed="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3.5" r="1.2"/><circle cx="9.5" cy="13" r="1.2" fill="currentColor"/><circle cx="14.5" cy="13" r="1.2" fill="currentColor"/><path class="slash" d="M4 4l16 16" stroke="currentColor"/></svg></button>
   <button class="icon-btn glass" id="home" type="button" aria-label="القائمة الرئيسية" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
 </div>
 <div class="settings glass" id="settings" hidden>
