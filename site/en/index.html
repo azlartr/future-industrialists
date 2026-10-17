@@ -518,7 +518,9 @@ html[dir="ltr"] .gb-kid.a{right:4%}html[dir="ltr"] .gb-kid.b{right:21%;animation
 .gb-sub{font-size:clamp(17px,1.7vw,21px);line-height:1.7;color:#dfe7fb;max-width:540px}
 .gb-badges{display:flex;gap:6px;flex-wrap:wrap;align-self:flex-start;margin-top:4px;padding:10px 14px 8px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .gb-badges span{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:84px;padding:2px 6px}
-.gb-badges img{width:60px;height:60px;filter:drop-shadow(0 8px 16px rgba(10,14,50,.4))}
+.gb-badges img{width:60px;height:60px;filter:drop-shadow(0 8px 16px rgba(10,14,50,.4));animation:gbSpin 7s linear infinite;transform-style:preserve-3d;backface-visibility:visible}
+.gb-badges span:nth-child(2) img{animation-delay:-1.75s}.gb-badges span:nth-child(3) img{animation-delay:-3.5s}.gb-badges span:nth-child(4) img{animation-delay:-5.25s}
+@keyframes gbSpin{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
 .gb-badges b{font-size:15px;font-weight:700;color:#fff}
 .gb-cta{align-self:flex-start;margin-top:10px;display:inline-flex;align-items:center;gap:12px;padding:16px 32px;border-radius:999px;background:linear-gradient(135deg,#ffe27a,#f2b51e);color:#1b2263;font-size:20px;font-weight:800;box-shadow:0 16px 34px -12px rgba(242,181,30,.75);transition:transform .25s ease,box-shadow .25s ease}
 .gb-cta svg{width:24px;height:24px;flex:none}
@@ -526,7 +528,7 @@ html[dir="rtl"] .gb-cta svg{transform:scaleX(-1)}
 .gb:hover .gb-cta,.gb:focus-visible .gb-cta{transform:translateY(-3px);box-shadow:0 22px 40px -14px rgba(242,181,30,.85)}
 .gb:focus-visible{outline:3px solid #ffd23f;outline-offset:-6px}
 @keyframes gbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@media (prefers-reduced-motion:reduce){.gb-kid{animation:none}.gb-cta{transition:none}}
+@media (prefers-reduced-motion:reduce){.gb-kid,.gb-badges img{animation:none}.gb-cta{transition:none}}
 @media (max-width:760px){
   .gb{min-height:700px;justify-content:flex-start;padding:80px 22px 0}
   .gb::before{background:linear-gradient(180deg,rgba(27,34,99,.9) 0%,rgba(27,34,99,.84) 55%,rgba(27,34,99,.97) 100%)}
