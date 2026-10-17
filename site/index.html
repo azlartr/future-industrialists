@@ -512,14 +512,14 @@ html[dir="rtl"] .gb::before{background:linear-gradient(270deg,rgba(27,34,99,.95)
 .gb-kid img{display:block;height:100%;width:auto}
 html[dir="rtl"] .gb-kid.a{left:4%}html[dir="rtl"] .gb-kid.b{left:21%;animation-delay:-3s}
 html[dir="ltr"] .gb-kid.a{right:4%}html[dir="ltr"] .gb-kid.b{right:21%;animation-delay:-3s}
-.gb-copy{position:relative;z-index:2;display:flex;flex-direction:column;gap:16px;max-width:600px}
+.gb-copy{position:relative;z-index:2;display:flex;flex-direction:column;gap:20px;max-width:600px}
 .gb-tag{align-self:flex-start;padding:6px 16px;border-radius:999px;background:rgba(255,210,63,.16);border:1px solid rgba(255,210,63,.55);color:#ffd23f;font-size:15px;font-weight:700}
 .gb-title{font-size:clamp(36px,4.8vw,62px);font-weight:800;line-height:1.15;text-shadow:0 8px 28px rgba(10,14,50,.35)}
 .gb-sub{font-size:clamp(17px,1.7vw,21px);line-height:1.7;color:#dfe7fb;max-width:540px}
-.gb-badges{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
-.gb-badges span{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:72px}
-.gb-badges img{width:64px;height:64px;filter:drop-shadow(0 8px 16px rgba(10,14,50,.4))}
-.gb-badges b{font-size:14px;font-weight:600;color:#eef2ff}
+.gb-badges{display:flex;gap:6px;flex-wrap:wrap;align-self:flex-start;margin-top:4px;padding:10px 14px 8px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.gb-badges span{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:84px;padding:2px 6px}
+.gb-badges img{width:60px;height:60px;filter:drop-shadow(0 8px 16px rgba(10,14,50,.4))}
+.gb-badges b{font-size:15px;font-weight:700;color:#fff}
 .gb-cta{align-self:flex-start;margin-top:10px;display:inline-flex;align-items:center;gap:12px;padding:16px 32px;border-radius:999px;background:linear-gradient(135deg,#ffe27a,#f2b51e);color:#1b2263;font-size:20px;font-weight:800;box-shadow:0 16px 34px -12px rgba(242,181,30,.75);transition:transform .25s ease,box-shadow .25s ease}
 .gb-cta svg{width:24px;height:24px;flex:none}
 html[dir="rtl"] .gb-cta svg{transform:scaleX(-1)}
@@ -534,12 +534,39 @@ html[dir="rtl"] .gb-cta svg{transform:scaleX(-1)}
   .gb-copy{gap:12px;max-width:none}
   .gb-title{font-size:34px}
   .gb-sub{font-size:16px}
-  .gb-badges{gap:10px}.gb-badges img{width:52px;height:52px}.gb-badges span{min-width:64px}.gb-badges b{font-size:12px}
+  .gb-badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;width:100%;align-self:stretch;padding:8px}.gb-badges img{width:46px;height:46px}.gb-badges span{min-width:0}.gb-badges b{font-size:13px}
   .gb-cta{align-self:stretch;justify-content:center;font-size:18px;padding:15px 24px}
   .gb-kid{height:220px;bottom:-4px}
   html[dir="rtl"] .gb-kid.a{left:-6%}html[dir="rtl"] .gb-kid.b{left:30%}
   html[dir="ltr"] .gb-kid.a{right:-6%}html[dir="ltr"] .gb-kid.b{right:30%}
-}.gb-sec-mini{margin:0}.gb-mini{min-height:300px;padding:56px clamp(24px,7vw,120px)}.gb-mini .gb-copy{max-width:800px;gap:12px}.gb-mini .gb-title{font-size:clamp(28px,3.4vw,42px)}.gb-mini .gb-cta{margin-top:6px;font-size:18px;padding:13px 26px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+}.gb-sec-mini{margin:0}.gb-mini{min-height:300px;padding:56px clamp(24px,7vw,120px)}.gb-mini .gb-copy{max-width:800px;gap:12px}.gb-mini .gb-title{font-size:clamp(28px,3.4vw,42px)}.gb-mini .gb-cta{margin-top:6px;font-size:18px;padding:13px 26px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.song-sec{padding-block:clamp(40px,6vw,80px)}
+.song{max-width:1100px;margin-inline:auto;display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(20px,4vw,48px);align-items:center;padding:clamp(24px,4vw,44px);border-radius:28px;background:radial-gradient(60% 80% at 100% 0%,rgba(132,123,184,.55),transparent 60%),linear-gradient(135deg,#1b2263,#2a3590 55%,#3c58a7);color:#fff;box-shadow:0 30px 60px -30px rgba(27,34,99,.7)}
+.song-tag{display:inline-block;margin:0 0 10px;padding:5px 14px;border-radius:999px;background:rgba(255,210,63,.16);border:1px solid rgba(255,210,63,.5);color:#ffd23f;font-size:14px;font-weight:700}
+.song-title{margin:0 0 10px;font-size:clamp(28px,3.6vw,44px);font-weight:800;line-height:1.2}
+.song-sub{margin:0 0 18px;font-size:clamp(16px,1.6vw,19px);color:#dfe7fb;line-height:1.7}
+.song-hash{color:#ffd23f;direction:ltr;unicode-bidi:isolate}
+.song-steps{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-wrap:wrap;gap:10px;counter-reset:s}
+.song-steps li{counter-increment:s;position:relative;padding:8px 16px;padding-inline-start:44px;border-radius:999px;background:rgba(255,255,255,.1);font-size:15px}
+.song-steps li::before{content:counter(s);position:absolute;inset-inline-start:8px;top:50%;translate:0 -50%;width:24px;height:24px;border-radius:50%;background:#ffd23f;color:#1b2263;font-size:13px;font-weight:800;display:grid;place-items:center}
+.song-actions{display:flex;flex-wrap:wrap;gap:12px}
+.song-dl{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:999px;background:linear-gradient(135deg,#ffe27a,#f2b51e);color:#1b2263;font-weight:800;font-size:18px;text-decoration:none;box-shadow:0 14px 30px -12px rgba(242,181,30,.8);transition:transform .25s ease}
+.song-dl:hover{transform:translateY(-2px)}
+.song-copy{padding:14px 22px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+.song-player{display:grid;justify-items:center;gap:18px}
+.song-play{width:120px;height:120px;border-radius:50%;border:0;background:#fff;color:#1b2263;display:grid;place-items:center;cursor:pointer;box-shadow:0 0 0 10px rgba(255,255,255,.12),0 0 0 22px rgba(255,255,255,.06)}
+.song-play svg{width:44px;height:44px}
+.song-play .i-pause{display:none}
+.song.on .song-play .i-play{display:none}
+.song.on .song-play .i-pause{display:block}
+.song-eq{display:flex;align-items:flex-end;gap:6px;height:60px}
+.song-eq i{width:7px;height:14px;border-radius:4px;background:linear-gradient(#ffe27a,#f2b51e)}
+.song.on .song-eq i{animation:songEq 1s ease-in-out infinite}
+.song-eq i:nth-child(2n){animation-delay:.2s}
+.song-eq i:nth-child(3n){animation-delay:.45s}
+@keyframes songEq{0%,100%{height:12px}50%{height:58px}}
+@media (max-width:760px){.song{grid-template-columns:1fr}.song-player{order:-1}.song-play{width:96px;height:96px}}
+@media (prefers-reduced-motion:reduce){.song.on .song-eq i{animation:none}}
+</style>
 </head>
 <body>
 
@@ -837,6 +864,25 @@ html[dir="rtl"] .gb-cta svg{transform:scaleX(-1)}
 </section>
 
 <!-- Videos -->
+<section class="sec song-sec" id="song" aria-label="أغنية صناعيو المستقبل">
+<div class="song">
+  <div class="song-main">
+    <p class="song-tag">أغنية المبادرة</p>
+    <h2 class="song-title">أغنية صناعيو المستقبل</h2>
+    <p class="song-sub">حمّلها وصوّر ريل وضيف الهاشتاغ <b class="song-hash">#صناعيو_المستقبل</b></p>
+    <ol class="song-steps"><li>حمّل الأغنية</li><li>صوّر ريل بأي مشهد من رحلتك</li><li>ضيف الهاشتاغ وانشر</li></ol>
+    <div class="song-actions">
+      <a class="song-dl" href="audio/future-industrialists-song.mp3" download>⬇ تحميل الأغنية</a>
+      <button class="song-copy" type="button" data-copy="#صناعيو_المستقبل" data-copied="تم النسخ ✓" data-label="نسخ الهاشتاغ">نسخ الهاشتاغ</button>
+    </div>
+  </div>
+  <div class="song-player">
+    <button class="song-play" type="button" aria-label="تشغيل الأغنية" aria-pressed="false"><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+    <div class="song-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <audio id="song-audio" preload="none" src="audio/future-industrialists-song.mp3"></audio>
+  </div>
+</div>
+</section>
 <section class="sec" id="video" style="padding-top:0">
   <div class="wrap">
     <p class="label"><i></i>الفيديوهات</p>
@@ -1658,5 +1704,18 @@ if (REGIONS[startKey]) enter(startKey, true); else map.start();
 })();
 </script>
 
+<script>
+(() => {
+  const a = document.getElementById('song-audio'), b = document.querySelector('.song-play'), box = document.querySelector('.song');
+  const show = on => { b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', on ? 'إيقاف الأغنية' : 'تشغيل الأغنية'); box.classList.toggle('on', on); };
+  b.addEventListener('click', () => { if (a.paused) a.play().catch(() => {}); else a.pause(); });
+  a.addEventListener('play', () => show(true)); a.addEventListener('pause', () => show(false)); a.addEventListener('ended', () => show(false));
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+    const v = btn.dataset.copy;
+    try { await navigator.clipboard.writeText(v); } catch (e) { const ta = document.createElement('textarea'); ta.value = v; document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+    btn.textContent = btn.dataset.copied; setTimeout(() => { btn.textContent = btn.dataset.label; }, 1800);
+  }));
+})();
+</script>
 </body>
 </html>
