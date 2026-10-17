@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:23.353Z",
+        "updatedAt": "2026-10-17T23:10:24.753Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1232,7 +1232,7 @@
             "id": "region-partner-makkah:مواد الاعمار",
             "name": "مواد الإعمار",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-makkah:مبكو",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:46.985Z",
+      "updatedAt": "2026-10-17T23:10:51.314Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
