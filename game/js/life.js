@@ -7,7 +7,7 @@ import { NET, polyAt } from './city.js';
    give-way junctions (one car at a time inside), and stops well short of anyone on the road: the
    student on foot, or the coach. */
 const CARS = [['sedan', 5], ['suv', 4], ['suv-luxury', 3], ['sedan-sports', 2], ['hatchback-sports', 2], ['taxi', 2], ['van', 2], ['delivery', 2], ['truck', 2], ['police', .6], ['ambulance', .4], ['garbage-truck', .5]];
-const CAR_LEN = 4.4, COUNT = 26;
+const CAR_LEN = 4.4, COUNT = 34;
 let protos = null;
 const loader = new GLTFLoader();
 async function loadCars() {
@@ -58,9 +58,18 @@ export async function makeLife(scene, { signals }) {
           const toEnd = seg.len - c.s, n = seg.to;
           let stop = false;
           if (n.signal) { const st = signals?.state(seg) || 'go'; stop = st === 'stop' || (st === 'amber' && toEnd > c.v * c.v / 10 + 1.5); }
-          else if (n.lock && n.lock !== c && c.wait < 7) stop = true;
-          else if (toEnd < 4 + c.v * 1.2) n.lock = c;
+          else if (!n.round && !n.bend) { if (n.lock && n.lock !== c && c.wait < 7) stop = true; else if (toEnd < 4 + c.v * 1.2) n.lock = c; }
           if (stop) gap = Math.min(gap, toEnd - c.len / 2 - .6);
+        }
+        // cars from other streams across this car's path (joining a roundabout, merging): give way to them,
+        // unless this car is already inside the junction and they are still waiting on their lane
+        if (c.wait < 6) for (let d = c.len / 2 + 1; d < Math.min(gap + c.len, 24); d += 2) {
+          const p = ahead(path, d); if (!p) break; const px = p.x, pz = p.y; let hit = false;
+          for (const o of traffic) {
+            if (o === c || path.some(pp => pp.seg === o.seg) || (c.seg.kind === 'conn' && o.seg.kind === 'lane')) continue;
+            if (Math.abs(px - o.x) < 3 && Math.abs(pz - o.z) < 3 && Math.hypot(px - o.x, pz - o.z) < 2.6) { gap = Math.min(gap, d - c.len / 2 - 2.5); hit = true; break; }
+          }
+          if (hit) break;
         }
         // anyone in the way: sample the road ahead
         const look = Math.min(gap + c.len, 40);

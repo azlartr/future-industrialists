@@ -211,7 +211,7 @@ body.in-tour .tour-card{display:block}
 .ppe-grid button.sel{border-color:var(--violet);background:#efeafd}
 .ppe-grid button.sel::after{content:"✓";position:absolute;top:6px;left:8px;width:20px;height:20px;border-radius:50%;background:var(--violet);color:#fff;font-size:12px;display:grid;place-items:center}
 .ppe-grid button.good{border-color:#2fb36d;background:#e6f7ee}.ppe-grid button.bad{border-color:#e0464f;background:#fdecee}
-.ask{width:min(440px,calc(100% - 24px))!important;text-align:center}.ask h3{font-size:26px!important}.ask .row{justify-content:center!important}
+.ask{width:min(440px,calc(100% - 24px))!important;text-align:center}#ask-row.list{flex-direction:column;align-items:stretch}#ask-row.list .btn{font-size:16px;min-height:48px;white-space:normal;line-height:1.5}.ask h3{font-size:26px!important}.ask .row{justify-content:center!important}
 .ovl .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .ovl .note{font-size:13.5px;color:var(--muted);line-height:1.6;flex:1;min-width:160px}
 .fact-n{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;font-weight:700;margin-bottom:10px;box-shadow:0 10px 24px -10px rgba(16,22,70,.6)}
@@ -377,6 +377,7 @@ body.touch .talk{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 150px)}
 
 /* minimap strip */
 .mini{flex:0 1 290px;height:118px;padding:6px;align-self:flex-start}
+.mini{cursor:pointer}
 .mini canvas{display:block;width:100%;height:100%}
 #dv-map{display:block;width:100%;height:100%}
 .dv-mapbox{position:absolute;top:max(12px,env(safe-area-inset-top));right:16px;width:240px;height:150px;padding:6px;z-index:2}

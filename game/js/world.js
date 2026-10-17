@@ -5,12 +5,12 @@ import { canvas, toTex, loadImg, pbr, BRAND, network, grad, noise2 } from './tex
 import { makePalm, makePalmField } from './palm.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { REGIONS } from './regions.js';
-import { C, WALL, PLACES, BAYS, placeFrame, toWorld, buildStreets } from './city.js';
-const EDGE = C.ZS[2] + WALL; // the south edge of the district: the corniche where there is sea
+import { C, WALL, PLACES, BAYS, BOUNDS, CITY, NET, placeFrame, toWorld, buildStreets, setCity, roadPoint, groundY } from './city.js';
+let EDGE = 250; // the south edge of the land: the corniche where there is sea
 
-/* One industrial district per region (streets and bays in city.js): the school and three factory
-   compounds open onto the main avenue, with a plaza and two sites still under construction.
-   Each region adds its own scenery and light around it. */
+/* One district per region, on that city's own street plan (city.js): the school and three factory
+   compounds far apart along its roads, the initiative's plaza, two sites still under construction, a
+   landmark on the roundabout, buildings on the free lots. Each region adds its own scenery and light. */
 
 const THEMES = {
   riyadh: { elev: 50, azim: -35, turb: 3.2, ray: 1.2, mie: .004, sun: '#fff1dc', sunI: 3, fog: '#d8e1ea', fogD: .0017, ground: '#e9c99a', exposure: .95, tint: '#ffffff', sea: false },
@@ -414,17 +414,19 @@ async function pylon(F, label) {
 
 /* ---------------- the initiative's plaza: a pool round a monument of the logo ----------------
    Three figures lift a network globe (the logo's mark) above a fountain; benches, lawns with palms,
-   lamps and a big screen with the hackathon around it. */
+   lamps and a big screen with the hackathon around it. Built in the lot's own frame (the road at +z). */
 async function plaza(scene, p, { colliders, boxes, pads, anim }) {
-  const bi = C.XS.findIndex((x, i) => x < p.x && C.XS[i + 1] > p.x), x0 = C.XS[bi] + C.HW + C.SW, x1 = C.XS[bi + 1] - C.HW - C.SW, z0 = C.ZS[0] + C.HW + C.SW, z1 = -C.HW - C.SW, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+  const fr = placeFrame(p), G = new THREE.Group(); G.position.set(fr.x, 0, fr.z); G.rotation.y = fr.rot; scene.add(G);
+  const W = 84, Dp = 66, cz = 26 - Dp / 2, at = (lx, lz) => toWorld(p, lx, lz);
+  const aabb = (lx0, lz0, lx1, lz1) => { const [ax, az] = at(lx0, lz0), [bx, bz] = at(lx1, lz1); return [Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]; };
   const M = mats(), stone = new THREE.MeshStandardMaterial({ color: "#efe9de", roughness: .55, side: THREE.DoubleSide });
-  const slab = tbox(x1 - x0, .2, z1 - z0, new THREE.MeshStandardMaterial({ ...pbr('concrete_pavers', [1, 1]), color: '#efe6d6' }), cx, .1, cz, 2.6); slab.castShadow = false; scene.add(slab);
-  pads.push([x0, z0, x1, z1, .2]);
+  const slab = tbox(W, .2, Dp, new THREE.MeshStandardMaterial({ ...pbr('concrete_pavers', [1, 1]), color: '#efe6d6' }), 0, .1, cz, 2.6); slab.castShadow = false; G.add(slab);
+  pads.push([...aabb(-W / 2, cz - Dp / 2, W / 2, cz + Dp / 2), .2]);
   // radiating paving bands
   const band = new THREE.MeshStandardMaterial({ color: '#c9b79a', roughness: .7 });
-  for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, b = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 24), band); b.rotation.x = -Math.PI / 2; b.rotation.z = a; b.position.set(cx + Math.sin(a) * 23, .205, cz + Math.cos(a) * 23); b.receiveShadow = true; scene.add(b); }
+  for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, b = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 24), band); b.rotation.x = -Math.PI / 2; b.rotation.z = a; b.position.set(Math.sin(a) * 23, .205, cz + Math.cos(a) * 23); b.receiveShadow = true; G.add(b); }
   // the pool
-  const g = new THREE.Group(); g.position.set(cx, .2, cz); scene.add(g);
+  const g = new THREE.Group(); g.position.set(0, .2, cz); G.add(g);
   put(g, m(new THREE.CylinderGeometry(10.4, 10.6, .7, 72, 1, true), stone), 0, .35, 0);
   put(g, m(new THREE.CylinderGeometry(9.8, 9.8, .7, 72, 1, true), stone), 0, .35, 0);
   const rim = m(new THREE.RingGeometry(9.8, 10.4, 72), stone); rim.rotation.x = -Math.PI / 2; rim.position.y = .7; g.add(rim);
@@ -432,7 +434,7 @@ async function plaza(scene, p, { colliders, boxes, pads, anim }) {
   const water = new THREE.Mesh(new THREE.CircleGeometry(9.8, 72), new THREE.MeshStandardMaterial({ color: '#2f8fb5', roughness: .06, metalness: .2, normalMap: nt, normalScale: new THREE.Vector2(.4, .4), envMapIntensity: 1.3 }));
   water.rotation.x = -Math.PI / 2; water.position.y = .52; water.receiveShadow = true; g.add(water);
   anim.push((t, dt) => { nt.offset.x += dt * .03; nt.offset.y += dt * .017; });
-  colliders.push([cx, cz, 10.7]);
+  colliders.push([...at(0, cz), 10.7]);
   const jetM = new THREE.MeshStandardMaterial({ color: '#ffffff', transparent: true, opacity: .55, roughness: .1, emissive: '#cfefff', emissiveIntensity: .25, depthWrite: false });
   const jets = [];
   for (let k = 0; k < 14; k++) { const a = k / 14 * Math.PI * 2, j = new THREE.Mesh(new THREE.CylinderGeometry(.03, .12, 1, 8), jetM); j.position.set(Math.cos(a) * 7.6, .5, Math.sin(a) * 7.6); j.rotation.z = Math.cos(a) * .25; j.rotation.x = -Math.sin(a) * .25; g.add(j); jets.push(j); }
@@ -440,8 +442,7 @@ async function plaza(scene, p, { colliders, boxes, pads, anim }) {
   // the monument: stepped island, three figures, the network globe
   put(g, m(new THREE.CylinderGeometry(3.6, 3.9, .9, 48), stone), 0, .45, 0);
   put(g, m(new THREE.CylinderGeometry(2.6, 2.9, .9, 48), stone), 0, 1.35, 0);
-  const fig = ['#2a3590', '#3c58a7', '#847bb8'];
-  fig.forEach((c, k) => {
+  ['#2a3590', '#3c58a7', '#847bb8'].forEach((c, k) => {
     const a = k / 3 * Math.PI * 2 + Math.PI / 6, f = new THREE.Group(); f.position.set(Math.cos(a) * 1.55, 1.8, Math.sin(a) * 1.55); f.rotation.y = -a + Math.PI / 2; g.add(f);
     const mat = new THREE.MeshPhysicalMaterial({ color: c, metalness: .5, roughness: .25, clearcoat: 1 });
     put(f, m(new THREE.CapsuleGeometry(.5, 2.2, 8, 20), mat), 0, 1.6, 0);
@@ -461,25 +462,114 @@ async function plaza(scene, p, { colliders, boxes, pads, anim }) {
   // benches round the pool, lamps between them
   const wood = new THREE.MeshStandardMaterial({ color: '#b07a4a', roughness: .6 }), lampM = new THREE.MeshStandardMaterial({ color: '#2b3038', metalness: .6, roughness: .4 }), glow = new THREE.MeshStandardMaterial({ color: '#fff', emissive: '#fff3d6', emissiveIntensity: 1.2 });
   for (let k = 0; k < 8; k++) {
-    const a = (k + .5) / 8 * Math.PI * 2, bx = cx + Math.cos(a) * 15, bz = cz + Math.sin(a) * 15, b = new THREE.Group(); b.position.set(bx, .2, bz); b.rotation.y = -a + Math.PI / 2; scene.add(b);
+    const a = (k + .5) / 8 * Math.PI * 2, bx = Math.cos(a) * 15, bz = cz + Math.sin(a) * 15, b = new THREE.Group(); b.position.set(bx, .2, bz); b.rotation.y = -a + Math.PI / 2; G.add(b);
     put(b, m(new RoundedBoxGeometry(2.6, .12, .6, 2, .04), wood), 0, .48, 0); put(b, m(new RoundedBoxGeometry(2.6, .5, .08, 2, .03), wood), 0, .8, .3);
     for (const sx of [-1.1, 1.1]) b.add(box(.08, .45, .5, M.dark, sx, .23, 0));
-    colliders.push([bx, bz, 1.2]);
-    const la = a + Math.PI / 8, lx = cx + Math.cos(la) * 15, lz = cz + Math.sin(la) * 15;
-    scene.add(cyl(.07, .09, 3.6, lampM, lx, 2, lz, 10)); const bulb = new THREE.Mesh(new THREE.SphereGeometry(.28, 16, 12), glow); bulb.position.set(lx, 3.95, lz); scene.add(bulb); colliders.push([lx, lz, .2]);
+    colliders.push([...at(bx, bz), 1.2]);
+    const la = a + Math.PI / 8, lx = Math.cos(la) * 15, lz = cz + Math.sin(la) * 15;
+    G.add(cyl(.07, .09, 3.6, lampM, lx, 2, lz, 10)); const bulb = new THREE.Mesh(new THREE.SphereGeometry(.28, 16, 12), glow); bulb.position.set(lx, 3.95, lz); G.add(bulb); colliders.push([...at(lx, lz), .2]);
   }
   // lawns with palms in the four corners
   const lawnM = new THREE.MeshStandardMaterial({ color: '#5f9a43', roughness: .95 }), pts = [];
   for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-    const lx = cx + sx * 31, lz = cz + sz * 23, lawn = tbox(18, .1, 14, lawnM, lx, .25, lz); lawn.castShadow = false; scene.add(lawn);
-    for (const [ox, oz] of [[-5, -3], [4, 3], [5, -4]]) { pts.push([lx + ox * sx, lz + oz * sz]); colliders.push([lx + ox * sx, lz + oz * sz, .5]); }
+    const lx = sx * 31, lz = cz + sz * 23, lawn = tbox(18, .1, 14, lawnM, lx, .25, lz); lawn.castShadow = false; G.add(lawn);
+    for (const [ox, oz] of [[-5, -3], [4, 3], [5, -4]]) { const w = at(lx + ox * sx, lz + oz * sz); pts.push(w); colliders.push([...w, .5]); }
   }
   const palms = makePalmField(pts, { h: 7.5, shadows: true }); palms.position.y = .3; scene.add(palms);
   // the big screen at the back of the plaza
-  const scr = billboard(await fiAd(), 14, 7, 6); scr.position.set(cx, .2, z0 + 3); scene.add(scr); colliders.push([cx, z0 + 3, .7]);
+  const scr = billboard(await fiAd(), 14, 7, 6); scr.position.set(0, .2, cz - Dp / 2 + 3); G.add(scr); colliders.push([...at(0, cz - Dp / 2 + 3), .7]);
 }
 
-/* ---------------- region scenery ---------------- */
+/* ---------------- the landmark on each city's roundabout ---------------- */
+function landmark(kind, anim) {
+  const g = new THREE.Group(), gold = new THREE.MeshStandardMaterial({ color: '#d8b46a', metalness: 1, roughness: .22 });
+  if (kind === 'kingdom') {
+    // Riyadh's Kingdom Centre in miniature: a tapering blade of blue glass with the arched opening near the top
+    const H = 24, w = y => 3.6 * Math.pow(Math.max(0, 1 - y / H), .55) + .25, sh = new THREE.Shape(), hole = new THREE.Path(), N = 24;
+    for (let i = 0; i <= N; i++) { const y = i / N * H; i ? sh.lineTo(w(y), y) : sh.moveTo(w(0), 0); } for (let i = N; i >= 0; i--) { const y = i / N * H; sh.lineTo(-w(y), y); }
+    for (let i = 0; i <= 10; i++) { const y = H * (.66 + i / 10 * .3); i ? hole.lineTo(w(y) * .62, y) : hole.moveTo(w(y) * .62, y); } for (let i = 10; i >= 0; i--) { const y = H * (.66 + i / 10 * .3); hole.lineTo(-w(y) * .62, y); } sh.holes.push(hole);
+    const geo = new THREE.ExtrudeGeometry(sh, { depth: 3.2, bevelEnabled: true, bevelThickness: .25, bevelSize: .2, bevelSegments: 2, curveSegments: 6 }); geo.translate(0, 0, -1.6);
+    const glass = new THREE.MeshPhysicalMaterial({ map: facadeGlass(6, 40, 13, [120, 150, 185]), metalness: .7, roughness: .12, clearcoat: 1 });
+    g.add(m(geo, glass)); const bridge = m(new THREE.BoxGeometry(w(H * .66) * 1.3, .5, 3.4), new THREE.MeshStandardMaterial({ color: '#cfd8e4', metalness: .8, roughness: .2 })); bridge.position.y = H * .66; g.add(bridge);
+    g.add(cyl(5, 5.4, .8, new THREE.MeshStandardMaterial({ color: '#e9e4da', roughness: .6 }), 0, .4, 0, 48));
+    const lt = new THREE.Mesh(new THREE.TorusGeometry(w(H * .8) * .62, .08, 6, 40), new THREE.MeshStandardMaterial({ color: '#000', emissive: '#7fd0ff', emissiveIntensity: 1.5 })); lt.position.y = H * .8; g.add(lt);
+    anim.push(t => { lt.material.emissiveIntensity = 1.2 + Math.sin(t * 2) * .4; });
+  } else if (kind === 'bicycle') {
+    // Jeddah's giant bicycle
+    const steel = new THREE.MeshStandardMaterial({ color: '#e9edf2', metalness: .7, roughness: .3 }), tyre = new THREE.MeshStandardMaterial({ color: '#2b2f37', roughness: .6 });
+    const R = 3.4, fx = 5.4, P = (x, y) => new THREE.Vector3(x, y, 0);
+    const bike = new THREE.Group(); bike.position.y = .2; g.add(bike);
+    for (const x of [-fx, fx]) { const w = m(new THREE.TorusGeometry(R, .26, 12, 48), tyre); w.position.set(x, R + .3, 0); bike.add(w); for (let k = 0; k < 12; k++) { const sp = m(new THREE.CylinderGeometry(.04, .04, R * 2, 6), steel); sp.position.set(x, R + .3, 0); sp.rotation.z = k / 12 * Math.PI; bike.add(sp); } bike.add(cyl(.3, .3, .5, steel, x, R + .3, 0, 12)); }
+    const tube = (a, b, r = .24) => { const d = b.clone().sub(a), len = d.length(), c = m(new THREE.CylinderGeometry(r, r, len, 12), steel); c.position.copy(a).add(b).multiplyScalar(.5); c.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); bike.add(c); };
+    const rear = P(-fx, R + .3), front = P(fx, R + .3), crank = P(-.4, R * .55), seat = P(-1.8, R * 2.3), head = P(fx - 1.6, R * 2.45);
+    tube(rear, crank); tube(rear, seat); tube(crank, seat); tube(seat, head); tube(crank, head); tube(head, front, .2); tube(head, P(fx - 2, R * 2.9), .18);
+    bike.add(cyl(.12, .12, 2.2, steel, fx - 2, R * 2.9, 0, 10)); const bar = m(new THREE.CylinderGeometry(.14, .14, 2.4, 10), steel); bar.rotation.x = Math.PI / 2; bar.position.set(fx - 2.1, R * 2.95, 0); bike.add(bar);
+    const saddle = m(new RoundedBoxGeometry(1.6, .3, .7, 2, .12), tyre); saddle.position.set(seat.x - .2, seat.y + .3, 0); bike.add(saddle);
+    const pedal = m(new THREE.TorusGeometry(.9, .14, 8, 24), gold); pedal.position.copy(crank); bike.add(pedal);
+    g.add(cyl(7, 7.4, .4, new THREE.MeshStandardMaterial({ color: '#e9e4da', roughness: .6 }), 0, .2, 0, 48));
+  } else if (kind === 'dallah') {
+    // Buraydah's giant dallah, the Arabic coffee pot, with its cups
+    const prof = [[.001, 0], [2.4, 0], [2.7, .5], [2.9, 1.5], [2.5, 2.7], [1.3, 3.5], [1, 5], [1.3, 6.2], [1.75, 6.8], [1.7, 7.1], [.8, 7.3], [.55, 8.2], [.35, 8.9], [.001, 9.3]].map(([r, y]) => new THREE.Vector2(r, y));
+    const pot = m(new THREE.LatheGeometry(prof, 48), gold); pot.position.y = .6; g.add(pot);
+    const spout = m(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(new THREE.Vector3(2.2, 2.6, 0), new THREE.Vector3(4.6, 4.2, 0), new THREE.Vector3(4.4, 7.4, 0)), 24, .42, 12), gold); spout.position.y = .6; g.add(spout);
+    const beak = m(new THREE.ConeGeometry(.5, 1.6, 12), gold); beak.position.set(4.6, 8.6, 0); beak.rotation.z = -.5; g.add(beak);
+    const handle = m(new THREE.TorusGeometry(1.6, .22, 10, 28, Math.PI * 1.1), gold); handle.position.set(-1.8, 5.6, 0); handle.rotation.z = Math.PI * .45; g.add(handle);
+    g.add(cyl(4.6, 5, 1.2, new THREE.MeshStandardMaterial({ color: '#c9a77a', roughness: .8 }), 0, .6, 0, 48));
+    const cupM = new THREE.MeshStandardMaterial({ color: '#f4f1ea', roughness: .4 }); for (let k = 0; k < 3; k++) { const a = Math.PI * .8 + k * .45, cup = m(new THREE.CylinderGeometry(.7, .45, .8, 20), cupM); cup.position.set(Math.cos(a) * 7, 1.6, Math.sin(a) * 7); g.add(cup); g.add(cyl(.9, .9, 1.2, new THREE.MeshStandardMaterial({ color: '#c9a77a', roughness: .8 }), cup.position.x, .6, cup.position.z, 20)); }
+  } else if (kind === 'pearl') {
+    // the Eastern Province's pearl in its open oyster, over a fountain basin
+    const shell = new THREE.MeshStandardMaterial({ color: '#c9b9a6', roughness: .55, metalness: .2, side: THREE.DoubleSide });
+    const lower = m(new THREE.SphereGeometry(4.2, 40, 16, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), shell); lower.scale.set(1, .45, 1.1); lower.position.y = 2.2; g.add(lower);
+    const upper = m(new THREE.SphereGeometry(4.2, 40, 16, 0, Math.PI * 2, 0, Math.PI / 2), shell); upper.scale.set(1, .45, 1.1); upper.position.set(0, 2.4, -2); upper.rotation.x = -1.05; g.add(upper);
+    const pearl = m(new THREE.SphereGeometry(1.9, 48, 32), new THREE.MeshPhysicalMaterial({ color: '#fbf7f2', roughness: .15, clearcoat: 1, clearcoatRoughness: .1, sheen: 1, sheenColor: new THREE.Color('#ffd6f0'), iridescence: .6 })); pearl.position.y = 3.6; g.add(pearl);
+    const basin = m(new THREE.CylinderGeometry(7, 7.3, .7, 56), new THREE.MeshStandardMaterial({ color: '#e9e4da', roughness: .6 })); basin.position.y = .35; g.add(basin);
+    const water = new THREE.Mesh(new THREE.CircleGeometry(6.6, 56), new THREE.MeshStandardMaterial({ color: '#2f8fb5', roughness: .08, metalness: .2 })); water.rotation.x = -Math.PI / 2; water.position.y = .62; g.add(water);
+    g.add(cyl(1.4, 1.8, 2, shell, 0, 1, 0, 24));
+    anim.push(t => { pearl.rotation.y = t * .3; });
+  }
+  return g;
+}
+
+/* ---------------- the rest of the city: buildings on the free lots along the roads ---------------- */
+function fillLots(scene, theme, { boxes, colliders, blocked, solid }) {
+  const M = mats(), list = [];
+  const facades = theme === 'qassim' ? [4, 5, 6, 7].map(i => new THREE.MeshStandardMaterial({ map: najdi(i), roughness: .95 }))
+    : theme === 'jeddah' ? [1, 2, 3, 4].map(i => new THREE.MeshStandardMaterial({ map: rawasheen(i), roughness: .9 }))
+    : theme === 'eastern' ? [M.clad('#e4e7ec'), M.clad('#d9d2c4'), new THREE.MeshStandardMaterial({ map: facadeStone(6, 8, 5), roughness: .85 })]
+    : [1, 2, 3].map(i => new THREE.MeshStandardMaterial({ map: facadeStone(6, 8, i), roughness: .85 }));
+  const glass = new THREE.MeshPhysicalMaterial({ map: facadeGlass(8, 30, 12, [125, 160, 190]), metalness: .6, roughness: .12 });
+  const roofM = new THREE.MeshStandardMaterial({ color: theme === 'qassim' ? '#c9a77a' : '#d9d4ca', roughness: .9 }), byMat = new Map(), roofs = [];
+  const clear = (x, z, w, d, yaw) => {
+    if (z > EDGE - 14) return false;
+    const c = Math.cos(yaw), s = Math.sin(yaw);
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) {
+      const lx = i * (w / 2 + 3), lz = j * (d / 2 + 3), px = x + lx * c + lz * s, pz = z - lx * s + lz * c;
+      if (groundY(px, pz) > 0) return false;
+      if (blocked.some(([x0, z0, x1, z1]) => px > x0 - 2 && px < x1 + 2 && pz > z0 - 2 && pz < z1 + 2)) return false;
+    }
+    return true;
+  };
+  // a row of buildings along every street, and a sparser second row behind it so the blocks don't look empty
+  for (const row of [0, 1]) for (const r of NET.roads) for (const sd of [1, -1]) for (let s = 30 + row * 20; s < r.center.len - 30; s += (44 + rnd() * 26) * (1 + row * .4)) {
+    const tall = theme !== 'qassim' && rnd() < (row ? .3 : .18), w = 22 + rnd() * 16, d = 16 + rnd() * 14, h = theme === 'qassim' ? 6 + rnd() * 5 : tall ? 26 + rnd() * 30 : 8 + rnd() * 12;
+    const [x, z, yaw] = roadPoint(r.id, s, sd, WALL + 4 + d / 2 + row * 42);
+    if (!clear(x, z, w, d, yaw)) continue;
+    const g = new THREE.BoxGeometry(w, h, d), uv = g.attributes.uv; for (let k = 0; k < uv.count; k++) uv.setXY(k, uv.getX(k) * w / (tall ? 30 : 24), uv.getY(k) * h / (tall ? 60 : 16));
+    const mt = tall ? glass : facades[list.length % facades.length], M4 = new THREE.Matrix4().makeRotationY(yaw).setPosition(x, h / 2, z);
+    (byMat.get(mt) || byMat.set(mt, []).get(mt)).push(g.applyMatrix4(M4).toNonIndexed());
+    roofs.push(new THREE.BoxGeometry(w + .3, .4, d + .3).applyMatrix4(new THREE.Matrix4().makeRotationY(yaw).setPosition(x, h + .2, z)).toNonIndexed());
+    list.push(mt);
+    // what the walking student bumps into: a box when square to the map, otherwise a row of posts
+    const c = Math.cos(yaw), sn = Math.sin(yaw), ex = Math.abs(c) * w / 2 + Math.abs(sn) * d / 2, ez = Math.abs(sn) * w / 2 + Math.abs(c) * d / 2;
+    if (Math.abs(Math.sin(2 * yaw)) < .05) { boxes.push([x - ex, z - ez, x + ex, z + ez]); solid.push([x - ex, z - ez, x + ex, z + ez]); }
+    else for (let k = -2; k <= 2; k++) colliders.push([x + k * w / 5 * c, z - k * w / 5 * sn, Math.min(w / 5, d / 2) + .3]);
+    blocked.push([x - ex, z - ez, x + ex, z + ez]);
+  }
+  for (const [mt, gs] of byMat) scene.add(m(mergeGeometries(gs), mt));
+  if (roofs.length) scene.add(m(mergeGeometries(roofs), roofM, false));
+  return list;
+}
+
 function kingdomCentre(glass) {
   const s = new THREE.Shape();
   s.moveTo(-31, 0); s.bezierCurveTo(-31, 120, -26, 230, -12, 300); s.lineTo(12, 300); s.bezierCurveTo(26, 230, 31, 120, 31, 0); s.closePath();
@@ -507,11 +597,12 @@ function cityBlocks(scene, { n, x0, x1, z0, z1, mats, tallMats, tallP = .2, hMin
     const b = m(g, mat, false); b.position.set(x, h / 2, z); scene.add(b);
   }
 }
-function warehouses(scene, avoidX = []) {
+function warehouses(scene, outside = () => true) {
   const M = mats();
   const shedM = [M.clad('#e4e7ec'), M.clad('#d9d2c4')], roofM = ['#2f63a8', '#9aa3ad', '#c8ccd2'].map(c => new THREE.MeshStandardMaterial({ color: c, metalness: .4, roughness: .45 }));
   for (let i = 0; i < 64; i++) {
     const x = -620 + (i % 16) * 78 + rnd() * 14, z = -175 - Math.floor(i / 16) * 44 - rnd() * 8, w = 30 + rnd() * 14, d = 22 + rnd() * 10, h = 8 + rnd() * 6;
+    if (!outside(x, z, 25)) continue;
     const g = new THREE.BoxGeometry(w, h, d); g.translate(x, h / 2, z); worldUV(g, 2.5); scene.add(m(g, shedM[i % 2], false));
     const r = new THREE.Mesh(new THREE.BoxGeometry(w + .4, .5, d + .4), roofM[i % 3]); r.position.set(x, h + .25, z); scene.add(r);
   }
@@ -575,7 +666,9 @@ function breakTiling(mat) {
 /* ---------------- build ---------------- */
 export async function buildRegion(renderer, key) {
   rs = 7 + key.length * 13;
+  setCity(key);
   const R = REGIONS[key], T = THEMES[R.theme], scene = new THREE.Scene(), anim = [];
+  EDGE = CITY.sea ?? BOUNDS.z1 + 40;
   // sky, light and image-based reflections taken from the same sky
   const sky = new Sky(); sky.scale.setScalar(3500); scene.add(sky);
   const su = sky.material.uniforms; su.turbidity.value = T.turb; su.rayleigh.value = T.ray; su.mieCoefficient.value = T.mie; su.mieDirectionalG.value = .8;
@@ -596,15 +689,16 @@ export async function buildRegion(renderer, key) {
   const curbM = new THREE.MeshStandardMaterial({ color: '#cfccc4', roughness: .8 });
   const pavM = new THREE.MeshStandardMaterial({ ...pbr('concrete_pavers', [1, 1]), color: '#e2ddd3' });
   const streets = await buildStreets(scene, { pave: pavM, curb: curbM, region: R.name });
-  const colliders = streets.colliders, boxes = [], pads = [], locs = [];
+  const colliders = streets.colliders, boxes = [], tall = [], pads = [], locs = [];
   const boxW = (p, lx0, lz0, lx1, lz1) => { const [ax, az] = toWorld(p, lx0, lz0), [bx, bz] = toWorld(p, lx1, lz1); boxes.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]); };
   const circW = (p, lx, lz, r) => { const [x, z] = toWorld(p, lx, lz); colliders.push([x, z, r]); };
-  const gateAt = p => new THREE.Vector3(p.x, .2, p.side * (WALL - 1.3));
+  const gateAt = p => new THREE.Vector3(p.q.x + p.rt.x * (WALL - 1.3), .2, p.q.y + p.rt.y * (WALL - 1.3));
+  const blocked = [];
   for (const p of PLACES) {
     const fr = placeFrame(p);
     if (p.kind === 'factory') {
       const F = R.factories[p.i]; scene.add(await compound(F, key, fr, anim));
-      boxW(p, -23.5, -24.5, 23.5, 26.25); for (const lx of [-6.5, 6.5]) circW(p, lx, 27.4, .3);
+      boxW(p, -23.5, -24.5, 23.5, 26.25); for (const lx of [-6.5, 6.5]) circW(p, lx, 27.4, .3); blocked.push(boxes[boxes.length - 1]);
       locs.push({ kind: 'factory', id: p.id, f: F, place: p, x: p.x, side: p.side, name: F.name, bay: BAYS[p.id], gate: gateAt(p) });
     } else if (p.kind === 'school') {
       scene.add(await schoolCompound(key, fr, anim));
@@ -613,35 +707,44 @@ export async function buildRegion(renderer, key) {
       for (const [lx, lz, r] of [[-4.6, 6, .25], [4.6, 6, .25], [8, 9, .5], [16, 9, .5], [8, 20, .5], [16, 20, .5], [-18.6, 14, .2], [-5.4, 14, .2], [-4.2, 26, .4], [4.2, 26, .4]]) circW(p, lx, lz, r);
       for (const bx of [12, 20]) boxW(p, bx - 1.2, 14.2, bx + 1.2, 14.8);
       { const [ax, az] = toWorld(p, -22, 4.5), [bx, bz] = toWorld(p, 22, 25.5); pads.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz), .055]); }
+      { const [ax, az] = toWorld(p, -24, -14), [bx, bz] = toWorld(p, 24, 26.5); blocked.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]); }
       locs.unshift({ kind: 'school', id: p.id, place: p, x: p.x, side: p.side, name: 'المدرسة', bay: BAYS[p.id], gate: gateAt(p), yard: toWorld(p, 0, 15) });
-    } else if (p.kind === 'soon') { scene.add(await soonCompound(R.soon[p.i], fr, anim)); boxW(p, -23.2, -16.2, 23.2, 26.2); }
-    else if (p.kind === 'plaza') await plaza(scene, p, { colliders, boxes, pads, anim });
+    } else if (p.kind === 'soon') { scene.add(await soonCompound(R.soon[p.i], fr, anim)); boxW(p, -23.2, -16.2, 23.2, 26.2); blocked.push(boxes[boxes.length - 1]); }
+    else if (p.kind === 'plaza') { await plaza(scene, p, { colliders, boxes, pads, anim }); blocked.push(pads[pads.length - 1].slice(0, 4)); }
   }
   locs.sort((a, b) => (a.kind === 'school' ? -1 : a.place.i) - (b.kind === 'school' ? -1 : b.place.i));
-  for (const l of locs) { const py = await pylon(l.f, l.kind === 'school' ? 'المدرسة الثانوية' : l.f.name), [px, pz] = toWorld(l.place, -9.5, 28.6); py.position.set(px, .2, pz); py.rotation.y = Math.PI / 2; scene.add(py); colliders.push([px, pz, 1.1]); }
-  // the second site still being built, across the north street
-  scene.add(await soonCompound(R.soon[1], { x: 0, z: C.ZS[0] - WALL - 26, rot: 0 }, anim));
+  for (const l of locs) { const py = await pylon(l.f, l.kind === 'school' ? 'المدرسة الثانوية' : l.f.name), [px, pz] = toWorld(l.place, -9.5, 28.6); py.position.set(px, .2, pz); py.rotation.y = l.place.rot + Math.PI / 2; scene.add(py); colliders.push([px, pz, 1.1]); }
+  // the landmark on the roundabout
+  const ringNode = NET.nodes.find(n => n.round);
+  if (ringNode) { const lm = landmark(CITY.landmark, anim); lm.position.set(ringNode.x, .32, ringNode.z); lm.rotation.y = Math.PI / 5; lm.scale.setScalar({ bicycle: 1.35, pearl: 1.45 }[CITY.landmark] || 1); scene.add(lm); }
   // a shelter where each bay begins, open to the road
   const posterT = await posterTex(), tagT = stopTag(key);
   for (const b of Object.values(BAYS)) {
-    const sh = busStop(posterT, tagT), s2 = b.side, sx = b.x - s2 * 12, sz = s2 * (C.HW + 3.1);
-    sh.rotation.y = s2 > 0 ? 0 : Math.PI; sh.position.set(sx, .2, sz); scene.add(sh);
-    const q = { x: sx, side: s2 > 0 ? -1 : 1 }, w = (lx, lz) => s2 > 0 ? [sx + lx, sz + lz] : [sx - lx, sz - lz];
+    // the shelter where the bay begins, on the sidewalk, open to the road
+    const sh = busStop(posterT, tagT), sx = b.x - b.dt.x * 12 + b.rt.x * (C.HW + 3.1 - C.BUS), sz = b.z - b.dt.y * 12 + b.rt.y * (C.HW + 3.1 - C.BUS), th = Math.atan2(b.rt.x, b.rt.y), cs = Math.cos(th), sn = Math.sin(th);
+    sh.rotation.y = th; sh.position.set(sx, .2, sz); scene.add(sh);
+    const w = (lx, lz) => [sx + lx * cs + lz * sn, sz - lx * sn + lz * cs];
     const [ax, az] = w(-3.45, .45), [bx, bz] = w(3.45, 1.15); boxes.push([Math.min(ax, bx), Math.min(az, bz), Math.max(ax, bx), Math.max(az, bz)]);
     for (const lx of [-3.3, 3.3]) { const [cx, cz] = w(lx, -1); colliders.push([cx, cz, .15]); }
   }
-  const b1 = billboard(await fiAd()); b1.position.set(C.XS[0] - WALL - 9, 0, 40); b1.rotation.y = Math.PI / 2; scene.add(b1);
-  const b2 = billboard(await fiAd(), 11, 5.5, 8.5); b2.position.set(-82, 0, C.ZS[0] - WALL - 6); scene.add(b2);
+  // the initiative's billboards beside the roads
+  { const ad = await fiAd(); for (const [ri, s, sd] of CITY.boards || []) { const [x, z, yaw] = roadPoint(ri, s, sd, WALL + 6); if (blocked.some(([x0, z0, x1, z1]) => x > x0 - 8 && x < x1 + 8 && z > z0 - 8 && z < z1 + 8)) continue; const bb = billboard(ad, 11, 5.5, 8.5); bb.position.set(x, 0, z); bb.rotation.y = yaw; scene.add(bb); colliders.push([x, z, .6]); blocked.push([x - 7, z - 7, x + 7, z + 7]); } }
+  // buildings on the free lots along every road, in the region's own style
+  fillLots(scene, R.theme, { boxes, colliders, blocked, solid: tall });
+  // palm groves on Buraydah's farms
+  if (CITY.farms) { const pts = []; for (let x = BOUNDS.x0 + 20; x < BOUNDS.x1 - 20; x += 14) for (let z = 30; z < BOUNDS.z1 - 20; z += 14) { const px = x + (rnd() - .5) * 4, pz = z + (rnd() - .5) * 4; if (pts.length > 260 || groundY(px, pz) > 0 || blocked.some(([x0, z0, x1, z1]) => px > x0 - 4 && px < x1 + 4 && pz > z0 - 4 && pz < z1 + 4)) continue; pts.push([px, pz]); } scene.add(makePalmField(pts, { h: 6.5, lite: true })); for (const [x, z] of pts) colliders.push([x, z, .5]); }
+  // keep the far scenery outside the district
+  const outside = (x, z, r = 30) => x < BOUNDS.x0 - r || x > BOUNDS.x1 + r || z < BOUNDS.z0 - r || z > BOUNDS.z1 + r;
   // ---- scenery by region
   if (R.theme === 'riyadh') {
-    warehouses(scene);
+    warehouses(scene, outside);
     const skyGlass = new THREE.MeshPhysicalMaterial({ map: facadeGlass(14, 60, 7, [120, 150, 185]), metalness: .7, roughness: .12, clearcoat: 1 });
     const kc = kingdomCentre(skyGlass); kc.position.set(160, 0, -520); kc.rotation.y = -.25; scene.add(kc);
     const fz = faisaliah(new THREE.MeshPhysicalMaterial({ map: facadeGlass(10, 40, 9, [110, 140, 160]), metalness: .7, roughness: .12 }), new THREE.MeshStandardMaterial({ color: '#d8b46a', metalness: 1, roughness: .2 })); fz.position.set(-120, 0, -640); scene.add(fz);
-    cityBlocks(scene, { n: 190, x0: -700, x1: 700, z0: -260, z1: -780, mats: [1, 2, 3].map(i => new THREE.MeshStandardMaterial({ map: facadeStone(6, 8, i), roughness: .85 })), tallMats: [3, 4, 5].map(i => new THREE.MeshPhysicalMaterial({ map: facadeGlass(8, 30, i + 10, i % 2 ? [125, 160, 190] : [150, 160, 170]), metalness: .6, roughness: .12 })), avoid: (x, z) => Math.abs(x - 160) < 50 && z < -470 || Math.abs(x + 120) < 45 && z < -590 });
+    cityBlocks(scene, { n: 190, x0: -700, x1: 700, z0: -260, z1: -780, mats: [1, 2, 3].map(i => new THREE.MeshStandardMaterial({ map: facadeStone(6, 8, i), roughness: .85 })), tallMats: [3, 4, 5].map(i => new THREE.MeshPhysicalMaterial({ map: facadeGlass(8, 30, i + 10, i % 2 ? [125, 160, 190] : [150, 160, 170]), metalness: .6, roughness: .12 })), avoid: (x, z) => !outside(x, z) || Math.abs(x - 160) < 50 && z < -470 || Math.abs(x + 120) < 45 && z < -590 });
   }
   if (R.theme === 'jeddah') {
-    sea(scene, anim, '#1d6f8c'); warehouses(scene);
+    sea(scene, anim, '#1d6f8c'); warehouses(scene, outside);
     // King Fahd's Fountain far out at sea
     const jet = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 9, 260, 16, 1, true), new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: .55, depthWrite: false, side: THREE.DoubleSide }));
     jet.position.set(-220, 129, 520); scene.add(jet);
@@ -649,16 +752,16 @@ export async function buildRegion(renderer, key) {
     anim.push(t => { spray.scale.set(1 + Math.sin(t * 1.3) * .06, .5, 1 + Math.cos(t * 1.1) * .06); jet.material.opacity = .5 + Math.sin(t * 2) * .05; });
     // Jeddah Tower and the old town's rawasheen houses
     const jt = m(new THREE.CylinderGeometry(1, 42, 820, 3, 20), new THREE.MeshPhysicalMaterial({ map: facadeGlass(10, 120, 11, [150, 165, 185]), metalness: .7, roughness: .1 }), false); jt.position.set(260, 410, -1100); scene.add(jt);
-    cityBlocks(scene, { n: 120, x0: -520, x1: 560, z0: -250, z1: -760, mats: [1, 2, 3, 4].map(i => new THREE.MeshStandardMaterial({ map: rawasheen(i), roughness: .9 })), tallMats: [1, 2].map(i => new THREE.MeshPhysicalMaterial({ map: facadeGlass(8, 30, i + 20, [140, 170, 195]), metalness: .6, roughness: .12 })), tallP: .12, hMin: 12, hMax: 30 });
+    cityBlocks(scene, { n: 120, x0: -520, x1: 560, z0: -250, z1: -760, mats: [1, 2, 3, 4].map(i => new THREE.MeshStandardMaterial({ map: rawasheen(i), roughness: .9 })), tallMats: [1, 2].map(i => new THREE.MeshPhysicalMaterial({ map: facadeGlass(8, 30, i + 20, [140, 170, 195]), metalness: .6, roughness: .12 })), tallP: .12, hMin: 12, hMax: 30, avoid: (x, z) => !outside(x, z) });
     mountains(scene, '#8a6b55', -1300);
   }
   if (R.theme === 'qassim') {
     // palm farms behind a mud wall on the near side, Najdi houses and a water tower beyond the factories
     const najdiM = new THREE.MeshStandardMaterial({ map: najdi(4), roughness: .95 });
     scene.add(tbox(1300, 2.2, .5, najdiM, 0, 1.1, EDGE + 5, 3));
-    const pts = []; for (let z = EDGE + 14; z < EDGE + 120; z += 9) for (let x = -640; x < 640; x += 9) pts.push([x + (rnd() - .5) * 2, z + (rnd() - .5) * 2]);
+    const pts = []; for (let z = EDGE + 14, dz = 9; z < EDGE + 130; z += dz, dz += 1.5) for (let x = -640; x < 640; x += 12) pts.push([x + (rnd() - .5) * 3, z + (rnd() - .5) * 2]);
     scene.add(makePalmField(pts, { h: 6.5, lite: true }));
-    cityBlocks(scene, { n: 130, x0: -520, x1: 560, z0: -190, z1: -700, mats: [4, 5, 6].map(i => new THREE.MeshStandardMaterial({ map: najdi(i), roughness: .95 })), tallMats: [new THREE.MeshStandardMaterial({ map: facadeStone(6, 12, 9, '#e3d2b5'), roughness: .85 })], tallP: .06, hMin: 7, hMax: 16, tMin: 25, tMax: 45 });
+    cityBlocks(scene, { n: 130, x0: -520, x1: 560, z0: -190, z1: -700, mats: [4, 5, 6].map(i => new THREE.MeshStandardMaterial({ map: najdi(i), roughness: .95 })), tallMats: [new THREE.MeshStandardMaterial({ map: facadeStone(6, 12, 9, '#e3d2b5'), roughness: .85 })], tallP: .06, hMin: 7, hMax: 16, tMin: 25, tMax: 45, avoid: (x, z) => !outside(x, z) });
     const wt = new THREE.Group(); wt.position.set(-150, 0, -330); scene.add(wt);
     wt.add(cyl(4, 6, 60, new THREE.MeshStandardMaterial({ color: '#e9e4da', roughness: .6 }), 0, 30, 0, 24, false));
     const bowl = m(new THREE.SphereGeometry(18, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#4a8fc8', metalness: .3, roughness: .4 }), false); bowl.rotation.x = Math.PI; bowl.position.y = 72; wt.add(bowl);
@@ -677,18 +780,18 @@ export async function buildRegion(renderer, key) {
     // refinery skyline behind the factories with burning flares
     const M0 = mats();
     const tankM = new THREE.MeshStandardMaterial({ color: '#e8e9eb', metalness: .4, roughness: .45 });
-    for (let i = 0; i < 26; i++) { const x = -480 + i * 38 + rnd() * 10, z = -180 - rnd() * 260, r = 10 + rnd() * 12; scene.add(cyl(r, r, 10 + rnd() * 8, tankM, x, 8, z, 28, false)); }
+    for (let i = 0; i < 26; i++) { const x = -480 + i * 38 + rnd() * 10, z = -180 - rnd() * 260, r = 10 + rnd() * 12; if (outside(x, z, r + 10)) scene.add(cyl(r, r, 10 + rnd() * 8, tankM, x, 8, z, 28, false)); }
     // stacks with red and white aviation bands at the top, distillation columns with ring platforms
     const [sc, sx] = canvas(8, 128); sx.fillStyle = '#c9ccd1'; sx.fillRect(0, 0, 8, 128); for (let b = 0; b < 6; b++) { sx.fillStyle = b % 2 ? '#f3f3f3' : '#c8452e'; sx.fillRect(0, b * 7, 8, 7); }
     const stackM = new THREE.MeshStandardMaterial({ map: toTex(sc), metalness: .3, roughness: .5 }), colM = new THREE.MeshStandardMaterial({ color: '#d5d8dc', metalness: .6, roughness: .35 });
-    for (let i = 0; i < 9; i++) { const x = -380 + i * 95 + rnd() * 30, z = -300 - rnd() * 160, h = 46 + rnd() * 30; const c = cyl(3.4, 3.8, h, colM, x, h / 2, z, 20, false); scene.add(c); for (let y = 10; y < h; y += 12) { const pl = new THREE.Mesh(new THREE.TorusGeometry(4.6, .35, 6, 28), M0.dark); pl.rotation.x = Math.PI / 2; pl.position.set(x, y, z); scene.add(pl); } }
-    for (let i = 0; i < 12; i++) { const x = -420 + i * 75 + rnd() * 20, z = -260 - rnd() * 200, h = 50 + rnd() * 60; scene.add(cyl(1.6 + rnd() * 1.2, 2.6 + rnd() * 1.4, h, i % 3 ? colM : stackM, x, h / 2, z, 16, false));
+    for (let i = 0; i < 9; i++) { const x = -380 + i * 95 + rnd() * 30, z = -300 - rnd() * 160, h = 46 + rnd() * 30; if (!outside(x, z, 20)) continue; const c = cyl(3.4, 3.8, h, colM, x, h / 2, z, 20, false); scene.add(c); for (let y = 10; y < h; y += 12) { const pl = new THREE.Mesh(new THREE.TorusGeometry(4.6, .35, 6, 28), M0.dark); pl.rotation.x = Math.PI / 2; pl.position.set(x, y, z); scene.add(pl); } }
+    for (let i = 0; i < 12; i++) { const x = -420 + i * 75 + rnd() * 20, z = -260 - rnd() * 200, h = 50 + rnd() * 60; if (!outside(x, z, 15)) continue; scene.add(cyl(1.6 + rnd() * 1.2, 2.6 + rnd() * 1.4, h, i % 3 ? colM : stackM, x, h / 2, z, 16, false));
       if (i % 3 === 0) { const f = flame(); f.scale.set(10, 22, 1); f.position.set(x, h + 9, z); scene.add(f); anim.push(t => { const k2 = 1 + Math.sin(t * 7 + i) * .1; f.scale.set(10 * k2, 22 * (2 - k2), 1); }); } }
-    cityBlocks(scene, { n: 60, x0: -520, x1: 560, z0: -480, z1: -800, mats: [1, 2].map(i => new THREE.MeshStandardMaterial({ map: facadeStone(6, 8, i + 4), roughness: .85 })), tallMats: [new THREE.MeshPhysicalMaterial({ map: facadeGlass(8, 30, 31, [140, 160, 180]), metalness: .6, roughness: .12 })] });
+    cityBlocks(scene, { n: 60, x0: -520, x1: 560, z0: -480, z1: -800, mats: [1, 2].map(i => new THREE.MeshStandardMaterial({ map: facadeStone(6, 8, i + 4), roughness: .85 })), tallMats: [new THREE.MeshPhysicalMaterial({ map: facadeGlass(8, 30, 31, [140, 160, 180]), metalness: .6, roughness: .12 })], avoid: (x, z) => !outside(x, z) });
   }
   let t = 0;
   return {
-    scene, sun, sunDir, tint: T.tint, exposure: T.exposure, colliders, boxes, pads, sea: T.sea, locs,
+    scene, sun, sunDir, tint: T.tint, exposure: T.exposure, colliders, boxes, tall, pads, sea: T.sea, locs, landmark: ringNode ? new THREE.Vector3(ringNode.x, 0, ringNode.z) : new THREE.Vector3(),
     update(dt) { t += dt; for (const f of anim) f(t, dt); },
     dispose() { scene.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach(mt => { for (const k2 in mt) if (mt[k2]?.isTexture && !mt[k2].userData.keep) mt[k2].dispose(); mt.dispose(); }); }); scene.environment?.dispose(); }
   };

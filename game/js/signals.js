@@ -36,7 +36,7 @@ export function makeSignals(scene, NET) {
     const sg = { node: n, x: n.x, z: n.z, appr: n.inL, cur: k % n.inL.length, phase: 'green', t: 3 + k * 2.3, peds: [], heads: new Map(), want: false, shown: '' };
     for (const L of n.inL) {
       // the pole stands on the right-hand corner just before the stop line, the head facing the drivers
-      const p = L.pts[1], r = L.r, d = L.d, px = p.x + r.x * (C.HW - C.CAR + .9) - d.x * .6, pz = p.y + r.y * (C.HW - C.CAR + .9) - d.y * .6;
+      const p = L.pts[L.pts.length - 1], r = L.r, d = L.d, px = p.x + r.x * (C.HW - C.CAR + .9) - d.x * .6, pz = p.y + r.y * (C.HW - C.CAR + .9) - d.y * .6;
       pole(px, pz);
       const head = new THREE.Group(); head.position.set(px, 3.9, pz); head.rotation.y = Math.atan2(-d.x, -d.y); scene.add(head);
       const bx = new THREE.Mesh(new THREE.BoxGeometry(.38, 1.06, .26), boxM); bx.castShadow = true; head.add(bx);
