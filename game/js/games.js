@@ -616,7 +616,11 @@ function drawPack(cx, w, h, S, M) {
 async function design(F, A, M) {
   const fr = frame(F, { title: M.title, stat: '' }), { stage } = fr;
   const B = M.briefs[Math.random() * M.briefs.length | 0];
-  stage.append(el('div', 'mg-brief glass', tx(`📋 طلب العميل: ${B.text}`, `📋 Client brief: ${B.text}`)));
+  // the brief in words, then exactly what the design has to show, one line per choice the judges check
+  const need = M.groups.filter(([k]) => k in B.ans).map(([k, label, list]) => { const v = list.find(([id]) => id === B.ans[k]); return `<li><b>${label}:</b> ${v ? v[1] : B.ans[k]}</li>`; });
+  if (!('color' in B.ans)) need.push(`<li><b>${tx('اللون', 'Color')}:</b> ${tx('يناسب النكهة', 'matches the flavor')}</li>`);
+  const brief = el('div', 'mg-brief glass'); brief.innerHTML = `<div><b>${tx('📋 طلب العميل', '📋 Client brief')}</b></div><div style="margin:4px 0 8px">${B.text}</div><div><b>${tx('المطلوب في التصميم:', 'What the design needs:')}</b></div><ul style="margin:4px 0 0;padding-inline-start:20px;line-height:1.7">${need.join('')}</ul>`;
+  stage.append(brief);
   const wrap = el('div', 'panel glass'); wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px;align-items:center;flex:1;min-height:0;overflow:auto';
   const pv = el('canvas'); pv.style.cssText = 'width:100%;height:100%;min-height:220px;border-radius:16px;background:radial-gradient(circle at 50% 40%,#fff,#e8eef8)';
   const opts = el('div'); opts.style.cssText = 'display:grid;gap:10px';

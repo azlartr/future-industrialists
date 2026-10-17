@@ -150,8 +150,8 @@ export function addTour(IN, F, M) {
   anim.push(t => { gear.rotation.y = t * 1.6; gear.position.y = 1.25 + Math.sin(t * 2.3) * .06; });
   // floating markers over the next station
   const mkIcon = (glyph, color) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: iconTex(glyph, color), depthTest: false, transparent: true })); s.scale.setScalar(.7); s.renderOrder = 9; s.visible = false; scene.add(s); return s; };
-  const icons = { ppe: mkIcon('⛑', '#e0a21c'), k0: mkIcon('1', T.color), k1: mkIcon('2', T.color), k2: mkIcon('3', T.color), mission: mkIcon('★', '#847bb8'), quiz: mkIcon('✓', '#2fb36d') };
-  icons.ppe.position.set(-16, 2.7, 12); kiosks.forEach((k, i) => icons['k' + i].position.set(k.x, 2.6, 6.95)); icons.mission.position.set(16.2, 3.2, 4.7); icons.quiz.position.set(15, 2.3, -10);
+  const icons = { ppe: mkIcon('⛑', '#e0a21c'), k0: mkIcon('1', T.color), k1: mkIcon('2', T.color), k2: mkIcon('3', T.color), mission: mkIcon('★', '#847bb8'), quiz: mkIcon('✓', '#2fb36d'), exit: mkIcon('↩', '#7f8c8d') };
+  icons.ppe.position.set(-16, 2.7, 12); kiosks.forEach((k, i) => icons['k' + i].position.set(k.x, 2.6, 6.95)); icons.mission.position.set(16.2, 3.2, 4.7); icons.quiz.position.set(15, 2.3, -10); icons.exit.position.set(-16, 1.5, 12.2);
   let gt = 0, gateOpen = 0, gateWant = 0;
   return {
     kiosks, gear, platforms, icons,

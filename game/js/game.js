@@ -666,7 +666,8 @@ function walk(dt) {
   guide(dt, HUD.target, r.position.y);
   // interactions: a factory gate, or the coach's door, whichever is nearer
   const door = busDoor(), dBus = Math.hypot(r.position.x - door.x, r.position.z - door.z);
-  let gd = 2.6; nearGate = -1; RW.locs.forEach((l, i) => { if (l.kind !== 'factory') return; const d = Math.hypot(r.position.x - l.door.x, r.position.z - l.door.z); if (d < gd) { gd = d; nearGate = i; } });
+  // the compound's walls block the yard, so the student enters at the gate on the street side
+  let gd = 2.6; nearGate = -1; RW.locs.forEach((l, i) => { if (l.kind !== 'factory') return; const d = Math.hypot(r.position.x - l.gate.x, r.position.z - l.gate.z); if (d < gd) { gd = d; nearGate = i; } });
   if (dBus > 4) justArrived = false;
   fun?.update(dt, r.position, player.speed, player.yaw ?? 0, () => { S.xp += 30; persist(); updateHUD(); Audio_.sfx('level_up', .6); flash(); toast(tx('⚽ هدف! +30 نقطة', '⚽ Goal! +30 points'), 2000); });
   nearBulb = fun?.nearBulb(r.position) || null;
@@ -944,7 +945,7 @@ function renderTour() {
   const now = !TV.ppe ? 'ppe' : TV.mission == null ? (TV.facts.size < 3 ? 'facts' : 'mission') : TV.quiz == null ? 'quiz' : '';
   $('#tc-list').innerHTML = steps.map(([k, i, t, ok, v]) => `<li class="${ok ? 'ok' : k === now ? 'now' : ''}"><em>${ok ? '✓' : i}</em><span>${t}</span><small>${v}</small></li>`).join('');
   // the marker over the next place to go
-  const ic = TV.tour.icons; for (const k in ic) ic[k].visible = false;
+  const ic = TV.tour.icons; for (const k in ic) ic[k].visible = false; ic.exit.visible = true;
   if (!TV.ppe) { ic.ppe.visible = true; TV.next = TV.tour.points.ppe; }
   else {
     TV.tour.kiosks.forEach(k => { ic['k' + k.i].visible = !TV.facts.has(k.i); });
@@ -973,8 +974,8 @@ function tourStep(dt) {
   tnear = null;
   if (TV.hz) { const h = IN.hazards.find(h => !h.found && Math.hypot(r.x - h.anchor.x, r.z - h.anchor.z) < 3.3); if (h) tnear = { k: 'hz', h, t: tx('⚠️ بلّغ عن هذا الخطر', '⚠️ Report this hazard') }; }
   if (!tnear) {
-    if (d2(P.ppe) < 1.9) tnear = { k: 'ppe', t: TV.ppe ? tx('🦺 معدات الوقاية', '🦺 Protective gear') : tx('🦺 افتح خزانة معدات الوقاية', '🦺 Open the gear locker') };
-    else if (d2(P.exit) < 1.4) tnear = { k: 'exit', t: tx('🚪 اخرج من المصنع', '🚪 Leave the factory') };
+    if (d2(P.exit) < 1.4 && d2(P.exit) < d2(P.ppe)) tnear = { k: 'exit', t: tx('🚪 اخرج من المصنع', '🚪 Leave the factory') };
+    else if (d2(P.ppe) < 1.9) tnear = { k: 'ppe', t: TV.ppe ? tx('🦺 معدات الوقاية', '🦺 Protective gear') : tx('🦺 افتح خزانة معدات الوقاية', '🦺 Open the gear locker') };
     else if (TV.ppe) {
       const k = TV.tour.kiosks.find(k => Math.hypot(r.x - k.x, r.z - k.z) < 1.7);
       if (k) tnear = { k: 'fact', i: k.i, t: tx(`📖 اقرأ المحطة ${k.i + 1}`, `📖 Read station ${k.i + 1}`) };
@@ -1017,11 +1018,10 @@ async function tourAct() {
     else if (n.k === 'fact') await openFact(n.i);
     else if (n.k === 'mission') { if (TV.mission === 3) say(tx('أنجزت المهمة بثلاث نجوم! توجّه إلى مكتب المشرف.', 'You finished the mission with three stars! Head to the supervisor’s office.')); else await startMission(); }
     else if (n.k === 'quiz') { if (TV.mission == null) say(tx('أنجز مهمة المصنع أولاً، ثم تعال إلى المشرف.', 'Finish the factory mission first, then come to the supervisor.')); else if (TV.quiz == null) await openQuiz(); else await finishTour(); }
-    else if (n.k === 'exit') { if (TV.quiz != null || await confirmLeave()) { TV.busy = false; leaveFactory(TV.quiz != null ? '' : tx('خرجت من المصنع · يمكنك العودة لإكمال الجولة', 'You left the factory · you can come back to finish the tour')); return; } }
+    else if (n.k === 'exit') { TV.busy = false; leaveFactory(TV.quiz != null ? '' : tx('لم تكمل الزيارة. يمكنك الدخول إلى المصنع مرة أخرى في أي وقت.', 'You did not finish the visit. You can enter the factory again any time.')); return; }
     else if (n.k === 'hz') await reportHazard(n.h);
   } finally { TV.busy = false; renderTour(); }
 }
-async function confirmLeave() { say(tx('خرجت قبل إكمال الجولة. تقدر ترجع في أي وقت لتكملها.', 'You left before finishing the tour. You can come back any time to complete it.')); return true; }
 /* ---- gear lockers: choose exactly what this floor needs ---- */
 function openPPE() {
   const C = TOUR[TV.F.id], need = C.ppe, keys = Object.keys(PPE).sort(() => Math.random() - .5), sel = new Set(), ov = $('#ppe'), grid = $('#ppe-grid'), ok = $('#ppe-ok'), note = $('#ppe-note');
