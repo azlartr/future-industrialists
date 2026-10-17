@@ -230,10 +230,10 @@ section,#trip{scroll-margin-top:136px}
 .prize-stats b{font-weight:700;font-size:clamp(20px,2.4vw,28px);font-variant-numeric:tabular-nums}
 .prize-stats span{color:rgba(255,255,255,.75);font-size:13px}
 .tracks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-.track{perspective:1100px;min-width:0}
-.flip{position:relative;width:100%;height:460px;border:0;padding:0;background:none;cursor:pointer;text-align:inherit;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.track{perspective:1100px;min-width:0;display:flex;flex-direction:column}
+.flip{position:relative;display:grid;flex:1 1 auto;width:100%;border:0;padding:0;background:none;cursor:pointer;text-align:inherit;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .track.flipped .flip{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;border-radius:26px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.face{grid-area:1/1;position:relative;min-width:0;border-radius:26px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
 .front{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;background:linear-gradient(180deg,#fff 0%,#f3f2fb 100%);border:1px solid var(--line);transform-style:preserve-3d}
 .front .glow{position:absolute;top:calc(50% - 76px);left:50%;width:46%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--tc,#3c58a7) 0%,transparent 68%);opacity:.22;filter:blur(6px);transition:opacity .4s}
 .front .head{position:relative;order:-2;width:auto;height:calc(178px * var(--hs,1));max-width:74%;margin-top:calc((1 - var(--hs,1)) * 178px);transform:translateZ(60px);transition:transform .5s cubic-bezier(.2,.7,.2,1);animation:bob 6s ease-in-out infinite}
