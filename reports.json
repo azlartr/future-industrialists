@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:16.260Z",
+        "updatedAt": "2026-10-17T23:10:18.390Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1250,7 +1250,7 @@
             "id": "region-partner-makkah:سدافكو",
             "name": "سدافكو",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/e878f1d928ae645279c1d65785ffbb1eea583b26d786cd5b11ca97774ba3bb16.webp",
-            "scale": 100
+            "scale": 95
           },
           {
             "id": "region-partner-makkah:اليمامه",
@@ -1280,7 +1280,7 @@
             "id": "region-partner-makkah:ubt",
             "name": "UBT",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/fe39d4820d81aefa91b7539bc12c1902a849e231971c9e2155d3062d722da8fe.webp",
-            "scale": 100
+            "scale": 65
           },
           {
             "id": "region-partner-makkah:قايد",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:28.477Z",
+      "updatedAt": "2026-10-17T23:10:32.070Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
