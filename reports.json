@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:26.125Z",
+        "updatedAt": "2026-10-17T23:10:30.732Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1286,7 +1286,7 @@
             "id": "region-partner-makkah:قايد",
             "name": "قايد",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/c7463b2aafebda7804de2c2da126b50187c27a3e651df14da4d256523f52a21b.webp",
-            "scale": 100
+            "scale": 90
           },
           {
             "id": "region-partner-makkah:السليمان الخيريه",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:55.680Z",
+      "updatedAt": "2026-10-17T23:10:59.628Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
