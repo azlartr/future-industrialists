@@ -19,6 +19,9 @@ import { makeRobot } from './robot.js';
 import { addTour, GEAR_GEO, GEAR_MAT, FSTYLE } from './tour.js';
 /* six golden gears hidden on each city's sidewalks */
 const CITY_N = 6, cityGears = () => CITY.gears.map(([ri, s, sd]) => { const [x, z] = roadPoint(ri, s, sd); return [x, z, 1.25]; });
+// the golden gears in the streets are the four track heads, one after another
+const GEAR_HEADS = ['discoverer', 'creative', 'artist', 'ambassador'], HEAD_ASPECT = { discoverer: .76, creative: .67, artist: .88, ambassador: .77 }, headTex = {};
+const headTexture = k => headTex[k] ??= new THREE.TextureLoader().load(`assets/ui/head_${k}.webp`, t => { t.colorSpace = THREE.SRGBColorSpace; });
 import { TOUR, PPE, PPE_ICON } from './content.js';
 import { buildFinale, certificate } from './finale.js';
 import { EN, tx, T, fx, translatePage, setLanguage } from './i18n.js';
@@ -309,7 +312,7 @@ async function loadRegion(key) {
   { const pz = PLACES.find(p => p.kind === 'plaza'), hAt = (x, z) => { for (const [x0, z0, x1, z1, y] of w.pads) if (x >= x0 && x <= x1 && z >= z0 && z <= z1) return y; return groundY(x, z); };
     fun = makeFun(w.scene, { region: key, plazaAt: pz ? (lx, lz) => toWorldLoc(pz, lx, lz - 7) : null, ideaSpots: (CITY.ideas || []).map(([ri, s, sd]) => roadPoint(ri, s, sd)), heightAt: hAt, colliders: w.colliders, boxes: w.boxes, done: S.ideas }); }
   // golden gears hidden around the district (one is up high: it takes a jump)
-  w.gears = cityGears().map(([x, z, y], i) => { const id = `city-${key}-${i}`, m = new THREE.Mesh(GEAR_GEO, GEAR_MAT); m.position.set(x, y, z); m.scale.setScalar(1.3); m.castShadow = true; m.visible = !S.gears[id]; w.scene.add(m); return { id, m, y }; });
+  w.gears = cityGears().map(([x, z, y], i) => { const id = `city-${key}-${i}`, k = GEAR_HEADS[i % 4]; const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: headTexture(k), transparent: true, depthWrite: false })); m.center.set(.5, 0); m.scale.set(2.2 * HEAD_ASPECT[k], 2.2, 1); m.position.set(x, y, z); m.visible = !S.gears[id]; w.scene.add(m); return { id, m, y }; });
   renderer.toneMappingExposure = w.exposure;
   if (renderer.compileAsync) await renderer.compileAsync(w.scene, camera).catch(() => {});
   RW = w;
