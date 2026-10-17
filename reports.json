@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:15.202Z",
+        "updatedAt": "2026-10-17T23:10:16.260Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1274,7 +1274,7 @@
             "id": "region-partner-makkah:الزاهد",
             "name": "الزاهد",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
-            "scale": 95
+            "scale": 85
           },
           {
             "id": "region-partner-makkah:ubt",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:23.805Z",
+      "updatedAt": "2026-10-17T23:10:28.477Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
