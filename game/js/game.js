@@ -620,7 +620,7 @@ function moveStudent(dt, sp) {
   let iz = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0) + joy.y;
   // on a touch screen, pushing the stick past about two-thirds breaks into a run
   const mag = Math.min(1, Math.hypot(ix, iz)), run = keys.ShiftLeft || keys.ShiftRight || (mag > .72 && touch);
-  const target = mag > .1 ? (p.hero ? (run ? 3.9 : 2.1) : (run ? 5.6 : 3.3)) : 0; p.speed += (target - p.speed) * Math.min(1, dt * 8);
+  const target = mag > .1 ? (p.hero ? (run ? 4.6 : 2.5) : (run ? 6.8 : 3.9)) : 0; p.speed += (target - p.speed) * Math.min(1, dt * 8);
   p.jy ??= 0; p.jv ??= 0; const feet = r.position.y + p.jy;
   let face = null;
   if (mag > .1) {
