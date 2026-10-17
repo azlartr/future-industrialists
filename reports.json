@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:13.761Z",
+        "updatedAt": "2026-10-17T23:10:15.202Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1268,13 +1268,13 @@
             "id": "region-partner-makkah:تمر مولينكلي",
             "name": "تمر — مولينكلي",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-makkah:الزاهد",
             "name": "الزاهد",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
-            "scale": 100
+            "scale": 95
           },
           {
             "id": "region-partner-makkah:ubt",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:19.797Z",
+      "updatedAt": "2026-10-17T23:10:23.805Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
