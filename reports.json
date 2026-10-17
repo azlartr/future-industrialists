@@ -1173,7 +1173,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-17T23:10:12.393Z",
+        "updatedAt": "2026-10-17T23:10:13.761Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1256,7 +1256,7 @@
             "id": "region-partner-makkah:اليمامه",
             "name": "اليمامة",
             "url": "https://azlartr.github.io/future-industrialists/assets/print/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264.webp",
-            "scale": 100
+            "scale": 80
           },
           {
             "id": "region-partner-makkah:فلو",
@@ -1455,7 +1455,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-17T23:10:15.130Z",
+      "updatedAt": "2026-10-17T23:10:19.797Z",
       "rematchBackup": {
         "updatedAt": "2026-10-10T22:23:20.086Z",
         "visits": [
