@@ -845,9 +845,9 @@ function driveStep(dt) {
   chaseCam(x, z, ny, dt);
   sunAt(x, z);
   // bays: slow down in one to get off
-  let best = null; for (const l of RW.locs) { const b = l.bay, d = Math.hypot(x - b.x, z - b.z); if (d < 9 && Math.cos(angTo(ny, b.yaw)) > .7 && (!best || d < best.d)) best = { l, i: RW.locs.indexOf(l), d }; }
-  DV.near = best; const btn = $('#dv-act'), name = best ? (best.l.kind === 'school' ? 'المدرسة' : best.l.f.short) : '';
-  btn.classList.toggle('on', !!best); if (best) { const t = Math.abs(DV.v) < 1.2 ? `🚏 انزل عند ${name}` : `خفّف السرعة للتوقف عند ${name}`; if (btn.textContent !== t) btn.textContent = t; }
+  let dock = null; for (const l of RW.locs) { const b = l.bay, d = Math.hypot(x - b.x, z - b.z); if (d < 9 && Math.cos(angTo(ny, b.yaw)) > .7 && (!dock || d < dock.d)) dock = { l, i: RW.locs.indexOf(l), d }; }
+  DV.near = dock; const btn = $('#dv-act'), name = dock ? (dock.l.kind === 'school' ? 'المدرسة' : dock.l.f.short) : '';
+  btn.classList.toggle('on', !!dock); if (dock) { const t = Math.abs(DV.v) < 1.2 ? `🚏 انزل عند ${name}` : `خفّف السرعة للتوقف عند ${name}`; if (btn.textContent !== t) btn.textContent = t; }
   $('#dv-kmh').textContent = Math.round(Math.abs(DV.v) * KMH);
   const goal = RW.locs.filter(l => l.kind === 'factory' && !best(l.f.id))[0] || RW.locs[0];
   $('#dv-next').textContent = `${goal.kind === 'school' ? 'المدرسة' : goal.f.short} · ${Math.round(Math.hypot(goal.bay.x - x, goal.bay.z - z))} م`;

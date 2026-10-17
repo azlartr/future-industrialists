@@ -254,6 +254,63 @@ async function photoRun(F, A, fr, ctl) {
 }
 /* the ad studio: pick the scene and the line that answer the client's brief; the poster is shot with the
    student as the campaign's ambassador and can be saved. Resolves how many of the two choices fit (0..2). */
+/* the poster comes in three layouts; the student picks the one that suits the copy and the scene */
+const AD_DESIGNS = [
+  { name: 'كلاسيكي', hint: 'عنوان فوق، والمنتج أمامك' },
+  { name: 'شريط الماركة', hint: 'شريط بلون الشركة يحمل العبارة' },
+  { name: 'أنيق', hint: 'بطاقة بيضاء، والمنتج بالوسط' }
+];
+/* the copy at the largest size (down to min) that fits maxW; a line still too long is cut with an ellipsis */
+function fitText(px, text, maxW, size, min, weight = 700) {
+  let fs = size; px.font = `${weight} ${fs}px "Readex Pro"`;
+  while (px.measureText(text).width > maxW && fs > min) { fs -= 2; px.font = `${weight} ${fs}px "Readex Pro"`; }
+  let t = text;
+  if (px.measureText(t).width > maxW) { while (t.length > 4 && px.measureText(t + '…').width > maxW) t = t.slice(0, -1); t = t.trimEnd() + '…'; }
+  return t;
+}
+/* the poster at 900×1200: the scene, the product, the copy, the logo, and the ambassador's line */
+function drawPoster(design, sc, M, copy, F, A, logo, pose) {
+  const P = document.createElement('canvas'); P.width = 900; P.height = 1200; const px = P.getContext('2d');
+  const brand = F.color || '#2a3590';
+  px.textAlign = 'center'; px.direction = 'rtl';
+  const card = (x, y, w, h, r) => { px.fillStyle = 'rgba(255,255,255,.94)'; px.beginPath(); px.roundRect(x, y, w, h, r); px.fill(); };
+  // the logo on a white card, centred on cx with its top at y; the company name stands in when there is no logo
+  const logoAt = (cx, y, maxW, maxH) => {
+    if (logo) { const lh = Math.min(maxH, maxW * logo.height / logo.width), lw = lh * logo.width / logo.height; card(cx - lw / 2 - 22, y, lw + 44, lh + 28, 20); px.drawImage(logo, cx - lw / 2, y + 14, lw, lh); return; }
+    card(cx - 210, y, 420, 96, 20); px.fillStyle = brand; px.font = '700 46px "Readex Pro"'; px.fillText(F.name, cx, y + 64);
+  };
+  const shade = () => { const vg = px.createLinearGradient(0, 760, 0, 1200); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); px.fillStyle = vg; px.fillRect(0, 0, 900, 1200); };
+  if (design === 0) {
+    drawScene(px, 900, 1200, sc, 1.3); shade();
+    if (pose) { const ph = 820, pw = ph * pose.width / pose.height; px.drawImage(pose, 900 - pw - 10, 1200 - ph - 60, pw, ph); }
+    drawHero(px, M.product, 330, 1080);
+    px.fillStyle = '#fff'; px.shadowColor = 'rgba(0,0,0,.45)'; px.shadowBlur = 18; px.fillText(fitText(px, copy, 800, 80, 40), 450, 190); px.shadowBlur = 0;
+    logoAt(450, 250, 260, 140);
+  } else if (design === 1) {
+    drawScene(px, 900, 1200, sc, 1.3); shade();
+    if (pose) { const ph = 760, pw = ph * pose.width / pose.height; px.drawImage(pose, 900 - pw - 10, 1200 - ph - 60, pw, ph); }
+    // a band in the company's colour across the top, with a gold rule under it
+    px.fillStyle = brand; px.fillRect(0, 0, 900, 400); px.fillStyle = '#ffd23f'; px.fillRect(0, 400, 900, 12);
+    logoAt(450, 36, 230, 110);
+    px.fillStyle = '#fff'; px.fillText(fitText(px, copy, 800, 76, 40, 800), 450, 300);
+    drawHero(px, M.product, 360, 1040);
+  } else {
+    // a white card on a faded scene, the copy in the company's colour, the product standing in the middle
+    drawScene(px, 900, 1200, sc, 1.3); px.fillStyle = 'rgba(255,255,255,.8)'; px.fillRect(0, 0, 900, 1200);
+    px.shadowColor = 'rgba(0,0,0,.18)'; px.shadowBlur = 40; px.shadowOffsetY = 16; px.fillStyle = '#fff'; px.beginPath(); px.roundRect(80, 90, 740, 1000, 40); px.fill(); px.shadowBlur = 0; px.shadowOffsetY = 0;
+    px.strokeStyle = brand; px.lineWidth = 6; px.beginPath(); px.roundRect(110, 120, 680, 940, 30); px.stroke();
+    logoAt(450, 150, 240, 120);
+    px.fillStyle = brand; px.fillText(fitText(px, copy, 640, 84, 40, 800), 450, 480);
+    px.fillStyle = '#ffd23f'; px.fillRect(400, 520, 100, 8);
+    // a soft disc of the company's colour behind the product, so a white product still reads on the white card
+    px.globalAlpha = .12; px.fillStyle = brand; px.beginPath(); px.arc(450, 880, 330, 0, 7); px.fill(); px.globalAlpha = 1;
+    drawHero(px, M.product, 450, 1000);
+  }
+  // the ambassador's name, cut to fit the caption pill
+  px.fillStyle = 'rgba(255,255,255,.94)'; px.beginPath(); px.roundRect(30, 1126, 540, 54, 27); px.fill();
+  px.fillStyle = '#2a3590'; px.fillText(fitText(px, `سفير الحملة: ${A.name || ''} · صناعيو المستقبل`, 490, 26, 18, 600), 300, 1162);
+  return P;
+}
 async function adStudio(stage, F, A, M) {
   const logo = F.logo ? await img(F.logo) : null;
   const pose = await img(`assets/ui/${A.char || 'boy'}_pose_cut.webp`);
@@ -262,24 +319,22 @@ async function adStudio(stage, F, A, M) {
     <div style="padding:10px 12px;border-radius:14px;background:#fff7e0;border:1px solid #f2d27a;font-size:14.5px;line-height:1.7;margin-bottom:12px">📋 <b>طلب العميل:</b> ${M.ask}</div>
     <div style="font-weight:600;margin:4px 0 8px">١. اختر مكان التصوير</div><div id="ad-scene" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
     <div style="font-weight:600;margin:12px 0 8px">٢. اختر عبارة الإعلان</div><div class="mg-row" id="ad-line"></div>
+    <div style="font-weight:600;margin:12px 0 8px">٣. اختر تصميم البوستر</div><div id="ad-design" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"></div>
     <div class="mg-row" style="margin-top:14px"><button class="btn" id="ad-shoot" type="button" disabled>📸 صوّر الإعلان</button></div>`;
   stage.append(panel);
   const scenes = shuffle(M.scenes.slice()), lines = shuffle(M.lines.slice());
-  let scene = null, line = null;
-  for (const [k, name, ok] of scenes) { const b = el('button', 'opt'), cvs = document.createElement('canvas'); cvs.width = 150; cvs.height = 84; cvs.style.cssText = 'display:block;width:100%;height:auto;aspect-ratio:150/84;border-radius:10px;margin-bottom:6px'; drawScene(cvs.getContext('2d'), 150, 84, k); b.append(cvs, name); b.style.padding = '8px'; b.onclick = () => { scene = [k, ok]; A.sfx('ui_click'); panel.querySelectorAll('#ad-scene .opt').forEach(x => x.classList.toggle('sel', x === b)); $('#ad-shoot', panel).disabled = !(scene && line); }; $('#ad-scene', panel).append(b); }
-  for (const [s2, ok] of lines) { const b = el('button', 'opt', s2); b.onclick = () => { line = [s2, ok]; A.sfx('ui_click'); panel.querySelectorAll('#ad-line .opt').forEach(x => x.classList.toggle('sel', x === b)); $('#ad-shoot', panel).disabled = !(scene && line); }; $('#ad-line', panel).append(b); }
+  let scene = null, line = null, design = null;
+  const ready = () => { $('#ad-shoot', panel).disabled = !(scene && line && design !== null); };
+  // the three layouts, redrawn with the copy and scene chosen so far (the first ones until then)
+  const previews = AD_DESIGNS.map(() => { const cv = document.createElement('canvas'); cv.width = 150; cv.height = 200; return cv; });
+  const paint = () => { const sc = (scene || M.scenes[0])[0], cp = (line || M.lines[0])[0]; previews.forEach((cv, i) => { cv.getContext('2d').drawImage(drawPoster(i, sc, M, cp, F, A, logo, pose), 0, 0, cv.width, cv.height); }); };
+  for (const [k, name, ok] of scenes) { const b = el('button', 'opt'), cvs = document.createElement('canvas'); cvs.width = 150; cvs.height = 84; cvs.style.cssText = 'display:block;width:100%;height:auto;aspect-ratio:150/84;border-radius:10px;margin-bottom:6px'; drawScene(cvs.getContext('2d'), 150, 84, k); b.append(cvs, name); b.style.padding = '8px'; b.onclick = () => { scene = [k, ok]; A.sfx('ui_click'); panel.querySelectorAll('#ad-scene .opt').forEach(x => x.classList.toggle('sel', x === b)); paint(); ready(); }; $('#ad-scene', panel).append(b); }
+  for (const [s2, ok] of lines) { const b = el('button', 'opt', s2); b.onclick = () => { line = [s2, ok]; A.sfx('ui_click'); panel.querySelectorAll('#ad-line .opt').forEach(x => x.classList.toggle('sel', x === b)); paint(); ready(); }; $('#ad-line', panel).append(b); }
+  AD_DESIGNS.forEach((d, i) => { const b = el('button', 'opt'); b.style.padding = '8px'; b.append(previews[i]); b.insertAdjacentHTML('beforeend', `<b style="display:block;margin-top:2px">${d.name}</b><small style="display:block;color:var(--muted);font-size:12px;line-height:1.5">${d.hint}</small>`); b.onclick = () => { design = i; A.sfx('ui_click'); panel.querySelectorAll('#ad-design .opt').forEach(x => x.classList.toggle('sel', x === b)); ready(); }; $('#ad-design', panel).append(b); });
+  paint();
   await new Promise(r => $('#ad-shoot', panel).onclick = r);
   A.sfx('panel_open', .8);
-  // the poster
-  const P = document.createElement('canvas'); P.width = 900; P.height = 1200; const px = P.getContext('2d');
-  drawScene(px, 900, 1200, scene[0], 1.3);
-  const vg = px.createLinearGradient(0, 760, 0, 1200); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); px.fillStyle = vg; px.fillRect(0, 0, 900, 1200);
-  if (pose) { const ph = 820, pw = ph * pose.width / pose.height; px.drawImage(pose, 900 - pw - 10, 1200 - ph - 60, pw, ph); }
-  drawHero(px, M.product, 330, 1080);
-  px.textAlign = 'center'; px.direction = 'rtl'; px.fillStyle = '#fff'; let fs = 80; px.font = `700 ${fs}px "Readex Pro"`; while (px.measureText(line[0]).width > 800 && fs > 40) { fs -= 4; px.font = `700 ${fs}px "Readex Pro"`; } px.shadowColor = 'rgba(0,0,0,.45)'; px.shadowBlur = 18; px.fillText(line[0], 450, 190); px.shadowBlur = 0;
-  if (logo) { const lw = 260, lh = Math.min(140, lw * logo.height / logo.width), lw2 = lh * logo.width / logo.height; px.fillStyle = 'rgba(255,255,255,.92)'; px.beginPath(); px.roundRect(450 - lw2 / 2 - 20, 250, lw2 + 40, lh + 30, 18); px.fill(); px.drawImage(logo, 450 - lw2 / 2, 265, lw2, lh); }
-  else { px.fillStyle = 'rgba(255,255,255,.92)'; px.beginPath(); px.roundRect(250, 250, 400, 90, 18); px.fill(); px.fillStyle = F.color || '#2a3590'; px.font = '700 44px "Readex Pro"'; px.fillText(F.name, 450, 310); }
-  px.fillStyle = 'rgba(255,255,255,.92)'; px.beginPath(); px.roundRect(30, 1130, 520, 50, 25); px.fill(); px.fillStyle = '#2a3590'; px.font = '600 26px "Readex Pro"'; px.fillText(`سفير الحملة: ${A.name || ''} · صناعيو المستقبل`, 290, 1164);
+  const P = drawPoster(design, scene[0], M, line[0], F, A, logo, pose);
   const fit = scene[1] + line[1];
   panel.innerHTML = '';
   const show = el('div', '', ''); show.style.cssText = 'display:grid;gap:12px;justify-items:center';

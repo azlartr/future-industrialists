@@ -329,7 +329,7 @@ body.in-tour .tour-card{display:block}
 /* hud */
 #hud{pointer-events:none}
 #hud>*{pointer-events:auto}
-.h-top{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;left:118px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none}
+.h-top{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;left:178px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none}
 .h-top>*{pointer-events:auto}
 .who{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px}
 .who .av{width:44px;height:44px;border-radius:14px;background:var(--wash) top center/150% no-repeat}
@@ -517,6 +517,15 @@ body.driving .toast{top:auto;bottom:calc(max(16px,env(safe-area-inset-bottom)) +
   .dv-horn{right:104px}
 }
 body.touch #drive .prompt{bottom:calc(max(28px,env(safe-area-inset-bottom)) + 150px)}
+/* phones: the three corner buttons, the notebook chip and the counters share one row */
+@media (max-width:760px){
+  .corner{gap:6px}
+  .corner .icon-btn{width:40px;height:40px;border-radius:12px}
+  .h-top{left:154px;gap:6px}
+  .stats div{min-width:42px;padding:4px 4px}
+  .stats b{font-size:15px}
+}
+@media (max-width:380px){.stats div{min-width:38px;padding:4px 3px}.stats b{font-size:14px}}
 </style>
 <script type="importmap">{"imports":{"three":"./lib/three.module.min.js","three/addons/":"./lib/jsm/"}}</script>
 </head>
