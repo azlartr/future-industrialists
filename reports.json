@@ -1588,7 +1588,7 @@
       "id": "custom-qassim-1792319391561",
       "region": "qassim",
       "header": {
-        "weekTitle": "التقرير الأسبوعي",
+        "weekTitle": "التقرير الأسبوعي الثاني",
         "dateRange": "من 11اكتوبر الاحد الى 15 اكتوبر الخميس"
       },
       "stats": {
@@ -1706,7 +1706,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-18T10:39:50.884Z",
+        "updatedAt": "2026-10-18T10:40:11.675Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1856,7 +1856,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-18T10:39:50.884Z",
+      "updatedAt": "2026-10-18T10:40:11.677Z",
       "rematchBackup": {
         "updatedAt": "2026-10-18T10:33:49.813Z",
         "visits": [
