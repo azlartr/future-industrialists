@@ -1668,6 +1668,10 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ebb8a7ceea1eed553700be05b89d6bb02a604b4a8467adaf686174e709f5754d.webp": {
               "x": 50,
               "y": 35.40197461212976
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/15a1e95f5fb0c6b3bcbea92823525e80c4872f03a32498ab93696f9ef42fd05c.webp": {
+              "x": 50,
+              "y": 32.86318758815233
             }
           }
         },
@@ -1715,7 +1719,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-18T10:40:38.926Z",
+        "updatedAt": "2026-10-18T10:40:40.661Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1865,7 +1869,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-18T10:40:42.878Z",
+      "updatedAt": "2026-10-18T10:40:46.927Z",
       "rematchBackup": {
         "updatedAt": "2026-10-18T10:33:49.813Z",
         "visits": [
