@@ -1661,7 +1661,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-18T11:48:26.654Z",
+        "updatedAt": "2026-10-18T11:48:49.554Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1811,37 +1811,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-18T11:48:26.654Z",
-      "rematchBackup": {
-        "updatedAt": "2026-10-18T10:33:49.813Z",
-        "visits": [
-          {
-            "id": "auto-visit-1",
-            "images": [],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-2",
-            "images": [],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-3",
-            "images": [],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-4",
-            "images": [],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-5",
-            "images": [],
-            "imagePositions": {}
-          }
-        ]
-      }
+      "updatedAt": "2026-10-18T11:48:49.555Z"
     }
   ],
   "deletedReports": [
