@@ -699,256 +699,6 @@
       }
     },
     {
-      "id": "auto-qassim-1791677351545",
-      "region": "qassim",
-      "header": {
-        "weekTitle": "التقرير الأسبوعي",
-        "dateRange": "من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
-      },
-      "stats": {
-        "ambassadorCategory": 2,
-        "tvInterviews": 0,
-        "tweets": 3,
-        "videos": 2,
-        "posts": 2,
-        "discovererCategory": 27,
-        "creativeCategory": 15,
-        "totalBeneficiaries": 139,
-        "totalRegistered": 96,
-        "artistCategory": 5
-      },
-      "visits": [
-        {
-          "id": "auto-visit-1",
-          "schoolName": "ثانوية السحابين رياض الخبراء ( بنات )",
-          "factory": "فخر النسيج",
-          "date": "2026/10/4",
-          "participants": 45,
-          "gender": "girls",
-          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/907a47bfbdac558885983112c01ead917eba2f9449a7578534cfa6728f1b13c9.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0ee41e8c96134ae88d539328a26c742845535bc445a1c1af796a52c3003a4329.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/241fca2ca7b2d3e795cee211dd9422e55fd755b4c5b6c48cc93f271fc1197948.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/63f4b16ba2d5a4d6a857aba60d86b2e96ee24e816111493bb6b9fb15715f31cc.webp"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-2",
-          "schoolName": "الثانوية السادسة بعنيزة ( بنات )",
-          "factory": "فخر النسيج",
-          "date": "2026/10/5",
-          "participants": 49,
-          "gender": "girls",
-          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2ab2c20e9ca2809f4720bcddff7b3a78bd8c9846777e8313f838e2a1debc5d0d.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ede0ab11b47095522c9a0d922fef519d09803e8890f70f309950c98b3fab37b1.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/fb08e0c5fe48709325bc940583417c90c235a5d3bf26d9b29cfdb292c74770e8.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/43d8f67840bc72948d9ae2114b033a29a158cdce95822f961b11412624aa3a88.webp"
-          ],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-3",
-          "schoolName": "ثانوية الامام الطحاوي ( بنين )",
-          "factory": "الصناعات الاقليمية",
-          "date": "2026/10/8",
-          "participants": 45,
-          "gender": "boys",
-          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
-          "images": [
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6998caf3f89703bc6846e53ecf303719b88511fd6e259b4d88ce36d4819c4917.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9f6415dedf599d2a47cd3eaae80e5a4f1c9d78cf4dc941663a07dacc0b16f31b.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0db93d3077b49a400ba413199a53a7a46d506c63a853f768b2666b570350fdc.webp",
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/de49dad6da732c19edc2dedcacdc133247f52004e7cfdd294e1224d1ee197b24.webp"
-          ],
-          "imagePositions": {
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0db93d3077b49a400ba413199a53a7a46d506c63a853f768b2666b570350fdc.webp": {
-              "x": 50,
-              "y": 50
-            },
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/de49dad6da732c19edc2dedcacdc133247f52004e7cfdd294e1224d1ee197b24.webp": {
-              "x": 50,
-              "y": 50
-            }
-          }
-        }
-      ],
-      "presentation": {
-        "updatedAt": "2026-10-12T13:03:29.979Z",
-        "theme": {
-          "boys": "#2b3592",
-          "girls": "#897dc0",
-          "bg1": "#101936",
-          "bg2": "#2b3592",
-          "bg3": "#71509d",
-          "radius": 22,
-          "photoHeight": 180,
-          "gap": 26,
-          "logoSize": 168,
-          "partnerLogoScale": 95,
-          "webPartnerBoxSize": 170,
-          "fontScale": 100,
-          "columns": 1,
-          "photoLayout": "row",
-          "motion": true,
-          "network": true,
-          "networkOpacity": 85,
-          "speed": 20,
-          "showFactories": true,
-          "showCategories": true
-        },
-        "print": {
-          "perPage": 4,
-          "headerVisible": true,
-          "headerDateVisible": true,
-          "headerStyle": "color",
-          "headerAlign": "center",
-          "headerScale": 120,
-          "headerTitle": "",
-          "footerVisible": true,
-          "footerPartnersVisible": true,
-          "footerAlign": "center",
-          "footerPartnerSize": 125,
-          "footerLabel": "",
-          "footerText": "",
-          "showPageNumbers": false,
-          "coverHeaderVisible": true,
-          "coverPartnersVisible": false,
-          "coverFooterText": "",
-          "coverBackground": "",
-          "pageBackground": "",
-          "coverTextTop": 87,
-          "_partnerVisibilityConfigured": true,
-          "_reportLayoutVersion": 3
-        },
-        "partners": [
-          {
-            "id": "region-partner-qassim:فخر النسيج",
-            "name": "فخر النسيج",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
-            "scale": 85
-          },
-          {
-            "id": "region-partner-qassim:ثمرات",
-            "name": "ثمرات",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/847ab89bfae5a6812dbb789f55b1664c2802cbdd6630b270ee3092691c4b8b88.webp",
-            "scale": 90
-          },
-          {
-            "id": "region-partner-qassim:طريق الرياضه",
-            "name": "طريق الرياضة",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
-            "scale": 80
-          },
-          {
-            "id": "region-partner-qassim:الصناعات الاقليميه",
-            "name": "الصناعات الإقليمية",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
-            "scale": 85
-          },
-          {
-            "id": "region-partner-qassim:الجاسر للبلاستيك",
-            "name": "الجاسر للبلاستيك",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
-            "scale": 85
-          },
-          {
-            "id": "region-partner-qassim:السعيد للغازات الصناعيه والطبيه",
-            "name": "السعيد للغازات الصناعية والطبية",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2fe852f44929a2e2d7d6dc65f730c601ebe66723c49be4e9dae573ff3b92664c.webp",
-            "scale": 100
-          },
-          {
-            "id": "region-partner-qassim:اكليل الجبل بافري",
-            "name": "إكليل الجبل — بافري",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/73eefd1faa58323ed95d6384c60530746b3c66e592b5e1c7ffc410a107978435.webp",
-            "scale": 75
-          },
-          {
-            "id": "region-partner-qassim:البان الخبراء",
-            "name": "ألبان الخبراء",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/aaed03849b57938eef29e0820d459e2f40a6c4bc0700e5fe548f3ac3a0ef572b.webp",
-            "scale": 90
-          }
-        ],
-        "partnersConfigured": true,
-        "factories": {
-          "qassim:فخر النسيج": {
-            "name": "فخر النسيج",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:الصناعات الاقليميه": {
-            "name": "الصناعات الإقليمية",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:ثمرات": {
-            "name": "ثمرات",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/847ab89bfae5a6812dbb789f55b1664c2802cbdd6630b270ee3092691c4b8b88.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:طريق الرياضه": {
-            "name": "طريق الرياضه",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:الجاسر للبلاستيك": {
-            "name": "الجاسر للبلاستيك",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:السعيد للغازات الصناعيه والطبيه": {
-            "name": "السعيد للغازات الصناعية والطبية",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2fe852f44929a2e2d7d6dc65f730c601ebe66723c49be4e9dae573ff3b92664c.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:اكليل الجبل بافري": {
-            "name": "إكليل الجبل — بافري",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/73eefd1faa58323ed95d6384c60530746b3c66e592b5e1c7ffc410a107978435.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:البان الخبراء": {
-            "name": "ألبان الخبراء",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/aaed03849b57938eef29e0820d459e2f40a6c4bc0700e5fe548f3ac3a0ef572b.webp",
-            "logoHidden": false,
-            "visible": true
-          }
-        }
-      },
-      "updatedAt": "2026-10-12T13:03:32.101Z",
-      "rematchBackup": {
-        "updatedAt": "2026-10-11T00:11:07.605Z",
-        "visits": [
-          {
-            "id": "auto-visit-1",
-            "images": [],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-2",
-            "images": [],
-            "imagePositions": {}
-          },
-          {
-            "id": "auto-visit-3",
-            "images": [],
-            "imagePositions": {}
-          }
-        ]
-      }
-    },
-    {
       "id": "auto-makkah-1791588858646",
       "region": "makkah",
       "header": {
@@ -1578,6 +1328,257 @@
               "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1kLQcjZyaFOb4Gbrl-9ppyLEQqbf-uP3N",
               "https://future-industrialists-report-review.azlar.chatgpt.site/api/drive-image?id=1DVoxXvsFpCpcGEO2M57JBb4vySWZ8DjD"
             ],
+            "imagePositions": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "auto-qassim-1791677351545",
+      "region": "qassim",
+      "header": {
+        "weekTitle": "التقرير الأسبوعي الأول",
+        "dateRange": "من 4اكتوبر الاحد الى 8 اكتوبر الخميس"
+      },
+      "stats": {
+        "ambassadorCategory": 2,
+        "tvInterviews": 0,
+        "tweets": 3,
+        "videos": 2,
+        "posts": 2,
+        "discovererCategory": 27,
+        "creativeCategory": 15,
+        "totalBeneficiaries": 139,
+        "totalRegistered": 96,
+        "artistCategory": 5
+      },
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "ثانوية السحابين رياض الخبراء ( بنات )",
+          "factory": "فخر النسيج",
+          "date": "2026/10/4",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/907a47bfbdac558885983112c01ead917eba2f9449a7578534cfa6728f1b13c9.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0ee41e8c96134ae88d539328a26c742845535bc445a1c1af796a52c3003a4329.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/241fca2ca7b2d3e795cee211dd9422e55fd755b4c5b6c48cc93f271fc1197948.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/63f4b16ba2d5a4d6a857aba60d86b2e96ee24e816111493bb6b9fb15715f31cc.webp"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "الثانوية السادسة بعنيزة ( بنات )",
+          "factory": "فخر النسيج",
+          "date": "2026/10/5",
+          "participants": 49,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2ab2c20e9ca2809f4720bcddff7b3a78bd8c9846777e8313f838e2a1debc5d0d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ede0ab11b47095522c9a0d922fef519d09803e8890f70f309950c98b3fab37b1.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/fb08e0c5fe48709325bc940583417c90c235a5d3bf26d9b29cfdb292c74770e8.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/43d8f67840bc72948d9ae2114b033a29a158cdce95822f961b11412624aa3a88.webp"
+          ],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "ثانوية الامام الطحاوي ( بنين )",
+          "factory": "الصناعات الاقليمية",
+          "date": "2026/10/8",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6998caf3f89703bc6846e53ecf303719b88511fd6e259b4d88ce36d4819c4917.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9f6415dedf599d2a47cd3eaae80e5a4f1c9d78cf4dc941663a07dacc0b16f31b.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0db93d3077b49a400ba413199a53a7a46d506c63a853f768b2666b570350fdc.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/de49dad6da732c19edc2dedcacdc133247f52004e7cfdd294e1224d1ee197b24.webp"
+          ],
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0db93d3077b49a400ba413199a53a7a46d506c63a853f768b2666b570350fdc.webp": {
+              "x": 50,
+              "y": 50
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/de49dad6da732c19edc2dedcacdc133247f52004e7cfdd294e1224d1ee197b24.webp": {
+              "x": 50,
+              "y": 50
+            }
+          }
+        }
+      ],
+      "presentation": {
+        "updatedAt": "2026-10-18T10:28:42.154Z",
+        "theme": {
+          "boys": "#2b3592",
+          "girls": "#897dc0",
+          "bg1": "#101936",
+          "bg2": "#2b3592",
+          "bg3": "#71509d",
+          "radius": 27,
+          "photoHeight": 100,
+          "gap": 22,
+          "logoSize": 91,
+          "partnerLogoScale": 95,
+          "webPartnerBoxSize": 170,
+          "fontScale": 105,
+          "factoryFontScale": 174,
+          "columns": 1,
+          "photoLayout": "row",
+          "motion": true,
+          "network": true,
+          "networkOpacity": 85,
+          "speed": 20,
+          "showFactories": true,
+          "showCategories": true
+        },
+        "print": {
+          "perPage": 4,
+          "headerVisible": true,
+          "headerDateVisible": true,
+          "headerStyle": "color",
+          "headerAlign": "center",
+          "headerScale": 120,
+          "headerTitle": "",
+          "footerVisible": true,
+          "footerPartnersVisible": true,
+          "footerAlign": "center",
+          "footerPartnerSize": 125,
+          "footerLabel": "",
+          "footerText": "",
+          "showPageNumbers": false,
+          "coverHeaderVisible": true,
+          "coverPartnersVisible": false,
+          "coverFooterText": "",
+          "coverBackground": "",
+          "pageBackground": "",
+          "coverTextTop": 87,
+          "_partnerVisibilityConfigured": true,
+          "_reportLayoutVersion": 3
+        },
+        "partners": [
+          {
+            "id": "region-partner-qassim:فخر النسيج",
+            "name": "فخر النسيج",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-qassim:ثمرات",
+            "name": "ثمرات",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/847ab89bfae5a6812dbb789f55b1664c2802cbdd6630b270ee3092691c4b8b88.webp",
+            "scale": 90
+          },
+          {
+            "id": "region-partner-qassim:طريق الرياضه",
+            "name": "طريق الرياضة",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-qassim:الصناعات الاقليميه",
+            "name": "الصناعات الإقليمية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-qassim:الجاسر للبلاستيك",
+            "name": "الجاسر للبلاستيك",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-qassim:السعيد للغازات الصناعيه والطبيه",
+            "name": "السعيد للغازات الصناعية والطبية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2fe852f44929a2e2d7d6dc65f730c601ebe66723c49be4e9dae573ff3b92664c.webp",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-qassim:اكليل الجبل بافري",
+            "name": "إكليل الجبل — بافري",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/73eefd1faa58323ed95d6384c60530746b3c66e592b5e1c7ffc410a107978435.webp",
+            "scale": 75
+          },
+          {
+            "id": "region-partner-qassim:البان الخبراء",
+            "name": "ألبان الخبراء",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/aaed03849b57938eef29e0820d459e2f40a6c4bc0700e5fe548f3ac3a0ef572b.webp",
+            "scale": 90
+          }
+        ],
+        "partnersConfigured": true,
+        "factories": {
+          "qassim:فخر النسيج": {
+            "name": "فخر النسيج",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:الصناعات الاقليميه": {
+            "name": "الصناعات الإقليمية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:ثمرات": {
+            "name": "ثمرات",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/847ab89bfae5a6812dbb789f55b1664c2802cbdd6630b270ee3092691c4b8b88.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:طريق الرياضه": {
+            "name": "طريق الرياضه",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:الجاسر للبلاستيك": {
+            "name": "الجاسر للبلاستيك",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:السعيد للغازات الصناعيه والطبيه": {
+            "name": "السعيد للغازات الصناعية والطبية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2fe852f44929a2e2d7d6dc65f730c601ebe66723c49be4e9dae573ff3b92664c.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:اكليل الجبل بافري": {
+            "name": "إكليل الجبل — بافري",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/73eefd1faa58323ed95d6384c60530746b3c66e592b5e1c7ffc410a107978435.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:البان الخبراء": {
+            "name": "ألبان الخبراء",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/aaed03849b57938eef29e0820d459e2f40a6c4bc0700e5fe548f3ac3a0ef572b.webp",
+            "logoHidden": false,
+            "visible": true
+          }
+        }
+      },
+      "updatedAt": "2026-10-18T10:28:42.156Z",
+      "rematchBackup": {
+        "updatedAt": "2026-10-11T00:11:07.605Z",
+        "visits": [
+          {
+            "id": "auto-visit-1",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-2",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-3",
+            "images": [],
             "imagePositions": {}
           }
         ]
