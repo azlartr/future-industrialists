@@ -1618,7 +1618,12 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ee508d9abb1173db998a51c4983c7b8bbe721238f10667d0f50fb2a90fb76e3b.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/feed7d4d0366a73aaa0867b2350cfc3841261a4e6fd30d18c23c02328194b283.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c4610a7264c75ed5c8f368b7fde240dad6ff49433d9daaddec7ade7c3c5c5fb3.webp": {
+              "x": 50,
+              "y": 24.9211356466877
+            }
+          }
         },
         {
           "id": "auto-visit-2",
@@ -1691,7 +1696,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-18T10:39:23.950Z",
+        "updatedAt": "2026-10-18T10:39:26.005Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -1841,7 +1846,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-18T10:39:23.951Z",
+      "updatedAt": "2026-10-18T10:39:26.632Z",
       "rematchBackup": {
         "updatedAt": "2026-10-18T10:33:49.813Z",
         "visits": [
