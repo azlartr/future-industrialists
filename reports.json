@@ -2440,7 +2440,7 @@
       "id": "custom-makkah-1793320814113",
       "region": "makkah",
       "header": {
-        "weekTitle": "التقرير الأسبوعي",
+        "weekTitle": "الاسبوع الثالث",
         "dateRange": "من18 اكتوبر الاحد الى 22 اكتوبر الخميس"
       },
       "stats": {
@@ -2759,7 +2759,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-30T00:53:08.244Z",
+        "updatedAt": "2026-10-30T00:55:18.828Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -3041,7 +3041,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-30T00:55:02.261Z",
+      "updatedAt": "2026-10-30T00:56:02.444Z",
       "rematchBackup": {
         "updatedAt": "2026-10-30T00:47:34.276Z",
         "visits": [
