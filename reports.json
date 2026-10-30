@@ -3374,7 +3374,16 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f29a0f6b5832d594c7992dc2a0b2f719b7a85ef6155399309913f13b42b970f3.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b82947f00f1a56697af7a774dc08b23d1ec0389e0377cc9a87a8f338b2285fe2.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9ff742e7efc5123871ad4a4142d36129139829053d0d6f08386dd706b6158fb6.webp": {
+              "x": 50,
+              "y": 13.397129186602868
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1f9d035e0a0cade8a81c50a963ea73f08b397879521b63c893c846b052a8efda.webp": {
+              "x": 50,
+              "y": 33.49282296650718
+            }
+          }
         },
         {
           "id": "auto-visit-14",
@@ -3406,7 +3415,12 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/48f1ef3604f2a99a15db977c6d73abc870a914dfa99ffed05b0a18f8285e29e9.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d32e6535f10dfd632d9776bd6d4a8c975f7aa584b61ed298743d1adc4ad66c71.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/48f1ef3604f2a99a15db977c6d73abc870a914dfa99ffed05b0a18f8285e29e9.webp": {
+              "x": 50,
+              "y": 95.8139975376456
+            }
+          }
         },
         {
           "id": "auto-visit-16",
@@ -3442,7 +3456,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-30T01:14:27.936Z",
+        "updatedAt": "2026-10-30T01:14:36.247Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -3724,7 +3738,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-30T01:15:03.662Z",
+      "updatedAt": "2026-10-30T01:16:05.337Z",
       "rematchBackup": {
         "updatedAt": "2026-10-30T01:02:55.828Z",
         "visits": [
