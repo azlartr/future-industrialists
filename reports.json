@@ -2464,7 +2464,12 @@
           "participants": 47,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/fe5a777523054c91ba5b47097c66db3ede006bd27e09e06a655cc5210a42cf70.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/dfca25c4e35295f4fe1cd941210a47e705e5de8c7f3f1f5315f04460cf2da35d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/41293d05f678ca8ca5bb160b5e9aa2d0017602e638c7ec516f8d0d980804b950.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2991dbfd12948574be16b773539ccbc857b8ea64c19cd2877cbb6a0792f0226f.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2475,7 +2480,12 @@
           "participants": 49,
           "gender": "boys",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9f9ca4f2ed8ab5cc5bb346168474319fe839315cfe1eb85f745121d2750d71b5.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5fc15c7954c6895d49293a254218d47cc993a6100f1ec0c59dc976c814da384b.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/be1568a85b5c8a5017f52bbe036c3ea040db9eec98b272278e1b2396a9790355.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3509adf6d9713e7788b0da901729dbd10565b542554ea1939baefc947eb003fa.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2486,7 +2496,12 @@
           "participants": 45,
           "gender": "boys",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c33abadda4ab4c6d3c85a3e12b97908ec35a3cb1e49c1a0c48a9436bdae16e95.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/108d61ab3374efe7faf53227e38066e8e188356d2329ddc2f0cb71a959ff070b.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/50f4a5a49da07df79ce533f37a5da992f64ae41b51c74edebe9056111c355c2d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/75afedadc53d58b290fea6c4e6a01710021b0aa2f084d19f202435a48d64bd1e.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2497,7 +2512,12 @@
           "participants": 48,
           "gender": "boys",
           "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0ceafb2262dbfc1fd9b2d6774e24ff5c98eb937c4ffb8d8deaf080116a4658a.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7b43fef180bda947e7168a8a908e1df25e189b08815d8c5295dca5e18762d2f9.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/cfe522d2d55f2ebf9020fb79dc2f13dcac9fc1851d74205b7284219a7be53f29.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8d57d317673db237ea2342ec42e2e35a85cdbe616e2c0e7038ced3f437afced6.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec4c3c9030d956c6296f93e77adc423248c324f72d9593db4d3157dbea7f51ff.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2508,7 +2528,12 @@
           "participants": 46,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2d694af08b44ff9c8ee8487c0f2b22bbe42f90273cad7d06258fd0192e11a8e9.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/401d4a143f1c5b0f49849a6631b9b8439bac7ed8a1531ef50a7e354464d32916.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/401258b239a47b0a8f7d645d9f82baf5356d0e3a144c1b6a5ab3eacd70f6b8c7.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/0906d2a861912deb236fa0b43950a01671670a82cde292697fab8b9ac60e461b.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2519,7 +2544,12 @@
           "participants": 45,
           "gender": "boys",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c7762f7288ab3640790d10958684b4c790205e69c3afd7d146f94066a67e3ae7.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/bb0b6fb1999422c81b88b652fbb21fee3079bb179c8aa15de6817f85e455ff5d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e5150c09bb078c076700a89122f0b71acf235cf2e987b452b2d8c13386a5f3ea.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f23a72a14e44b0f99aeb08dc330a8200370107930d87e45cf429afd3d9b6859d.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2530,7 +2560,12 @@
           "participants": 47,
           "gender": "boys",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7050be41965642c8171c1fd3072e65401863e0f3549a276b53bbb66c152a4a18.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f86fb61f049880c7c4f36e9b2aec8d6d8b177080a4bc354d6502bda8359dc741.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2f6931585e5e22e8de4d30fdd955eda284ffa9d5c5f81a9b4cbf8be84efdefac.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a76b7b5931b39007abdf1dd36a4f63e89cf9a14d440a2d0ebe2192b6388443d2.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2541,7 +2576,12 @@
           "participants": 42,
           "gender": "boys",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/850c9f59fab3e21a9b61f90e609889c3774384eb89392b97cb1a5ec2566512ac.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e8f4182da066d2ac3402f582a6b05590f3134f3a417492b249bce6362f5661bd.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6dc5fbf9700c3383ba166c1957302e1548795df8c02c91b7d7b3ca2925d79eb1.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/117f4b8b3c15169537c283191101939fb6cdc810cac40fe7cc2b20bb9c7528b5.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2552,7 +2592,12 @@
           "participants": 43,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8a2cc6202685ce4493371e036742d419bebfd2a0e04407f1c7e0585170dca765.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/35403ff7452da5532bf94c46568d0fcd6f0175510007f46b935d42d7fbbb18ff.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6628f5f204d51bc8196fa83adfbde7f71f9b7f7b3b04e59f66247b6967bbaaf9.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/59542b9b602d2ef190dc45c4f48d49c5e58e47f36b27a7692770e8de76af73db.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2563,7 +2608,12 @@
           "participants": 47,
           "gender": "boys",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/902e976a7747626a40f0c4037eca369b2ef75ea6022a2a906ad35b25758f307d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a3876c1aba6fb760d4e121792cc3a555966f61adf6b618d124df5251f7538775.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/29c09404a0557abae118d385b8bde127cd6bc9284112aa421acd61cb3621c6d3.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e0af6e363ed8544477a4bf59101a45d3292acac07bb1306c92a523bcc0b3d734.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2574,7 +2624,12 @@
           "participants": 44,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ba65d053da3084589ec2062b76a95df1bdbff873632cb52b27c02564aeb9f78a.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/eca77888609e0116c6d2205ce88747ad379b8af513f90a259adf563124e66502.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/bca544a0156566c33eaa27f5725598f68d99caf2bbb3a9c048003ceb1f0d810b.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a8d504003e8084411b85ba969bd050b997b8b31799d0cd1bb23d15f56afb6079.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2585,7 +2640,12 @@
           "participants": 48,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5757af19f4805afcd541fa52794c36dec87f72e0d1c49346cfc37d6fa2b6b501.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d7f5e4da18a65604baed1ae26ab1e14d69f50ecbe9c3391efcf99ca4bb98d677.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/dbcbc8a2b638b022d1ba251cecf7a800bbdd1a449fdcf857907b5d7fd344fa45.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ccb9ca9c961f1ab40100d7ae27743611c3365e7cc77a5e7efd0602487e1988be.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2596,7 +2656,12 @@
           "participants": 45,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a2c7f6a516170b137ab879c4683e6a21591ced2efc6aef2e1f724adf94c4e5ca.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/cba02d72defe21a73c321524c5a94187487038adf677a4aec1d6af926d934174.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3e1970447abb89e6418d3288126da788221730d7f25da806273bc9934ff1c582.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/4bce3626e1eb2d86a5edc1ed0357601089ee3f7ba01f8a8aa204ec231be08c22.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2607,7 +2672,12 @@
           "participants": 44,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a10205e6b37afa506d9cbf19e7d0e11021b66b2058a099900de070a876ed92ed.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/700bd1f8bb088edade6712204ce81844a9eedafdbe9eb7b7daabcf535857bd8b.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/493961798cde7391f8c9a95f70c1c0134551b9595e07e5773af3134fa2ebd4a2.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/da4e8803981d24d98e0e38c21e7622ea3b4688d32af6316cea32cf7f795f3774.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2618,7 +2688,12 @@
           "participants": 48,
           "gender": "girls",
           "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0ceafb2262dbfc1fd9b2d6774e24ff5c98eb937c4ffb8d8deaf080116a4658a.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/88a798c481d084fbb6e7e24c4b01eef90ad796a0b58b1874878918717a2e276d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/60dd7beb58427ea0ca68c73075bb39c2fd4c94062110cd40d7fc4d74bc33bc95.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/caee53d875b4cb1f7f4a0f14c44e1a3d608ad9090d0e963733f135735a193ea1.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a3ec4e55b945784f066dfd2c16b31a916f0abbb9280a6d407fcba404c7d2597a.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2640,7 +2715,12 @@
           "participants": 47,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d8c17d3b39199a5775b7e965c1656c58cb9057816dca8377a6893a20e0b82b6a.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/28d63eccebb83fa02402bad0c583ca8589f58865f97e32d28feff6fbfff90971.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f3e732c94503c82172d49f0c7ac505eebd1ffca915f0c640f2a7e6036ee71ff4.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/7994e959eb2d21f0578146c80726e865d9c41631dcc75763fddd7c5dd804d3e1.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -2651,12 +2731,17 @@
           "participants": 49,
           "gender": "girls",
           "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/02624678c97a16b256767b05a8216922c9707074159e52819c39c77cb44ab6a1.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c77f1b4b1650d31565a9ffc1e9fd377a6f38010c8e162ee1431eea1fbe236d92.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/02f22251792af6edb24335af8ed13e0f25fe76975ad8a680db97ffd64ae72793.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/efc08f9f280e22fd7cadabaa2db53b11615565fbaf662e0b02fc27f401d7f3cb.webp"
+          ],
           "imagePositions": {}
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-30T00:43:38.177Z",
+        "updatedAt": "2026-10-30T00:47:34.296Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -2938,7 +3023,102 @@
           }
         }
       },
-      "updatedAt": "2026-10-30T00:44:51.505Z"
+      "updatedAt": "2026-10-30T00:47:34.309Z",
+      "rematchBackup": {
+        "updatedAt": "2026-10-30T00:47:34.276Z",
+        "visits": [
+          {
+            "id": "auto-visit-1",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-2",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-3",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-4",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-5",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-6",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-7",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-8",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-9",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-10",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-11",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-12",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-13",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-14",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-15",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-16",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-17",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-18",
+            "images": [],
+            "imagePositions": {}
+          }
+        ]
+      }
     }
   ],
   "deletedReports": [
