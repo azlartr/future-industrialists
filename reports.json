@@ -2628,7 +2628,7 @@
           "date": "2026/10/21",
           "participants": 46,
           "gender": "girls",
-          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0ceafb2262dbfc1fd9b2d6774e24ff5c98eb937c4ffb8d8deaf080116a4658a.webp",
           "images": [],
           "imagePositions": {}
         },
@@ -2656,7 +2656,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-10-30T00:43:14.112Z",
+        "updatedAt": "2026-10-30T00:43:38.177Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -2830,7 +2830,7 @@
           },
           "makkah:مواد الاعمار الخشب": {
             "name": "مواد الإعمار — الخشب",
-            "url": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/b0ceafb2262dbfc1fd9b2d6774e24ff5c98eb937c4ffb8d8deaf080116a4658a.webp",
             "logoHidden": false,
             "visible": true
           },
@@ -2938,7 +2938,7 @@
           }
         }
       },
-      "updatedAt": "2026-10-30T00:43:45.699Z"
+      "updatedAt": "2026-10-30T00:44:51.505Z"
     }
   ],
   "deletedReports": [
