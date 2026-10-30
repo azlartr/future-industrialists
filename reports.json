@@ -2435,6 +2435,510 @@
           }
         ]
       }
+    },
+    {
+      "id": "custom-makkah-1793320814113",
+      "region": "makkah",
+      "header": {
+        "weekTitle": "التقرير الأسبوعي",
+        "dateRange": "من18 اكتوبر الاحد الى 22 اكتوبر الخميس"
+      },
+      "stats": {
+        "ambassadorCategory": 897,
+        "tvInterviews": 0,
+        "tweets": 303,
+        "videos": 10,
+        "posts": 5,
+        "discovererCategory": 2392,
+        "creativeCategory": 1610,
+        "totalBeneficiaries": 0,
+        "totalRegistered": 5388,
+        "artistCategory": 489
+      },
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "ثانوية الابناء البحرية ( بنات )",
+          "factory": "يورك",
+          "date": "2026/10/18",
+          "participants": 47,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "ثانوية صقلية مسارات ( بنين )",
+          "factory": "فلو",
+          "date": "2026/10/19",
+          "participants": 49,
+          "gender": "boys",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "مدارس العرب العالمية ( بنين )",
+          "factory": "الزاهد",
+          "date": "2026/10/19",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-4",
+          "schoolName": "ثانوية القيروان ( بنين )",
+          "factory": "مواد الاعمار للرخام والجرانيت",
+          "date": "2026/10/19",
+          "participants": 48,
+          "gender": "boys",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-5",
+          "schoolName": "ثانوية فتاة المستقبل (بنات )",
+          "factory": "فلو",
+          "date": "2026/10/20",
+          "participants": 46,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-6",
+          "schoolName": "ثانوية طليطلة ( بنين )",
+          "factory": "مبكو",
+          "date": "2026/10/20",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-7",
+          "schoolName": "ثانوية الفلاح الاهلية ( بنين )",
+          "factory": "تمر - ساجا للادوية",
+          "date": "2026/10/20",
+          "participants": 47,
+          "gender": "boys",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-8",
+          "schoolName": "ثانوية عمورية ( بنين )",
+          "factory": "اليمامة",
+          "date": "2026/10/20",
+          "participants": 42,
+          "gender": "boys",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-9",
+          "schoolName": "ثانوية الطموح الاهلية ( بنات )",
+          "factory": "مجموعة تمر- مولنليكي",
+          "date": "2026/10/20",
+          "participants": 43,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-10",
+          "schoolName": "ثانوية اشبيلية ( بنين )",
+          "factory": "يورك",
+          "date": "2026/10/21",
+          "participants": 47,
+          "gender": "boys",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-11",
+          "schoolName": "الثانوية الثامنة ( بنات)",
+          "factory": "فلو",
+          "date": "2026/10/21",
+          "participants": 44,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-12",
+          "schoolName": "الثانوية الثامنة عشر ( بنات)",
+          "factory": "مبكو",
+          "date": "2026/10/21",
+          "participants": 48,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-13",
+          "schoolName": "الثانوية السابعة ( بنات)",
+          "factory": "مجموعة تمر - ساجا للادوية",
+          "date": "2026/10/21",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-14",
+          "schoolName": "الثانوية الخامسة والتسعون ( بنات )",
+          "factory": "الزاهد",
+          "date": "2026/10/21",
+          "participants": 44,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-15",
+          "schoolName": "ثانوية العلم النافع ( بنات ) مكة المكرمة",
+          "factory": "مواد الاعمار - للرخام والجرانيت",
+          "date": "2026/10/21",
+          "participants": 48,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-16",
+          "schoolName": "ثانوية عبد الرحمن فقيه ( بنات ) مكة المكرمة",
+          "factory": "مواد الاعمار - للخشب",
+          "date": "2026/10/21",
+          "participants": 46,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-17",
+          "schoolName": "ثانوية الفتاة الاهلية ( بنات ) مكة المكرمة",
+          "factory": "مجموعة تمر - مولنليكي",
+          "date": "2026/10/21",
+          "participants": 47,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-18",
+          "schoolName": "الثانوية الحادية والثلاثون ( بنات )",
+          "factory": "يورك",
+          "date": "2026/10/22",
+          "participants": 49,
+          "gender": "girls",
+          "factoryLogo": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
+          "images": [],
+          "imagePositions": {}
+        }
+      ],
+      "presentation": {
+        "updatedAt": "2026-10-30T00:40:30.254Z",
+        "theme": {
+          "boys": "#2b3592",
+          "girls": "#897dc0",
+          "bg1": "#101936",
+          "bg2": "#2b3592",
+          "bg3": "#71509d",
+          "radius": 27,
+          "photoHeight": 172,
+          "gap": 22,
+          "logoSize": 91,
+          "partnerLogoScale": 95,
+          "webPartnerBoxSize": 170,
+          "fontScale": 105,
+          "factoryFontScale": 174,
+          "columns": 1,
+          "photoLayout": "row",
+          "motion": true,
+          "network": true,
+          "networkOpacity": 85,
+          "speed": 20,
+          "showFactories": true,
+          "showCategories": true
+        },
+        "print": {
+          "perPage": 4,
+          "headerVisible": true,
+          "headerDateVisible": true,
+          "headerStyle": "color",
+          "headerAlign": "center",
+          "headerScale": 120,
+          "headerTitle": "",
+          "footerVisible": true,
+          "footerPartnersVisible": true,
+          "footerAlign": "center",
+          "footerPartnerSize": 125,
+          "footerLabel": "",
+          "footerText": "",
+          "showPageNumbers": false,
+          "coverHeaderVisible": true,
+          "coverPartnersVisible": false,
+          "coverFooterText": "",
+          "coverBackground": "https://azlartr.github.io/future-industrialists/assets/print/c5dd67d46428525732fd76f4ee243779df80438a9aef2483c833ca68aadaab87.webp",
+          "pageBackground": "",
+          "coverTextTop": 87,
+          "_partnerVisibilityConfigured": true,
+          "_reportLayoutVersion": 3
+        },
+        "partners": [
+          {
+            "id": "region-partner-makkah:يورك",
+            "name": "يورك",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-makkah:مواد الاعمار",
+            "name": "مواد الإعمار",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-makkah:مبكو",
+            "name": "مبكو",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-makkah:تمر",
+            "name": "تمر",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
+            "scale": 90
+          },
+          {
+            "id": "region-partner-makkah:سدافكو",
+            "name": "سدافكو",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/e878f1d928ae645279c1d65785ffbb1eea583b26d786cd5b11ca97774ba3bb16.webp",
+            "scale": 90
+          },
+          {
+            "id": "region-partner-makkah:اليمامه",
+            "name": "اليمامة",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-makkah:فلو",
+            "name": "فلو",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
+            "scale": 75
+          },
+          {
+            "id": "region-partner-makkah:تمر مولينكلي",
+            "name": "تمر — مولينكلي",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-makkah:الزاهد",
+            "name": "الزاهد",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-makkah:ubt",
+            "name": "UBT",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/fe39d4820d81aefa91b7539bc12c1902a849e231971c9e2155d3062d722da8fe.webp",
+            "scale": 65
+          },
+          {
+            "id": "region-partner-makkah:قايد",
+            "name": "قايد",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/c7463b2aafebda7804de2c2da126b50187c27a3e651df14da4d256523f52a21b.webp",
+            "scale": 90
+          },
+          {
+            "id": "region-partner-makkah:السليمان الخيريه",
+            "name": "السليمان الخيرية",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/1814d350c50f939e0c96da3f4916a369d4cf82c25483e3d915d817268a129384.webp",
+            "scale": 100
+          }
+        ],
+        "partnersConfigured": true,
+        "factories": {
+          "makkah:يورك": {
+            "name": "يورك",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/47b187f340c7d63ddf28c079d328f5839006a7d31000e8f3cf5ea10cc64a50fd.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:فلو": {
+            "name": "فلو",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/f878fa9f402e78a96972c9fde8fe93f1b5d680dde0181933c5cd327bbaf038ca.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:اليمامه": {
+            "name": "اليمامة",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/e5fac4eddac9ed1858481db1b95e3dc761602da6632ea8aed6008fb5d0a57264.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:الزاهد": {
+            "name": "الزاهد",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/413045ef009cb4879902b8b0089f36d03f69e64834d2c16996c063d77fd87d1a.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مبكو": {
+            "name": "مبكو",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/07391dfcf99fec7c469e2f951c272e4693718f891d4720f66eb5411fd6aea695.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:تمر ساجا": {
+            "name": "تمر — ساجا",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار الرخام والجرانيت": {
+            "name": "مواد الإعمار — الرخام والجرانيت",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:تمر مولينكلي": {
+            "name": "تمر — مولينكلي",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/96fd4f887d8ec4a69788f3cb74519ac48447990fd7f8390eed1d70b939cfc590.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار الخشب": {
+            "name": "مواد الإعمار — الخشب",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار": {
+            "name": "مواد الإعمار",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:تمر": {
+            "name": "تمر",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/963df80965f29c59ff09158181b4cb68de5b4be550bb44b3e29f0b25f1b28d0c.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:سدافكو": {
+            "name": "سدافكو",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/e878f1d928ae645279c1d65785ffbb1eea583b26d786cd5b11ca97774ba3bb16.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مواد الاعمار الالمنيوم": {
+            "name": "مواد الإعمار — الألمنيوم",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/62fac7b0ae914c125082a49f23db2c2b7314db82378164d70758d933b7c5e50a.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:ubt": {
+            "name": "UBT",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/fe39d4820d81aefa91b7539bc12c1902a849e231971c9e2155d3062d722da8fe.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:قايد": {
+            "name": "قايد",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/c7463b2aafebda7804de2c2da126b50187c27a3e651df14da4d256523f52a21b.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:السليمان الخيريه": {
+            "name": "السليمان الخيرية",
+            "url": "https://azlartr.github.io/future-industrialists/assets/print/1814d350c50f939e0c96da3f4916a369d4cf82c25483e3d915d817268a129384.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:فش فاش": {
+            "name": "فش فاش",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:محمد سعد الدين": {
+            "name": "محمد سعد الدين",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:يونيتشارم": {
+            "name": "يونيتشارم",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مورق": {
+            "name": "مورق",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:كوكا كولا": {
+            "name": "كوكا كولا",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:ديمه": {
+            "name": "ديمة",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:مركز القدرات": {
+            "name": "مركز القدرات",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:الدواء بروسيد": {
+            "name": "الدواء - بروسيد",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:دار الانظمه": {
+            "name": "دار الأنظمة",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "makkah:صناعه البلاستيك": {
+            "name": "صناعة البلاستيك",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          }
+        }
+      },
+      "updatedAt": "2026-10-30T00:40:30.257Z"
     }
   ],
   "deletedReports": [
