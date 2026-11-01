@@ -4270,7 +4270,7 @@
       "id": "auto-qassim-1793538751205",
       "region": "qassim",
       "header": {
-        "weekTitle": "التقرير الأسبوعي",
+        "weekTitle": "الاسبوع الثالث",
         "dateRange": "من 18اكتوبر الاحد الى 22 اكتوبر الخميس"
       },
       "stats": {
@@ -4310,7 +4310,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-01T13:12:31.210Z",
+        "updatedAt": "2026-11-01T13:13:11.280Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -4460,7 +4460,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-01T13:12:31.211Z"
+      "updatedAt": "2026-11-01T13:13:11.281Z"
     }
   ],
   "deletedReports": [
