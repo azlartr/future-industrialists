@@ -3829,6 +3829,441 @@
           }
         ]
       }
+    },
+    {
+      "id": "auto-riyadh-1793538241908",
+      "region": "riyadh",
+      "header": {
+        "weekTitle": "التقرير الأسبوعي",
+        "dateRange": "من 13 سبتمبر الاحد الى 17 سبتمبر الخميس 2026"
+      },
+      "stats": {
+        "ambassadorCategory": 30,
+        "tvInterviews": 0,
+        "tweets": 288,
+        "videos": 1,
+        "posts": 2,
+        "discovererCategory": 113,
+        "creativeCategory": 146,
+        "totalBeneficiaries": 692,
+        "totalRegistered": 318,
+        "artistCategory": 29
+      },
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "مدارس الموهوبين التقنية ( بنين )",
+          "factory": "فش فاش",
+          "date": "2026/9/13",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f9dc90b25b4f8e535ad289aeb420981a4833c51d4805987edaa989e5e3ac2e71.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "مدارس الموهوبين العلمية ( بنين )",
+          "factory": "محمد سعد الدين",
+          "date": "2026/9/13",
+          "participants": 49,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d935edee904f0b4335e64726521c3c9aa7fc19a4dbf3c969d6bbe8796fb1ae8e.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "مدارس المنهل ( بنين )",
+          "factory": "يونيتشارم",
+          "date": "2026/9/14",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/888fdbb7f91b23b7b016e3a697faab3aa1a5215c3555667e3c2575012d921e42.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-4",
+          "schoolName": "مدارس المنهل ( بنات )",
+          "factory": "مورق",
+          "date": "2026/9/14",
+          "participants": 48,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1a0b003964c06f3ec5a74e3eb273e7f176bf5f8bab9938e1afa1e289208af898.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-5",
+          "schoolName": "مدارس ثنائي اللغة ( بنين )",
+          "factory": "كوكا كولا",
+          "date": "2026/9/14",
+          "participants": 46,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/4c825008199edabd9839f68695bbb05b254687ae2a3379c908037193153295f9.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-6",
+          "schoolName": "مدارس التربية الاهلية ( بنات )",
+          "factory": "ديمة",
+          "date": "2026/9/14",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec4c9bd46547a2afe97c2249255a974bca62d73782bfeb28bc6ae6e92fc97e2b.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-7",
+          "schoolName": "مدارس اتقان التربية ( بنات )",
+          "factory": "مركز القدرات",
+          "date": "2026/9/14",
+          "participants": 47,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/26bbd0b4ebbc46b2535b61bec72d2424952dfa0a967dea12868fcea51a91c5d1.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-8",
+          "schoolName": "مدارس الثانوية المئة والواحد والعشرون ( بنات )",
+          "factory": "فش فاش",
+          "date": "2026/9/15",
+          "participants": 42,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f9dc90b25b4f8e535ad289aeb420981a4833c51d4805987edaa989e5e3ac2e71.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-9",
+          "schoolName": "مدارس الرواد المنصورة ( بنين )",
+          "factory": "مورق",
+          "date": "2026/9/15",
+          "participants": 43,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1a0b003964c06f3ec5a74e3eb273e7f176bf5f8bab9938e1afa1e289208af898.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-10",
+          "schoolName": "مدارس المتقدمة ( بنات )",
+          "factory": "الدواء - بروسيد",
+          "date": "2026/9/15",
+          "participants": 49,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/20fff7e2df98807caeb98de19d37e354b4ad1c923ab1b2b7a7df26a935523742.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-11",
+          "schoolName": "مدارس ابن رشد ( بنات )",
+          "factory": "دار الأنظمة",
+          "date": "2026/9/15",
+          "participants": 46,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/946cce4a589aa74b0472955cffad791f109a98bc071bb0e08552e660c7b91078.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-12",
+          "schoolName": "مدارس المملكة ( بنات )",
+          "factory": "يونيتشارم",
+          "date": "2026/9/16",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/888fdbb7f91b23b7b016e3a697faab3aa1a5215c3555667e3c2575012d921e42.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-13",
+          "schoolName": "مدارس باب المعرفة ( بنات )",
+          "factory": "ديمة",
+          "date": "2026/9/16",
+          "participants": 50,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec4c9bd46547a2afe97c2249255a974bca62d73782bfeb28bc6ae6e92fc97e2b.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-14",
+          "schoolName": "مدارس المملكة ( بنين )",
+          "factory": "دار الأنظمة",
+          "date": "2026/9/16",
+          "participants": 48,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/946cce4a589aa74b0472955cffad791f109a98bc071bb0e08552e660c7b91078.webp",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-15",
+          "schoolName": "مدارس معالم التربية ( بنين )",
+          "factory": "صناعة البلاستيك",
+          "date": "2026/9/16",
+          "participants": 44,
+          "gender": "boys",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1c1f583b6e661e78526ce80a0b68dac4c5ec0f57d84bfb457a09aa5814f9c848.webp",
+          "images": [],
+          "imagePositions": {}
+        }
+      ],
+      "presentation": {
+        "updatedAt": "2026-11-01T13:04:01.915Z",
+        "theme": {
+          "boys": "#2b3592",
+          "girls": "#897dc0",
+          "bg1": "#101936",
+          "bg2": "#2b3592",
+          "bg3": "#71509d",
+          "radius": 27,
+          "photoHeight": 172,
+          "gap": 22,
+          "logoSize": 91,
+          "partnerLogoScale": 95,
+          "webPartnerBoxSize": 170,
+          "fontScale": 105,
+          "factoryFontScale": 174,
+          "columns": 1,
+          "photoLayout": "row",
+          "motion": true,
+          "network": true,
+          "networkOpacity": 85,
+          "speed": 20,
+          "showFactories": true,
+          "showCategories": true
+        },
+        "print": {
+          "perPage": 4,
+          "headerVisible": true,
+          "headerDateVisible": true,
+          "headerStyle": "color",
+          "headerAlign": "center",
+          "headerScale": 120,
+          "headerTitle": "",
+          "footerVisible": true,
+          "footerPartnersVisible": true,
+          "footerAlign": "center",
+          "footerPartnerSize": 93,
+          "footerLabel": "شركاء النجاح",
+          "footerText": "",
+          "showPageNumbers": false,
+          "coverHeaderVisible": true,
+          "coverPartnersVisible": false,
+          "coverFooterText": "",
+          "coverBackground": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d7a1ba8eb5188d046c95703d52bae4caa8202a18969d1ab15baac75045b7f1dd.webp",
+          "pageBackground": "",
+          "coverTextTop": 87,
+          "_partnerVisibilityConfigured": true,
+          "_reportLayoutVersion": 3
+        },
+        "partners": [
+          {
+            "id": "region-partner-riyadh:irc",
+            "name": "IRC",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3e7ef290668d704f38143657d0d49fda4f4a926ee78854cdfe624295affad413.webp",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-riyadh:المتحده للكرتون",
+            "name": "المتحدة للكرتون",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/bbb3a7bc7c67f150baf650e1d2751ba1684ee3a93f2dcc3e987377fe6a1dee1b.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-riyadh:الربيع",
+            "name": "الربيع",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/abd55f58baa58b45b8fa634de6e1a9b58f00d0cad35ed168a4b89f184c68505b.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-riyadh:فش فاش",
+            "name": "فش فاش",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f9dc90b25b4f8e535ad289aeb420981a4833c51d4805987edaa989e5e3ac2e71.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-riyadh:جني فارم",
+            "name": "جنى فارم",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/01be3952433907959e74a6cd0e6c262276f17bab80817734571738948ddd7530.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-riyadh:ديمه",
+            "name": "ديمة",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec4c9bd46547a2afe97c2249255a974bca62d73782bfeb28bc6ae6e92fc97e2b.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-riyadh:محمد سعد الدين",
+            "name": "سعد الدين",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d935edee904f0b4335e64726521c3c9aa7fc19a4dbf3c969d6bbe8796fb1ae8e.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-riyadh:صناعه البلاستيك",
+            "name": "شركة صناعة البلاستيك العربية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1c1f583b6e661e78526ce80a0b68dac4c5ec0f57d84bfb457a09aa5814f9c848.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-riyadh:كوكا كولا",
+            "name": "كوكاكولا",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/4c825008199edabd9839f68695bbb05b254687ae2a3379c908037193153295f9.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-riyadh:مايلز",
+            "name": "مايلز",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6d9ce5a0b0258e7330b6a098b72488228e92cd672c131bc2adf8a5a816adbc0a.webp",
+            "scale": 80
+          },
+          {
+            "id": "region-partner-riyadh:دينه الملك عبدالعزيز للعلوم والتقنيه",
+            "name": "دينة الملك عبدالعزيز للعلوم والتقنية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6ede64d9b86da5d43d79acdb50de086d42976bae8a07ffae6398267b8e7c5cfb.webp",
+            "scale": 100
+          },
+          {
+            "id": "region-partner-riyadh:دار الانظمه",
+            "name": "مصنع دار الأنظمة للوحات الكهربائية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/946cce4a589aa74b0472955cffad791f109a98bc071bb0e08552e660c7b91078.webp",
+            "scale": 65
+          },
+          {
+            "id": "region-partner-riyadh:مورق",
+            "name": "مورق",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1a0b003964c06f3ec5a74e3eb273e7f176bf5f8bab9938e1afa1e289208af898.webp",
+            "scale": 85
+          },
+          {
+            "id": "region-partner-riyadh:يونيتشارم",
+            "name": "يونيتشارم",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/888fdbb7f91b23b7b016e3a697faab3aa1a5215c3555667e3c2575012d921e42.webp",
+            "scale": 100
+          },
+          {
+            "id": "partner-1791677033850-89o2q",
+            "name": "الدواء بروسيد",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/20fff7e2df98807caeb98de19d37e354b4ad1c923ab1b2b7a7df26a935523742.webp",
+            "scale": 90
+          }
+        ],
+        "partnersConfigured": true,
+        "factories": {
+          "riyadh:صناعه البلاستيك": {
+            "name": "صناعة البلاستيك",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1c1f583b6e661e78526ce80a0b68dac4c5ec0f57d84bfb457a09aa5814f9c848.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:فش فاش": {
+            "name": "فش فاش",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f9dc90b25b4f8e535ad289aeb420981a4833c51d4805987edaa989e5e3ac2e71.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:محمد سعد الدين": {
+            "name": "محمد سعد الدين",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d935edee904f0b4335e64726521c3c9aa7fc19a4dbf3c969d6bbe8796fb1ae8e.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:مركز القدرات": {
+            "name": "مركز القدرات",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/26bbd0b4ebbc46b2535b61bec72d2424952dfa0a967dea12868fcea51a91c5d1.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:ديمه": {
+            "name": "ديمة",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec4c9bd46547a2afe97c2249255a974bca62d73782bfeb28bc6ae6e92fc97e2b.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:مورق": {
+            "name": "مورق",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1a0b003964c06f3ec5a74e3eb273e7f176bf5f8bab9938e1afa1e289208af898.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:الربيع": {
+            "name": "الربيع",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/abd55f58baa58b45b8fa634de6e1a9b58f00d0cad35ed168a4b89f184c68505b.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:كوكا كولا": {
+            "name": "كوكا كولا",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/4c825008199edabd9839f68695bbb05b254687ae2a3379c908037193153295f9.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:يونيتشارم": {
+            "name": "يونيتشارم",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/888fdbb7f91b23b7b016e3a697faab3aa1a5215c3555667e3c2575012d921e42.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:دار الانظمه": {
+            "name": "دار الأنظمة",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/946cce4a589aa74b0472955cffad791f109a98bc071bb0e08552e660c7b91078.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:الدواء بروسيد": {
+            "name": "الدواء بروسيد",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/20fff7e2df98807caeb98de19d37e354b4ad1c923ab1b2b7a7df26a935523742.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:المتحده للكرتون": {
+            "name": "المتحدة للكرتون",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/bbb3a7bc7c67f150baf650e1d2751ba1684ee3a93f2dcc3e987377fe6a1dee1b.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:الجميح": {
+            "name": "الجميح",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ef4837da6e0c27c79ddf280cd7c86d4a33407e79dbd6cc6454705334c409108f.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:irc": {
+            "name": "IRC",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/3e7ef290668d704f38143657d0d49fda4f4a926ee78854cdfe624295affad413.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:جني فارم": {
+            "name": "جنى فارم",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/01be3952433907959e74a6cd0e6c262276f17bab80817734571738948ddd7530.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:مايلز": {
+            "name": "مايلز",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6d9ce5a0b0258e7330b6a098b72488228e92cd672c131bc2adf8a5a816adbc0a.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "riyadh:دينه الملك عبدالعزيز للعلوم والتقنيه": {
+            "name": "دينة الملك عبدالعزيز للعلوم والتقنية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6ede64d9b86da5d43d79acdb50de086d42976bae8a07ffae6398267b8e7c5cfb.webp",
+            "logoHidden": false,
+            "visible": true
+          }
+        }
+      },
+      "updatedAt": "2026-11-01T13:04:12.538Z"
     }
   ],
   "deletedReports": [
