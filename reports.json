@@ -4042,7 +4042,7 @@
           "imagePositions": {
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/febdf43738c07a58e976784ddc49073233a924587a1ab8a0573a4c8d8618d237.webp": {
               "x": 50,
-              "y": 50
+              "y": 0
             }
           }
         },
@@ -4163,7 +4163,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-01T20:09:45.511Z",
+        "updatedAt": "2026-11-01T20:09:48.250Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -4445,7 +4445,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-01T20:12:05.745Z",
+      "updatedAt": "2026-11-01T20:12:17.598Z",
       "rematchBackup": {
         "updatedAt": "2026-10-30T01:02:55.828Z",
         "visits": [
