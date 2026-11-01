@@ -150,16 +150,18 @@ function splitBlocks(text) {
   return blocks.length > 1 ? blocks : String(text ?? "").split(/\n\s*\n+/).map((block) => block.split("\n").map((line) => line.trim()).filter(Boolean)).filter(Boolean);
 }
 
-function parseHeader(lines, regionName) {
-  const firstVisit = lines.findIndex((line) => Boolean(schoolFromLine(line)));
-  const headerLines = (firstVisit < 0 ? lines : lines.slice(0, firstVisit)).filter(Boolean);
-  const weekLine = headerLines.find((line) => /(?:الأسبوع|الاسبوع|week)/i.test(line));
-  const dateLine = headerLines.find((line) => /(?:الفترة|الفتره|من\s+.+(?:إلى|الى|حتى)|period)/i.test(line)) || headerLines.find((line) => dateFromText(line));
-  const weekTitle = cleanValue((weekLine || "تقرير أسبوعي").split(/(?:الفترة|الفتره|period)/i)[0]) || "تقرير أسبوعي";
-  const dateRange = cleanValue(dateLine || "")
-    .replace(/^.*?(?:الفترة|الفتره|period)\s*[:：\-]?\s*/i, "");
-  return { weekTitle, dateRange, region: regionName };
+const weekLabels=['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر','السادس عشر','السابع عشر','الثامن عشر','التاسع عشر','العشرون','الحادي والعشرون','الثاني والعشرون','الثالث والعشرون','الرابع والعشرون','الخامس والعشرون','السادس والعشرون','السابع والعشرون','الثامن والعشرون','التاسع والعشرون','الثلاثون'];
+function extractHeader(lines, regionName){
+ const firstVisit=lines.findIndex(line=>Boolean(schoolFromLine(line))&&!/اسم\s*المدرسة/.test(line));
+ const headerLines=(firstVisit<0?lines:lines.slice(0,firstVisit)).filter(Boolean),text=arabicDigits(headerLines.join('\n')).replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[أإآ]/g,'ا');
+ const names=weekLabels.map(x=>x.replace(/[أإآ]/g,'ا')).map((label,index)=>({label,index})).sort((a,b)=>b.label.length-a.label.length);
+ const pattern=new RegExp('(?:الاسبوع(?:ي)?|اسبوع|week)\\s*[:：\\-–—]?\\s*(?:رقم\\s*)?[（(\\[]?\\s*('+names.map(x=>x.label.replace(/ /g,'\\s+')).join('|')+'|[0-9]{1,3})(?![\\p{L}0-9])','iu');
+ const match=text.match(pattern);let weekTitle='';if(match){const ordinal=names.find(x=>x.label===match[1].replace(/\s+/g,' ')),number=ordinal?ordinal.index+1:Number(match[1]);if(number>0)weekTitle='الأسبوع '+(weekLabels[number-1]||number);}
+ let dateRange='';const dateIndex=headerLines.findIndex(line=>/(?:الفتر[ةه]|period|من\s*\d.+(?:إلى|الى|حتى))|(?:\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4})/i.test(arabicDigits(line)));
+ if(dateIndex>=0){dateRange=headerLines[dateIndex];if(/^(?:الفتر[ةه]|period)\s*[:：\-]?\s*$/i.test(dateRange)&&headerLines[dateIndex+1])dateRange+=' '+headerLines[dateIndex+1];dateRange=cleanValue(dateRange.replace(/^.*?(?:الفتر[ةه]|period)\s*[:：\-]?\s*/i,'').replace(/^.*?(?=من\s*\d)/,''));}
+ return {weekTitle,dateRange,region:regionName};
 }
+function parseHeader(lines,regionName){const header=extractHeader(lines,regionName);return {...header,weekTitle:header.weekTitle||'تقرير أسبوعي'};}
 
 function parseOneBlock(block, index) {
   const joined = block.join(" | ");
@@ -548,4 +550,5 @@ function matchDriveImages(visits, files) {
 
 
 window.FI_MATCH=matchDriveImages;
-return parseReport;})();
+window.FI_PARSE_HEADER=(text,regionName)=>{const jsonReport=parseJsonReport(text,regionName);return jsonReport?jsonReport.header:extractHeader(reportLines(text),regionName)};
+return (text,regionName)=>{const report=parseReport(text,regionName);if(!parseJsonReport(text,regionName)){const extracted=extractHeader(reportLines(text),regionName);report.header={...report.header,...(extracted.weekTitle?{weekTitle:extracted.weekTitle}:{}),...(extracted.dateRange?{dateRange:extracted.dateRange}:{})};}return report;};})();
