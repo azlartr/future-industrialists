@@ -3834,7 +3834,7 @@
       "id": "auto-riyadh-1793538241908",
       "region": "riyadh",
       "header": {
-        "weekTitle": "التقرير الأسبوعي",
+        "weekTitle": "الاسبوع الأول",
         "dateRange": "من 13 سبتمبر الاحد الى 17 سبتمبر الخميس 2026"
       },
       "stats": {
@@ -4017,7 +4017,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-01T13:04:01.915Z",
+        "updatedAt": "2026-11-01T13:04:55.262Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -4263,7 +4263,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-01T13:04:12.538Z"
+      "updatedAt": "2026-11-01T13:04:55.264Z"
     }
   ],
   "deletedReports": [
