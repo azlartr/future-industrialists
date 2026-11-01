@@ -4294,7 +4294,12 @@
           "participants": 42,
           "gender": "girls",
           "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/847ab89bfae5a6812dbb789f55b1664c2802cbdd6630b270ee3092691c4b8b88.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8ea9b9302d3efaeaa1ebf01199ab5aaa6c43838de5bc8f2533d1f067664483ae.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/626505a6140ee612edbb2571cb27f019cbefb942dbb3001c9985ad483e8f2c33.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ba6a655c156e8e07ccbc3fadfbd9bdd888c430fcd78e6a8251c8dde365f5db6d.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/15e3a9dfd7c18c08f7394c43441c4ee115cc6892e17c14a3302bf8b2a03beec3.webp"
+          ],
           "imagePositions": {}
         },
         {
@@ -4305,12 +4310,17 @@
           "participants": 46,
           "gender": "girls",
           "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/857eed0aef417ae47dbbe9d477e38360c93c7acbb91e364f1dab030c19e60810.webp",
-          "images": [],
+          "images": [
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/37b881f0184aa36c78d8310322f7a5d37fd7b71b72fcee2cbd6d68eb5c0979c2.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/cb59d4c2a17c88ce0b330a130bf4a92ce0b1456423da307039d605799c49169f.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/00aea46400957e37ace866120bbf2394e4447b3417597c2d82ab0e4e135daa34.webp",
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/d57442f25efc9714f76479a0c0de0093a2e3deb729ae0f4b0076e97899049629.webp"
+          ],
           "imagePositions": {}
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-01T13:13:11.347Z",
+        "updatedAt": "2026-11-01T13:15:04.056Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -4460,7 +4470,22 @@
           }
         }
       },
-      "updatedAt": "2026-11-01T13:13:18.774Z"
+      "updatedAt": "2026-11-01T13:15:04.056Z",
+      "rematchBackup": {
+        "updatedAt": "2026-11-01T13:15:04.050Z",
+        "visits": [
+          {
+            "id": "auto-visit-1",
+            "images": [],
+            "imagePositions": {}
+          },
+          {
+            "id": "auto-visit-2",
+            "images": [],
+            "imagePositions": {}
+          }
+        ]
+      }
     }
   ],
   "deletedReports": [
