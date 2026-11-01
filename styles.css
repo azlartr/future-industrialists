@@ -674,3 +674,115 @@ html[data-photo-layout="mosaic"] .visits .photos{grid-template-columns:repeat(2,
 html[data-show-factories="off"] .web-report-partners,html[data-show-factories="off"] .web-partner-toolbar{display:none!important}
 
 html[data-show-categories="off"] .categories{display:none!important}
+
+
+/* Admin workspace: the document stays still; each working pane owns its scroll. */
+html[data-view="admin"] body{background:#edf1f7;color:#223456}
+html[data-view="admin"] .ambient,html[data-view="admin"] .grid-haze,html[data-view="admin"] .grain,html[data-view="admin"] #network{display:none}
+html[data-view="admin"] .topbar{position:relative;top:auto;height:64px;background:#202754;backdrop-filter:none}
+html[data-view="admin"] .topbar-inner{width:calc(100% - 40px);max-width:none;margin:auto}
+html[data-view="admin"] .header-identity-image{height:40px}
+html[data-view="admin"] .header-future-mark{height:44px;width:65px}
+html[data-view="admin"] .footer{display:none}
+body>#fi-github-bar{display:none!important}
+.admin-workspace{display:flex;flex-direction:column;min-height:0;min-width:0;padding:0 20px 18px;gap:16px}
+.admin-commandbar{display:flex;align-items:center;gap:28px;flex:none;min-height:92px;border-bottom:1px solid #dce2ed;color:#233455}
+.admin-workspace-title{display:flex;align-items:center;gap:11px;flex:none}
+.admin-workspace-title h1{font-size:20px;line-height:1.5;margin:0}
+.admin-workspace-title p{font-size:11px;line-height:1.6;margin:2px 0 0;color:#77849c}
+.admin-workspace-symbol{display:grid;place-items:center;width:40px;height:44px;border:1px solid #d9deeb;border-radius:12px;background:#fff;color:#5960a5}
+.admin-workspace-symbol .ico{width:21px;height:21px}
+.admin-report-picker{display:flex;align-items:center;gap:12px;flex:1;max-width:580px;min-width:0}
+.admin-report-picker label{flex:1;min-width:0}
+.admin-report-picker label:last-child{flex:1.6}
+.admin-report-picker label>span{display:block;font-size:11px;color:#65718a;margin-bottom:5px}
+.admin-report-picker select{box-sizing:border-box;width:100%;min-width:0;height:38px;border:1px solid #d2dbe9;border-radius:8px;padding:5px 10px;background:#fff;color:#2c3c60;font:inherit;font-size:13px;cursor:pointer}
+.admin-primary-actions{display:flex;align-items:center;gap:8px;margin-inline-start:auto;flex:none}
+.admin-workspace .btn{white-space:nowrap;min-height:38px;border-radius:8px;font-size:12px;justify-content:center}
+.admin-workspace .btn-dark{background:#30398c;border:1px solid #30398c;box-shadow:none;color:#fff}
+.admin-workspace .btn-soft{background:#fff;border:1px solid #d8dfeb;color:#405075}
+.admin-workspace button:disabled{opacity:.5;cursor:not-allowed}
+.admin-connection-button{display:grid;place-items:center;width:38px;height:38px;border:1px solid #d8dfeb;border-radius:8px;background:#fff;color:#596584;cursor:pointer}
+.admin-connection-button .ico{width:17px;height:17px}
+.admin-workspace .admin-layout{display:grid;grid-template-columns:350px minmax(0,1fr);gap:18px;flex:1;min-height:0;align-items:stretch}
+.admin-workspace .admin-panel{position:static;top:auto;align-self:stretch;min-height:0;min-width:0;display:flex;flex-direction:column;border:1px solid #dce2ed;border-radius:14px;background:#fff;box-shadow:0 4px 18px #22335505;overflow:hidden}
+.admin-workspace .admin-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:12px;margin:0;flex:none;border-radius:0;background:#f7f8fc;border-bottom:1px solid #e5e9f1}
+.admin-workspace .admin-tabs button{min-height:38px;display:flex;align-items:center;justify-content:center;gap:6px;padding:7px 3px;color:#65728e;font-size:12px;border:1px solid transparent;border-radius:7px;background:transparent;box-shadow:none}
+.admin-workspace .admin-tabs button.active{background:#fff;border-color:#d8dcf1;color:#30398c;box-shadow:0 2px 4px #23345505}
+.admin-workspace .admin-tabs .ico{width:15px;height:15px;flex:none}
+.admin-section-heading{flex:none;padding:16px 18px 12px;background:#fff}
+.admin-section-heading strong{font-size:16px;color:#233455}
+.admin-section-heading p{margin:5px 0 0;color:#77849c;font-size:11px;line-height:1.7}
+.admin-workspace .controls{display:block;min-height:0;max-height:none;flex:1;overflow:auto;overscroll-behavior-y:contain;scrollbar-gutter:stable;padding:8px 18px 22px;scrollbar-width:thin;scrollbar-color:#c2cce0 transparent;scroll-behavior:auto}
+.admin-workspace .controls .control-group+.control-group{margin-top:22px;padding-top:22px}
+.admin-workspace .control-group h3{font-size:13px;line-height:1.7;color:#435375}
+.admin-workspace .control-note{font-size:12px;line-height:1.9;color:#74819a}
+.admin-workspace .field>span{font-size:12px;line-height:1.7}
+.admin-workspace .field input:not([type=range]):not([type=color]):not([type=checkbox]):not([type=file]),.admin-workspace .field select,.admin-workspace .field textarea{font-size:13px;line-height:1.7;min-height:40px}
+.admin-workspace .field textarea{min-height:180px;resize:vertical;overscroll-behavior:contain}
+.admin-inspector-foot{display:flex;align-items:center;gap:7px;flex:none;padding:11px 16px;font-size:11px;color:#7a879e;border-top:1px solid #e9edf4;background:#fafbfe}
+.admin-inspector-foot .ico{width:14px;height:14px}
+.admin-canvas{display:flex;flex-direction:column;min-height:0;min-width:0;border:1px solid #dce2ed;border-radius:14px;overflow:hidden;background:#e5eaf3}
+.admin-canvas-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;min-height:62px;padding:10px 16px;background:#fff;border-bottom:1px solid #dce2ed;color:#314263}
+.admin-canvas-bar>div:first-child{display:flex;align-items:center;gap:7px}
+.admin-canvas-bar strong{font-size:13px;font-weight:600}
+.admin-canvas-bar small{font-size:11px;color:#8a96ab;white-space:nowrap}
+.admin-live-dot{width:6px;height:6px;border-radius:50%;background:#399b83;flex:none}
+.admin-canvas-bar .preview-device-controls{margin:0;gap:2px;padding:3px;border-radius:8px;background:#f0f3f9;flex-wrap:nowrap}
+.admin-canvas-bar .preview-device-controls button{min-width:44px;padding:5px 8px;border:1px solid transparent;color:#75819a;font-size:11px;border-radius:6px;background:transparent}
+.admin-canvas-bar .preview-device-controls button.active{background:#fff;border-color:#e1e5ef;color:#30398c;box-shadow:0 1px 3px #1a2b4d0d}
+.admin-viewer-link{display:flex;align-items:center;gap:5px;background:transparent;border:0;color:#526183;cursor:pointer;font:inherit;font-size:12px;padding:4px;white-space:nowrap}
+.admin-viewer-link .ico{width:15px;height:15px}
+.admin-workspace .admin-preview{flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior-y:contain;scrollbar-gutter:stable;padding:20px;scrollbar-width:thin;scrollbar-color:#acb9cf transparent;scroll-behavior:auto}
+.admin-workspace .preview-surface{padding:22px;min-height:0;border:0;border-radius:12px;background:linear-gradient(135deg,var(--bg1),var(--bg2) 48%,var(--bg3));color:#fff}
+.admin-workspace .preview-toolbar{display:none}
+.admin-workspace .live-a4-preview{overflow:visible;max-height:none;width:100%;padding:0;min-height:0}
+.admin-workspace .live-a4-preview .print-toolbar{display:none}
+.admin-workspace .live-a4-preview .print-shell{padding:0;min-height:0}
+.admin-workspace .live-a4-preview .print-pages{padding:0;gap:18px}
+.admin-workspace .admin-preview[data-mode="iphone"],.admin-workspace .admin-preview[data-mode="android"]{overflow:hidden;scrollbar-gutter:auto}
+.admin-workspace .device-preview{background:transparent;padding:0;margin:0;border:0}
+.admin-workspace .device-preview-note{font-size:11px;color:#7a879f;margin:0 0 12px}
+.admin-workspace .empty{color:#526383;padding:70px 20px}
+.admin-workspace :focus-visible{outline:2px solid #6974bb;outline-offset:3px}
+.admin-mobile-switch{display:none}
+.admin-connections-dialog{width:min(640px,94vw);max-height:88dvh;overflow:auto;padding:24px;border:1px solid #dce2ed;border-radius:16px;background:#fff;color:#233455;font:inherit}
+.admin-connections-dialog::backdrop{background:#10193699;backdrop-filter:blur(5px)}
+.admin-connections-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.admin-connections-title h2{font-size:20px}
+.admin-connections-dialog #fi-github-bar{padding:12px 0;display:flex!important;flex-wrap:wrap;border:0;background:#fff;line-height:1.8}
+.admin-connections-dialog #fi-github-bar>strong{display:none}
+.admin-connections-dialog #fi-github-status{width:100%;font-size:13px;color:#647394;margin-bottom:8px}
+@media(min-width:1001px){
+ html[data-view="admin"],html[data-view="admin"] body{height:100dvh;min-height:0;overflow:hidden}
+ html[data-view="admin"] #app{height:100dvh;min-height:0;display:grid;grid-template-rows:64px minmax(0,1fr)}
+}
+@media(min-width:1001px) and (max-width:1200px){
+ .admin-commandbar{gap:16px}.admin-workspace-title p,.admin-workspace-symbol{display:none}.admin-workspace-title h1{font-size:17px}.admin-workspace .admin-layout{grid-template-columns:320px minmax(0,1fr);gap:12px}.admin-workspace{padding-inline:14px;gap:12px}.admin-canvas-bar{padding:10px;gap:5px;flex-wrap:wrap}.admin-canvas-bar strong{font-size:12px}.admin-workspace .admin-preview{padding:12px}
+}
+@media(max-width:1000px){
+ html[data-view="admin"],html[data-view="admin"] body{height:auto;min-height:100dvh;overflow:visible}
+ html[data-view="admin"] #app{height:auto;display:block}
+ .admin-workspace{padding:0 14px 20px;gap:12px}
+ .admin-commandbar{min-height:0;flex-wrap:wrap;gap:14px;padding:16px 0}
+ .admin-workspace-title{flex:1}.admin-workspace-title h1{font-size:18px}.admin-workspace-title p{display:none}.admin-workspace-symbol{width:32px;height:36px}
+ .admin-report-picker{order:3;flex-basis:100%;max-width:none;gap:10px}
+ .admin-primary-actions{gap:6px}.admin-workspace .btn{font-size:11px;padding:8px 10px}
+ .admin-workspace .admin-layout{display:block;min-height:0}
+ .admin-mobile-switch{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid #dce2ed;border-radius:10px;background:#e5eaf3}
+ .admin-mobile-switch button{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border:0;border-radius:7px;background:transparent;color:#69768e;font:inherit;font-size:13px;cursor:pointer}
+ .admin-mobile-switch button[aria-pressed="true"]{background:#fff;color:#30398c;box-shadow:0 2px 5px #2233550a}
+ .admin-mobile-switch .ico{width:16px;height:16px}
+ .admin-workspace[data-mobile-pane="edit"] .admin-canvas,.admin-workspace[data-mobile-pane="preview"] .admin-panel{display:none}
+ .admin-workspace .controls{overflow:visible;max-height:none;display:block;padding:8px 18px 22px}
+ .admin-workspace .admin-panel{position:static;min-height:0}
+ .admin-workspace .admin-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .admin-workspace .admin-preview{padding:12px;overflow:visible;max-height:none}
+ .admin-workspace .preview-surface{padding:12px}
+ .admin-workspace .admin-preview[data-mode="iphone"],.admin-workspace .admin-preview[data-mode="android"]{height:calc(100dvh - 100px);min-height:400px;overflow:hidden}
+ .admin-canvas-bar{flex-wrap:wrap;padding:12px;gap:12px}.admin-canvas-bar>div:first-child{flex:1}.admin-canvas-bar .preview-device-controls{order:3;width:100%;justify-content:center}.admin-canvas-bar .preview-device-controls button{flex:1}
+}
+@media(max-width:420px){
+ .admin-workspace-title h1{font-size:16px}.admin-workspace-symbol{display:none}.admin-primary-actions .btn{font-size:10px;padding:8px}.admin-primary-actions .btn .ico{display:none}.admin-connection-button{width:32px;height:36px}.admin-commandbar{gap:10px}.admin-workspace .admin-tabs button{font-size:11px;gap:4px}
+}
+.admin-workspace .live-a4-preview .print-shell{margin-inline:auto!important}
