@@ -24,7 +24,7 @@ document.addEventListener('click',event=>{const button=event.target.closest('[da
  if(action==='view-current')views.set(region,'current');
  if(action==='view-archive')views.set(region,'archive');
  if(action==='select')selected.set(region,button.dataset.pdfId);
- if(action==='new'){release(drafts.get(region));drafts.delete(region);draft(region)}
+ if(action==='new'){release(drafts.get(region));drafts.delete(region);draft(region);context.render();const form=document.getElementById('pdf-archive-form');form?.scrollIntoView({block:'nearest'});document.getElementById('pdf-archive-file')?.click();return}
  if(action==='edit'){const item=entries(region).find(x=>x.id===button.dataset.pdfId);if(item){release(drafts.get(region));drafts.set(region,{...item,file:null})}}
  context.render();
 });
