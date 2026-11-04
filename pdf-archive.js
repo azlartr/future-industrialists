@@ -7,7 +7,7 @@ const views=new Map(),selected=new Map(),drafts=new Map();
 const weeks=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر'];
 const weekTitle=n=>'الأسبوع '+(weeks[n]||n);
 const entries=region=>archives.filter(item=>item.region===region).sort((a,b)=>String(b.season).localeCompare(String(a.season))||Number(b.weekNumber)-Number(a.weekNumber));
-function validURL(value){try{const u=new URL(value,root);return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
+function validURL(value){if(typeof value!=='string'||!value.trim())return '';try{const u=new URL(value,root);return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
 function current(region){const list=entries(region);return list.find(item=>item.id===selected.get(region))||list[0]||null}
 function draft(region){if(!drafts.has(region)){const list=entries(region);drafts.set(region,{region,season:list[0]?.season||'2025-2026',weekNumber:list.length?Math.max(...list.filter(x=>x.season===list[0].season).map(x=>Number(x.weekNumber)))+1:1,title:'',dateRange:'',file:null})}return drafts.get(region)}
 function release(item){if(item?.previewURL)URL.revokeObjectURL(item.previewURL)}
