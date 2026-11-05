@@ -120,6 +120,18 @@
       "bytes": 2935749,
       "fileName": "مكة_المكرمة-الأسبوع العاشر-3 مايو الى.pdf",
       "updatedAt": "2026-11-05T02:04:34.987Z"
+    },
+    {
+      "id": "pdf-qassim-1c6ac1b7-8013-4e9a-a6e1-ddc3568d6148",
+      "region": "qassim",
+      "weekNumber": 1,
+      "season": "2025-2026",
+      "title": "الأسبوع الأول",
+      "dateRange": "8 فبراير إلى 12 فبراير 2026",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/1db1156ed7c64a8336e042004d48d81b259553f84b9dc9323eb9eb17e3894d59.pdf",
+      "bytes": 934185,
+      "fileName": "�القصيم-الأسبوع الأول-من 8 فبراير الى 12 فبراير.pdf",
+      "updatedAt": "2026-11-05T02:19:10.805Z"
     }
   ]
 }
