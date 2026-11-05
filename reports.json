@@ -5221,179 +5221,47 @@
       "id": "custom-qassim-1793878856825",
       "region": "qassim",
       "header": {
-        "weekTitle": "الأسبوع الخامس عشر",
-        "dateRange": "من1 نوفمبر الاحد الى 5 نوفمبر الخميس"
+        "weekTitle": "الأسبوع العاشر",
+        "dateRange": "من 1نوفمبر الاحد الى 5 نوفمبر الخميس"
       },
       "stats": {
-        "ambassadorCategory": 1086,
+        "ambassadorCategory": 172,
         "tvInterviews": 0,
-        "tweets": 334,
-        "videos": 10,
-        "posts": 5,
-        "discovererCategory": 3106,
-        "creativeCategory": 2059,
-        "totalBeneficiaries": 1083,
-        "totalRegistered": 6913,
-        "artistCategory": 662
+        "tweets": 330,
+        "videos": 2,
+        "posts": 2,
+        "discovererCategory": 535,
+        "creativeCategory": 454,
+        "totalBeneficiaries": 534,
+        "totalRegistered": 94,
+        "artistCategory": 98
       },
       "visits": [
         {
           "id": "auto-visit-1",
-          "schoolName": "ثانوية ابي ايوب الانصاري ( بنين ) مكة المكرمة",
-          "factory": "مواد الاعمار- للرخام والجرانيت",
-          "date": "2026/11/2",
-          "participants": 47,
-          "gender": "boys",
-          "factoryLogo": "",
+          "schoolName": "ثانوية الرواد بالبدائع ( بنات )",
+          "factory": "طريق الرياضة",
+          "date": "4/11/2026",
+          "participants": 46,
+          "gender": "girls",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/6b5af76a4c4f3962e8353d707dcf059ae566bd7ff856c86efba8bebab855acfb.webp",
           "images": [],
           "imagePositions": {}
         },
         {
           "id": "auto-visit-2",
-          "schoolName": "ثانوية الحسين بن علي ( بنين ) مكة المكرمة",
-          "factory": "مواد الاعمار للألمينيوم",
-          "date": "2026/11/2",
-          "participants": 49,
-          "gender": "boys",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-3",
-          "schoolName": "ثانوية الملك عبدالعزيز ( بنين ) مكة المكرمة",
-          "factory": "مواد الاعمار - للخشب",
-          "date": "2026/11/2",
-          "participants": 45,
-          "gender": "boys",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-4",
-          "schoolName": "ثانوية الموهوبين التقنية( بنين ) مكة المكرمة",
-          "factory": "سدافكو",
-          "date": "2026/11/2",
-          "participants": 48,
-          "gender": "boys",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-5",
-          "schoolName": "ثانوية عمرة بنت عبدالرحمن( بنات) مكة المكرمة",
-          "factory": "مواد الاعمار- للرخام والجرانيت",
-          "date": "2026/11/3",
-          "participants": 46,
-          "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-6",
-          "schoolName": "الثانوية السابعة لتحفيظ القران( بنات ) مكة المكرمة",
-          "factory": "مواد الاعمار- للرخام والجرانيت",
-          "date": "2026/11/3",
-          "participants": 45,
-          "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-7",
-          "schoolName": "الثانوية السادسة والثلاثون ( بنات) مكة المكرمة",
-          "factory": "مواد الاعمار للألمينيوم",
-          "date": "2026/11/3",
-          "participants": 47,
-          "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-8",
-          "schoolName": "ثانوية بثينة بنت النعمان (بنات) مكة المكرمة",
-          "factory": "مواد الاعمار - للخشب",
-          "date": "2026/11/3",
-          "participants": 42,
-          "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-9",
-          "schoolName": "الثانوية الخامسة والثلاثون ( بنات ) مكة المكرمة",
-          "factory": "مواد الاعمار- للرخام والجرانيت",
-          "date": "2026/11/4",
-          "participants": 43,
-          "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-10",
-          "schoolName": "الثانوية الثانية بالجموم ( بنات ) مكة المكرمة",
-          "factory": "مواد الاعمار للألمينيوم",
-          "date": "2026/11/4",
-          "participants": 44,
-          "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-11",
-          "schoolName": "ثانوية الغزيات ( بنات ) مكة المكرمة",
-          "factory": "مواد الاعمار - للخشب",
-          "date": "2026/11/4",
+          "schoolName": "الثانوية الثانية والعشرون ( بنات )",
+          "factory": "فخر النسيج",
+          "date": "4/11/2026",
           "participants": 48,
           "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-12",
-          "schoolName": "ثانوية ابو عروة",
-          "factory": "مواد الاعمار - للخشب",
-          "date": "2026/11/4",
-          "participants": 48,
-          "gender": "unspecified",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-13",
-          "schoolName": "ثانوية ابي شعيب ( بنات ) مكة المكرمة",
-          "factory": "مجموعة تمر - مولنليكي",
-          "date": "2026/11/4",
-          "participants": 46,
-          "gender": "girls",
-          "factoryLogo": "",
-          "images": [],
-          "imagePositions": {}
-        },
-        {
-          "id": "auto-visit-14",
-          "schoolName": "ثانوية دف زيني ( بنات ) مكة المكرمة",
-          "factory": "سدافكو",
-          "date": "2026/11/4",
-          "participants": 45,
-          "gender": "girls",
-          "factoryLogo": "",
+          "factoryLogo": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af0ff3b4054f6c8b11b8b3c1ccd4a1119bfc247302bbf3cfa26470b8420c9928.webp",
           "images": [],
           "imagePositions": {}
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-05T11:41:10.113Z",
+        "updatedAt": "2026-11-05T11:41:49.852Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -5517,6 +5385,30 @@
             "logoHidden": false,
             "visible": true
           },
+          "qassim:الجاسر للبلاستيك": {
+            "name": "الجاسر للبلاستيك",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:السعيد للغازات الصناعيه والطبيه": {
+            "name": "السعيد للغازات الصناعية والطبية",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2fe852f44929a2e2d7d6dc65f730c601ebe66723c49be4e9dae573ff3b92664c.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:اكليل الجبل بافري": {
+            "name": "إكليل الجبل — بافري",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/73eefd1faa58323ed95d6384c60530746b3c66e592b5e1c7ffc410a107978435.webp",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:البان الخبراء": {
+            "name": "ألبان الخبراء",
+            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/aaed03849b57938eef29e0820d459e2f40a6c4bc0700e5fe548f3ac3a0ef572b.webp",
+            "logoHidden": false,
+            "visible": true
+          },
           "qassim:مواد الاعمار الرخام والجرانيت": {
             "name": "مواد الإعمار — الرخام والجرانيت",
             "url": "",
@@ -5546,34 +5438,10 @@
             "url": "",
             "logoHidden": false,
             "visible": true
-          },
-          "qassim:الجاسر للبلاستيك": {
-            "name": "الجاسر للبلاستيك",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:السعيد للغازات الصناعيه والطبيه": {
-            "name": "السعيد للغازات الصناعية والطبية",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2fe852f44929a2e2d7d6dc65f730c601ebe66723c49be4e9dae573ff3b92664c.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:اكليل الجبل بافري": {
-            "name": "إكليل الجبل — بافري",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/73eefd1faa58323ed95d6384c60530746b3c66e592b5e1c7ffc410a107978435.webp",
-            "logoHidden": false,
-            "visible": true
-          },
-          "qassim:البان الخبراء": {
-            "name": "ألبان الخبراء",
-            "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/aaed03849b57938eef29e0820d459e2f40a6c4bc0700e5fe548f3ac3a0ef572b.webp",
-            "logoHidden": false,
-            "visible": true
           }
         }
       },
-      "updatedAt": "2026-11-05T11:41:10.117Z"
+      "updatedAt": "2026-11-05T11:41:49.854Z"
     }
   ],
   "deletedReports": [
