@@ -5225,20 +5225,175 @@
         "dateRange": "من1 نوفمبر الاحد الى 5 نوفمبر الخميس"
       },
       "stats": {
-        "ambassadorCategory": 0,
+        "ambassadorCategory": 1086,
         "tvInterviews": 0,
-        "tweets": 0,
-        "videos": 0,
-        "posts": 0,
-        "discovererCategory": 0,
-        "creativeCategory": 0,
-        "totalBeneficiaries": 440,
-        "totalRegistered": 0,
-        "artistCategory": 0
+        "tweets": 334,
+        "videos": 10,
+        "posts": 5,
+        "discovererCategory": 3106,
+        "creativeCategory": 2059,
+        "totalBeneficiaries": 1083,
+        "totalRegistered": 6913,
+        "artistCategory": 662
       },
-      "visits": [],
+      "visits": [
+        {
+          "id": "auto-visit-1",
+          "schoolName": "ثانوية ابي ايوب الانصاري ( بنين ) مكة المكرمة",
+          "factory": "مواد الاعمار- للرخام والجرانيت",
+          "date": "2026/11/2",
+          "participants": 47,
+          "gender": "boys",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-2",
+          "schoolName": "ثانوية الحسين بن علي ( بنين ) مكة المكرمة",
+          "factory": "مواد الاعمار للألمينيوم",
+          "date": "2026/11/2",
+          "participants": 49,
+          "gender": "boys",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-3",
+          "schoolName": "ثانوية الملك عبدالعزيز ( بنين ) مكة المكرمة",
+          "factory": "مواد الاعمار - للخشب",
+          "date": "2026/11/2",
+          "participants": 45,
+          "gender": "boys",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-4",
+          "schoolName": "ثانوية الموهوبين التقنية( بنين ) مكة المكرمة",
+          "factory": "سدافكو",
+          "date": "2026/11/2",
+          "participants": 48,
+          "gender": "boys",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-5",
+          "schoolName": "ثانوية عمرة بنت عبدالرحمن( بنات) مكة المكرمة",
+          "factory": "مواد الاعمار- للرخام والجرانيت",
+          "date": "2026/11/3",
+          "participants": 46,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-6",
+          "schoolName": "الثانوية السابعة لتحفيظ القران( بنات ) مكة المكرمة",
+          "factory": "مواد الاعمار- للرخام والجرانيت",
+          "date": "2026/11/3",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-7",
+          "schoolName": "الثانوية السادسة والثلاثون ( بنات) مكة المكرمة",
+          "factory": "مواد الاعمار للألمينيوم",
+          "date": "2026/11/3",
+          "participants": 47,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-8",
+          "schoolName": "ثانوية بثينة بنت النعمان (بنات) مكة المكرمة",
+          "factory": "مواد الاعمار - للخشب",
+          "date": "2026/11/3",
+          "participants": 42,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-9",
+          "schoolName": "الثانوية الخامسة والثلاثون ( بنات ) مكة المكرمة",
+          "factory": "مواد الاعمار- للرخام والجرانيت",
+          "date": "2026/11/4",
+          "participants": 43,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-10",
+          "schoolName": "الثانوية الثانية بالجموم ( بنات ) مكة المكرمة",
+          "factory": "مواد الاعمار للألمينيوم",
+          "date": "2026/11/4",
+          "participants": 44,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-11",
+          "schoolName": "ثانوية الغزيات ( بنات ) مكة المكرمة",
+          "factory": "مواد الاعمار - للخشب",
+          "date": "2026/11/4",
+          "participants": 48,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-12",
+          "schoolName": "ثانوية ابو عروة",
+          "factory": "مواد الاعمار - للخشب",
+          "date": "2026/11/4",
+          "participants": 48,
+          "gender": "unspecified",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-13",
+          "schoolName": "ثانوية ابي شعيب ( بنات ) مكة المكرمة",
+          "factory": "مجموعة تمر - مولنليكي",
+          "date": "2026/11/4",
+          "participants": 46,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        },
+        {
+          "id": "auto-visit-14",
+          "schoolName": "ثانوية دف زيني ( بنات ) مكة المكرمة",
+          "factory": "سدافكو",
+          "date": "2026/11/4",
+          "participants": 45,
+          "gender": "girls",
+          "factoryLogo": "",
+          "images": [],
+          "imagePositions": {}
+        }
+      ],
       "presentation": {
-        "updatedAt": "2026-11-05T11:40:56.830Z",
+        "updatedAt": "2026-11-05T11:41:10.113Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -5362,6 +5517,36 @@
             "logoHidden": false,
             "visible": true
           },
+          "qassim:مواد الاعمار الرخام والجرانيت": {
+            "name": "مواد الإعمار — الرخام والجرانيت",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:مواد الاعمار الالمنيوم": {
+            "name": "مواد الإعمار — الألمنيوم",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:مواد الاعمار الخشب": {
+            "name": "مواد الإعمار — الخشب",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:سدافكو": {
+            "name": "سدافكو",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
+          "qassim:تمر مولينكلي": {
+            "name": "تمر — مولينكلي",
+            "url": "",
+            "logoHidden": false,
+            "visible": true
+          },
           "qassim:الجاسر للبلاستيك": {
             "name": "الجاسر للبلاستيك",
             "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/46e4d2f22ea266f4b557d9b3d4a4f01ce665562ee22682bfeb3f1c4f636122b2.webp",
@@ -5388,7 +5573,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-05T11:40:56.833Z"
+      "updatedAt": "2026-11-05T11:41:10.117Z"
     }
   ],
   "deletedReports": [
