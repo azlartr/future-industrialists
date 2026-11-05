@@ -132,6 +132,18 @@
       "bytes": 934185,
       "fileName": "�القصيم-الأسبوع الأول-من 8 فبراير الى 12 فبراير.pdf",
       "updatedAt": "2026-11-05T02:19:17.462Z"
+    },
+    {
+      "id": "pdf-qassim-83be4fd8-9fb0-40f9-94ce-4b4866b83f51",
+      "region": "qassim",
+      "weekNumber": 2,
+      "season": "2025-2026",
+      "title": "الأسبوع الثاني",
+      "dateRange": "5 أبريل إلى 4 سبتمبر 2026",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/35e14047f848d404efeac86d86d39f6b339af6c0248703038e0da76330d2600d.pdf",
+      "bytes": 944732,
+      "fileName": "�القصيم-الأسبوع الثاني-2026-04-05.pdf",
+      "updatedAt": "2026-11-05T02:19:41.141Z"
     }
   ]
 }
