@@ -84,6 +84,18 @@
       "bytes": 2355980,
       "fileName": "مكة_المكرمة-الأسبوع السادس-من 5 أبريل (4).pdf",
       "updatedAt": "2026-11-05T01:46:29.682Z"
+    },
+    {
+      "id": "pdf-makkah-33c7d269-f668-4cd5-8bf6-420202a59675",
+      "region": "makkah",
+      "weekNumber": 5,
+      "season": "2025-2026",
+      "title": "الأسبوع الخامس",
+      "dateRange": "8 فبراير إلى 12 فبراير 2026",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/d7ccc2ea7d91d309614b01a7919228457d0d4af5e33cda5a8c68e7f9f8234be8.pdf",
+      "bytes": 2509673,
+      "fileName": "�مكة_المكرمة-الأسبوع الخامس-8 فبراير الى 12 فبراير.pdf",
+      "updatedAt": "2026-11-05T01:46:58.999Z"
     }
   ]
 }
