@@ -4750,24 +4750,7 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/545fef934ccf02a413b301777ebd63ca1e8ebea209f9540d44362155147611ce.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/49eef280af60e514ad580f39ea08b946b69f879dd7306ddd72315f889507851d.webp"
           ],
-          "imagePositions": {
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/49eef280af60e514ad580f39ea08b946b69f879dd7306ddd72315f889507851d.webp": {
-              "x": 50,
-              "y": 0
-            },
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/545fef934ccf02a413b301777ebd63ca1e8ebea209f9540d44362155147611ce.webp": {
-              "x": 50,
-              "y": 44.32391523713421
-            },
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/42af0612e533ede43e433a6e3010e7aaa5a9809c77bf2e5474cf010459801db7.webp": {
-              "x": 50,
-              "y": 62.52900232018561
-            },
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/fb57016305c0d2aeed3b9662a8fe5cdd8a3d3035184f417405d65d585b0a1c84.webp": {
-              "x": 50,
-              "y": 4.408352668213453
-            }
-          }
+          "imagePositions": {}
         },
         {
           "id": "auto-visit-13",
@@ -4783,12 +4766,7 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ddf341e7a349bd4609875f01e92a857de0d79c0288bc8e44af92c3c1341a2263.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1a5cf88ed3c522a67d625be2e512520146465986fe04ae2a5159b15b7743dbbc.webp"
           ],
-          "imagePositions": {
-            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/1a5cf88ed3c522a67d625be2e512520146465986fe04ae2a5159b15b7743dbbc.webp": {
-              "x": 50,
-              "y": 55.546763132112446
-            }
-          }
+          "imagePositions": {}
         },
         {
           "id": "auto-visit-14",
@@ -4808,7 +4786,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-05T10:42:00.237Z",
+        "updatedAt": "2026-11-05T10:42:01.381Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -5090,7 +5068,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-05T10:45:39.446Z",
+      "updatedAt": "2026-11-05T10:45:50.280Z",
       "rematchBackup": {
         "updatedAt": "2026-11-05T10:39:07.417Z",
         "visits": [
