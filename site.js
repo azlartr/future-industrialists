@@ -192,8 +192,10 @@ function metricIcon(kind){const paths={
 function statBox(label,n,icon,note=''){return '<div class="stat-box metric-card metric-card--'+icon+'"><span class="metric-icon">'+metricIcon(icon)+'</span><div class="metric-copy"><small class="stat-label">'+esc(label)+'</small><strong class="stat-value" dir="ltr">'+fmt(n)+'</strong>'+(note?'<div class="stat-note">'+esc(note)+'</div>':'')+'</div></div>'}
 function regionalBeneficiaries(report){
  if(!report)return 0;
- const reports=orderedRegionReports(report.region),index=reports.findIndex(item=>item.id===report.id),included=index<0?[report]:reports.slice(0,index+1);
- return included.reduce((total,item)=>total+visits(item.id===report.id?report:item).reduce((sum,visit)=>{const value=Number(String(visit.participants??'').replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/[۰-۹]/g,c=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[,٬\s]/g,''));return sum+(Number.isFinite(value)?Math.max(0,Math.floor(value)):0)},0),0);
+ const records=orderedRegionReports(report.region),index=records.findIndex(item=>item.id===report.id),cutoff=reportOrderDate(report);
+ const candidates=index<0?records.concat(report):records.map(item=>item.id===report.id?report:item);
+ const included=cutoff?candidates.filter(item=>{const date=reportOrderDate(item);return item.id===report.id||(date>0&&date<=cutoff)}):(index<0?[report]:candidates.slice(0,index+1));
+ return [...new Map(included.map(item=>[item.id,item])).values()].reduce((total,item)=>total+visits(item).reduce((sum,visit)=>{const value=Number(String(visit.participants??'').replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/[۰-۹]/g,c=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[,٬\s]/g,''));return sum+(Number.isFinite(value)?Math.max(0,Math.floor(value)):0)},0),0);
 }
 function stats(r){return '<div class="stats-row">'+statBox('الزيارات الميدانية',r.visits.length,'factory')+statBox('المشاركون في الزيارات',visits(r).reduce((n,v)=>n+(Number(v.participants)||0),0),'users')+statBox('إجمالي المستفيدين في المنطقة',regionalBeneficiaries(r),'beneficiaries','تراكمي حتى هذا التقرير')+statBox('المسجلون بالهاكثون',r.stats.totalRegistered,'award')+'</div>'}
 function awardCategories(r){return [{key:'discoverer',name:'فئة المكتشف',value:r.stats.discovererCategory},{key:'creative',name:'فئة المبدع',value:r.stats.creativeCategory},{key:'ambassador',name:'فئة السفير',value:r.stats.ambassadorCategory},{key:'artist',name:'فئة الفنان',value:r.stats.artistCategory}]}

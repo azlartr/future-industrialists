@@ -46,10 +46,10 @@ async function ocrWorker(){
  })().catch(error=>{workerPromise=null;throw error});return workerPromise;
 }
 async function extract(file,onProgress){
- let pdf;progress=onProgress;
+ let pdf,loadingTask;progress=onProgress;
  try{
   onProgress('جارٍ قراءة بيانات ملف PDF…');const lib=await engine();
-  pdf=await lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,cMapUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/cmaps/',cMapPacked:true,standardFontDataUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/standard_fonts/',wasmUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/wasm/'}).promise;
+  loadingTask=lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,cMapUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/cmaps/',cMapPacked:true,standardFontDataUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/standard_fonts/',wasmUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/wasm/'});pdf=await loadingTask.promise;
   const page=await pdf.getPage(1),content=await page.getTextContent();let text=content.items.map(item=>item.str+(item.hasEOL?'\n':' ')).join(''),data=parse(text,file.name);
   if(!data.complete||!week(text)){
    onProgress('الملف مصوّر؛ جارٍ تجهيز قراءة الغلاف تلقائيًا…');const worker=await ocrWorker(),original=page.getViewport({scale:1}),viewport=page.getViewport({scale:2400/Math.max(original.width,original.height)}),canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
@@ -61,7 +61,7 @@ async function extract(file,onProgress){
    canvas.width=canvas.height=crop.width=crop.height=0;
   }
   return {...data,source:'file'};
- }finally{progress=()=>{};if(pdf)await pdf.destroy();}
+ }finally{progress=()=>{};try{if(loadingTask)await loadingTask.destroy();}catch(error){console.warn('تعذر تحرير قارئ PDF بعد القراءة.',error)}}
 }
 const api={parse,read(file,onProgress=()=>{}){const task=queue.catch(()=>{}).then(()=>extract(file,onProgress));queue=task.catch(()=>{});return task}};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else window.FI_PDF_METADATA=api;
