@@ -48,6 +48,18 @@
       "bytes": 2008907,
       "fileName": "مكة_المكرمة-الأسبوع التاسع-2026-04-26.pdf",
       "updatedAt": "2026-11-05T00:56:57.845Z"
+    },
+    {
+      "id": "pdf-makkah-2fc1a49d-b767-4ea6-a9a1-fe947ff7a2f1",
+      "region": "makkah",
+      "weekNumber": 3,
+      "season": "2025-2026",
+      "title": "الأسبوع الثالث",
+      "dateRange": "25 يناير إلى 29 يناير 2026",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/6412cd03ed710083392bdf1d478ec2784491ac7c4bde038b94fb7047c0b9d695.pdf",
+      "bytes": 1910327,
+      "fileName": "مكة_المكرمة-الأسبوع الثالث-2026-01-25 (2).pdf",
+      "updatedAt": "2026-11-05T01:09:59.243Z"
     }
   ]
 }
