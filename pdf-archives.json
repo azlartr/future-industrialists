@@ -168,6 +168,18 @@
       "bytes": 674664,
       "fileName": "القصيم-الأسبوع الرابع -2026 -04-19 .pdf",
       "updatedAt": "2026-11-05T02:21:30.555Z"
+    },
+    {
+      "id": "pdf-qassim-878ba3e2-e925-41a4-aa28-bc00cf66f903",
+      "region": "qassim",
+      "weekNumber": 5,
+      "season": "2025-2026",
+      "title": "الأسبوع الخامس",
+      "dateRange": "26 أبريل إلى 30 أبريل 2026",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/68df5a5ef5794cb94b24f71fd9aee6ed90fbd68b2057803558bd69c94b4b016b.pdf",
+      "bytes": 1237986,
+      "fileName": "�القصيم-الأسبوع الخامس-26 ابريل -.pdf",
+      "updatedAt": "2026-11-05T02:22:03.718Z"
     }
   ]
 }
