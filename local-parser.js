@@ -305,23 +305,30 @@ function parseStats(text) {
     artistCategory: /(?:فئة\s*)?(?:الفنان|فنان)/i,
   };
   const lines = reportLines(text);
+  stats.totalRegistered = null;
+  const numeric = value => {
+    const match = arabicDigits(value).trim().match(/^(?:[0-9][0-9,٬]*)(?:\s*)$/);
+    return match ? Number(match[0].replace(/[,٬\s]/g, '')) : null;
+  };
   for (const [key, pattern] of Object.entries(labels)) {
-    const index = lines.findIndex((item) => pattern.test(item));
+    const index = lines.findIndex(item => pattern.test(item));
     if (index < 0) continue;
-    const matchedLabel=pattern.exec(lines[index]);
-    const inlineMatch=arabicDigits(lines[index].slice(matchedLabel.index+matchedLabel[0].length)).match(/\d{1,5}/);
-    const inline=inlineMatch?Number(inlineMatch[0]):0;
-    if (inlineMatch) {
-      stats[key] = inline;
+    const label = pattern.exec(lines[index]);
+    const rest = lines[index].slice(label.index + label[0].length);
+    const boundaries = Object.values(labels).map(other => rest.search(other)).filter(position => position >= 0);
+    const bounded = boundaries.length ? rest.slice(0, Math.min(...boundaries)) : rest;
+    const inline = arabicDigits(bounded).match(/\d[\d,٬]*/);
+    if (inline) {
+      stats[key] = Number(inline[0].replace(/[,٬]/g, ''));
       continue;
     }
+    // Another field in the same row ends this cell, even when its value is blank.
+    if (boundaries.length) continue;
     for (const candidate of lines.slice(index + 1, index + 4)) {
-      const value = standaloneNumber(candidate);
-      if (value) {
-        stats[key] = value;
-        break;
-      }
-      if (/^(?:فئة|عدد|إجمالي|اجمالي)/i.test(candidate)) break;
+      if (Object.values(labels).some(other => other.test(candidate))) break;
+      const value = numeric(candidate);
+      if (value !== null) { stats[key] = value; break; }
+      if (/\p{L}/u.test(candidate)) break;
     }
   }
   return stats;
@@ -551,4 +558,5 @@ function matchDriveImages(visits, files) {
 
 window.FI_MATCH=matchDriveImages;
 window.FI_PARSE_HEADER=(text,regionName)=>{const jsonReport=parseJsonReport(text,regionName);return jsonReport?jsonReport.header:extractHeader(reportLines(text),regionName)};
-return (text,regionName)=>{const report=parseReport(text,regionName);if(!parseJsonReport(text,regionName)){const extracted=extractHeader(reportLines(text),regionName);report.header={...report.header,...(extracted.weekTitle?{weekTitle:extracted.weekTitle}:{}),...(extracted.dateRange?{dateRange:extracted.dateRange}:{})};}return report;};})();
+return (text,regionName)=>{const report=parseReport(text,regionName);if(!parseJsonReport(text,regionName)){const extracted=extractHeader(reportLines(text),regionName);report.header={...report.header,...(extracted.weekTitle?{weekTitle:extracted.weekTitle}:{}),...(extracted.dateRange?{dateRange:extracted.dateRange}:{})};}if(report.stats.totalRegistered===null)report.warnings=[...(report.warnings||[]),'إجمالي المسجلين غير موجود في النص. راجع الرقم قبل اعتماده.'];return report;};})();
+
