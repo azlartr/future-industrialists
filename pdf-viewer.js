@@ -1,4 +1,4 @@
-import {mountReader} from './pdf-reader.js?v=20261105-pdf-reader-1';
+import {mountReader} from './pdf-reader.js?v=20261105-pdf-reader-2';
 const params=new URLSearchParams(location.search),names={makkah:'مكة المكرمة',qassim:'القصيم',riyadh:'الرياض',sharqiyah:'الشرقية'};
 const report={region:params.get('region')||'',title:params.get('title')||'التقرير',dateRange:params.get('date')||'',season:params.get('season')||''};
 if(!report.region&&params.get('file')){try{const response=await fetch(new URL('pdf-archives.json',import.meta.url),{cache:'no-store'});if(response.ok){const data=await response.json(),match=data.archives?.find(item=>item.url===params.get('file'));if(match)Object.assign(report,match);}}catch{}}

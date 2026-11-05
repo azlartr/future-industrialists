@@ -22,6 +22,7 @@ export function mountReader(root,report,url,{compact=false}={}){
  function message(text,error=false){notice.textContent=text;notice.classList.toggle('pdf-reader-notice--error',error);notice.hidden=!text;}
  function position(number){current=number;select.value=String(number);root.querySelectorAll('[data-reader-page]').forEach(button=>button.setAttribute('aria-current',String(+button.dataset.readerPage===number)));}
  function scrollToPage(number){const page=pages.get(number);if(!page)return;position(number);page.section.scrollIntoView({behavior:'smooth',block:'start'});schedule(page);}
+ function stickyOffset(){const header=document.querySelector('header.topbar'),offset=!compact&&header&&['sticky','fixed'].includes(getComputedStyle(header).position)?Math.ceil(header.getBoundingClientRect().height):0;root.style.setProperty('--reader-top-offset',offset+'px');}stickyOffset();
  function size(page){const width=Math.max(160,Math.min(1100,surface.clientWidth-(compact?24:48)))*zoom;return {width,height:width/page.ratio};}
  async function renderPage(page){
   if(disposed||!root.isConnected)return;const dimensions=size(page),key=Math.round(dimensions.width);if(page.rendered===key)return;
@@ -33,7 +34,7 @@ export function mountReader(root,report,url,{compact=false}={}){
   try{await rendering.promise;page.rendered=key;page.section.classList.add('pdf-page-ready');page.placeholder.hidden=true;}finally{activeTasks.delete(rendering);}
  }
  function schedule(page){if(page.pending)return renderQueue;page.pending=true;renderQueue=renderQueue.then(()=>renderPage(page)).catch(error=>{if(!disposed&&error.name!=='RenderingCancelledException')message('تعذر عرض إحدى الصفحات. يمكنك إعادة المحاولة أو تنزيل التقرير.',true)}).finally(()=>page.pending=false);return renderQueue;}
- function resize(){if(!pdf||disposed)return;for(const page of pages.values()){const dimensions=size(page);page.section.style.width=dimensions.width+'px';page.section.style.minHeight=dimensions.height+'px';page.rendered=0;if(page.visible||page.number===current)schedule(page);}}
+ function resize(){stickyOffset();if(!pdf||disposed)return;for(const page of pages.values()){const dimensions=size(page);page.section.style.width=dimensions.width+'px';page.section.style.minHeight=dimensions.height+'px';page.rendered=0;if(page.visible||page.number===current)schedule(page);}}
  async function download(button){const original=button.innerHTML;button.disabled=true;button.textContent='جارٍ تنزيل التقرير…';try{await downloadReport(report,url);}catch(error){message(error.message,true);}finally{button.disabled=false;button.innerHTML=original;}}
  const click=event=>{const button=event.target.closest('[data-reader],[data-reader-page]');if(!button||!root.contains(button))return;
   if(button.dataset.readerPage){scrollToPage(+button.dataset.readerPage);return;}
