@@ -108,6 +108,18 @@
       "bytes": 2324455,
       "fileName": "مكة_المكرمة-الأسبوع الثامن-19 ابريل ا.pdf",
       "updatedAt": "2026-11-05T02:03:14.243Z"
+    },
+    {
+      "id": "pdf-makkah-8a4f4282-5e7e-43d1-a4e2-7fcf96530edb",
+      "region": "makkah",
+      "weekNumber": 10,
+      "season": "2025-2026",
+      "title": "الأسبوع العاشر",
+      "dateRange": "3 مايو إلى 7 مايو 2026",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/ab1f9bb5d9fb164914e9ac38e2057d29fe39716b933e9f1f939e71666f44e9f4.pdf",
+      "bytes": 2935749,
+      "fileName": "مكة_المكرمة-الأسبوع العاشر-3 مايو الى.pdf",
+      "updatedAt": "2026-11-05T02:04:27.460Z"
     }
   ]
 }
