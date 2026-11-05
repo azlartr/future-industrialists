@@ -1,12 +1,10 @@
-import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/build/pdf.mjs';
-pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/build/pdf.worker.mjs';
-const $=id=>document.getElementById(id),controls=['previous','next','minus','fit','plus'];
-let pdf,pageNumber=1,zoom=1,renderTask=null,sequence=0,resizeTimer;
-async function render(){const run=++sequence;if(renderTask){renderTask.cancel();try{await renderTask.promise}catch{}renderTask=null}if(!pdf)return;
- const page=await pdf.getPage(pageNumber);if(run!==sequence)return;const original=page.getViewport({scale:1}),available=Math.max(180,$('viewport').clientWidth-(innerWidth<480?16:32)),scale=available/original.width*zoom,viewport=page.getViewport({scale}),pixelRatio=Math.min(devicePixelRatio||1,2,Math.sqrt(16000000/(viewport.width*viewport.height))),canvas=$('page');
- canvas.width=Math.floor(viewport.width*pixelRatio);canvas.height=Math.floor(viewport.height*pixelRatio);canvas.style.width=viewport.width+'px';canvas.style.height=viewport.height+'px';canvas.setAttribute('aria-label','الصفحة '+pageNumber+' من '+pdf.numPages);$('page-label').textContent=pageNumber+' / '+pdf.numPages;$('previous').disabled=pageNumber<=1;$('next').disabled=pageNumber>=pdf.numPages;$('minus').disabled=zoom<=.5;$('plus').disabled=zoom>=2.5;
- renderTask=page.render({canvasContext:canvas.getContext('2d'),viewport,transform:pixelRatio!==1?[pixelRatio,0,0,pixelRatio,0,0]:null});try{await renderTask.promise;if(run===sequence)$('status').hidden=true}catch(error){if(error.name!=='RenderingCancelledException')showError(error)}
-}
-function showError(){ $('status').hidden=true;$('error').style.display='block'; }
-try{const source=new URLSearchParams(location.search).get('file'),url=new URL(source,location.href);if(!source||!['http:','https:','blob:'].includes(url.protocol))throw Error();$('download').href=url.href;const task=pdfjsLib.getDocument({url:url.href,isEvalSupported:false,cMapUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/cmaps/',cMapPacked:true,standardFontDataUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/standard_fonts/',wasmUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/wasm/'});task.onProgress=({loaded,total})=>{$('status').textContent=total?'جارٍ تحميل الملف… '+Math.min(100,Math.round(100*loaded/total))+'%':'جارٍ تحميل ملف PDF…'};pdf=await task.promise;controls.forEach(id=>$(id).disabled=false);await render();}catch(error){showError(error)}
-$('previous').onclick=()=>{if(pageNumber>1){pageNumber--;render()}};$('next').onclick=()=>{if(pdf&&pageNumber<pdf.numPages){pageNumber++;render()}};$('plus').onclick=()=>{zoom=Math.min(2.5,zoom+.25);render()};$('minus').onclick=()=>{zoom=Math.max(.5,zoom-.25);render()};$('fit').onclick=()=>{zoom=1;render()};window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>render(),180)});document.addEventListener('keydown',event=>{if(event.key==='ArrowLeft')$('next').click();if(event.key==='ArrowRight')$('previous').click()});
+import {mountReader} from './pdf-reader.js?v=20261105-pdf-reader-1';
+const params=new URLSearchParams(location.search),names={makkah:'مكة المكرمة',qassim:'القصيم',riyadh:'الرياض',sharqiyah:'الشرقية'};
+const report={region:params.get('region')||'',title:params.get('title')||'التقرير',dateRange:params.get('date')||'',season:params.get('season')||''};
+if(!report.region&&params.get('file')){try{const response=await fetch(new URL('pdf-archives.json',import.meta.url),{cache:'no-store'});if(response.ok){const data=await response.json(),match=data.archives?.find(item=>item.url===params.get('file'));if(match)Object.assign(report,match);}}catch{}}
+document.getElementById('report-title').textContent=[names[report.region]||report.region,report.title].filter(Boolean).join(' · ');
+document.getElementById('report-period').textContent=report.dateRange||report.season;
+document.title=[names[report.region]||report.region,report.title,report.dateRange].filter(Boolean).join(' | ');
+const root=document.getElementById('report-reader');
+if(params.get('file')){const reader=mountReader(root,report,params.get('file'));window.addEventListener('pagehide',()=>reader.destroy(),{once:true});}
+else root.textContent='لم يتم تحديد ملف التقرير. ارجع إلى قائمة التقارير واختر الأسبوع.';
