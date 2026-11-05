@@ -5,7 +5,8 @@
     makkah: { through: '2026-05-07', totalBeneficiaries: 22490, totalRegistered: 4815, creativeCategory: 1520, discovererCategory: 2162, ambassadorCategory: 732, artistCategory: 401 },
     qassim: { through: '2026-05-07', totalBeneficiaries: 9270, totalRegistered: 1050, creativeCategory: 382, discovererCategory: 451, ambassadorCategory: 139, artistCategory: 78 }
   };
-  const fields = ['totalRegistered', 'creativeCategory', 'discovererCategory', 'ambassadorCategory', 'artistCategory'];
+  const categoryFields = ['creativeCategory', 'discovererCategory', 'ambassadorCategory', 'artistCategory'];
+  const fields = ['totalRegistered', ...categoryFields];
   function count(value) {
     if (value === null || value === undefined || String(value).trim() === '') return null;
     const text = String(value).replace(/[٠-٩]/g, c => '٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/[۰-۹]/g, c => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[,٬\s]/g, '');
@@ -31,11 +32,12 @@
     let previous = Object.fromEntries(fields.map(key => [key, baseline?.[key] || 0]));
     for (const item of included) {
       const source = item.stats || {};
-      const mode = item.statisticsBasis || (!baseline || fields.some(key => count(source[key]) !== null && count(source[key]) >= baseline[key]) ? 'regional' : 'since-baseline');
+      const mode = item.statisticsBasis || (!baseline || categoryFields.some(key => count(source[key]) !== null && count(source[key]) >= baseline[key]) ? 'regional' : 'since-baseline');
       const values = Object.fromEntries(fields.map(key => {
         const value = count(source[key]);
         return [key, value === null ? null : value + (mode === 'weekly' ? previous[key] || 0 : mode === 'since-baseline' ? baseline?.[key] || 0 : 0)];
       }));
+      if (categoryFields.every(key => values[key] !== null)) values.totalRegistered = categoryFields.reduce((sum, key) => sum + values[key], 0);
       if (item.id === report.id) Object.assign(result, values);
       previous = Object.fromEntries(fields.map(key => [key, values[key] ?? previous[key]]));
     }

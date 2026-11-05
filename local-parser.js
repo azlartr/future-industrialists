@@ -281,16 +281,16 @@ function parseStructuredVisits(text, regionName) {
 
 function parseStats(text) {
   const stats = {
-    ambassadorCategory: 0,
+    ambassadorCategory: null,
     tvInterviews: 0,
     tweets: 0,
     videos: 0,
     posts: 0,
-    discovererCategory: 0,
-    creativeCategory: 0,
+    discovererCategory: null,
+    creativeCategory: null,
     totalBeneficiaries: 0,
     totalRegistered: 0,
-    artistCategory: 0,
+    artistCategory: null,
   };
   const labels = {
     ambassadorCategory: /(?:فئة\s*)?السفير/i,
@@ -558,5 +558,5 @@ function matchDriveImages(visits, files) {
 
 window.FI_MATCH=matchDriveImages;
 window.FI_PARSE_HEADER=(text,regionName)=>{const jsonReport=parseJsonReport(text,regionName);return jsonReport?jsonReport.header:extractHeader(reportLines(text),regionName)};
-return (text,regionName)=>{const report=parseReport(text,regionName);if(!parseJsonReport(text,regionName)){const extracted=extractHeader(reportLines(text),regionName);report.header={...report.header,...(extracted.weekTitle?{weekTitle:extracted.weekTitle}:{}),...(extracted.dateRange?{dateRange:extracted.dateRange}:{})};}if(report.stats.totalRegistered===null)report.warnings=[...(report.warnings||[]),'إجمالي المسجلين غير موجود في النص. راجع الرقم قبل اعتماده.'];return report;};})();
+return (text,regionName)=>{const report=parseReport(text,regionName);if(!parseJsonReport(text,regionName)){const extracted=extractHeader(reportLines(text),regionName);report.header={...report.header,...(extracted.weekTitle?{weekTitle:extracted.weekTitle}:{}),...(extracted.dateRange?{dateRange:extracted.dateRange}:{})};}if(report.stats.totalRegistered===null&&['creativeCategory','discovererCategory','ambassadorCategory','artistCategory'].some(key=>report.stats[key]===null))report.warnings=[...(report.warnings||[]),'إجمالي المسجلين غير موجود في النص. راجع الرقم قبل اعتماده.'];return report;};})();
 
