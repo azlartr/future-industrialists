@@ -1,4 +1,17 @@
 {
   "schemaVersion": 1,
-  "archives": []
+  "archives": [
+    {
+      "id": "pdf-makkah-d4797282-2a4c-48d6-b908-ecd12d377c81",
+      "region": "makkah",
+      "weekNumber": 1,
+      "season": "2025-2026",
+      "title": "الأسبوع الأول",
+      "dateRange": "14 ديسمبر إلى 18 ديسمبر 2025",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/073e205ae9f67069c6c90bd744c844c904eb6e86fc4360813e1448de027bcd50.pdf",
+      "bytes": 1386056,
+      "fileName": "مكة_المكرمة-الأسبوع الأول-14 ديسمبر.pdf",
+      "updatedAt": "2026-11-05T00:19:09.739Z"
+    }
+  ]
 }
