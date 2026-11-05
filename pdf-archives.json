@@ -144,6 +144,18 @@
       "bytes": 944732,
       "fileName": "�القصيم-الأسبوع الثاني-2026-04-05.pdf",
       "updatedAt": "2026-11-05T02:19:41.141Z"
+    },
+    {
+      "id": "pdf-qassim-e83b11ad-5847-4aab-8789-37fac997e59d",
+      "region": "qassim",
+      "weekNumber": 3,
+      "season": "2025-2026",
+      "title": "الأسبوع الثالث",
+      "dateRange": "من 12 ابريل إلى 16 أبريل 2026",
+      "url": "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/pdf/d27d5ff0788d21962fc228c7e70f609e083d35d53b2ba0d2062f6a1d54c9323e.pdf",
+      "bytes": 1106383,
+      "fileName": "�القصيم-الأسبوع الثالث-من 12 ابري.pdf",
+      "updatedAt": "2026-11-05T02:20:44.120Z"
     }
   ]
 }
