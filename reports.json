@@ -5929,6 +5929,14 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8f3183d6686453b8f14046b044b0820233d1c47dedd5a82131a20693f6942c82.webp": {
               "x": 50,
               "y": 38.87487386478305
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/a03c7e3c98214d04b8c5458888b4a2aab3d7792b1790f66cc2fb363ca2445073.webp": {
+              "x": 50,
+              "y": 25.70635721493441
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/8ddde721ef21ec7b14b8aaf46a43cde9451b5db585c502f421a030838b87de84.webp": {
+              "x": 50,
+              "y": 38.42078708375378
             }
           }
         },
@@ -5946,11 +5954,24 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/89b612fbb7edcdfbaa58b5ab65e18f7ff824a79a720e5befc78be6663c1bdf2f.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/45a3534adea578b8e13d96a831764781602479a29bbdaa3830886eb61259bd4b.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/45a3534adea578b8e13d96a831764781602479a29bbdaa3830886eb61259bd4b.webp": {
+              "x": 50,
+              "y": 44.32391523713421
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/cf4335e50c7786d14241c1c9befde38af3f9c6936d97b013eaa3b140ead8e11a.webp": {
+              "x": 50,
+              "y": 35.696266397578206
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/56e27c527c7291fd38cafd73c898407425a6c76b44e844efc70aa8b602db33bf.webp": {
+              "x": 50,
+              "y": 0
+            }
+          }
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-12T03:12:04.702Z",
+        "updatedAt": "2026-11-12T03:12:14.952Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -6232,7 +6253,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-12T03:15:27.683Z",
+      "updatedAt": "2026-11-12T03:16:31.642Z",
       "rematchBackup": {
         "updatedAt": "2026-11-12T03:10:27.373Z",
         "visits": [
