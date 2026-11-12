@@ -5507,7 +5507,12 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5b3b39eb93d07ad0f37b9f41f1234006cc37a51b96a851db103f64ea23feb13b.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/50fc6e75d597013f947758ec1c1343c3755cf3d952ca856a0bc6a1d272e8b0a3.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5b3b39eb93d07ad0f37b9f41f1234006cc37a51b96a851db103f64ea23feb13b.webp": {
+              "x": 50,
+              "y": 100
+            }
+          }
         },
         {
           "id": "auto-visit-2",
@@ -5555,7 +5560,12 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ae8884c4a76fdf7abc71fe78e65354f2fe0e310225f0b5879728d6afb634ce4d.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/debd93f9200e9b3fea3bb493f89817e4af24b2386eae46e1e9c4ea770219b78d.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ebcb0d1f5a9642ef8d2ef9f58e589387a1ab9d84480a9bd9a0462b7d72f16e80.webp": {
+              "x": 50,
+              "y": 80.42381432896065
+            }
+          }
         },
         {
           "id": "auto-visit-5",
@@ -5587,7 +5597,12 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/f79dc5dcbe96f60301880aa3f2052879d5309ac5e15e76d4e17cb8c3fd324fba.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/00614a81ac08d3cff60ea99207fe897b00c45a245929102275559d98c25326d9.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/59eff8f86f422cb84149d190771aa7ba706d32bf76212c375eb2f203bb044740.webp": {
+              "x": 50,
+              "y": 82.71461716937355
+            }
+          }
         },
         {
           "id": "auto-visit-7",
@@ -5603,7 +5618,12 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/af50b04493fce1229b0e94b4e3aa7ea325b92efaacfcaf21086dbc6f1c2bca9f.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5ad69e5e9845a421e771fd2a76a7202b1aed291bbbfbe19fca32adfb2431abff.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/5ad69e5e9845a421e771fd2a76a7202b1aed291bbbfbe19fca32adfb2431abff.webp": {
+              "x": 50,
+              "y": 100
+            }
+          }
         },
         {
           "id": "auto-visit-8",
@@ -5651,7 +5671,12 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e5c7bdaebe54fc29c5423cc2d6bc28fa1a5b3419c15d02923589dc2bc0a17f7e.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9e0d84c5eee0ac953493e24e7963d98198493be50b98c9b91f40d583463541e8.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e5c7bdaebe54fc29c5423cc2d6bc28fa1a5b3419c15d02923589dc2bc0a17f7e.webp": {
+              "x": 50,
+              "y": 73.38546922300706
+            }
+          }
         },
         {
           "id": "auto-visit-11",
@@ -5879,7 +5904,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-12T03:10:27.401Z",
+        "updatedAt": "2026-11-12T03:11:03.203Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -6161,7 +6186,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-12T03:10:27.415Z",
+      "updatedAt": "2026-11-12T03:11:23.040Z",
       "rematchBackup": {
         "updatedAt": "2026-11-12T03:10:27.373Z",
         "visits": [
