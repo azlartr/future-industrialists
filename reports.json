@@ -5675,6 +5675,10 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/e5c7bdaebe54fc29c5423cc2d6bc28fa1a5b3419c15d02923589dc2bc0a17f7e.webp": {
               "x": 50,
               "y": 73.38546922300706
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/9e0d84c5eee0ac953493e24e7963d98198493be50b98c9b91f40d583463541e8.webp": {
+              "x": 50,
+              "y": 38.00639658848614
             }
           }
         },
@@ -5692,7 +5696,20 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/eff59e1ffcf2fb1656793738b5466c398e4d2fc71a0a0bf7dde3f2ae90376708.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/abd5fb2c44206ff65d797a4b679dbdbccd591d839e7dd694453a5d63e6cf8c2a.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/abd5fb2c44206ff65d797a4b679dbdbccd591d839e7dd694453a5d63e6cf8c2a.webp": {
+              "x": 50,
+              "y": 61.30663926234608
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/eff59e1ffcf2fb1656793738b5466c398e4d2fc71a0a0bf7dde3f2ae90376708.webp": {
+              "x": 50,
+              "y": 58.6974148171893
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2261688f0c40b19b30752630d3ca6633249e100fe7d09df604f8380e4b77d4b4.webp": {
+              "x": 50,
+              "y": 57.13188015009522
+            }
+          }
         },
         {
           "id": "auto-visit-12",
@@ -5904,7 +5921,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-12T03:11:03.203Z",
+        "updatedAt": "2026-11-12T03:11:12.746Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -6186,7 +6203,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-12T03:11:23.040Z",
+      "updatedAt": "2026-11-12T03:12:24.488Z",
       "rematchBackup": {
         "updatedAt": "2026-11-12T03:10:27.373Z",
         "visits": [
