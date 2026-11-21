@@ -6414,7 +6414,20 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/71c7a078aa790a8903fa1b8314d399cf1079160ff77ecc8702dcc7d17e288fe5.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec3125f0bcf73859709dbc8e650240b1e6a58ed6fdfa086aa626d9a12d3b95eb.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/71c7a078aa790a8903fa1b8314d399cf1079160ff77ecc8702dcc7d17e288fe5.webp": {
+              "x": 50,
+              "y": 50.6811301715439
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/ec3125f0bcf73859709dbc8e650240b1e6a58ed6fdfa086aa626d9a12d3b95eb.webp": {
+              "x": 50,
+              "y": 53.85973763874874
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/2f2c40c8551d2e91c5352490ce7cf87e23da313aff3f42d3395f209f7d536386.webp": {
+              "x": 50,
+              "y": 58.85469223007063
+            }
+          }
         },
         {
           "id": "auto-visit-2",
@@ -6430,7 +6443,16 @@
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/22cc44a664fe010d2ec1e5861a2d1af80e1aa644a79f974c383d74a4e230af9f.webp",
             "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c953b0b0f8d831bdef68bc6ace77a2abac66f1d852def2cb693c2ad73ab947db.webp"
           ],
-          "imagePositions": {}
+          "imagePositions": {
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/fb2731b01b2197ddb796150341fb6573cd8fa7ab323cd00cd99d2a1ec6004318.webp": {
+              "x": 50,
+              "y": 37.51261352169526
+            },
+            "https://raw.githubusercontent.com/azlartr/future-industrialists/main/assets/u/c953b0b0f8d831bdef68bc6ace77a2abac66f1d852def2cb693c2ad73ab947db.webp": {
+              "x": 50,
+              "y": 52.04339051463168
+            }
+          }
         },
         {
           "id": "auto-visit-3",
@@ -6754,7 +6776,7 @@
         }
       ],
       "presentation": {
-        "updatedAt": "2026-11-21T10:34:08.180Z",
+        "updatedAt": "2026-11-21T10:34:26.612Z",
         "theme": {
           "boys": "#2b3592",
           "girls": "#897dc0",
@@ -7036,7 +7058,7 @@
           }
         }
       },
-      "updatedAt": "2026-11-21T10:34:08.187Z",
+      "updatedAt": "2026-11-21T10:35:00.641Z",
       "rematchBackup": {
         "updatedAt": "2026-11-21T10:34:08.168Z",
         "visits": [
