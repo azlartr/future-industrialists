@@ -282,29 +282,29 @@ function parseStructuredVisits(text, regionName) {
 function parseStats(text) {
   const stats = {
     ambassadorCategory: null,
-    tvInterviews: 0,
-    tweets: 0,
-    videos: 0,
-    posts: 0,
+    tvInterviews: null,
+    tweets: null,
+    videos: null,
+    posts: null,
     discovererCategory: null,
     creativeCategory: null,
-    totalBeneficiaries: 0,
+    totalBeneficiaries: null,
     totalRegistered: 0,
     artistCategory: null,
   };
   const labels = {
     ambassadorCategory: /(?:فئة\s*)?السفير/i,
-    tvInterviews: /(?:لقاءات?|مقابلات?).*(?:تلفزيون|تلفزيوني)/i,
-    tweets: /(?:التغريدات?|تغريدة)/i,
-    videos: /(?:الفيديو|مقاطع\s*الفيديو|فيديوهات?)/i,
-    posts: /(?:المنشورات?|منشور)/i,
+    tvInterviews: /(?:لقاءات?|مقابلات?).*(?:تلفزي)/i,
+    tweets: /(?:تغريد(?:ات|ة|ه))/i,
+    videos: /(?:(?:الفيديو|فيديو)(?:هات)?|مقاطع\s+(?:اليوتيوب|اليوتوب))/i,
+    posts: /(?:منشور(?:ات)?)/i,
     discovererCategory: /(?:فئة\s*)?(?:المكتشف|مكتشف)/i,
     creativeCategory: /(?:فئة\s*)?(?:المبدع|مبدع)/i,
     totalBeneficiaries: /(?:إجمالي|اجمالي|عدد)\s*(?:المستفيدين|المستفيد)/i,
     totalRegistered: /(?:إجمالي|اجمالي|عدد)\s*(?:المسجلين|المسجل)/i,
     artistCategory: /(?:فئة\s*)?(?:الفنان|فنان)/i,
   };
-  const lines = reportLines(text);
+  const lines = reportLines(text).flatMap(line => line.split(/\s*\|\s*|\t+/)).map(line => line.trim().replace(/[\u064b-\u065f\u0640]/g, '')).filter(line => line && !/^[-:\s]+$/.test(line));
   stats.totalRegistered = null;
   const numeric = value => {
     const match = arabicDigits(value).trim().match(/^(?:[0-9][0-9,٬]*)(?:\s*)$/);

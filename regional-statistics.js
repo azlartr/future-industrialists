@@ -41,6 +41,9 @@
       if (item.id === report.id) Object.assign(result, values);
       previous = Object.fromEntries(fields.map(key => [key, values[key] ?? previous[key]]));
     }
+    // A reported cumulative total includes beneficiaries outside these visit cards.
+    const reported = count(report.stats?.totalBeneficiaries);
+    if (reported !== null) result.totalBeneficiaries = reported;
     return result;
   }
   window.FI_STATISTICS = { calculate, count, baselines };
